@@ -8,6 +8,11 @@ export default defineConfig({
 
   server: {
     proxy: {
+      "/api/identity": {
+        target: "http://localhost:8007",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/identity/, "/api"),
+      },
       "/api/med-tools": {
         target: "http://localhost:8005",
         changeOrigin: true,

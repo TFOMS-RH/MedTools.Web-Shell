@@ -1,41 +1,46 @@
 import { create } from "zustand";
-
-export interface AuthUser {
-  uid: number;
-  email: string;
-  username: string;
-  role: string;
-}
+import type { AuthUser } from "../types/AuthUser";
+import { readTokenClaims } from "../helpers/readTokenClaims";
+import { queryClient } from "../../../shared/api/client/queryClient";
 
 interface AuthState {
   accessToken: string | null;
   user: AuthUser | null;
   isInitialized: boolean;
-
-  setSession: (accessToken: string, user: AuthUser) => void;
+  permissions: string[];
+  setSession: (accessToken: string) => void;
+  setUser: (user: AuthUser) => void;
   clearSession: () => void;
-  setInitialized: (value: boolean) => void;
 }
 
+const savedToken = sessionStorage.getItem("accessToken");
+
 export const useAuthStore = create<AuthState>((set) => ({
-  accessToken: null,
+  accessToken: savedToken,
   user: null,
-  isInitialized: false,
-
-  setSession: (accessToken, user) =>
-    set({
-      accessToken: accessToken,
-      user: user,
-    }),
-
-  clearSession: () =>
+  isInitialized: !savedToken,
+  permissions: [],
+  setSession: (accessToken) => {
+    queryClient.clear();
+    sessionStorage.setItem("accessToken", accessToken);
+    set({ accessToken, user: null, permissions: [], isInitialized: false });
+  },
+  setUser: (user) =>
+    set((state) => ({
+      user,
+      permissions: state.accessToken
+        ? (readTokenClaims(state.accessToken)?.permissions ?? [])
+        : [],
+      isInitialized: true,
+    })),
+  clearSession: () => {
+    sessionStorage.removeItem("accessToken");
     set({
       accessToken: null,
       user: null,
-    }),
-
-  setInitialized: (value) =>
-    set({
-      isInitialized: value,
-    }),
+      permissions: [],
+      isInitialized: true,
+    });
+    queryClient.clear();
+  },
 }));

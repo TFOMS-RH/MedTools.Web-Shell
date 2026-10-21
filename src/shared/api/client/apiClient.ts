@@ -2,7 +2,7 @@ import axios from "axios";
 import { useAuthStore } from "../../../modules/auth/stores/authStore";
 
 const apiClient = axios.create({
-  baseURL: import.meta.env.DEV ? "/api" : "/api", //Заглушка до релиза
+  baseURL: "/api",
 
   timeout: 300000,
   headers: {
@@ -11,9 +11,9 @@ const apiClient = axios.create({
 });
 
 apiClient.interceptors.request.use((config) => {
-  const token = sessionStorage.getItem("accessToken");
+  const token = useAuthStore.getState().accessToken;
 
-  if (token) {
+  if (token && config.url !== "/identity/auth/login") {
     config.headers.Authorization = `Bearer ${token}`;
   }
 
@@ -23,9 +23,15 @@ apiClient.interceptors.request.use((config) => {
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
-      useAuthStore.setState({ accessToken: null });
-      window.location.href = "/login";
+    const token = useAuthStore.getState().accessToken;
+    // An old request must not clear a session established by a newer login.
+    if (error.response?.status === 401 && token &&
+        error.config?.headers?.Authorization === `Bearer ${token}` &&
+        error.config?.url !== "/identity/auth/login") {
+      useAuthStore.getState().clearSession();
+      if (window.location.pathname !== "/login") {
+        window.location.replace(`/login?returnTo=${encodeURIComponent(window.location.pathname)}`);
+      }
     }
 
     return Promise.reject(error);
