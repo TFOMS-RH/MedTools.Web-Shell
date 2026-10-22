@@ -11,9 +11,8 @@ import { queryClient } from "../shared/api/client/queryClient";
 import { HTMain } from "../modules/healthTrack/pages/HTMain/HTMain";
 import { HTNotistackProvider } from "../modules/healthTrack/ui/HTNotistackProvider/HTNotistackProvider";
 import { AuthSession } from "../modules/auth/components/AuthSession";
-import { RequirePermission } from "../modules/auth/components/RequirePermission";
 import { AdminUsers } from "../modules/admin/pages/AdminUsers";
-import { adminPermissions } from "../modules/admin/model/permissions";
+import { AdminAccessCatalog } from "../modules/admin/pages/AdminAccessCatalog";
 
 import "./styles/global.scss";
 
@@ -33,11 +32,15 @@ createRoot(document.getElementById("root")!).render(
               <Route path="/health-track" element={<HTMain />} />
               <Route
                 path="/admin/users"
-                element={
-                  <RequirePermission permission={adminPermissions.readUsers}>
-                    <AdminUsers />
-                  </RequirePermission>
-                }
+                element={<AdminUsers />}
+              />
+              <Route
+                path="/admin/roles"
+                element={<AdminAccessCatalog kind="role" />}
+              />
+              <Route
+                path="/admin/permissions"
+                element={<AdminAccessCatalog kind="permission" />}
               />
             </Route>
           </Routes>

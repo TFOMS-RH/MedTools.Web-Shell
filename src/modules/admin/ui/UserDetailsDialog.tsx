@@ -17,6 +17,7 @@ import { CardField } from "../../../shared/ui/CardField/CardField";
 import { AdminQueryError } from "./AdminQueryError";
 import { UserProfileForm } from "./UserProfileForm";
 import { UserRolesPanel } from "./UserRolesPanel";
+import { UserStatusPanel } from "./UserStatusPanel";
 import { useUnsavedChanges } from "./useUnsavedChanges";
 import styles from "./styles.module.scss";
 
@@ -35,9 +36,10 @@ export const UserDetailsDialog = ({
   const [rolesDirty, setRolesDirty] = useState(false);
   const [profileBusy, setProfileBusy] = useState(false);
   const [rolesBusy, setRolesBusy] = useState(false);
+  const [statusBusy, setStatusBusy] = useState(false);
   const [confirmClose, setConfirmClose] = useState(false);
   const dirty = profileDirty || rolesDirty;
-  const busy = profileBusy || rolesBusy;
+  const busy = profileBusy || rolesBusy || statusBusy;
   useUnsavedChanges(dirty || busy);
 
   const requestClose = useCallback(() => {
@@ -83,7 +85,7 @@ export const UserDetailsDialog = ({
               <UserProfileForm
                 user={query.data}
                 canEdit={canEdit}
-                disabled={rolesBusy}
+                disabled={rolesBusy || statusBusy}
                 onDirtyChange={setProfileDirty}
                 onBusyChange={setProfileBusy}
               />
@@ -91,9 +93,15 @@ export const UserDetailsDialog = ({
               <UserRolesPanel
                 userId={userId}
                 profileDirty={profileDirty}
-                profileBusy={profileBusy}
+                profileBusy={profileBusy || statusBusy}
                 onDirtyChange={setRolesDirty}
                 onBusyChange={setRolesBusy}
+              />
+              <UserStatusPanel
+                userId={userId}
+                userName={query.data.userName}
+                disabled={dirty || profileBusy || rolesBusy}
+                onBusyChange={setStatusBusy}
               />
             </div>
           )}
