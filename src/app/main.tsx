@@ -2,10 +2,10 @@ import { createRoot } from "react-dom/client";
 import { Home } from "../components/pages/Home/Home";
 import { Login } from "../components/pages/Login/Login";
 import { BrowserRouter, Route, Routes } from "react-router";
-import { WithoutHeaderLayout } from "../components/layouts/WithoutHeaderLayout/WithoutHeaderLayout";
+import { PlainLayout } from "../components/layouts/PlainLayout/PlainLayout";
 import { RControl } from "../modules/rControl/pages/RControl";
 import { MedView } from "../modules/medView/pages/MedView";
-import { AppLayout } from "../components/layouts/AppLayout/AppLayout";
+import { MainLayout } from "../components/layouts/MainLayout/MainLayout";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "../shared/api/client/queryClient";
 import { HTMain } from "../modules/healthTrack/pages/HTMain/HTMain";
@@ -23,10 +23,10 @@ createRoot(document.getElementById("root")!).render(
       <BrowserRouter>
         <AuthSession>
           <Routes>
-            <Route element={<WithoutHeaderLayout />}>
+            <Route element={<PlainLayout />}>
               <Route path="/login" element={<Login />} />
             </Route>
-            <Route element={<AppLayout />}>
+            <Route element={<MainLayout />}>
               <Route path="/" element={<Home />} />
               <Route path="/rcontrol" element={<RControl />} />
               <Route path="/med-view" element={<MedView />} />

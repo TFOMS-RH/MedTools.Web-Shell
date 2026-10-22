@@ -1,4 +1,4 @@
-.loginRoot {
+﻿.loginRoot {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -9,8 +9,8 @@
   .primaryText {
     font-size: var(--fs-body2);
     font-weight: var(--fw-default);
-    color: var(--text-secondary);
-    line-height: 1.25;
+    color: var(--mt-text-secondary);
+    line-height: 1.4;
   }
 
   .loginHeader {
@@ -19,8 +19,10 @@
     align-items: center;
 
     h1 {
+      margin: 0;
       font-size: var(--fs-h1);
       font-weight: var(--fw-semibold);
+      color: var(--mt-text-primary);
     }
   }
 
@@ -28,10 +30,13 @@
     display: flex;
     flex-direction: column;
 
-    border: 1px solid var(--border-default);
-    border-radius: var(--radius-xl);
-    background: var(--card-background);
-    width: 25rem;
+    width: min(25rem, 100%);
+
+    border: none;
+    border-radius: var(--mt-radius-panel);
+    background: var(--mt-surface);
+
+    overflow: hidden;
 
     .loginFormHeader {
       display: flex;
@@ -42,17 +47,132 @@
       padding-bottom: 0;
 
       h2 {
+        margin: 0;
         font-size: var(--fs-h3);
+        color: var(--mt-text-primary);
       }
     }
 
-    .actions,
     .inputs {
       display: flex;
       flex-direction: column;
 
-      gap: var(--space-10);
+      gap: var(--space-6);
       padding: var(--space-8);
+      padding-top: calc(var(--space-8) + var(--mt-space-2));
+
+      .input {
+        :global(.MuiOutlinedInput-root) {
+          height: var(--mt-space-12);
+          border-radius: var(--mt-radius-control);
+          background: var(--mt-canvas);
+          color: var(--mt-text-primary);
+          font-family: var(--mt-font-family);
+          font-size: var(--mt-font-body);
+          transition: background-color var(--mt-duration-fast) ease;
+
+          :global(.MuiOutlinedInput-notchedOutline) {
+            border-color: transparent;
+          }
+
+          &:hover {
+            background: var(--mt-surface-subtle);
+          }
+
+          &:global(.Mui-focused) {
+            background: var(--mt-canvas);
+
+            :global(.MuiOutlinedInput-notchedOutline) {
+              border-color: var(--mt-text-primary);
+              border-width: 1px;
+            }
+          }
+
+          &:global(.Mui-disabled) {
+            background: var(--mt-surface-subtle);
+
+            :global(.MuiOutlinedInput-notchedOutline) {
+              border-color: transparent;
+            }
+          }
+        }
+
+        :global(.MuiInputLabel-root) {
+          color: var(--mt-text-secondary);
+          font-family: var(--mt-font-family);
+          font-size: var(--mt-font-body);
+
+          &:not(:global(.MuiInputLabel-shrink)) {
+            top: var(--mt-space-1);
+          }
+
+          &:global(.Mui-focused) {
+            color: var(--mt-text-primary);
+          }
+
+          &:global(.Mui-disabled) {
+            color: var(--mt-text-tertiary);
+          }
+        }
+
+        :global(.MuiInputBase-input.Mui-disabled) {
+          -webkit-text-fill-color: var(--mt-text-tertiary);
+        }
+      }
     }
+
+    .actions {
+      display: flex;
+      flex-direction: column;
+
+      padding: 0 var(--space-8) var(--space-8);
+
+      :global(.MuiButton-root) {
+        min-height: var(--mt-space-12);
+        padding: var(--mt-space-3) var(--mt-space-6);
+        border: none;
+        border-radius: var(--mt-radius-control);
+        background: var(--mt-text-primary);
+        color: var(--mt-surface);
+        box-shadow: none;
+
+        font-family: var(--mt-font-family);
+        font-size: var(--mt-font-body);
+        font-weight: 500;
+        text-transform: none;
+
+        transition: background-color var(--mt-duration-fast) ease;
+
+        &:hover {
+          background: var(--mt-text-secondary);
+          box-shadow: none;
+        }
+
+        &:focus-visible {
+          outline: 2px solid var(--mt-text-primary);
+          outline-offset: 3px;
+        }
+
+        &:global(.Mui-disabled) {
+          background: var(--mt-surface-subtle);
+          color: var(--mt-text-tertiary);
+        }
+
+        &:global(.MuiButton-loading) {
+          color: transparent;
+        }
+
+        :global(.MuiButton-loadingIndicator) {
+          color: var(--mt-text-secondary);
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 40rem) {
+  .loginRoot {
+    margin-top: 5rem;
+    padding-inline: var(--mt-space-4);
   }
 }

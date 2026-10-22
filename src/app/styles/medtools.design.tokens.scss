@@ -1,0 +1,57 @@
+:root {
+  --mt-canvas: #f5f5f7;
+  --mt-surface: #ffffff;
+  --mt-surface-subtle: #efeff1;
+  --mt-surface-hover: #e8e8ed;
+
+  --mt-text-primary: #1d1d1f;
+  --mt-text-secondary: #6e6e73;
+  --mt-text-tertiary: #86868b;
+
+  --mt-font-family: Inter, system-ui, sans-serif;
+  --mt-font-body: 0.875rem;
+  --mt-font-title: 1.75rem;
+
+  --mt-radius-panel: 1.75rem;
+  --mt-radius-card: 1.5rem;
+  --mt-radius-inner: 1.125rem;
+  --mt-radius-control: 0.875rem;
+  --mt-radius-pill: 9999px;
+
+  --mt-space-1: 0.25rem;
+  --mt-space-2: 0.5rem;
+  --mt-space-3: 0.75rem;
+  --mt-space-4: 1rem;
+  --mt-space-5: 1.25rem;
+  --mt-space-6: 1.5rem;
+  --mt-space-8: 2rem;
+  --mt-space-10: 2.5rem;
+  --mt-space-12: 3rem;
+
+  --mt-duration-fast: 150ms;
+  --mt-duration-normal: 220ms;
+
+  --mt-medview-accent: #7654b8;
+  --mt-medview-cover: #eee8fc;
+
+  --mt-rcontrol-accent: #24876d;
+  --mt-rcontrol-cover: #e5f4ee;
+
+  --mt-healthtrack-accent: #ca7c20;
+  --mt-healthtrack-cover: #fff0dc;
+
+  --mt-layout-home-max: 90rem;
+  --mt-layout-workspace-max: 137.5rem;
+
+  --mt-layout-gutter: 1.5rem;
+  --mt-layout-gutter-mobile: 1rem;
+
+  --mt-header-height: 5rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --mt-duration-fast: 0ms;
+    --mt-duration-normal: 0ms;
+  }
+}

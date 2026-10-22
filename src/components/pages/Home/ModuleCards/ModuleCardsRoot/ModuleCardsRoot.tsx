@@ -2,32 +2,40 @@ import { ModuleCard } from "../ModuleCard/ModuleCard";
 import projects from "../../../../../../projects.json";
 import styles from "./styles.module.scss";
 
+const modules = [
+  {
+    ...projects.RControl,
+    navigatePath: "/rcontrol",
+    accentColor: "#24876D",
+    coverBackground: "#E5F4EE",
+  },
+  {
+    ...projects.MedView,
+    navigatePath: "/med-view",
+    accentColor: "#7654B8",
+    coverBackground: "#EEE8FC",
+  },
+  {
+    ...projects.HealthTrack,
+    navigatePath: "/health-track",
+    accentColor: "#CA7C20",
+    coverBackground: "#FFF0DC",
+  },
+];
+
 export const ModuleCardsRoot = () => {
   return (
     <section className={styles.modulesGroup}>
-      <ModuleCard
-        displayName={projects.RControl.DisplayName}
-        moduleDescription={projects.RControl.Description}
-        moduleVersion={projects.RControl.Version}
-        navigatePath="/rcontrol"
-        avatarText="RC"
-      />
-
-      <ModuleCard
-        displayName={projects.MedView.DisplayName}
-        moduleDescription={projects.MedView.Description}
-        moduleVersion={projects.MedView.Version}
-        navigatePath="/med-view"
-        avatarText="MDV"
-      />
-
-      <ModuleCard
-        displayName={projects.HealthTrack.DisplayName}
-        moduleDescription={projects.HealthTrack.Description}
-        moduleVersion={projects.HealthTrack.Version}
-        navigatePath="/health-track"
-        avatarText="HT"
-      />
+      {modules.map((module) => (
+        <ModuleCard
+          key={module.navigatePath}
+          displayName={module.DisplayName}
+          moduleDescription={module.Description}
+          navigatePath={module.navigatePath}
+          accentColor={module.accentColor}
+          coverBackground={module.coverBackground}
+        />
+      ))}
     </section>
   );
 };

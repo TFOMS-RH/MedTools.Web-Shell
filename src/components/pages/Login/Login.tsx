@@ -1,11 +1,14 @@
 import { MedToolsButton } from "../../../shared/ui/medTools/buttons/MedToolsButton";
 import { useAuthStore } from "../../../modules/auth/stores/authStore";
 import { authService } from "../../../modules/auth/api/authService";
-import { Divider } from "../../ui/Divider/Divider";
-import { Navigate, useLocation, useNavigate, useSearchParams } from "react-router";
+import {
+  Navigate,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from "react-router";
 import React, { useState } from "react";
 import { Alert, TextField } from "@mui/material";
-import { medToolsInputSx } from "../../../shared/sxConfigs/medToolsInputSx";
 import { getApiError } from "../../../shared/helpers/getApiError";
 import styles from "./styles.module.scss";
 
@@ -20,7 +23,13 @@ export const Login = () => {
   const [searchParams] = useSearchParams();
   const location = useLocation();
   const requestedPath = searchParams.get("returnTo");
-  const returnTo = requestedPath?.startsWith("/") && !requestedPath.startsWith("//") && !requestedPath.startsWith("/login") && !requestedPath.includes("\\") ? requestedPath : "/";
+  const returnTo =
+    requestedPath?.startsWith("/") &&
+    !requestedPath.startsWith("//") &&
+    !requestedPath.startsWith("/login") &&
+    !requestedPath.includes("\\")
+      ? requestedPath
+      : "/";
   const notice: unknown = location.state?.notice;
 
   if (user) return <Navigate to={returnTo} replace />;
@@ -39,7 +48,9 @@ export const Login = () => {
       navigator(returnTo, { replace: true });
     } catch (reason) {
       const info = getApiError(reason, "Не удалось войти. Повторите попытку.");
-      setError(info.status === 401 ? "Неверный логин или пароль." : info.message);
+      setError(
+        info.status === 401 ? "Неверный логин или пароль." : info.message,
+      );
     } finally {
       setIsLoading(false);
     }
@@ -56,12 +67,14 @@ export const Login = () => {
           <h2>Войдите в свой аккаунт</h2>
 
           <p className={styles.primaryText}>
-            Получите данные у отдела информационно-аналитического обеспечения или введите их ниже
+            Используйте учётные данные, предоставленные администратором платформы.
           </p>
         </header>
 
         <section className={styles.inputs}>
-          {typeof notice === "string" && <Alert severity="info">{notice}</Alert>}
+          {typeof notice === "string" && (
+            <Alert severity="info">{notice}</Alert>
+          )}
           {error && <Alert severity="error">{error}</Alert>}
           <TextField
             label="Логин"
@@ -70,7 +83,7 @@ export const Login = () => {
             autoComplete="username"
             required
             disabled={isLoading}
-            sx={medToolsInputSx}
+            className={styles.input}
             fullWidth
             size="small"
           />
@@ -82,14 +95,12 @@ export const Login = () => {
             autoComplete="current-password"
             required
             disabled={isLoading}
-            sx={medToolsInputSx}
+            className={styles.input}
             fullWidth
             size="small"
             type="password"
           />
         </section>
-
-        <Divider />
 
         <section className={styles.actions}>
           <MedToolsButton

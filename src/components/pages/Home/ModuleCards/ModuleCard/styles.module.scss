@@ -1,52 +1,104 @@
 .moduleCard {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  gap: var(--mt-space-4);
 
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-xxl);
-  background: var(--card-background);
+  padding: var(--mt-space-4);
 
-  .moduleCardHeader {
-    display: flex;
-    flex-direction: column;
+  background: var(--mt-surface);
+  border-radius: var(--mt-radius-card);
 
-    padding: var(--space-10);
-    padding-bottom: 0;
-    gap: var(--space-8);
+  color: var(--mt-text-primary);
+  text-decoration: none;
 
-    .logo {
-      display: flex;
-      justify-content: center;
-      align-items: center;
+  transition:
+    transform var(--mt-duration-normal) ease,
+    box-shadow var(--mt-duration-normal) ease;
 
-      height: 5rem;
-      width: 5rem;
-
-      font-size: var(--fs-h2);
-
-      border-radius: var(--radius-l);
-      background-color: var(--gray-200);
-    }
-
-    .description {
-      display: flex;
-      flex-direction: column;
-
-      gap: var(--space-3);
-
-      .appCardDescriptionHeader {
-        display: flex;
-        align-items: center;
-
-        gap: var(--space-5);
-      }
-    }
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 32px rgb(0 0 0 / 5%);
   }
 
-  .appCardActions {
-    display: flex;
-    flex-direction: column;
-    padding: var(--space-10);
+  &:focus-visible {
+    outline: 3px solid var(--module-accent);
+    outline-offset: 3px;
+  }
+}
+
+.cover {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  aspect-ratio: 16 / 7;
+
+  background: var(--module-cover);
+  border-radius: var(--mt-radius-inner);
+
+  overflow: hidden;
+}
+
+.content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--mt-space-6);
+
+  padding: 0 var(--mt-space-2) var(--mt-space-2);
+}
+
+.description {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mt-space-2);
+
+  h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+  }
+
+  p {
+    margin: 0;
+    color: var(--mt-text-secondary);
+    font-size: 14px;
+    line-height: 1.5;
+  }
+}
+
+.action {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-top: auto;
+
+  color: var(--module-accent);
+  font-weight: 600;
+}
+
+.actionIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 40px;
+  height: 40px;
+
+  background: var(--module-cover);
+  border-radius: var(--mt-radius-control);
+
+  font-size: 20px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .moduleCard {
+    transition: none;
+
+    &:hover {
+      transform: none;
+    }
   }
 }

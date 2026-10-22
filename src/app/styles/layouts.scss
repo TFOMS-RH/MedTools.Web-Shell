@@ -1,0 +1,18 @@
+.mt-container {
+  width: min(
+    calc(100% - 2 * var(--mt-layout-gutter)),
+    var(--mt-layout-home-max)
+  );
+
+  margin-inline: auto;
+}
+
+.mt-container--workspace {
+  max-width: var(--mt-layout-workspace-max);
+}
+
+@media (max-width: 40rem) {
+  .mt-container {
+    width: calc(100% - 2 * var(--mt-layout-gutter-mobile));
+  }
+}
