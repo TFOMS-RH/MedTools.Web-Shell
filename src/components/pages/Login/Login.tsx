@@ -1,44 +1,46 @@
 import { MedToolsButton } from "../../../shared/ui/medTools/buttons/MedToolsButton";
-import { MedToolsInput } from "../../../shared/ui/medTools/inputs/MedToolsInput";
 import { useAuthStore } from "../../../modules/auth/stores/authStore";
 import { authService } from "../../../modules/auth/api/authService";
 import { Divider } from "../../ui/Divider/Divider";
-import { useNavigate } from "react-router";
+import { Navigate, useLocation, useNavigate, useSearchParams } from "react-router";
 import React, { useState } from "react";
+import { Alert, TextField } from "@mui/material";
+import { medToolsInputSx } from "../../../shared/sxConfigs/medToolsInputSx";
+import { getApiError } from "../../../shared/helpers/getApiError";
 import styles from "./styles.module.scss";
 
 export const Login = () => {
-  const [email, setEmail] = useState("");
+  const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const { setSession } = useAuthStore();
+  const [error, setError] = useState<string | null>(null);
+  const user = useAuthStore((state) => state.user);
   const navigator = useNavigate();
+  const [searchParams] = useSearchParams();
+  const location = useLocation();
+  const requestedPath = searchParams.get("returnTo");
+  const returnTo = requestedPath?.startsWith("/") && !requestedPath.startsWith("//") && !requestedPath.startsWith("/login") && !requestedPath.includes("\\") ? requestedPath : "/";
+  const notice: unknown = location.state?.notice;
+
+  if (user) return <Navigate to={returnTo} replace />;
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (isLoading) return;
     try {
-      e.preventDefault();
       setIsLoading(true);
-
-      const response = await authService.login(email, password);
-      const result = response.data;
-
-      if (!result.isSuccess) {
-        return;
+      setError(null);
+      const result = await authService.login(userName.trim(), password);
+      if (!result.accessToken || result.tokenType !== "Bearer") {
+        throw new Error("Некорректный ответ сервера аутентификации");
       }
-
-      setSession(result.value.accessToken, {
-        email: result.value.email,
-        uid: result.value.uid,
-        role: result.value.role,
-        username: result.value.username,
-      });
-
-      sessionStorage.setItem("accessToken", result.value.accessToken);
-
-      setIsLoading(false);
-      navigator("/");
-    } catch {
+      useAuthStore.getState().setSession(result.accessToken);
+      navigator(returnTo, { replace: true });
+    } catch (reason) {
+      const info = getApiError(reason, "Не удалось войти. Повторите попытку.");
+      setError(info.status === 401 ? "Неверный логин или пароль." : info.message);
+    } finally {
       setIsLoading(false);
     }
   };
@@ -59,23 +61,31 @@ export const Login = () => {
         </header>
 
         <section className={styles.inputs}>
-          <MedToolsInput
-            label="Почта"
-            placeholder="nikitkadev@gmail.com"
-            value={email}
-            handleInputChange={setEmail}
+          {typeof notice === "string" && <Alert severity="info">{notice}</Alert>}
+          {error && <Alert severity="error">{error}</Alert>}
+          <TextField
+            label="Логин"
+            value={userName}
+            onChange={(event) => setUserName(event.target.value)}
+            autoComplete="username"
+            required
+            disabled={isLoading}
+            sx={medToolsInputSx}
             fullWidth
             size="small"
           />
 
-          <MedToolsInput
+          <TextField
             label="Пароль"
-            placeholder=""
             value={password}
-            handleInputChange={setPassword}
+            onChange={(event) => setPassword(event.target.value)}
+            autoComplete="current-password"
+            required
+            disabled={isLoading}
+            sx={medToolsInputSx}
             fullWidth
             size="small"
-            isPassword
+            type="password"
           />
         </section>
 

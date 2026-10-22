@@ -6,6 +6,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-5);
 
   padding: var(--space-7);
 
@@ -24,5 +26,18 @@
     h1 {
       font-size: var(--fs-h3);
     }
+  }
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-5);
+  font-size: var(--fs-body2);
+
+  a {
+    color: var(--text-default);
+    text-underline-offset: var(--space-2);
   }
 }

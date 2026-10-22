@@ -3,6 +3,7 @@ export const resolveCurrentModule = (pathname: string): string => {
     "/med-view": "MedView",
     "/rcontrol": "RControl",
     "/health-track": "HealthTrack",
+    "/admin/users": "Администрирование",
   };
 
   return moduleMap[pathname] ?? "";

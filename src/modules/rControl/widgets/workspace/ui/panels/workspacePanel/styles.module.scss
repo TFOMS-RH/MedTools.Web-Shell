@@ -9,6 +9,8 @@
   border-radius: var(--radius-xxl);
   background: var(--card-background);
 
+  box-shadow: var(--app-element-shadow);
+
   .sourceGroup {
     display: flex;
     gap: var(--space-5);
