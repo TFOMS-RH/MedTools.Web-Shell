@@ -1,3 +1,11 @@
+// ==========================================
+// modules/healthTrack/utils/downloadBlob.ts
+// ==========================================
+import apiClient from "../../../shared/api/client/apiClient";
+
+// ==========================================
+// Результат скачивания.
+// ==========================================
 export interface DownloadBlobResult {
   /** Успешно ли скачали файл. */
   success: boolean;
@@ -18,48 +26,34 @@ interface DownloadBlobOptions {
 
   /** Имя файла по умолчанию, если в заголовке его нет. */
   fallbackFileName: string;
-
-  /**
-   * Парсер тела ошибки.
-   * По умолчанию пытается распарсить ProblemDetails (JSON с errors/title).
-   */
-  errorParser?: (rawText: string) => string | undefined;
 }
 
 // ==========================================
-// Базовый URL API.
-// ==========================================
-const getBaseUrl = (): string => {
-  return import.meta.env.DEV ? "http://localhost:5000/api" : "/api";
-};
-
-// ==========================================
-// Парсер ошибок по умолчанию.
+// Парсер ошибок.
 // Пытается извлечь текст из ProblemDetails.
 // ==========================================
-const defaultErrorParser = (rawText: string): string | undefined => {
-  if (!rawText) return undefined;
+const parseErrorResponse = (data: unknown): string | undefined => {
+  if (!data) return undefined;
 
-  try {
-    const parsed = JSON.parse(rawText);
+  if (typeof data === "string") return data;
+
+  if (typeof data === "object" && data !== null) {
+    const obj = data as Record<string, unknown>;
 
     // ProblemDetails: { errors: [...] }
-    if (Array.isArray(parsed?.errors) && parsed.errors.length > 0) {
-      return parsed.errors.join("; ");
+    if (Array.isArray(obj.errors) && obj.errors.length > 0) {
+      return obj.errors.join("; ");
     }
 
     // ProblemDetails: { title: "..." }
-    if (typeof parsed?.title === "string") {
-      return parsed.title;
+    if (typeof obj.title === "string") {
+      return obj.title;
     }
 
-    // Просто строка
-    if (typeof parsed === "string") {
-      return parsed;
+    // { message: "..." }
+    if (typeof obj.message === "string") {
+      return obj.message;
     }
-  } catch {
-    // Не JSON — возвращаем как есть
-    return rawText;
   }
 
   return undefined;
@@ -70,6 +64,8 @@ const defaultErrorParser = (rawText: string): string | undefined => {
 // ==========================================
 /**
  * Скачать файл по URL и сохранить его в браузере.
+ *
+ * Использует apiClient (Bearer, baseURL, 401-обработка).
  *
  * Использование:
  *   const result = await downloadBlob({
@@ -82,58 +78,32 @@ const defaultErrorParser = (rawText: string): string | undefined => {
  *   } else {
  *     notify.error(result.errorMessage);
  *   }
- *
- * @returns Результат операции. Исключения не бросаются — вся обработка внутри.
  */
 export const downloadBlob = async (
   options: DownloadBlobOptions,
 ): Promise<DownloadBlobResult> => {
-  const { url, fallbackFileName, errorParser = defaultErrorParser } = options;
+  const { url, fallbackFileName } = options;
 
   try {
-    const baseUrl = getBaseUrl();
-    const token = sessionStorage.getItem("accessToken");
-
     // ==========================================
-    // 1. Запрос.
+    // 1. Запрос через apiClient (Bearer + baseURL).
     // ==========================================
-    const response = await fetch(`${baseUrl}${url}`, {
-      method: "GET",
-      credentials: "include",
-      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    const response = await apiClient.get(url, {
+      responseType: "blob",
     });
 
     // ==========================================
-    // 2. Обработка ошибок HTTP.
+    // 2. Получаем blob.
     // ==========================================
-    if (!response.ok) {
-      let errorMessage = `Ошибка ${response.status}`;
-      try {
-        const rawText = await response.text();
-        const parsed = errorParser(rawText);
-        if (parsed) errorMessage = parsed;
-      } catch {
-        // Не удалось прочитать тело — оставляем "Ошибка N".
-      }
-
-      return {
-        success: false,
-        errorMessage,
-      };
-    }
+    const blob = response.data as Blob;
 
     // ==========================================
-    // 3. Получаем blob.
-    // ==========================================
-    const blob = await response.blob();
-
-    // ==========================================
-    // 4. Определяем имя файла.
+    // 3. Определяем имя файла.
     // ==========================================
     let fileName = fallbackFileName;
 
-    const disposition = response.headers.get("Content-Disposition");
-    if (disposition) {
+    const disposition = response.headers["content-disposition"];
+    if (typeof disposition === "string") {
       const match = /filename\*?=(?:UTF-8'')?["']?([^"';]+)/i.exec(disposition);
       if (match && match[1]) {
         try {
@@ -145,7 +115,7 @@ export const downloadBlob = async (
     }
 
     // ==========================================
-    // 5. Сохраняем blob как файл.
+    // 4. Сохраняем blob как файл.
     // ==========================================
     const blobUrl = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -161,12 +131,46 @@ export const downloadBlob = async (
       fileName,
     };
   } catch (err) {
-    // Сетевые ошибки и другие неожиданные.
-    const message =
-      err instanceof Error ? err.message : "Ошибка скачивания файла";
+    // ==========================================
+    // 5. Обработка ошибок.
+    //    axios: err.response.data — может быть Blob (не JSON).
+    //    Надо прочитать Blob как текст, потом распарсить.
+    // ==========================================
+    let errorMessage = "Ошибка скачивания файла";
+
+    if (typeof err === "object" && err !== null && "response" in err) {
+      const response = (
+        err as {
+          response?: { data?: unknown; status?: number };
+        }
+      ).response;
+
+      const status = response?.status;
+      const data = response?.data;
+
+      // Blob (при responseType: 'blob' ошибка тоже может прийти Blob'ом).
+      if (data instanceof Blob) {
+        try {
+          const text = await data.text();
+          const parsed = JSON.parse(text);
+          const parsedMessage = parseErrorResponse(parsed);
+          if (parsedMessage) errorMessage = parsedMessage;
+          else errorMessage = `Ошибка ${status ?? ""}`.trim();
+        } catch {
+          errorMessage = `Ошибка ${status ?? ""}`.trim();
+        }
+      } else if (data) {
+        const parsedMessage = parseErrorResponse(data);
+        if (parsedMessage) errorMessage = parsedMessage;
+        else errorMessage = `Ошибка ${status ?? ""}`.trim();
+      }
+    } else if (err instanceof Error) {
+      errorMessage = err.message;
+    }
+
     return {
       success: false,
-      errorMessage: message,
+      errorMessage,
     };
   }
 };

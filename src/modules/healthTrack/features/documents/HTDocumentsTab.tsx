@@ -1,6 +1,3 @@
-// ==========================================
-// modules/healthTrack/features/documents/HTDocumentsTab.tsx
-// ==========================================
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import {
@@ -9,7 +6,7 @@ import {
   useDeleteDocumentMutation,
   useDocumentsQuery,
 } from "../../hooks/useDocumentsQueries";
-import { useHealthTrackAuthStore } from "../../stores/healthTrackAuthStore";
+import { useAuthStore } from "../../../auth/stores/authStore";
 import { useHTNotify } from "../../hooks/useHTNotify";
 
 import { HTDocumentsHeader } from "./HTDocumentsHeader/HTDocumentsHeader";
@@ -31,9 +28,6 @@ import type {
 
 import styles from "./styles.module.scss";
 
-// ==========================================
-// Дефолтное состояние фильтров.
-// ==========================================
 const DEFAULT_FILTERS: HTDocumentsFiltersValue = {
   searchQuery: "",
   fileType: "",
@@ -42,28 +36,36 @@ const DEFAULT_FILTERS: HTDocumentsFiltersValue = {
   status: "",
 };
 
-// ==========================================
-// Пропсы.
-// ==========================================
-interface HTDocumentsTabProps {
-  /** ID документа для автооткрытия в drawer. */
-  initialDocumentId?: number | null;
+const PERMISSIONS = {
+  documentsRead: "healthtrack.documents.read",
+  documentsReadDetails: "healthtrack.documents.read_details",
+  documentsCheck: "healthtrack.documents.check",
+  documentsDelete: "healthtrack.documents.delete",
+  exportAggregated: "healthtrack.export.aggregated",
+  exportResponses: "healthtrack.export.responses",
+  importExecute: "healthtrack.import.execute",
+} as const;
 
-  /** Колбэк: HTDocumentsTab обработал initialDocumentId. */
+interface HTDocumentsTabProps {
+  initialDocumentId?: number | null;
   onInitialDocumentConsumed?: () => void;
 }
 
-/**
- * Раздел «Документы и экспорт».
- */
 export const HTDocumentsTab = ({
   initialDocumentId = null,
   onInitialDocumentConsumed,
 }: HTDocumentsTabProps = {}) => {
   // ==========================================
-  // Роли.
+  // Auth — Никиткин useAuthStore.
   // ==========================================
-  const user = useHealthTrackAuthStore((s) => s.user);
+  const permissions = useAuthStore((s) => s.permissions);
+
+  // Производные проверки.
+  const canRead = permissions.includes(PERMISSIONS.documentsRead);
+  const canCheck = permissions.includes(PERMISSIONS.documentsCheck);
+  const canDelete = permissions.includes(PERMISSIONS.documentsDelete);
+  const canExportAggregated = permissions.includes(PERMISSIONS.exportAggregated);
+
   const notify = useHTNotify();
 
   const [filters, setFilters] =
@@ -83,9 +85,6 @@ export const HTDocumentsTab = ({
     null,
   );
 
-  // ==========================================
-  // Автооткрытие drawer по initialDocumentId.
-  // ==========================================
   useEffect(() => {
     if (initialDocumentId !== null) {
       setOpenDocumentId(initialDocumentId);
@@ -93,28 +92,20 @@ export const HTDocumentsTab = ({
     }
   }, [initialDocumentId, onInitialDocumentConsumed]);
 
-  // ==========================================
-  // Параметры запроса.
-  // ==========================================
   const queryParams: HTDocumentsQueryParams = useMemo(() => {
-    const effectiveHospitalCode = undefined;
-
     return {
       searchQuery: appliedFilters.searchQuery.trim() || undefined,
       fileType: (appliedFilters.fileType as HTDocumentFileType) || undefined,
       status: (appliedFilters.status as HTDocumentStatus) || undefined,
-      hospitalCode: effectiveHospitalCode,
+      hospitalCode: appliedFilters.hospitalCode.trim() || undefined,
       period: appliedFilters.period || undefined,
       page,
       pageSize,
       sortBy: "uploadDate",
       sortDirection: "desc",
     };
-  }, [appliedFilters, page, pageSize, user?.hospitalCode]);
+  }, [appliedFilters, page, pageSize]);
 
-  // ==========================================
-  // React Query — запросы и мутации.
-  // ==========================================
   const {
     data: pagedResult,
     isLoading,
@@ -125,9 +116,7 @@ export const HTDocumentsTab = ({
   const checkBatchMutation = useCheckDocumentsBatchMutation();
   const deleteMutation = useDeleteDocumentMutation();
 
-  // ==========================================
-  // Хелперы.
-  // ==========================================
+
   const items = pagedResult?.items ?? [];
   const totalCount = pagedResult?.totalCount ?? 0;
   const totalPages = pagedResult?.totalPages ?? 1;
@@ -138,9 +127,6 @@ export const HTDocumentsTab = ({
     return Array.from(set).sort().reverse();
   }, [items]);
 
-  // ==========================================
-  // Обработчики.
-  // ==========================================
 
   const handleRefresh = useCallback(() => {
     refetchList();
@@ -172,10 +158,10 @@ export const HTDocumentsTab = ({
       setSelectedIds((prev) => {
         const next = new Set(prev);
         items.forEach((item) => {
-          const canCheck =
+          const isCheckable =
             item.status === "Uploaded" &&
             (item.fileType === "DSPN" || item.fileType === "PROF");
-          if (!canCheck) return;
+          if (!isCheckable) return;
 
           if (checked) next.add(item.id);
           else next.delete(item.id);
@@ -188,6 +174,11 @@ export const HTDocumentsTab = ({
 
   const handleCheckOne = useCallback(
     (id: number) => {
+      if (!canCheck) {
+        notify.warning("У вас нет прав на проверку документов");
+        return;
+      }
+
       checkOneMutation.mutate(id, {
         onSuccess: (result) => {
           if (result.isSuccess) {
@@ -217,10 +208,15 @@ export const HTDocumentsTab = ({
         },
       });
     },
-    [checkOneMutation, notify],
+    [canCheck, checkOneMutation, notify],
   );
 
   const handleCheckSelected = useCallback(() => {
+    if (!canCheck) {
+      notify.warning("У вас нет прав на проверку документов");
+      return;
+    }
+
     if (selectedIds.size === 0) return;
     const ids = Array.from(selectedIds);
 
@@ -245,7 +241,7 @@ export const HTDocumentsTab = ({
         notify.errorFrom(err, "Ошибка массовой проверки");
       },
     });
-  }, [selectedIds, checkBatchMutation, notify]);
+  }, [canCheck, selectedIds, checkBatchMutation, notify]);
 
   const handleDownloadResponse = useCallback(
     async (doc: HTDocumentListItem) => {
@@ -255,23 +251,15 @@ export const HTDocumentsTab = ({
             ? `/export/dspn/${doc.id}/response`
             : `/export/prof/${doc.id}/response`;
 
-        const baseUrl = import.meta.env.DEV
-          ? "http://localhost:5000/api"
-          : "/api";
-        const token = sessionStorage.getItem("accessToken");
+        // Используем apiClient для унификации (он подставит baseURL и Bearer).
+        // Но для blob — нужен responseType: "blob".
+        const apiClient = (await import("../../../../shared/api/client/apiClient")).default;
 
-        const response = await fetch(`${baseUrl}${endpoint}`, {
-          method: "GET",
-          credentials: "include",
-          headers: token ? { Authorization: `Bearer ${token}` } : {},
+        const response = await apiClient.get(endpoint, {
+          responseType: "blob",
         });
 
-        if (!response.ok) {
-          notify.error(`Не удалось скачать файл (HTTP ${response.status})`);
-          return;
-        }
-
-        const blob = await response.blob();
+        const blob = response.data as Blob;
         const blobUrl = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = blobUrl;
@@ -289,9 +277,7 @@ export const HTDocumentsTab = ({
     [notify],
   );
 
-  // ==========================================
-  // Drawer.
-  // ==========================================
+
   const handleOpenDetails = useCallback((doc: HTDocumentListItem) => {
     setOpenDocumentId(doc.id);
   }, []);
@@ -300,12 +286,17 @@ export const HTDocumentsTab = ({
     setOpenDocumentId(null);
   }, []);
 
-  // ==========================================
-  // Удаление.
-  // ==========================================
-  const handleDeleteClick = useCallback((doc: HTDocumentListItem) => {
-    setDeleteTarget(doc);
-  }, []);
+
+  const handleDeleteClick = useCallback(
+    (doc: HTDocumentListItem) => {
+      if (!canDelete) {
+        notify.warning("У вас нет прав на удаление документов");
+        return;
+      }
+      setDeleteTarget(doc);
+    },
+    [canDelete, notify],
+  );
 
   const handleCancelDelete = useCallback(() => {
     if (deleteMutation.isPending) return;
@@ -333,9 +324,7 @@ export const HTDocumentsTab = ({
     });
   }, [deleteTarget, deleteMutation, notify, openDocumentId]);
 
-  // ==========================================
-  // Пагинация.
-  // ==========================================
+
   const handlePageChange = useCallback(
     (nextPage: number) => {
       if (nextPage < 1 || nextPage > totalPages) return;
@@ -349,14 +338,29 @@ export const HTDocumentsTab = ({
     setPage(1);
   }, []);
 
-  // ==========================================
-  // Рендер.
-  // ==========================================
+
   const isLoadingAny =
     isLoading ||
     checkOneMutation.isPending ||
     checkBatchMutation.isPending ||
     deleteMutation.isPending;
+
+  // Если нет даже права на чтение — показываем заглушку.
+  if (!canRead) {
+    return (
+      <section className={styles.tabRoot}>
+        <div
+          style={{
+            padding: "var(--space-10)",
+            textAlign: "center",
+            color: "var(--text-secondary)",
+          }}
+        >
+          У вас нет доступа к разделу «Документы».
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className={styles.tabRoot}>
@@ -365,9 +369,11 @@ export const HTDocumentsTab = ({
         onRefresh={handleRefresh}
         onCheckSelected={handleCheckSelected}
         isLoading={isLoadingAny}
+        canCheck={canCheck}
       />
 
-      <HTDocumentsAggregation />
+      {/* Агрегация — только если есть permission */}
+      {canExportAggregated && <HTDocumentsAggregation />}
 
       <HTDocumentsFilters
         value={filters}
@@ -393,7 +399,7 @@ export const HTDocumentsTab = ({
         onDownloadResponse={handleDownloadResponse}
         onOpenDetails={handleOpenDetails}
         onDelete={handleDeleteClick}
-        canDelete
+        canDelete={canDelete}
         onResetFilters={handleResetFilters}
         isLoading={isLoadingAny}
       />
