@@ -5,8 +5,9 @@ import { useState } from "react";
 import { MedViewAutocompleteInput } from "../../../../../../../shared/ui/medView/inputs/MedViewAutocompleteInput/MedViewAutocompleteInput";
 import { MedViewDateInput } from "../../../../../../../shared/ui/medView/inputs/MedViewDateInput/MedViewDateInput";
 import { MedViewDefaultInput } from "../../../../../../../shared/ui/medView/inputs/MedViewDefaultInput/MedViewDefaultInput";
+import { useFilterOptionsQuery } from "../../../../../../../shared/model/references/queries/useFilterOptionsQuery";
+import { MedicalReferenceType } from "../../../../../../../shared/model/references/types/MedicalReferenceType";
 import styles from "./styles.module.scss";
-import { useFilterOptionsByCodeQuery } from "../../../model/queries/useFilterOptionsQuery";
 
 interface HighTechMedicalCareFiltersSubgroupProps {
   highTechMedicalCareFiltersSubgroupDraft: HighTechMedicalCareSubgroupDraft;
@@ -25,18 +26,16 @@ export const HighTechMedicalCareFiltersSubgroup = ({
     useState("");
 
   const { data: highTechCareTypes, isPending: highTechCareTypePending } =
-    useFilterOptionsByCodeQuery(
-      "V018",
-      "high-tech-care-type",
+    useFilterOptionsQuery(
+      MedicalReferenceType.HighTechCareTypes,
       inputHighTechCareTypeValue,
     );
 
   const {
     data: highTechCareMethodFilterOptions,
     isPending: highTechCareMethodPending,
-  } = useFilterOptionsByCodeQuery(
-    "V019",
-    "high-tech-care-medthod",
+  } = useFilterOptionsQuery(
+    MedicalReferenceType.HighTechCareMethods,
     inputHighTechCareMethodValue,
   );
 

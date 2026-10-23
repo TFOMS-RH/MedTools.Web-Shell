@@ -1,9 +1,10 @@
 import type { BaseDiseaseFiltersGroupDraft } from "../../../../workspace/model/types/FiltersDraft";
 import type { FilterOption } from "../../../../workspace/model/types/FilterOptions";
-import { useFilterOptionsByCodeQuery } from "../../../model/queries/useFilterOptionsQuery";
 import { MedViewAutocompleteInput } from "../../../../../../../shared/ui/medView/inputs/MedViewAutocompleteInput/MedViewAutocompleteInput";
 import { MedViewMultipleSelectInput } from "../../../../../../../shared/ui/medView/inputs/MedViewMultipleSelectInput/MedViewMultipleSelectInput";
 import { useState } from "react";
+import { useFilterOptionsQuery } from "../../../../../../../shared/model/references/queries/useFilterOptionsQuery";
+import { MedicalReferenceType } from "../../../../../../../shared/model/references/types/MedicalReferenceType";
 import styles from "./styles.module.scss";
 
 interface BaseDiseaseFiltersSubgroupProps {
@@ -20,19 +21,16 @@ export const BaseDiseaseFiltersSubgroup = ({
   const [primaryDiagnosisInputValue, setPrimaryDiagnosisInputValue] =
     useState("");
 
-  const { data: icdClasses } = useFilterOptionsByCodeQuery(
-    "ICD_CLASSES",
-    "icd-class",
+  const { data: icdClasses } = useFilterOptionsQuery(
+    MedicalReferenceType.DiseaseClasses,
   );
 
-  const { data: icdSubClasses } = useFilterOptionsByCodeQuery(
-    "ICD_SUBCLASSES",
-    "icd-sub-class",
+  const { data: icdSubClasses } = useFilterOptionsQuery(
+    MedicalReferenceType.DiseaseSubClasses,
   );
 
-  const { data: primaryDiagnosis } = useFilterOptionsByCodeQuery(
-    "ICD",
-    "disease",
+  const { data: primaryDiagnosis } = useFilterOptionsQuery(
+    MedicalReferenceType.Diseases,
     primaryDiagnosisInputValue,
   );
 

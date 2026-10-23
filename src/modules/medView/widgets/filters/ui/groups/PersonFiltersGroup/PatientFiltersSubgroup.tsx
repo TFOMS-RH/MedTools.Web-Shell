@@ -1,10 +1,10 @@
+import type { PatientFiltersSubgroupDraft } from "../../../../workspace/model/types/FiltersDraft";
+import type { Sex } from "../../../../workspace/model/types/Sex";
 import type { Dayjs } from "dayjs";
-import type { PatientFiltersSubgroupDraft } from "../../../../../workspace/model/types/FiltersDraft";
-import type { Sex } from "../../../../../workspace/model/types/Sex";
-import { MedViewDateInput } from "../../../../../../../../shared/ui/medView/inputs/MedViewDateInput/MedViewDateInput";
-import { MedViewDefaultInput } from "../../../../../../../../shared/ui/medView/inputs/MedViewDefaultInput/MedViewDefaultInput";
-import { MedViewSelectInput } from "../../../../../../../../shared/ui/medView/inputs/MedViewSelectInput/MedViewSelectInput";
-import styles from "../styles.module.scss";
+import { MedViewDefaultInput } from "../../../../../../../shared/ui/medView/inputs/MedViewDefaultInput/MedViewDefaultInput";
+import { MedViewSelectInput } from "../../../../../../../shared/ui/medView/inputs/MedViewSelectInput/MedViewSelectInput";
+import { MedViewDateInput } from "../../../../../../../shared/ui/medView/inputs/MedViewDateInput/MedViewDateInput";
+import styles from "./styles.module.scss";
 
 interface PatientFiltersSubgroupProps {
   patientFiltersSubgroupDraft: PatientFiltersSubgroupDraft;

@@ -2,7 +2,8 @@ import type { ProvidedServicesFiltersGroupDraft } from "../../../../workspace/mo
 import type { FilterOption } from "../../../../workspace/model/types/FilterOptions";
 import { useState } from "react";
 import { MedViewAutocompleteInput } from "../../../../../../../shared/ui/medView/inputs/MedViewAutocompleteInput/MedViewAutocompleteInput";
-import { useFilterOptionsByCodeQuery } from "../../../model/queries/useFilterOptionsQuery";
+import { useFilterOptionsQuery } from "../../../../../../../shared/model/references/queries/useFilterOptionsQuery";
+import { MedicalReferenceType } from "../../../../../../../shared/model/references/types/MedicalReferenceType";
 import styles from "./styles.module.scss";
 
 interface ProvidedServiceFiltersGroupProps {
@@ -19,9 +20,8 @@ const ProvidedServiceFiltersGroup = ({
   const [inputProvidedServiceValue, setInputProvidedServiceValue] =
     useState("");
 
-  const { data: providedServices, isPending } = useFilterOptionsByCodeQuery(
-    "Т003",
-    "provided-service",
+  const { data: providedServices, isPending } = useFilterOptionsQuery(
+    MedicalReferenceType.ProvidedServices,
     inputProvidedServiceValue,
   );
 

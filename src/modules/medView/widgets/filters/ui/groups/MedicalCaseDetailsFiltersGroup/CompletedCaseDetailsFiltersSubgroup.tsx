@@ -1,8 +1,9 @@
-import type { CompletedCaseDetailsFiltersSubgroupDraft } from "../../../../workspace/model/types/FiltersDraft";
 import type { Dayjs } from "dayjs";
-import { MedViewDateInput } from "../../../../../../../shared/ui/medView/inputs/MedViewDateInput/MedViewDateInput";
+import type { CompletedCaseDetailsFiltersSubgroupDraft } from "../../../../workspace/model/types/FiltersDraft";
 import { MedViewMultipleSelectInput } from "../../../../../../../shared/ui/medView/inputs/MedViewMultipleSelectInput/MedViewMultipleSelectInput";
-import { useFilterOptionsByCodeQuery } from "../../../model/queries/useFilterOptionsQuery";
+import { useFilterOptionsQuery } from "../../../../../../../shared/model/references/queries/useFilterOptionsQuery";
+import { MedicalReferenceType } from "../../../../../../../shared/model/references/types/MedicalReferenceType";
+import { MedViewDateInput } from "../../../../../../../shared/ui/medView/inputs/MedViewDateInput/MedViewDateInput";
 import styles from "./styles.module.scss";
 
 interface CompletedCaseDetailsFiltersSubgroupProps {
@@ -16,37 +17,32 @@ export const CompletedCaseDetailsFiltersSubgroup = ({
   completedCaseDetailsFiltersSubgroupDraft,
   setCompletedCaseDetailsFiltersSubgroupDraft,
 }: CompletedCaseDetailsFiltersSubgroupProps) => {
-  const { data: careConditionFilterOptions } = useFilterOptionsByCodeQuery(
-    "V006",
-    "care-condition",
+  const { data: careConditionFilterOptions } = useFilterOptionsQuery(
+    MedicalReferenceType.MedicalCareConditions,
   );
 
-  const { data: medicalCareTypeFilterOptions } = useFilterOptionsByCodeQuery(
-    "V008",
-    "medical-care-type",
+  const { data: medicalCareTypeFilterOptions } = useFilterOptionsQuery(
+    MedicalReferenceType.MedicalCareTypes,
   );
 
-  const { data: medicalCareFormFilterOptions } = useFilterOptionsByCodeQuery(
-    "V014",
-    "medical-care-form",
+  const { data: medicalCareFormFilterOptions } = useFilterOptionsQuery(
+    MedicalReferenceType.MedicalCareForms,
   );
 
-  const { data: diseaseOutcomeFilterOptions } = useFilterOptionsByCodeQuery(
-    "V012",
-    "disease-outcome",
+  const { data: diseaseOutcomeFilterOptions } = useFilterOptionsQuery(
+    MedicalReferenceType.DiseaseOutcomes,
   );
 
-  const { data: screeningResultFilterOptions } = useFilterOptionsByCodeQuery(
-    "V017",
-    "screening-result",
+  const { data: screeningResultFilterOptions } = useFilterOptionsQuery(
+    MedicalReferenceType.ScreeningResults,
   );
 
-  const { data: hospitalizationOutcomeFilterOptions } =
-    useFilterOptionsByCodeQuery("V009", "hospitalization-outcome");
+  const { data: hospitalizationOutcomeFilterOptions } = useFilterOptionsQuery(
+    MedicalReferenceType.HospitalizationOutcomes,
+  );
 
-  const { data: paymentMethodFilterOptions } = useFilterOptionsByCodeQuery(
-    "V010",
-    "payment-method",
+  const { data: paymentMethodFilterOptions } = useFilterOptionsQuery(
+    MedicalReferenceType.PaymentMethods,
   );
 
   return (

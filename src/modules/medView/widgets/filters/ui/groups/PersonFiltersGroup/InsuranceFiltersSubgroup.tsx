@@ -1,24 +1,25 @@
-import { MedViewDefaultInput } from "../../../../../../../../shared/ui/medView/inputs/MedViewDefaultInput/MedViewDefaultInput";
-import { MedViewMultipleSelectInput } from "../../../../../../../../shared/ui/medView/inputs/MedViewMultipleSelectInput/MedViewMultipleSelectInput";
-import type { FilterOption } from "../../../../../workspace/model/types/FilterOptions";
-import type { InsuranceFiltersSubgroupDraft } from "../../../../../workspace/model/types/FiltersDraft";
-import styles from "../styles.module.scss";
+import type { InsuranceFiltersSubgroupDraft } from "../../../../workspace/model/types/FiltersDraft";
+import { MedViewDefaultInput } from "../../../../../../../shared/ui/medView/inputs/MedViewDefaultInput/MedViewDefaultInput";
+import { MedViewMultipleSelectInput } from "../../../../../../../shared/ui/medView/inputs/MedViewMultipleSelectInput/MedViewMultipleSelectInput";
+import { MedicalReferenceType } from "../../../../../../../shared/model/references/types/MedicalReferenceType";
+import { useFilterOptionsQuery } from "../../../../../../../shared/model/references/queries/useFilterOptionsQuery";
+import styles from "./styles.module.scss";
 
 interface InsuranceFiltersSubgroupProps {
   insuranceFiltersSubgroupDraft: InsuranceFiltersSubgroupDraft;
   setInsuranceFiltersSubgroupDraft: (
     insuranceFilters: InsuranceFiltersSubgroupDraft,
   ) => void;
-  insuranceFilterOptions: FilterOption[];
-  insurancePolicyTypeFilterOptions: FilterOption[];
 }
 
 export const InsuranceFiltersSubgroup = ({
   insuranceFiltersSubgroupDraft,
   setInsuranceFiltersSubgroupDraft,
-  insuranceFilterOptions,
-  insurancePolicyTypeFilterOptions,
 }: InsuranceFiltersSubgroupProps) => {
+  const { data: policyTypes } = useFilterOptionsQuery(
+    MedicalReferenceType.PolicyTypes,
+  );
+
   return (
     <div className={styles.insuranceSubgroup}>
       <header className={styles.subgroupHeader}>
@@ -35,10 +36,7 @@ export const InsuranceFiltersSubgroup = ({
                 insurances: newValue,
               })
             }
-            options={insuranceFilterOptions.map((option) => ({
-              label: option.label,
-              value: option.value,
-            }))}
+            options={[]}
           />
         </div>
       </div>
@@ -53,10 +51,7 @@ export const InsuranceFiltersSubgroup = ({
                 insurancePolicyTypes: newValue,
               })
             }
-            options={insurancePolicyTypeFilterOptions.map((option) => ({
-              label: option.label,
-              value: option.value,
-            }))}
+            options={policyTypes ?? []}
           />
         </div>
       </div>

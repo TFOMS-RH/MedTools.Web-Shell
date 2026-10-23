@@ -1,6 +1,7 @@
 import type { OncologyServiceFiltersSubgroupDraft } from "../../../../workspace/model/types/FiltersDraft";
 import { MedViewMultipleSelectInput } from "../../../../../../../shared/ui/medView/inputs/MedViewMultipleSelectInput/MedViewMultipleSelectInput";
-import { useFilterOptionsByCodeQuery } from "../../../model/queries/useFilterOptionsQuery";
+import { useFilterOptionsQuery } from "../../../../../../../shared/model/references/queries/useFilterOptionsQuery";
+import { MedicalReferenceType } from "../../../../../../../shared/model/references/types/MedicalReferenceType";
 import styles from "./styles.module.scss";
 
 interface OncologyServiceFiltersSubgroupProps {
@@ -14,29 +15,24 @@ export const OncologyServiceFiltersSubgroup = ({
   oncologyServiceFiltersSubgroupDraft,
   setOncologyServiceFiltersSubgroupDraft,
 }: OncologyServiceFiltersSubgroupProps) => {
-  const { data: oncologyServiceTypes } = useFilterOptionsByCodeQuery(
-    "N013",
-    "oncology-service-type",
+  const { data: oncologyServiceTypes } = useFilterOptionsQuery(
+    MedicalReferenceType.OncologyServiceTypes,
   );
 
-  const { data: surgicalTreatmentTypes } = useFilterOptionsByCodeQuery(
-    "N014",
-    "surgical-treatment-type",
+  const { data: surgicalTreatmentTypes } = useFilterOptionsQuery(
+    MedicalReferenceType.SurgicalTreatmentTypes,
   );
 
-  const { data: radioTherapyTypes } = useFilterOptionsByCodeQuery(
-    "N017",
-    "radio-therapy-type",
+  const { data: radioTherapyTypes } = useFilterOptionsQuery(
+    MedicalReferenceType.RadioTherapyTypes,
   );
 
-  const { data: drugTherapyLines } = useFilterOptionsByCodeQuery(
-    "N015",
-    "drug-therapy-line",
+  const { data: drugTherapyLines } = useFilterOptionsQuery(
+    MedicalReferenceType.DrugTherapyLines,
   );
 
-  const { data: drugTherapyCycles } = useFilterOptionsByCodeQuery(
-    "N016",
-    "drug-therapy-cycle",
+  const { data: drugTherapyCycles } = useFilterOptionsQuery(
+    MedicalReferenceType.DrugTherapyCycles,
   );
 
   return (

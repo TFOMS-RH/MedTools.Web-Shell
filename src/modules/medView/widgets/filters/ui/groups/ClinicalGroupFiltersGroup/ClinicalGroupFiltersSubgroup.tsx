@@ -2,9 +2,10 @@ import type { FilterOption } from "../../../../workspace/model/types/FilterOptio
 import type { ClinicalGroupsFiltersSubgroupDraft } from "../../../../workspace/model/types/FiltersDraft";
 import { MedViewAutocompleteInput } from "../../../../../../../shared/ui/medView/inputs/MedViewAutocompleteInput/MedViewAutocompleteInput";
 import { MedViewMultipleSelectInput } from "../../../../../../../shared/ui/medView/inputs/MedViewMultipleSelectInput/MedViewMultipleSelectInput";
-import { useFilterOptionsByCodeQuery } from "../../../model/queries/useFilterOptionsQuery";
 import { useState } from "react";
 import styles from "./styles.module.scss";
+import { useFilterOptionsQuery } from "../../../../../../../shared/model/references/queries/useFilterOptionsQuery";
+import { MedicalReferenceType } from "../../../../../../../shared/model/references/types/MedicalReferenceType";
 
 interface ClinicalGroupFiltersSubgroupProps {
   clinicalGroupFiltersSubgroupDraft: ClinicalGroupsFiltersSubgroupDraft;
@@ -22,20 +23,17 @@ export const ClinicalGroupFiltersSubgroup = ({
     setInputCLinicalStatisticGroupValue,
   ] = useState("");
 
-  const { data: complexityCoefficientNumbers } = useFilterOptionsByCodeQuery(
-    "V041",
-    "complexity-coefficient",
+  const { data: complexityCoefficientNumbers } = useFilterOptionsQuery(
+    MedicalReferenceType.ComplexityCoefficientNumbers,
   );
 
-  const { data: interruptedCasePaymentReasons } = useFilterOptionsByCodeQuery(
-    "V042",
-    "interrupted-case-payment-reason",
+  const { data: interruptedCasePaymentReasons } = useFilterOptionsQuery(
+    MedicalReferenceType.InterruptedCasePaymentReasons,
   );
 
   const { data: clinicalStatisticGroupNumbers, isPending } =
-    useFilterOptionsByCodeQuery(
-      "V023",
-      "clinical-statistic-group-number",
+    useFilterOptionsQuery(
+      MedicalReferenceType.ClinicalGroupNumbers,
       inputCLinicalStatisticGroupValue,
     );
 
@@ -71,17 +69,12 @@ export const ClinicalGroupFiltersSubgroup = ({
             values={
               clinicalGroupFiltersSubgroupDraft.complexityCoefficientNumbers
             }
+            options={complexityCoefficientNumbers ?? []}
             onChange={(newValue: string[]) =>
               setClinicalGroupFiltersSubgroupDraft({
                 ...clinicalGroupFiltersSubgroupDraft,
                 complexityCoefficientNumbers: newValue,
               })
-            }
-            options={
-              complexityCoefficientNumbers?.map((option) => ({
-                label: option.label,
-                value: option.value,
-              })) ?? []
             }
           />
         </div>
@@ -93,17 +86,12 @@ export const ClinicalGroupFiltersSubgroup = ({
             values={
               clinicalGroupFiltersSubgroupDraft.interruptedCasePaymentReasons
             }
+            options={interruptedCasePaymentReasons ?? []}
             onChange={(newValue: string[]) =>
               setClinicalGroupFiltersSubgroupDraft({
                 ...clinicalGroupFiltersSubgroupDraft,
                 interruptedCasePaymentReasons: newValue,
               })
-            }
-            options={
-              interruptedCasePaymentReasons?.map((option) => ({
-                label: option.label,
-                value: option.value,
-              })) ?? []
             }
           />
         </div>

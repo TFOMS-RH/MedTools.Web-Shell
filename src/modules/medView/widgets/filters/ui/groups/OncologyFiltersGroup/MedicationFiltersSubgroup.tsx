@@ -1,9 +1,10 @@
 import type { MedicationFiltersSubgroupDraft } from "../../../../workspace/model/types/FiltersDraft";
 import type { FilterOption } from "../../../../workspace/model/types/FilterOptions";
 import { MedViewAutocompleteInput } from "../../../../../../../shared/ui/medView/inputs/MedViewAutocompleteInput/MedViewAutocompleteInput";
-import { useFilterOptionsByCodeQuery } from "../../../model/queries/useFilterOptionsQuery";
 import { useState } from "react";
 import styles from "./styles.module.scss";
+import { useFilterOptionsQuery } from "../../../../../../../shared/model/references/queries/useFilterOptionsQuery";
+import { MedicalReferenceType } from "../../../../../../../shared/model/references/types/MedicalReferenceType";
 
 interface MedicationFiltersSubgroupProps {
   medicationFiltersSubgroupDraft: MedicationFiltersSubgroupDraft;
@@ -19,15 +20,13 @@ export const MedicationFiltersSubgroup = ({
   const [inputIdenitifierValue, setInputIdenitifierValue] = useState("");
   const [inputRegimenValue, setInputRegimenValue] = useState("");
 
-  const { data: drugIdentifiers, isPending } = useFilterOptionsByCodeQuery(
-    "N020",
-    "drug-identifier",
+  const { data: drugIdentifiers, isPending } = useFilterOptionsQuery(
+    MedicalReferenceType.DrugIdentifiers,
     inputIdenitifierValue,
   );
 
-  const { data: therapyRegimens } = useFilterOptionsByCodeQuery(
-    "V024",
-    "therapy-identifier",
+  const { data: therapyRegimens } = useFilterOptionsQuery(
+    MedicalReferenceType.TherapyRegimens,
     inputRegimenValue,
   );
 

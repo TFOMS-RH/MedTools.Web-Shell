@@ -1,9 +1,10 @@
 import type { Dayjs } from "dayjs";
 import type { MedicalCaseDetailsFiltersSubgroupDraft } from "../../../../workspace/model/types/FiltersDraft";
-import { useFilterOptionsByCodeQuery } from "../../../model/queries/useFilterOptionsQuery";
 import { MedViewDateInput } from "../../../../../../../shared/ui/medView/inputs/MedViewDateInput/MedViewDateInput";
 import { MedViewDefaultInput } from "../../../../../../../shared/ui/medView/inputs/MedViewDefaultInput/MedViewDefaultInput";
 import { MedViewMultipleSelectInput } from "../../../../../../../shared/ui/medView/inputs/MedViewMultipleSelectInput/MedViewMultipleSelectInput";
+import { useFilterOptionsQuery } from "../../../../../../../shared/model/references/queries/useFilterOptionsQuery";
+import { MedicalReferenceType } from "../../../../../../../shared/model/references/types/MedicalReferenceType";
 import styles from "./styles.module.scss";
 
 interface MedicalCaseDetailsFiltersSubgroupProps {
@@ -17,33 +18,29 @@ export const MedicalCaseDetailsFiltersSubgroup = ({
   medicalCaseDetailsFiltersSubgroupDraft,
   setMedicalCaseDetailsFiltersSubgroupDraft,
 }: MedicalCaseDetailsFiltersSubgroupProps) => {
-  const { data: medicalCareFilterOptions } = useFilterOptionsByCodeQuery(
-    "V002",
-    "medical-care-profile",
+  const { data: medicalCareProfiles } = useFilterOptionsQuery(
+    MedicalReferenceType.MedicalCareProfiles,
   );
 
-  const { data: bedProfileFilterOptions } = useFilterOptionsByCodeQuery(
-    "V020",
-    "bed-profile",
+  const { data: bedProfiles } = useFilterOptionsQuery(
+    MedicalReferenceType.BedProfiles,
   );
 
-  const { data: visitPlaceFilterOptions } = useFilterOptionsByCodeQuery(
-    "V040",
-    "visit-place",
+  const { data: visitPlaces } = useFilterOptionsQuery(
+    MedicalReferenceType.VisitPlaces,
   );
 
-  const { data: visitPurposeFilterOptions } = useFilterOptionsByCodeQuery(
-    "V025",
-    "visit-purpose",
+  const { data: visitPurposes } = useFilterOptionsQuery(
+    MedicalReferenceType.VisitPurposes,
   );
 
-  const { data: diseaseCharacterFilterOptions } = useFilterOptionsByCodeQuery(
-    "V027",
-    "disease-character",
+  const { data: diseaseCharacters } = useFilterOptionsQuery(
+    MedicalReferenceType.DiseaseCharacters,
   );
 
-  const { data: physicianSpecialitiesFilterOptions } =
-    useFilterOptionsByCodeQuery("V021", "physician-speciality");
+  const { data: physicianSpecialities } = useFilterOptionsQuery(
+    MedicalReferenceType.PhysicianSpecialities,
+  );
 
   return (
     <div className={styles.medicalCaseDetailsSubgroup}>
@@ -109,17 +106,12 @@ export const MedicalCaseDetailsFiltersSubgroup = ({
           <MedViewMultipleSelectInput
             label="Профиль медицинской помощи"
             values={medicalCaseDetailsFiltersSubgroupDraft.medicalProfiles}
+            options={medicalCareProfiles ?? []}
             onChange={(newValue: string[]) =>
               setMedicalCaseDetailsFiltersSubgroupDraft({
                 ...medicalCaseDetailsFiltersSubgroupDraft,
                 medicalProfiles: newValue,
               })
-            }
-            options={
-              medicalCareFilterOptions?.map((option) => ({
-                label: option.label,
-                value: option.value,
-              })) ?? []
             }
           />
         </div>
@@ -130,17 +122,12 @@ export const MedicalCaseDetailsFiltersSubgroup = ({
           <MedViewMultipleSelectInput
             label="Профиль койки"
             values={medicalCaseDetailsFiltersSubgroupDraft.bedProfiles}
+            options={bedProfiles ?? []}
             onChange={(newValue: string[]) =>
               setMedicalCaseDetailsFiltersSubgroupDraft({
                 ...medicalCaseDetailsFiltersSubgroupDraft,
                 bedProfiles: newValue,
               })
-            }
-            options={
-              bedProfileFilterOptions?.map((option) => ({
-                label: option.label,
-                value: option.value,
-              })) ?? []
             }
           />
         </div>
@@ -153,17 +140,12 @@ export const MedicalCaseDetailsFiltersSubgroup = ({
             values={
               medicalCaseDetailsFiltersSubgroupDraft.encounterMedicalOrganizations
             }
+            options={visitPlaces ?? []}
             onChange={(newValue: string[]) =>
               setMedicalCaseDetailsFiltersSubgroupDraft({
                 ...medicalCaseDetailsFiltersSubgroupDraft,
                 encounterMedicalOrganizations: newValue,
               })
-            }
-            options={
-              visitPlaceFilterOptions?.map((option) => ({
-                label: option.label,
-                value: option.value,
-              })) ?? []
             }
           />
         </div>
@@ -174,17 +156,12 @@ export const MedicalCaseDetailsFiltersSubgroup = ({
           <MedViewMultipleSelectInput
             label="Цель посещения"
             values={medicalCaseDetailsFiltersSubgroupDraft.visitPurposes}
+            options={visitPurposes ?? []}
             onChange={(newValue: string[]) =>
               setMedicalCaseDetailsFiltersSubgroupDraft({
                 ...medicalCaseDetailsFiltersSubgroupDraft,
                 visitPurposes: newValue,
               })
-            }
-            options={
-              visitPurposeFilterOptions?.map((option) => ({
-                label: option.label,
-                value: option.value,
-              })) ?? []
             }
           />
         </div>
@@ -213,17 +190,12 @@ export const MedicalCaseDetailsFiltersSubgroup = ({
           <MedViewMultipleSelectInput
             label="Характер основного заболевания"
             values={medicalCaseDetailsFiltersSubgroupDraft.diseaseCharacters}
+            options={diseaseCharacters ?? []}
             onChange={(newValue: string[]) =>
               setMedicalCaseDetailsFiltersSubgroupDraft({
                 ...medicalCaseDetailsFiltersSubgroupDraft,
                 diseaseCharacters: newValue,
               })
-            }
-            options={
-              diseaseCharacterFilterOptions?.map((option) => ({
-                label: option.label,
-                value: option.value,
-              })) ?? []
             }
           />
         </div>
@@ -234,17 +206,12 @@ export const MedicalCaseDetailsFiltersSubgroup = ({
           <MedViewMultipleSelectInput
             label="Специальность лечащего врача"
             values={medicalCaseDetailsFiltersSubgroupDraft.physicianSpecialties}
+            options={physicianSpecialities ?? []}
             onChange={(newValue: string[]) =>
               setMedicalCaseDetailsFiltersSubgroupDraft({
                 ...medicalCaseDetailsFiltersSubgroupDraft,
                 physicianSpecialties: newValue,
               })
-            }
-            options={
-              physicianSpecialitiesFilterOptions?.map((option) => ({
-                label: option.label,
-                value: option.value,
-              })) ?? []
             }
           />
         </div>

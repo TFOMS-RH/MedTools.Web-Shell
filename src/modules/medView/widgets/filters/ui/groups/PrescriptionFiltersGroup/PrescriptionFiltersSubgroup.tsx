@@ -1,10 +1,11 @@
 import type { PrescriptionFiltersSubgroupDraft } from "../../../../workspace/model/types/FiltersDraft";
 import type { FilterOption } from "../../../../workspace/model/types/FilterOptions";
 import type { Dayjs } from "dayjs";
-import { useFilterOptionsByCodeQuery } from "../../../model/queries/useFilterOptionsQuery";
 import { MedViewDateInput } from "../../../../../../../shared/ui/medView/inputs/MedViewDateInput/MedViewDateInput";
 import { MedViewMultipleSelectInput } from "../../../../../../../shared/ui/medView/inputs/MedViewMultipleSelectInput/MedViewMultipleSelectInput";
 import { MedViewAutocompleteInput } from "../../../../../../../shared/ui/medView/inputs/MedViewAutocompleteInput/MedViewAutocompleteInput";
+import { useFilterOptionsQuery } from "../../../../../../../shared/model/references/queries/useFilterOptionsQuery";
+import { MedicalReferenceType } from "../../../../../../../shared/model/references/types/MedicalReferenceType";
 import { useState } from "react";
 import styles from "./styles.module.scss";
 
@@ -21,24 +22,20 @@ export const PrescriptionFiltersSubgroup = ({
 }: PrescriptionFiltersSubgroupProps) => {
   const [inputServiceValue, setInputServiceValue] = useState("");
 
-  const { data: diagnosticMethods } = useFilterOptionsByCodeQuery(
-    "V029",
-    "diagnostic-method",
+  const { data: diagnosticMethods } = useFilterOptionsQuery(
+    MedicalReferenceType.DiagnosticMethods,
   );
 
-  const { data: medicalCares } = useFilterOptionsByCodeQuery(
-    "V002",
-    "medical-care-profile",
+  const { data: medicalCareTypes } = useFilterOptionsQuery(
+    MedicalReferenceType.MedicalCareTypes,
   );
 
-  const { data: bedProfiles } = useFilterOptionsByCodeQuery(
-    "V020",
-    "bed-profile",
+  const { data: bedProfiles } = useFilterOptionsQuery(
+    MedicalReferenceType.BedProfiles,
   );
 
-  const { data: medicalServices, isPending } = useFilterOptionsByCodeQuery(
-    "V001",
-    "medical-service",
+  const { data: medicalServices, isPending } = useFilterOptionsQuery(
+    MedicalReferenceType.MedicalServices,
     inputServiceValue,
   );
 
@@ -123,17 +120,12 @@ export const PrescriptionFiltersSubgroup = ({
           <MedViewMultipleSelectInput
             label="Метод  диагностического исследования"
             values={prescriptionFiltersSubgroup.diagnosticMethods}
+            options={diagnosticMethods ?? []}
             onChange={(newValue: string[]) =>
               setPrescriptionFiltersSubgroup({
                 ...prescriptionFiltersSubgroup,
                 diagnosticMethods: newValue,
               })
-            }
-            options={
-              diagnosticMethods?.map((option) => ({
-                label: option.label,
-                value: option.value,
-              })) ?? []
             }
           />
         </div>
@@ -144,17 +136,12 @@ export const PrescriptionFiltersSubgroup = ({
           <MedViewMultipleSelectInput
             label="Профиль медицинской помощи"
             values={prescriptionFiltersSubgroup.medicalCareProfiles}
+            options={medicalCareTypes ?? []}
             onChange={(newValue: string[]) =>
               setPrescriptionFiltersSubgroup({
                 ...prescriptionFiltersSubgroup,
                 medicalCareProfiles: newValue,
               })
-            }
-            options={
-              medicalCares?.map((option) => ({
-                label: option.label,
-                value: option.value,
-              })) ?? []
             }
           />
         </div>
@@ -165,17 +152,12 @@ export const PrescriptionFiltersSubgroup = ({
           <MedViewMultipleSelectInput
             label="Профиль койки"
             values={prescriptionFiltersSubgroup.bedProfiles}
+            options={bedProfiles ?? []}
             onChange={(newValue: string[]) =>
               setPrescriptionFiltersSubgroup({
                 ...prescriptionFiltersSubgroup,
                 bedProfiles: newValue,
               })
-            }
-            options={
-              bedProfiles?.map((option) => ({
-                label: option.label,
-                value: option.value,
-              })) ?? []
             }
           />
         </div>

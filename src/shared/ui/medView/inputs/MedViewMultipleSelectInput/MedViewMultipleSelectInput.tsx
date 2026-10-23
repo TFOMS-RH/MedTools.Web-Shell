@@ -1,3 +1,4 @@
+import type { FilterOption } from "../../../../../modules/medView/widgets/workspace/model/types/FilterOptions";
 import MenuItem from "@mui/material/MenuItem";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
@@ -11,13 +12,8 @@ import {
 import { medViewSelectInputSx } from "../../../../sxConfigs/medViewSelectInput";
 import { medViewSelectMenuSx } from "../../../../sxConfigs/medViewSelectMenuSx";
 
-interface Option {
-  label: string;
-  value: string;
-}
-
 interface MedViewMultipleSelectInputProps {
-  options: Option[];
+  options: FilterOption[];
   label: string;
   values: string[];
   multiple?: boolean;

@@ -1,8 +1,7 @@
 import type { PersonFiltersGroupDraft } from "../../../../workspace/model/types/FiltersDraft";
-import { useFilterOptionsByCodeQuery } from "../../../model/queries/useFilterOptionsQuery";
-import { InsuranceFiltersSubgroup } from "./InsuranceFiltersSubgroup/InsuranceFiltersSubgroup";
-import { PatientFiltersSubgroup } from "./PatientFiltersSubgroup/PatientFiltersSubgroup";
-import { RepresentativeFiltersSubgroup } from "./RepresentativeFiltersSubgroup/RepresentativeFiltersSubgroup";
+import { InsuranceFiltersSubgroup } from "./InsuranceFiltersSubgroup";
+import { PatientFiltersSubgroup } from "./PatientFiltersSubgroup";
+import { RepresentativeFiltersSubgroup } from "./RepresentativeFiltersSubgroup";
 import styles from "./styles.module.scss";
 
 interface PersonFiltersGroupRootProps {
@@ -14,11 +13,6 @@ const PersonFiltersGroup = ({
   personFiltersGroupDraft,
   setPersonFiltersGroupDraft,
 }: PersonFiltersGroupRootProps) => {
-  const { data: policyTypeFilterOptions } = useFilterOptionsByCodeQuery(
-    "F008",
-    "insurance-policy-type",
-  );
-
   return (
     <section className={styles.generalFiltersGroup}>
       <header className={styles.generalFiltersGroupHeader}>
@@ -37,7 +31,6 @@ const PersonFiltersGroup = ({
             setPersonFiltersGroupDraft({ ...personFiltersGroupDraft, patient })
           }
         />
-
         <RepresentativeFiltersSubgroup
           representativeFiltersSubgroupDraft={
             personFiltersGroupDraft.representative
@@ -50,7 +43,6 @@ const PersonFiltersGroup = ({
           }
         />
       </div>
-
       <InsuranceFiltersSubgroup
         insuranceFiltersSubgroupDraft={personFiltersGroupDraft.insurance}
         setInsuranceFiltersSubgroupDraft={(insurance) =>
@@ -59,8 +51,6 @@ const PersonFiltersGroup = ({
             insurance,
           })
         }
-        insuranceFilterOptions={[]}
-        insurancePolicyTypeFilterOptions={policyTypeFilterOptions ?? []}
       />
     </section>
   );

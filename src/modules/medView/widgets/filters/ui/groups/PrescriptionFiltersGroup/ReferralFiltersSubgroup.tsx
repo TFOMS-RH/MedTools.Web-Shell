@@ -1,10 +1,11 @@
 import type { Dayjs } from "dayjs";
 import type { FilterOption } from "../../../../workspace/model/types/FilterOptions";
 import type { ReferralFiltersSubgroupDraft } from "../../../../workspace/model/types/FiltersDraft";
-import { useFilterOptionsByCodeQuery } from "../../../model/queries/useFilterOptionsQuery";
 import { MedViewDateInput } from "../../../../../../../shared/ui/medView/inputs/MedViewDateInput/MedViewDateInput";
 import { MedViewMultipleSelectInput } from "../../../../../../../shared/ui/medView/inputs/MedViewMultipleSelectInput/MedViewMultipleSelectInput";
 import { MedViewAutocompleteInput } from "../../../../../../../shared/ui/medView/inputs/MedViewAutocompleteInput/MedViewAutocompleteInput";
+import { useFilterOptionsQuery } from "../../../../../../../shared/model/references/queries/useFilterOptionsQuery";
+import { MedicalReferenceType } from "../../../../../../../shared/model/references/types/MedicalReferenceType";
 import { useState } from "react";
 import styles from "./styles.module.scss";
 
@@ -21,19 +22,16 @@ export const ReferralFiltersSubgroup = ({
 }: ReferralFiltersSubgroupProps) => {
   const [inputServiceValue, setInputServiceValue] = useState("");
 
-  const { data: referralTypes } = useFilterOptionsByCodeQuery(
-    "V028",
-    "referral-type",
+  const { data: referralTypes } = useFilterOptionsQuery(
+    MedicalReferenceType.ReferralTypes,
   );
 
-  const { data: diagnosticMethods } = useFilterOptionsByCodeQuery(
-    "V029",
-    "diagnostic-method",
+  const { data: diagnosticMethods } = useFilterOptionsQuery(
+    MedicalReferenceType.DiagnosticMethods,
   );
 
-  const { data: medicalServices, isPending } = useFilterOptionsByCodeQuery(
-    "V001",
-    "medical-services",
+  const { data: medicalServices, isPending } = useFilterOptionsQuery(
+    MedicalReferenceType.MedicalServices,
     inputServiceValue,
   );
 
@@ -78,17 +76,12 @@ export const ReferralFiltersSubgroup = ({
           <MedViewMultipleSelectInput
             label="Вид направления"
             values={referralsFiltersSubgroupDraft.refferalTypes}
+            options={referralTypes ?? []}
             onChange={(newValue: string[]) =>
               setReferralsFiltersSubgroupDraft({
                 ...referralsFiltersSubgroupDraft,
                 refferalTypes: newValue,
               })
-            }
-            options={
-              referralTypes?.map((option) => ({
-                label: option.label,
-                value: option.value,
-              })) ?? []
             }
           />
         </div>
@@ -99,17 +92,12 @@ export const ReferralFiltersSubgroup = ({
           <MedViewMultipleSelectInput
             label="Метод  диагностического исследования"
             values={referralsFiltersSubgroupDraft.diagnosticMethods}
+            options={diagnosticMethods ?? []}
             onChange={(newValue: string[]) =>
               setReferralsFiltersSubgroupDraft({
                 ...referralsFiltersSubgroupDraft,
                 diagnosticMethods: newValue,
               })
-            }
-            options={
-              diagnosticMethods?.map((option) => ({
-                label: option.label,
-                value: option.value,
-              })) ?? []
             }
           />
         </div>

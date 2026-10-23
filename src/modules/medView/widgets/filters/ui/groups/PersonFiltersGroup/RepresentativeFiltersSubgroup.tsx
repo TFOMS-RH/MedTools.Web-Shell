@@ -1,10 +1,10 @@
+import type { RepresentativeFiltersSubgroupDraft } from "../../../../workspace/model/types/FiltersDraft";
 import type { Dayjs } from "dayjs";
-import { MedViewDateInput } from "../../../../../../../../shared/ui/medView/inputs/MedViewDateInput/MedViewDateInput";
-import { MedViewDefaultInput } from "../../../../../../../../shared/ui/medView/inputs/MedViewDefaultInput/MedViewDefaultInput";
-import { MedViewSelectInput } from "../../../../../../../../shared/ui/medView/inputs/MedViewSelectInput/MedViewSelectInput";
-import styles from "../styles.module.scss";
-import type { RepresentativeFiltersSubgroupDraft } from "../../../../../workspace/model/types/FiltersDraft";
-import type { Sex } from "../../../../../workspace/model/types/Sex";
+import type { Sex } from "../../../../workspace/model/types/Sex";
+import { MedViewDefaultInput } from "../../../../../../../shared/ui/medView/inputs/MedViewDefaultInput/MedViewDefaultInput";
+import { MedViewDateInput } from "../../../../../../../shared/ui/medView/inputs/MedViewDateInput/MedViewDateInput";
+import { MedViewSelectInput } from "../../../../../../../shared/ui/medView/inputs/MedViewSelectInput/MedViewSelectInput";
+import styles from "./styles.module.scss";
 
 interface RepresentativeFiltersSubgroupProps {
   representativeFiltersSubgroupDraft: RepresentativeFiltersSubgroupDraft;

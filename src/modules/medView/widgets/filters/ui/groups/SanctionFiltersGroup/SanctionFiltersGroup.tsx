@@ -5,8 +5,9 @@ import { MedViewDateInput } from "../../../../../../../shared/ui/medView/inputs/
 import { MedViewDefaultInput } from "../../../../../../../shared/ui/medView/inputs/MedViewDefaultInput/MedViewDefaultInput";
 import { MedViewMultipleSelectInput } from "../../../../../../../shared/ui/medView/inputs/MedViewMultipleSelectInput/MedViewMultipleSelectInput";
 import { MedViewAutocompleteInput } from "../../../../../../../shared/ui/medView/inputs/MedViewAutocompleteInput/MedViewAutocompleteInput";
-import { useFilterOptionsByCodeQuery } from "../../../model/queries/useFilterOptionsQuery";
 import { useState } from "react";
+import { useFilterOptionsQuery } from "../../../../../../../shared/model/references/queries/useFilterOptionsQuery";
+import { MedicalReferenceType } from "../../../../../../../shared/model/references/types/MedicalReferenceType";
 import styles from "./styles.module.scss";
 
 interface SanctionFiltersGroupProps {
@@ -25,15 +26,13 @@ const SanctionFiltersGroup = ({
     setInputRefusalReasonCodeFilterOptions,
   ] = useState("");
 
-  const { data: refusalReasonCodes, isPending } = useFilterOptionsByCodeQuery(
-    "F014",
-    "refusal-reason-code",
+  const { data: refusalReasonCodes, isPending } = useFilterOptionsQuery(
+    MedicalReferenceType.RefusalReasonCodes,
     inputRefusalReasonCodeFilterOptions,
   );
 
-  const { data: controlTypes } = useFilterOptionsByCodeQuery(
-    "F006",
-    "control-type-code",
+  const { data: controlTypes } = useFilterOptionsQuery(
+    MedicalReferenceType.ControlTypeCodes,
   );
 
   return (
@@ -55,17 +54,12 @@ const SanctionFiltersGroup = ({
             <MedViewMultipleSelectInput
               label="Код вида контроля"
               values={sanctionFiltersGroupDraft.controlTypeCodes}
+              options={controlTypes ?? []}
               onChange={(newValue: string[]) =>
                 setSanctionFiltersGroupDraft({
                   ...sanctionFiltersGroupDraft,
                   controlTypeCodes: newValue,
                 })
-              }
-              options={
-                controlTypes?.map((option) => ({
-                  label: option.label,
-                  value: option.value,
-                })) ?? []
               }
             />
           </div>

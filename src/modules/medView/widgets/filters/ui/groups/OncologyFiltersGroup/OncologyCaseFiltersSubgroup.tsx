@@ -2,8 +2,9 @@ import type { OncologyCaseFiltersSubgroupDraft } from "../../../../workspace/mod
 import type { FilterOption } from "../../../../workspace/model/types/FilterOptions";
 import { MedViewMultipleSelectInput } from "../../../../../../../shared/ui/medView/inputs/MedViewMultipleSelectInput/MedViewMultipleSelectInput";
 import { MedViewAutocompleteInput } from "../../../../../../../shared/ui/medView/inputs/MedViewAutocompleteInput/MedViewAutocompleteInput";
-import { useFilterOptionsByCodeQuery } from "../../../model/queries/useFilterOptionsQuery";
 import { useState } from "react";
+import { useFilterOptionsQuery } from "../../../../../../../shared/model/references/queries/useFilterOptionsQuery";
+import { MedicalReferenceType } from "../../../../../../../shared/model/references/types/MedicalReferenceType";
 import styles from "./styles.module.scss";
 
 interface OncologyCaseFiltersSubgroupProps {
@@ -19,13 +20,14 @@ export const OncologyCaseFiltersSubgroup = ({
 }: OncologyCaseFiltersSubgroupProps) => {
   const [inputStageValue, setInputStageValue] = useState("");
 
-  const { data: referralReasonFilterOptions } = useFilterOptionsByCodeQuery(
-    "N018",
-    "referral-reason",
+  const { data: referralReasons } = useFilterOptionsQuery(
+    MedicalReferenceType.ReferralReasons,
   );
 
-  const { data: diseaseStageFilterOptions, isPending } =
-    useFilterOptionsByCodeQuery("N002", "disease-stage", inputStageValue);
+  const { data: diseaseStages, isPending } = useFilterOptionsQuery(
+    MedicalReferenceType.DiseaseStages,
+    inputStageValue,
+  );
 
   return (
     <div className={styles.oncologyCaseSubgroup}>
@@ -43,12 +45,7 @@ export const OncologyCaseFiltersSubgroup = ({
                 referralReasons: newValue,
               })
             }
-            options={
-              referralReasonFilterOptions?.map((option) => ({
-                label: option.label,
-                value: option.value,
-              })) ?? []
-            }
+            options={referralReasons ?? []}
           />
         </div>
 
@@ -56,7 +53,7 @@ export const OncologyCaseFiltersSubgroup = ({
           <MedViewAutocompleteInput
             label="Стадии заболевания"
             values={oncologyCaseFiltersSubgroupDraft.stages}
-            options={diseaseStageFilterOptions ?? []}
+            options={diseaseStages ?? []}
             inputValue={inputStageValue}
             onInputChange={setInputStageValue}
             onChange={(newValue: FilterOption[]) =>
