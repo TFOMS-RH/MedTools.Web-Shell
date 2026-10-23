@@ -45,7 +45,7 @@ export const PrescriptionFiltersSubgroup = ({
         <h3>Назначения</h3>
       </header>
       <div className={styles.groupLineGrid}>
-        <div className={styles.span2}>
+        <div className={styles.span4}>
           <MedViewDateInput
             label="Дата направления"
             value={prescriptionFiltersSubgroup.referralDate}
@@ -57,7 +57,7 @@ export const PrescriptionFiltersSubgroup = ({
             }
           />
         </div>
-        <div className={styles.span10}>
+        <div className={styles.span8}>
           <MedViewMultipleSelectInput
             label="МО направления"
             values={prescriptionFiltersSubgroup.referredToMedicalOrganizations}

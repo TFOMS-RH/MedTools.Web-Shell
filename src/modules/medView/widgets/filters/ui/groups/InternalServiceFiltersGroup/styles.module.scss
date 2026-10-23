@@ -1,59 +1,41 @@
+@use "../filterGroupStyles" as filter;
+
 .internalServiceFiltersGroup {
-  display: flex;
-  flex-direction: column;
-  align-self: flex-start;
+  @include filter.group;
+}
 
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-xxl);
-  background: var(--card-background);
+.internalServiceFiltersGroupHeader .titleGroup {
+  @include filter.heading;
+}
 
-  .internalServiceFiltersGroupHeader {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: var(--space-10);
-    padding-bottom: var(--space-5);
+.description {
+  @include filter.description;
+}
 
-    .titleGroup {
-      h2 {
-        font-size: var(--fs-h2);
-        user-select: none;
-      }
+.internalServiceFiltersSubgroup {
+  @include filter.subgroup;
+}
 
-      .description {
-        font-size: var(--fs-body2);
-        color: var(--text-secondary);
+.subgroupHeader {
+  @include filter.subgroup-heading;
+}
 
-        user-select: none;
-      }
-    }
+.groupLineGrid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--mt-space-4);
+
+  > * {
+    min-width: 0;
   }
+}
 
+.span12 {
+  grid-column: span 12;
+}
+
+@container medview-group (max-width: 30rem) {
   .internalServiceFiltersSubgroup {
-    display: flex;
-    flex-direction: column;
-    padding: var(--space-10);
-    gap: var(--space-5);
-
-    .subgroupHeader {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding-bottom: 0;
-
-      h3 {
-        font-size: var(--fs-h3);
-      }
-    }
-
-    .groupLineGrid {
-      display: grid;
-      grid-template-columns: repeat(12, minmax(0, 1fr));
-      column-gap: var(--space-5);
-    }
-
-    .span3 {
-      grid-column: span 3;
-    }
+    padding: var(--mt-space-4);
   }
 }

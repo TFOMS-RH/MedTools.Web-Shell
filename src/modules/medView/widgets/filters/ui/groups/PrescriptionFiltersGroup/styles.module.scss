@@ -1,92 +1,80 @@
+@use "../filterGroupStyles" as filter;
+
 .prescriptionFiltersGroup {
-  display: flex;
-  flex-direction: column;
-  align-self: flex-start;
+  @include filter.group;
+}
 
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-xxl);
-  background: var(--card-background);
+.prescriptionFiltersGroupHeader .titleGroup {
+  @include filter.heading;
+}
 
-  .prescriptionFiltersGroupHeader {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: var(--space-10);
-    padding-bottom: var(--space-5);
+.description {
+  @include filter.description;
+}
 
-    .titleGroup {
-      h2 {
-        font-size: var(--fs-h2);
-        user-select: none;
-      }
+.prescriptionSubgroup,
+.referralSubgroup {
+  @include filter.subgroup;
+}
 
-      .description {
-        font-size: var(--fs-body2);
-        color: var(--text-secondary);
+.subgroupHeader {
+  @include filter.subgroup-heading;
+}
 
-        user-select: none;
-      }
-    }
+.groupLineGrid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--mt-space-4);
+
+  > * {
+    min-width: 0;
+  }
+}
+
+.span3,
+.span4,
+.span6,
+.span8,
+.span9,
+.span12 {
+  grid-column: span 12;
+}
+
+@container medview-subgroup (min-width: 36rem) {
+  .span3,
+  .span4,
+  .span6,
+  .span8,
+  .span9 {
+    grid-column: span 6;
+  }
+}
+
+@container medview-subgroup (min-width: 48rem) {
+  .span3 {
+    grid-column: span 3;
   }
 
-  .referralSubgroup,
-  .prescriptionSubgroup {
-    display: flex;
-    flex-direction: column;
-    padding: var(--space-10);
-    gap: var(--space-5);
+  .span4 {
+    grid-column: span 4;
+  }
 
-    .subgroupHeader {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding-bottom: 0;
+  .span6 {
+    grid-column: span 6;
+  }
 
-      h3 {
-        font-size: var(--fs-h3);
-      }
-    }
+  .span8 {
+    grid-column: span 8;
+  }
 
-    .groupLineGrid {
-      display: grid;
-      grid-template-columns: repeat(12, minmax(0, 1fr));
-      column-gap: var(--space-5);
-    }
+  .span9 {
+    grid-column: span 9;
+  }
+}
 
-    .span1 {
-      grid-column: span 1;
-    }
-
-    .span2 {
-      grid-column: span 2;
-    }
-
-    .span3 {
-      grid-column: span 3;
-    }
-
-    .span4 {
-      grid-column: span 4;
-    }
-
-    .span6 {
-      grid-column: span 6;
-    }
-
-    .span8 {
-      grid-column: span 8;
-    }
-
-    .span9 {
-      grid-column: span 9;
-    }
-
-    .span10 {
-      grid-column: span 10;
-    }
-
-    .span12 {
-      grid-column: span 12;
-    }
+@container medview-group (max-width: 30rem) {
+  .prescriptionSubgroup,
+  .referralSubgroup {
+    padding: var(--mt-space-4);
   }
 }

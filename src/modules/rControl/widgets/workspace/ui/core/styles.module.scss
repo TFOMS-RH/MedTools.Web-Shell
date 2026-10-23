@@ -5,7 +5,14 @@
 
   .invoicesGroup {
     display: grid;
-    grid-template-columns: 2fr 1fr;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
     column-gap: var(--space-5);
+  }
+}
+
+@media (max-width: 64rem) {
+  .workspaceRoot .invoicesGroup {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--space-5);
   }
 }

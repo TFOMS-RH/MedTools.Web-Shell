@@ -42,7 +42,7 @@ export const ReferralFiltersSubgroup = ({
       </header>
 
       <div className={styles.groupLineGrid}>
-        <div className={styles.span2}>
+        <div className={styles.span4}>
           <MedViewDateInput
             label="Дата направления"
             value={referralsFiltersSubgroupDraft.referralDate}
@@ -54,7 +54,7 @@ export const ReferralFiltersSubgroup = ({
             }
           />
         </div>
-        <div className={styles.span10}>
+        <div className={styles.span8}>
           <MedViewMultipleSelectInput
             label="МО направления"
             values={

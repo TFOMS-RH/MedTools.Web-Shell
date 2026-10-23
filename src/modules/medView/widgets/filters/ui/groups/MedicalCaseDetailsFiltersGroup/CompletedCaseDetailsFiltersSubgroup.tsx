@@ -52,7 +52,7 @@ export const CompletedCaseDetailsFiltersSubgroup = ({
       </header>
 
       <div className={styles.groupLineGrid}>
-        <div className={styles.span2}>
+        <div className={styles.span3}>
           <MedViewDateInput
             value={completedCaseDetailsFiltersSubgroupDraft.treatmentStartDate}
             handleDateInputChange={(newValue: Dayjs | null) =>
@@ -64,7 +64,7 @@ export const CompletedCaseDetailsFiltersSubgroup = ({
             label="Начало лечения"
           />
         </div>
-        <div className={styles.span2}>
+        <div className={styles.span3}>
           <MedViewDateInput
             value={completedCaseDetailsFiltersSubgroupDraft.treatmentEndDate}
             handleDateInputChange={(newValue: Dayjs | null) =>
@@ -76,7 +76,7 @@ export const CompletedCaseDetailsFiltersSubgroup = ({
             label="Окончание лечения"
           />
         </div>
-        <div className={styles.span4}>
+        <div className={styles.span3}>
           <MedViewMultipleSelectInput
             label="Условия оказания медицинской помощи"
             values={completedCaseDetailsFiltersSubgroupDraft.careConditions}
@@ -94,7 +94,7 @@ export const CompletedCaseDetailsFiltersSubgroup = ({
             }
           />
         </div>
-        <div className={styles.span4}>
+        <div className={styles.span3}>
           <MedViewMultipleSelectInput
             label="Форма оказания медицинской помощи"
             values={completedCaseDetailsFiltersSubgroupDraft.careForms}

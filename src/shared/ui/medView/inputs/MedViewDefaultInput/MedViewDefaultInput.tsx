@@ -6,7 +6,7 @@ interface MedViewDefaultInputProps {
   placeholder: string;
   fullWidth?: boolean;
   size?: "small" | "medium";
-  variant?: "outlined" | "standard";
+  variant?: "filled" | "outlined" | "standard";
   handleInputChange: (value: string) => void;
   value: string;
 }
@@ -16,7 +16,7 @@ export const MedViewDefaultInput = ({
   placeholder,
   fullWidth = true,
   size = "small",
-  variant = "outlined",
+  variant = "filled",
   handleInputChange,
   value,
 }: MedViewDefaultInputProps) => {
@@ -28,6 +28,7 @@ export const MedViewDefaultInput = ({
       size={size}
       variant={variant}
       slotProps={{
+        input: variant === "filled" ? { disableUnderline: true } : undefined,
         inputLabel: {
           shrink: true,
         },

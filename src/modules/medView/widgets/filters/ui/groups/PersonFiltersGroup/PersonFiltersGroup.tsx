@@ -17,9 +17,9 @@ const PersonFiltersGroup = ({
     <section className={styles.generalFiltersGroup}>
       <header className={styles.generalFiltersGroupHeader}>
         <div className={styles.titleGroup}>
-          <h2>Фильтрация по персональным данным</h2>
+          <h2>Персональные данные</h2>
           <p className={styles.description}>
-            Все поля, которые относятся к данным пациента
+            Пациент, представитель и сведения о страховании
           </p>
         </div>
       </header>

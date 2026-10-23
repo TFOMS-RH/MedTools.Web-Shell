@@ -49,7 +49,7 @@ export const MedicalCaseDetailsFiltersSubgroup = ({
       </header>
 
       <div className={styles.groupLineGrid}>
-        <div className={styles.span2}>
+        <div className={styles.span3}>
           <MedViewDateInput
             label="Начало лечения"
             value={medicalCaseDetailsFiltersSubgroupDraft.treatmentStartDate}
@@ -61,7 +61,7 @@ export const MedicalCaseDetailsFiltersSubgroup = ({
             }
           />
         </div>
-        <div className={styles.span2}>
+        <div className={styles.span3}>
           <MedViewDateInput
             label="Окончание лечения"
             value={medicalCaseDetailsFiltersSubgroupDraft.treatmentEndDate}
@@ -73,7 +73,7 @@ export const MedicalCaseDetailsFiltersSubgroup = ({
             }
           />
         </div>
-        <div className={styles.span4}>
+        <div className={styles.span3}>
           <MedViewDefaultInput
             label="Структурное подразделение"
             placeholder="01202600100001005"
@@ -86,7 +86,7 @@ export const MedicalCaseDetailsFiltersSubgroup = ({
             value={medicalCaseDetailsFiltersSubgroupDraft.division}
           />
         </div>
-        <div className={styles.span4}>
+        <div className={styles.span3}>
           <MedViewDefaultInput
             label="Номер истории"
             placeholder="Номер истории"

@@ -1,5 +1,7 @@
 .filtersPanelRoot {
   display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-5);
   justify-content: space-between;
   align-items: center;
 
@@ -13,6 +15,7 @@
 
   .sourceGroup {
     display: flex;
+    flex-wrap: wrap;
     gap: var(--space-5);
 
     .title {
@@ -26,13 +29,22 @@
 
   .actions {
     display: flex;
+    width: min(100%, 40rem);
+    min-width: 0;
     gap: var(--space-5);
 
     .selectsGroup {
       display: grid;
-      width: 40rem;
-      grid-template-columns: repeat(3, 1fr);
+      width: 100%;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       column-gap: var(--space-5);
     }
+  }
+}
+
+@media (max-width: 40rem) {
+  .filtersPanelRoot .actions .selectsGroup {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--space-5);
   }
 }

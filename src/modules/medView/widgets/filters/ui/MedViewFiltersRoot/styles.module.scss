@@ -1,11 +1,23 @@
 .filtersRoot {
+  container-type: inline-size;
   display: flex;
   flex-direction: column;
   gap: var(--space-5);
 
   .filtersGroup {
     display: grid;
-    grid-template-columns: 1fr 2fr;
+    grid-template-columns: minmax(18rem, 3fr) minmax(0, 7fr);
     column-gap: var(--space-5);
+    row-gap: var(--space-5);
+
+    > * {
+      min-width: 0;
+    }
+  }
+}
+
+@container (max-width: 64rem) {
+  .filtersRoot .filtersGroup {
+    grid-template-columns: minmax(0, 1fr);
   }
 }

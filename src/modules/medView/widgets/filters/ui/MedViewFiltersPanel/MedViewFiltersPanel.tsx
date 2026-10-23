@@ -5,7 +5,6 @@ import { MedViewButton } from "../../../../../../shared/ui/medView/buttons/MedVi
 import { useMedViewFiltersStore } from "../../model/stores/useMedViewFiltersStore";
 import { useMedViewWorkspaceStore } from "../../../workspace/model/stores/useMedViewWorkspaceStore";
 import { TargetDbToggle } from "../../../../../../shared/ui/TargetDbToggle/TargetDbToggle";
-import AddIcon from "@mui/icons-material/Add";
 import styles from "./styles.module.scss";
 
 interface FiltersPanelProps {
@@ -86,169 +85,196 @@ export const MedViewFiltersPanel = ({ filtersDraft }: FiltersPanelProps) => {
             <h2>Группы фильтров</h2>
           </header>
           <ul>
-            <li
-              className={
-                selectedfilterGroupId === "persons"
-                  ? styles.selectedRow
-                  : styles.noneSelected
-              }
-              onClick={() => selectFilterGroup("persons")}
-            >
-              <div className={styles.namingGroup}>
-                <AddIcon />
-                <p>Персональные данные</p>
-              </div>
-              {personalGroupActiveFiltersCount > 0 && (
-                <div className={styles.counter}>
-                  {personalGroupActiveFiltersCount}
-                </div>
-              )}
+            <li>
+              <button
+                type="button"
+                className={
+                  selectedfilterGroupId === "persons"
+                    ? styles.selectedRow
+                    : undefined
+                }
+                onClick={() => selectFilterGroup("persons")}
+                aria-current={
+                  selectedfilterGroupId === "persons" ? "true" : undefined
+                }
+              >
+                <span className={styles.namingGroup}>Персональные данные</span>
+                {personalGroupActiveFiltersCount > 0 && (
+                  <span className={styles.counter}>
+                    {personalGroupActiveFiltersCount}
+                  </span>
+                )}
+              </button>
             </li>
 
-            <li
-              className={
-                selectedfilterGroupId === "case-details"
-                  ? styles.selectedRow
-                  : styles.noneSelected
-              }
-              onClick={() => selectFilterGroup("case-details")}
-            >
-              <div className={styles.namingGroup}>
-                <AddIcon />
-                <p>Детали медицинского случая</p>
-              </div>
-              {medicalCaseDetailsGroupActiveFiltersCount > 0 && (
-                <div className={styles.counter}>
-                  {medicalCaseDetailsGroupActiveFiltersCount}
-                </div>
-              )}
+            <li>
+              <button
+                type="button"
+                className={
+                  selectedfilterGroupId === "case-details"
+                    ? styles.selectedRow
+                    : undefined
+                }
+                onClick={() => selectFilterGroup("case-details")}
+                aria-current={
+                  selectedfilterGroupId === "case-details" ? "true" : undefined
+                }
+              >
+                <span className={styles.namingGroup}>Детали медицинского случая</span>
+                {medicalCaseDetailsGroupActiveFiltersCount > 0 && (
+                  <span className={styles.counter}>
+                    {medicalCaseDetailsGroupActiveFiltersCount}
+                  </span>
+                )}
+              </button>
             </li>
 
-            <li
-              className={
-                selectedfilterGroupId === "oncology"
-                  ? styles.selectedRow
-                  : styles.noneSelected
-              }
-              onClick={() => selectFilterGroup("oncology")}
-            >
-              <div className={styles.namingGroup}>
-                <AddIcon />
-                <p>Онкология</p>
-              </div>
-              {oncologyGroupActiveFiltersCount > 0 && (
-                <div className={styles.counter}>
-                  {oncologyGroupActiveFiltersCount}
-                </div>
-              )}
+            <li>
+              <button
+                type="button"
+                className={
+                  selectedfilterGroupId === "oncology"
+                    ? styles.selectedRow
+                    : undefined
+                }
+                onClick={() => selectFilterGroup("oncology")}
+                aria-current={
+                  selectedfilterGroupId === "oncology" ? "true" : undefined
+                }
+              >
+                <span className={styles.namingGroup}>Онкология</span>
+                {oncologyGroupActiveFiltersCount > 0 && (
+                  <span className={styles.counter}>
+                    {oncologyGroupActiveFiltersCount}
+                  </span>
+                )}
+              </button>
             </li>
-            <li
-              className={
-                selectedfilterGroupId === "prescriptions"
-                  ? styles.selectedRow
-                  : styles.noneSelected
-              }
-              onClick={() => selectFilterGroup("prescriptions")}
-            >
-              <div className={styles.namingGroup}>
-                <AddIcon />
-                <p>Назначения и направления</p>
-              </div>
-              {prescriptionGroupActiveFilters > 0 && (
-                <div className={styles.counter}>
-                  {prescriptionGroupActiveFilters}
-                </div>
-              )}
+            <li>
+              <button
+                type="button"
+                className={
+                  selectedfilterGroupId === "prescriptions"
+                    ? styles.selectedRow
+                    : undefined
+                }
+                onClick={() => selectFilterGroup("prescriptions")}
+                aria-current={
+                  selectedfilterGroupId === "prescriptions" ? "true" : undefined
+                }
+              >
+                <span className={styles.namingGroup}>Назначения и направления</span>
+                {prescriptionGroupActiveFilters > 0 && (
+                  <span className={styles.counter}>
+                    {prescriptionGroupActiveFilters}
+                  </span>
+                )}
+              </button>
             </li>
-            <li
-              className={
-                selectedfilterGroupId === "clinical-groups"
-                  ? styles.selectedRow
-                  : styles.noneSelected
-              }
-              onClick={() => selectFilterGroup("clinical-groups")}
-            >
-              <div className={styles.namingGroup}>
-                <AddIcon />
-                <p>Клинические группы и ВМП</p>
-              </div>
-              {clinicalGroupActiveFiltersCount > 0 && (
-                <div className={styles.counter}>
-                  {clinicalGroupActiveFiltersCount}
-                </div>
-              )}
+            <li>
+              <button
+                type="button"
+                className={
+                  selectedfilterGroupId === "clinical-groups"
+                    ? styles.selectedRow
+                    : undefined
+                }
+                onClick={() => selectFilterGroup("clinical-groups")}
+                aria-current={
+                  selectedfilterGroupId === "clinical-groups" ? "true" : undefined
+                }
+              >
+                <span className={styles.namingGroup}>Клинические группы и ВМП</span>
+                {clinicalGroupActiveFiltersCount > 0 && (
+                  <span className={styles.counter}>
+                    {clinicalGroupActiveFiltersCount}
+                  </span>
+                )}
+              </button>
             </li>
-            <li
-              className={
-                selectedfilterGroupId === "provided-services"
-                  ? styles.selectedRow
-                  : styles.noneSelected
-              }
-              onClick={() => selectFilterGroup("provided-services")}
-            >
-              <div className={styles.namingGroup}>
-                <AddIcon />
-                <p>Оказанные услуги</p>
-              </div>
-              {providedServicesGroupActiveFiltersCount > 0 && (
-                <div className={styles.counter}>
-                  {providedServicesGroupActiveFiltersCount}
-                </div>
-              )}
+            <li>
+              <button
+                type="button"
+                className={
+                  selectedfilterGroupId === "provided-services"
+                    ? styles.selectedRow
+                    : undefined
+                }
+                onClick={() => selectFilterGroup("provided-services")}
+                aria-current={
+                  selectedfilterGroupId === "provided-services" ? "true" : undefined
+                }
+              >
+                <span className={styles.namingGroup}>Оказанные услуги</span>
+                {providedServicesGroupActiveFiltersCount > 0 && (
+                  <span className={styles.counter}>
+                    {providedServicesGroupActiveFiltersCount}
+                  </span>
+                )}
+              </button>
             </li>
-            <li
-              className={
-                selectedfilterGroupId === "sanctions"
-                  ? styles.selectedRow
-                  : styles.noneSelected
-              }
-              onClick={() => selectFilterGroup("sanctions")}
-            >
-              <div className={styles.namingGroup}>
-                <AddIcon />
-                <p>Санкции</p>
-              </div>
-              {sanctionGroupActiveFiltersCount > 0 && (
-                <div className={styles.counter}>
-                  {sanctionGroupActiveFiltersCount}
-                </div>
-              )}
+            <li>
+              <button
+                type="button"
+                className={
+                  selectedfilterGroupId === "sanctions"
+                    ? styles.selectedRow
+                    : undefined
+                }
+                onClick={() => selectFilterGroup("sanctions")}
+                aria-current={
+                  selectedfilterGroupId === "sanctions" ? "true" : undefined
+                }
+              >
+                <span className={styles.namingGroup}>Санкции</span>
+                {sanctionGroupActiveFiltersCount > 0 && (
+                  <span className={styles.counter}>
+                    {sanctionGroupActiveFiltersCount}
+                  </span>
+                )}
+              </button>
             </li>
-            <li
-              className={
-                selectedfilterGroupId === "ICD"
-                  ? styles.selectedRow
-                  : styles.noneSelected
-              }
-              onClick={() => selectFilterGroup("ICD")}
-            >
-              <div className={styles.namingGroup}>
-                <AddIcon />
-                <p>МКБ</p>
-              </div>
-              {diseaseGroupActiveFilterCount > 0 && (
-                <div className={styles.counter}>
-                  {diseaseGroupActiveFilterCount}
-                </div>
-              )}
+            <li>
+              <button
+                type="button"
+                className={
+                  selectedfilterGroupId === "ICD"
+                    ? styles.selectedRow
+                    : undefined
+                }
+                onClick={() => selectFilterGroup("ICD")}
+                aria-current={
+                  selectedfilterGroupId === "ICD" ? "true" : undefined
+                }
+              >
+                <span className={styles.namingGroup}>МКБ</span>
+                {diseaseGroupActiveFilterCount > 0 && (
+                  <span className={styles.counter}>
+                    {diseaseGroupActiveFilterCount}
+                  </span>
+                )}
+              </button>
             </li>
-            <li
-              className={
-                selectedfilterGroupId === "internal-service"
-                  ? styles.selectedRow
-                  : styles.noneSelected
-              }
-              onClick={() => selectFilterGroup("internal-service")}
-            >
-              <div className={styles.namingGroup}>
-                <AddIcon />
-                <p>Служебная информация</p>
-              </div>
-              {internalGroupActiveFiltersCount > 0 && (
-                <div className={styles.counter}>
-                  {internalGroupActiveFiltersCount}
-                </div>
-              )}
+            <li>
+              <button
+                type="button"
+                className={
+                  selectedfilterGroupId === "internal-service"
+                    ? styles.selectedRow
+                    : undefined
+                }
+                onClick={() => selectFilterGroup("internal-service")}
+                aria-current={
+                  selectedfilterGroupId === "internal-service" ? "true" : undefined
+                }
+              >
+                <span className={styles.namingGroup}>Служебная информация</span>
+                {internalGroupActiveFiltersCount > 0 && (
+                  <span className={styles.counter}>
+                    {internalGroupActiveFiltersCount}
+                  </span>
+                )}
+              </button>
             </li>
           </ul>
         </div>
@@ -258,7 +284,7 @@ export const MedViewFiltersPanel = ({ filtersDraft }: FiltersPanelProps) => {
         <div className={styles.actionsField}>
           <MedViewButton
             text="Применить фильтры"
-            variant="outlined"
+            variant="contained"
             onClick={() => {
               resetWorkspace();
               applyFilters(filtersDraft);

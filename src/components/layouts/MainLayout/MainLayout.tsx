@@ -19,11 +19,7 @@ export const MainLayout = () => {
   };
 
   return (
-    <div
-      className={`${styles.appRoot} ${
-        isHome ? styles.homeLayout : styles.workspaceLayout
-      }`}
-    >
+    <div className={styles.appRoot}>
       <Header
         currentModule={currentModule}
         isAuthenticated={isAuthenticated}
@@ -31,7 +27,9 @@ export const MainLayout = () => {
         userName={user?.userName}
       />
 
-      <main className={styles.contentRoot}>
+      <main
+        className={`${styles.contentRoot} ${isHome ? "" : styles.moduleContent}`}
+      >
         <Outlet />
       </main>
     </div>

@@ -1,0 +1,22 @@
+.container {
+  box-sizing: border-box;
+  width: min(
+    calc(100% - 2 * var(--mt-layout-gutter)),
+    var(--mt-layout-home-max)
+  );
+  min-width: 0;
+  margin-inline: auto;
+}
+
+.wide {
+  width: min(
+    calc(100% - 2 * var(--mt-layout-gutter)),
+    var(--mt-layout-workspace-max)
+  );
+}
+
+@media (max-width: 40rem) {
+  .container {
+    width: calc(100% - 2 * var(--mt-layout-gutter-mobile));
+  }
+}

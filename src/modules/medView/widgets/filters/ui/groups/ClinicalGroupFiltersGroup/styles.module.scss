@@ -1,84 +1,68 @@
+@use "../filterGroupStyles" as filter;
+
 .clinicalGroupFiltersGroup {
-  display: flex;
-  flex-direction: column;
-  align-self: flex-start;
+  @include filter.group;
+}
 
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-xxl);
-  background: var(--card-background);
+.clinicalGroupFiltersGroupHeader .titleGroup {
+  @include filter.heading;
+}
 
-  .clinicalGroupFiltersGroupHeader {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: var(--space-10);
-    padding-bottom: var(--space-5);
+.description {
+  @include filter.description;
+}
 
-    .titleGroup {
-      h2 {
-        font-size: var(--fs-h2);
-        user-select: none;
-      }
+.clinicalGroupFiltersSubgroup,
+.highTechMedicalCareFiltersSubgroup {
+  @include filter.subgroup;
+}
 
-      .description {
-        font-size: var(--fs-body2);
-        color: var(--text-secondary);
+.subgroupHeader {
+  @include filter.subgroup-heading;
+}
 
-        user-select: none;
-      }
-    }
+.groupLineGrid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--mt-space-4);
+
+  > * {
+    min-width: 0;
+  }
+}
+
+.span4,
+.span6,
+.span8,
+.span12 {
+  grid-column: span 12;
+}
+
+@container medview-subgroup (min-width: 36rem) {
+  .span4,
+  .span6,
+  .span8 {
+    grid-column: span 6;
+  }
+}
+
+@container medview-subgroup (min-width: 48rem) {
+  .span4 {
+    grid-column: span 4;
   }
 
-  .highTechMedicalCareFiltersSubgroup,
-  .clinicalGroupFiltersSubgroup {
-    display: flex;
-    flex-direction: column;
-    padding: var(--space-10);
-    gap: var(--space-5);
+  .span6 {
+    grid-column: span 6;
+  }
 
-    .subgroupHeader {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding-bottom: 0;
+  .span8 {
+    grid-column: span 8;
+  }
+}
 
-      h3 {
-        font-size: var(--fs-h3);
-      }
-    }
-
-    .groupLineGrid {
-      display: grid;
-      grid-template-columns: repeat(12, minmax(0, 1fr));
-      column-gap: var(--space-5);
-    }
-
-    .span1 {
-      grid-column: span 1;
-    }
-
-    .span2 {
-      grid-column: span 2;
-    }
-
-    .span3 {
-      grid-column: span 3;
-    }
-
-    .span4 {
-      grid-column: span 4;
-    }
-
-    .span6 {
-      grid-column: span 6;
-    }
-
-    .span10 {
-      grid-column: span 10;
-    }
-
-    .span12 {
-      grid-column: span 12;
-    }
+@container medview-group (max-width: 30rem) {
+  .clinicalGroupFiltersSubgroup,
+  .highTechMedicalCareFiltersSubgroup {
+    padding: var(--mt-space-4);
   }
 }

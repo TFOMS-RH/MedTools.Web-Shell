@@ -1,98 +1,118 @@
 .generalFiltersGroup {
+  --mt-radius-control: var(--radius-xl);
+
+  container: person-filters / inline-size;
   display: flex;
   flex-direction: column;
-  align-self: flex-start;
+  align-self: start;
+  box-sizing: border-box;
+  min-width: 0;
+  gap: var(--mt-space-6);
+  padding: var(--mt-space-6);
+  border-radius: var(--mt-radius-card);
+  background: var(--mt-surface);
+  color: var(--mt-text-primary);
+}
 
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-xxl);
-  background: var(--card-background);
+.generalFiltersGroupHeader .titleGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mt-space-2);
 
-  .generalFiltersGroupHeader {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: var(--space-10);
-    padding-bottom: var(--space-5);
+  h2 {
+    font-size: var(--fs-h2);
+    font-weight: var(--fw-bold);
+    line-height: 1.25;
+  }
+}
 
-    .titleGroup {
-      h2 {
-        font-size: var(--fs-h2);
-        user-select: none;
-      }
+.description {
+  color: var(--mt-text-secondary);
+  font-size: var(--mt-font-body);
+  line-height: 1.5;
+}
 
-      .description {
-        font-size: var(--fs-body2);
-        color: var(--text-secondary);
+.patientGroupLine {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--mt-space-4);
+}
 
-        user-select: none;
-      }
-    }
+.patientSubgroup,
+.representativeSubgroup,
+.insuranceSubgroup {
+  container: person-subgroup / inline-size;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: var(--mt-space-4);
+  padding: var(--mt-space-5);
+  border-radius: var(--mt-radius-inner);
+  background: var(--mt-canvas);
+}
+
+.subgroupHeader {
+  padding-block: var(--mt-space-1) 0;
+
+  h3 {
+    font-size: var(--fs-h4);
+    font-weight: var(--fw-bold);
+    line-height: 1.5;
+  }
+}
+
+.groupLineGrid {
+  --text-secondary: var(--mt-text-secondary);
+  --border-default: var(--gray-400);
+  --border-hover: var(--gray-600);
+  --border-focus: var(--mt-medview-accent);
+
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--mt-space-4);
+
+  > * {
+    min-width: 0;
+  }
+}
+
+.span3,
+.span4,
+.span5,
+.span6,
+.span12 {
+  grid-column: span 12;
+}
+
+// The field row responds to its subgroup, including when the sidebar is visible.
+@container person-subgroup (min-width: 24rem) {
+  .span3 {
+    grid-column: span 3;
   }
 
+  .span4 {
+    grid-column: span 4;
+  }
+
+  .span5 {
+    grid-column: span 5;
+  }
+
+  .span6 {
+    grid-column: span 6;
+  }
+}
+
+@container person-filters (min-width: 48rem) {
   .patientGroupLine {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+}
 
-  .insuranceSubgroup,
+@container person-filters (max-width: 30rem) {
+  .patientSubgroup,
   .representativeSubgroup,
-  .patientSubgroup {
-    display: flex;
-    flex-direction: column;
-    padding: var(--space-10);
-    gap: var(--space-5);
-
-    .subgroupHeader {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding-bottom: 0;
-
-      h3 {
-        font-size: var(--fs-h3);
-      }
-    }
-
-    .groupLineGrid {
-      display: grid;
-      grid-template-columns: repeat(12, minmax(0, 1fr));
-      column-gap: var(--space-5);
-    }
-
-    .span1 {
-      grid-column: span 1;
-    }
-
-    .span2 {
-      grid-column: span 2;
-    }
-
-    .span3 {
-      grid-column: span 3;
-    }
-
-    .span4 {
-      grid-column: span 4;
-    }
-
-    .span5 {
-      grid-column: span 5;
-    }
-
-    .span6 {
-      grid-column: span 6;
-    }
-
-    .span8 {
-      grid-column: span 8;
-    }
-
-    .span10 {
-      grid-column: span 10;
-    }
-
-    .span12 {
-      grid-column: span 12;
-    }
+  .insuranceSubgroup {
+    padding: var(--mt-space-4);
   }
 }

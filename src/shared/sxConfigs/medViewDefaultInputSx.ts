@@ -1,17 +1,31 @@
+import { medViewFilledInputSx } from "./medViewFilledInputSx";
+
 export const medViewDefaultInputSx = {
   "& .MuiOutlinedInput-root": {
     borderRadius: "var(--radius-l)",
     fontSize: "var(--fs-body)",
+    fontFamily: "var(--inter)",
+    fontWeight: "var(--fw-default)",
+    backgroundColor: "var(--mt-surface)",
+    transition: "box-shadow var(--mt-duration-fast) ease",
 
     "& fieldset": {
       borderColor: "var(--border-default)",
+      fontFamily: "inherit",
+      fontWeight: "inherit",
+      transition: "border-color var(--mt-duration-fast) ease",
     },
 
-    "&:hover fieldset": {
+    "&:hover:not(.Mui-disabled):not(.Mui-error) fieldset": {
       borderColor: "var(--border-hover)",
     },
 
-    "&.Mui-focused fieldset": {
+    "&.Mui-focused:not(.Mui-disabled):not(.Mui-error)": {
+      boxShadow:
+        "0 0 0 2px color-mix(in srgb, var(--border-focus) 15%, transparent)",
+    },
+
+    "&.Mui-focused:not(.Mui-disabled):not(.Mui-error) fieldset": {
       borderColor: "var(--border-focus)",
       borderWidth: "1px",
     },
@@ -42,4 +56,5 @@ export const medViewDefaultInputSx = {
       opacity: 1,
     },
   },
+  ...medViewFilledInputSx,
 };

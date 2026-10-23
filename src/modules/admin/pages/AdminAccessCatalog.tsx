@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { PageContainer } from "../../../components/layouts/PageContainer/PageContainer";
 import { Alert, Button, LinearProgress } from "@mui/material";
 import { useAuthStore } from "../../auth/stores/authStore";
 import { RequirePermission } from "../../auth/components/RequirePermission";
@@ -21,10 +22,12 @@ export const AdminAccessCatalog = ({ kind }: { kind: AccessKind }) => {
   const canRead = permissions.includes(readPermission);
 
   return (
-    <RequirePermission permission={canRead ? readPermission : createPermission}>
-      <AccessCatalog key={kind} kind={kind} canRead={canRead}
-        canCreate={permissions.includes(createPermission)} />
-    </RequirePermission>
+    <PageContainer width="standard">
+      <RequirePermission permission={canRead ? readPermission : createPermission}>
+        <AccessCatalog key={kind} kind={kind} canRead={canRead}
+          canCreate={permissions.includes(createPermission)} />
+      </RequirePermission>
+    </PageContainer>
   );
 };
 

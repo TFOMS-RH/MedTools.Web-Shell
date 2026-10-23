@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { PageContainer } from "../../../components/layouts/PageContainer/PageContainer";
 import { Alert, Button, LinearProgress } from "@mui/material";
 import { useAuthStore } from "../../auth/stores/authStore";
 import { adminPermissions } from "../model/permissions";
@@ -17,16 +18,18 @@ export const AdminUsers = () => {
   const permissions = useAuthStore((state) => state.permissions);
   const canRead = permissions.includes(adminPermissions.readUsers);
   return (
-    <RequirePermission
-      permission={
-        canRead ? adminPermissions.readUsers : adminPermissions.createUsers
-      }
-    >
-      <UsersCatalog
-        canRead={canRead}
-        canCreate={permissions.includes(adminPermissions.createUsers)}
-      />
-    </RequirePermission>
+    <PageContainer width="standard">
+      <RequirePermission
+        permission={
+          canRead ? adminPermissions.readUsers : adminPermissions.createUsers
+        }
+      >
+        <UsersCatalog
+          canRead={canRead}
+          canCreate={permissions.includes(adminPermissions.createUsers)}
+        />
+      </RequirePermission>
+    </PageContainer>
   );
 };
 

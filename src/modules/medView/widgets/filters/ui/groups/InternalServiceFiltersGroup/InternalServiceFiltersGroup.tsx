@@ -25,7 +25,7 @@ const InternalServiceFiltersGroup = ({
       </header>
       <div className={styles.internalServiceFiltersSubgroup}>
         <div className={styles.groupLineGrid}>
-          <div className={styles.span3}>
+          <div className={styles.span12}>
             <MedViewDefaultInput
               label="UID пациента"
               placeholder="1000"
@@ -40,7 +40,7 @@ const InternalServiceFiltersGroup = ({
           </div>
         </div>
         <div className={styles.groupLineGrid}>
-          <div className={styles.span3}>
+          <div className={styles.span12}>
             <MedViewDefaultInput
               label="UID случая"
               placeholder="1000"
@@ -55,7 +55,7 @@ const InternalServiceFiltersGroup = ({
           </div>
         </div>
         <div className={styles.groupLineGrid}>
-          <div className={styles.span3}>
+          <div className={styles.span12}>
             <MedViewDefaultInput
               label="UID законченного случая"
               placeholder="1000"

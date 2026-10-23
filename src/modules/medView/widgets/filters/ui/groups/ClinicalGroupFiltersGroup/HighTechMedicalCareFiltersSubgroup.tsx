@@ -45,7 +45,7 @@ export const HighTechMedicalCareFiltersSubgroup = ({
         <h3>ВМП</h3>
       </header>
       <div className={styles.groupLineGrid}>
-        <div className={styles.span2}>
+        <div className={styles.span4}>
           <MedViewAutocompleteInput
             label="Вид ВМП"
             values={highTechMedicalCareFiltersSubgroupDraft.highTechCareTypes}
@@ -61,7 +61,7 @@ export const HighTechMedicalCareFiltersSubgroup = ({
             loading={highTechCareTypePending}
           />
         </div>
-        <div className={styles.span10}>
+        <div className={styles.span8}>
           <MedViewAutocompleteInput
             label="Метод ВМП"
             values={highTechMedicalCareFiltersSubgroupDraft.highTechCareMethods}
@@ -80,7 +80,7 @@ export const HighTechMedicalCareFiltersSubgroup = ({
       </div>
 
       <div className={styles.groupLineGrid}>
-        <div className={styles.span2}>
+        <div className={styles.span4}>
           <MedViewDateInput
             label="Дата выдачи талона"
             value={highTechMedicalCareFiltersSubgroupDraft.voucherIssueDate}
@@ -106,7 +106,7 @@ export const HighTechMedicalCareFiltersSubgroup = ({
             }
           />
         </div>
-        <div className={styles.span6}>
+        <div className={styles.span4}>
           <MedViewDefaultInput
             label="Номер талона на ВМП"
             placeholder="00.0000.00000.000"

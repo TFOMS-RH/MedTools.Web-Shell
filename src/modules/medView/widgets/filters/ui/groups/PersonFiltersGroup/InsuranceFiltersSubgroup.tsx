@@ -57,7 +57,7 @@ export const InsuranceFiltersSubgroup = ({
       </div>
 
       <div className={styles.groupLineGrid}>
-        <div className={styles.span2}>
+        <div className={styles.span3}>
           <MedViewDefaultInput
             label="Серия полиса"
             placeholder="0000"
@@ -83,7 +83,7 @@ export const InsuranceFiltersSubgroup = ({
             }
           />
         </div>
-        <div className={styles.span6}>
+        <div className={styles.span5}>
           <MedViewDefaultInput
             label="ЕНП"
             placeholder="0000000000000000"
