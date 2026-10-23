@@ -8,7 +8,10 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { HTEmptyState } from "../../../ui/HTEmptyState/HTEmptyState";
 import { HTTableSkeleton } from "../../../ui/HTTableSkeleton/HTTableSkeleton";
 
-import { formatGender, type HTRegisterDnItem } from "../../../types/htRegisterDn";
+import {
+  formatGender,
+  type HTRegisterDnItem,
+} from "../../../types/htRegisterDn";
 
 import styles from "./styles.module.scss";
 
@@ -78,7 +81,8 @@ export const HTRegisterDnTable = ({
       {/* Инфо-строка */}
       <div className={styles.topBar}>
         <span className={styles.totalLabel}>
-          Найдено пациентов: <strong>{totalCount.toLocaleString("ru-RU")}</strong>
+          Найдено пациентов:{" "}
+          <strong>{totalCount.toLocaleString("ru-RU")}</strong>
         </span>
       </div>
 
