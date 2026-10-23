@@ -1,11 +1,10 @@
-import { MedViewMultipleSelectInput } from "../../../../../../../../shared/ui/medView/inputs/MedViewMultipleSelectInput/MedViewMultipleSelectInput";
-import { MedViewAutocompleteInput } from "../../../../../../../../shared/ui/medView/inputs/MedViewAutocompleteInput/MedViewAutocompleteInput";
+import type { OncologyCaseFiltersSubgroupDraft } from "../../../../workspace/model/types/FiltersDraft";
+import type { FilterOption } from "../../../../workspace/model/types/FilterOptions";
+import { MedViewMultipleSelectInput } from "../../../../../../../shared/ui/medView/inputs/MedViewMultipleSelectInput/MedViewMultipleSelectInput";
+import { MedViewAutocompleteInput } from "../../../../../../../shared/ui/medView/inputs/MedViewAutocompleteInput/MedViewAutocompleteInput";
+import { useFilterOptionsByCodeQuery } from "../../../model/queries/useFilterOptionsQuery";
 import { useState } from "react";
-import styles from "../styles.module.scss";
-import type { OncologyCaseFiltersSubgroupDraft } from "../../../../../workspace/model/types/FiltersDraft";
-import { useFilterOptionsQuery } from "../../../../model/queries/useFilterOptionsQuery";
-import { useAutocompleteFilterOptionsQuery } from "../../../../model/queries/useAutocompleteFilterOptionsQuery";
-import type { FilterOption } from "../../../../../workspace/model/types/FilterOptions";
+import styles from "./styles.module.scss";
 
 interface OncologyCaseFiltersSubgroupProps {
   oncologyCaseFiltersSubgroupDraft: OncologyCaseFiltersSubgroupDraft;
@@ -20,16 +19,13 @@ export const OncologyCaseFiltersSubgroup = ({
 }: OncologyCaseFiltersSubgroupProps) => {
   const [inputStageValue, setInputStageValue] = useState("");
 
-  const { data: referralReasonFilterOptions } = useFilterOptionsQuery(
-    "med-tools/med-view/filter-options/referral-reasons",
+  const { data: referralReasonFilterOptions } = useFilterOptionsByCodeQuery(
+    "N018",
     "referral-reason",
   );
 
   const { data: diseaseStageFilterOptions, isPending } =
-    useAutocompleteFilterOptionsQuery(
-      "med-tools/med-view/filter-options/disease-stages",
-      inputStageValue,
-    );
+    useFilterOptionsByCodeQuery("N002", "disease-stage", inputStageValue);
 
   return (
     <div className={styles.oncologyCaseSubgroup}>

@@ -1,14 +1,12 @@
 import type { Dayjs } from "dayjs";
-import { MedViewDateInput } from "../../../../../../../../shared/ui/medView/inputs/MedViewDateInput/MedViewDateInput";
-import { MedViewMultipleSelectInput } from "../../../../../../../../shared/ui/medView/inputs/MedViewMultipleSelectInput/MedViewMultipleSelectInput";
-import { MedViewAutocompleteInput } from "../../../../../../../../shared/ui/medView/inputs/MedViewAutocompleteInput/MedViewAutocompleteInput";
+import type { FilterOption } from "../../../../workspace/model/types/FilterOptions";
+import type { ReferralFiltersSubgroupDraft } from "../../../../workspace/model/types/FiltersDraft";
+import { useFilterOptionsByCodeQuery } from "../../../model/queries/useFilterOptionsQuery";
+import { MedViewDateInput } from "../../../../../../../shared/ui/medView/inputs/MedViewDateInput/MedViewDateInput";
+import { MedViewMultipleSelectInput } from "../../../../../../../shared/ui/medView/inputs/MedViewMultipleSelectInput/MedViewMultipleSelectInput";
+import { MedViewAutocompleteInput } from "../../../../../../../shared/ui/medView/inputs/MedViewAutocompleteInput/MedViewAutocompleteInput";
 import { useState } from "react";
-import styles from "../styles.module.scss";
-import { useFilterOptionsQuery } from "../../../../model/queries/useFilterOptionsQuery";
-import type { ReferralFiltersSubgroupDraft } from "../../../../../workspace/model/types/FiltersDraft";
-import { useAutocompleteFilterOptionsQuery } from "../../../../model/queries/useAutocompleteFilterOptionsQuery";
-import { useMedicalOrganizationFilterOptionsQuery } from "../../../../model/queries/useMedicalOrganizationFilterOptions";
-import type { FilterOption } from "../../../../../workspace/model/types/FilterOptions";
+import styles from "./styles.module.scss";
 
 interface ReferralFiltersSubgroupProps {
   referralsFiltersSubgroupDraft: ReferralFiltersSubgroupDraft;
@@ -23,29 +21,21 @@ export const ReferralFiltersSubgroup = ({
 }: ReferralFiltersSubgroupProps) => {
   const [inputServiceValue, setInputServiceValue] = useState("");
 
-  const { data: referralTypeFilterOptions } = useFilterOptionsQuery(
-    "med-tools/med-view/filter-options/referral-types",
+  const { data: referralTypes } = useFilterOptionsByCodeQuery(
+    "V028",
     "referral-type",
   );
 
-  const { data: diagnosticMethodFilterOptions } = useFilterOptionsQuery(
-    "med-tools/med-view/filter-options/diagnostic-methods",
+  const { data: diagnosticMethods } = useFilterOptionsByCodeQuery(
+    "V029",
     "diagnostic-method",
   );
 
-  const { data: referralMedicalOrganizationFilterOptions } =
-    useMedicalOrganizationFilterOptionsQuery(
-      "med-tools/med-view/filter-options/medical-organizations",
-      "medical-organization",
-      "SMODB18",
-      "ReferralMedicalOrgs",
-    );
-
-  const { data: medicalServiceFilterOptions, isPending } =
-    useAutocompleteFilterOptionsQuery(
-      "med-tools/med-view/filter-options/medical-services",
-      inputServiceValue,
-    );
+  const { data: medicalServices, isPending } = useFilterOptionsByCodeQuery(
+    "V001",
+    "medical-services",
+    inputServiceValue,
+  );
 
   return (
     <div className={styles.referralSubgroup}>
@@ -78,12 +68,7 @@ export const ReferralFiltersSubgroup = ({
                 referredToMedicalOrganizations: newValue,
               })
             }
-            options={
-              referralMedicalOrganizationFilterOptions?.map((option) => ({
-                label: option.label,
-                value: option.value,
-              })) ?? []
-            }
+            options={[]}
           />
         </div>
       </div>
@@ -100,7 +85,7 @@ export const ReferralFiltersSubgroup = ({
               })
             }
             options={
-              referralTypeFilterOptions?.map((option) => ({
+              referralTypes?.map((option) => ({
                 label: option.label,
                 value: option.value,
               })) ?? []
@@ -121,7 +106,7 @@ export const ReferralFiltersSubgroup = ({
               })
             }
             options={
-              diagnosticMethodFilterOptions?.map((option) => ({
+              diagnosticMethods?.map((option) => ({
                 label: option.label,
                 value: option.value,
               })) ?? []
@@ -135,7 +120,7 @@ export const ReferralFiltersSubgroup = ({
           <MedViewAutocompleteInput
             label="Услуги, указанные в направлении"
             values={referralsFiltersSubgroupDraft.referredServices}
-            options={medicalServiceFilterOptions ?? []}
+            options={medicalServices ?? []}
             inputValue={inputServiceValue}
             onInputChange={setInputServiceValue}
             onChange={(newValue: FilterOption[]) =>

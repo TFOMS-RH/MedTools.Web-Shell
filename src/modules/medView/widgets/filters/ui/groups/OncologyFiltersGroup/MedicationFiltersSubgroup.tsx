@@ -1,9 +1,9 @@
+import type { MedicationFiltersSubgroupDraft } from "../../../../workspace/model/types/FiltersDraft";
+import type { FilterOption } from "../../../../workspace/model/types/FilterOptions";
+import { MedViewAutocompleteInput } from "../../../../../../../shared/ui/medView/inputs/MedViewAutocompleteInput/MedViewAutocompleteInput";
+import { useFilterOptionsByCodeQuery } from "../../../model/queries/useFilterOptionsQuery";
 import { useState } from "react";
-import { MedViewAutocompleteInput } from "../../../../../../../../shared/ui/medView/inputs/MedViewAutocompleteInput/MedViewAutocompleteInput";
-import styles from "../styles.module.scss";
-import type { MedicationFiltersSubgroupDraft } from "../../../../../workspace/model/types/FiltersDraft";
-import { useAutocompleteFilterOptionsQuery } from "../../../../model/queries/useAutocompleteFilterOptionsQuery";
-import type { FilterOption } from "../../../../../workspace/model/types/FilterOptions";
+import styles from "./styles.module.scss";
 
 interface MedicationFiltersSubgroupProps {
   medicationFiltersSubgroupDraft: MedicationFiltersSubgroupDraft;
@@ -19,17 +19,17 @@ export const MedicationFiltersSubgroup = ({
   const [inputIdenitifierValue, setInputIdenitifierValue] = useState("");
   const [inputRegimenValue, setInputRegimenValue] = useState("");
 
-  const { data: drugIdentifierFilterOptions, isPending } =
-    useAutocompleteFilterOptionsQuery(
-      "med-tools/med-view/filter-options/drug-identifiers",
-      inputIdenitifierValue,
-    );
+  const { data: drugIdentifiers, isPending } = useFilterOptionsByCodeQuery(
+    "N020",
+    "drug-identifier",
+    inputIdenitifierValue,
+  );
 
-  const { data: therapyRegimenFilterOptions } =
-    useAutocompleteFilterOptionsQuery(
-      "med-tools/med-view/filter-options/therapy-regimens",
-      inputRegimenValue,
-    );
+  const { data: therapyRegimens } = useFilterOptionsByCodeQuery(
+    "V024",
+    "therapy-identifier",
+    inputRegimenValue,
+  );
 
   return (
     <div className={styles.medicationSubgroup}>
@@ -41,7 +41,7 @@ export const MedicationFiltersSubgroup = ({
           <MedViewAutocompleteInput
             label="Идентификатор лекарственного препарата"
             values={medicationFiltersSubgroupDraft.drugIdentifiers}
-            options={drugIdentifierFilterOptions ?? []}
+            options={drugIdentifiers ?? []}
             inputValue={inputIdenitifierValue}
             onInputChange={setInputIdenitifierValue}
             onChange={(newValue: FilterOption[]) =>
@@ -58,7 +58,7 @@ export const MedicationFiltersSubgroup = ({
           <MedViewAutocompleteInput
             label="Cхема лекарственной терапии"
             values={medicationFiltersSubgroupDraft.therapyRegimens}
-            options={therapyRegimenFilterOptions ?? []}
+            options={therapyRegimens ?? []}
             inputValue={inputRegimenValue}
             onInputChange={setInputRegimenValue}
             onChange={(newValue: FilterOption[]) =>

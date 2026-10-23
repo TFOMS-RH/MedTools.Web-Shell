@@ -13,6 +13,11 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api\/identity/, "/api"),
       },
+      "/api/references": {
+        target: "http://localhost:8008",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/references/, "/api"),
+      },
       "/api/med-tools": {
         target: "http://localhost:8005",
         changeOrigin: true,

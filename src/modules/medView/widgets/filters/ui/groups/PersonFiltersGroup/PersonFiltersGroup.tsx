@@ -1,6 +1,5 @@
 import type { PersonFiltersGroupDraft } from "../../../../workspace/model/types/FiltersDraft";
-import { useFilterOptionsQuery } from "../../../model/queries/useFilterOptionsQuery";
-import { useMedicalOrganizationFilterOptionsQuery } from "../../../model/queries/useMedicalOrganizationFilterOptions";
+import { useFilterOptionsByCodeQuery } from "../../../model/queries/useFilterOptionsQuery";
 import { InsuranceFiltersSubgroup } from "./InsuranceFiltersSubgroup/InsuranceFiltersSubgroup";
 import { PatientFiltersSubgroup } from "./PatientFiltersSubgroup/PatientFiltersSubgroup";
 import { RepresentativeFiltersSubgroup } from "./RepresentativeFiltersSubgroup/RepresentativeFiltersSubgroup";
@@ -15,16 +14,8 @@ const PersonFiltersGroup = ({
   personFiltersGroupDraft,
   setPersonFiltersGroupDraft,
 }: PersonFiltersGroupRootProps) => {
-  const { data: insuranceFilterOptions } =
-    useMedicalOrganizationFilterOptionsQuery(
-      "med-tools/med-view/filter-options/available-insurance",
-      "insurance",
-      "SMODB18",
-      "Insurances",
-    );
-
-  const { data: insurancePolicyTypeFilterOptions } = useFilterOptionsQuery(
-    "med-tools/med-view/filter-options/policy-types",
+  const { data: policyTypeFilterOptions } = useFilterOptionsByCodeQuery(
+    "F008",
     "insurance-policy-type",
   );
 
@@ -68,10 +59,8 @@ const PersonFiltersGroup = ({
             insurance,
           })
         }
-        insuranceFilterOptions={insuranceFilterOptions ?? []}
-        insurancePolicyTypeFilterOptions={
-          insurancePolicyTypeFilterOptions ?? []
-        }
+        insuranceFilterOptions={[]}
+        insurancePolicyTypeFilterOptions={policyTypeFilterOptions ?? []}
       />
     </section>
   );

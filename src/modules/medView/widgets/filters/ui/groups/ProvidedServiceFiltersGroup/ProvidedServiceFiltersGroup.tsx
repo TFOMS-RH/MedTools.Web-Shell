@@ -2,7 +2,7 @@ import type { ProvidedServicesFiltersGroupDraft } from "../../../../workspace/mo
 import type { FilterOption } from "../../../../workspace/model/types/FilterOptions";
 import { useState } from "react";
 import { MedViewAutocompleteInput } from "../../../../../../../shared/ui/medView/inputs/MedViewAutocompleteInput/MedViewAutocompleteInput";
-import { useAutocompleteFilterOptionsQuery } from "../../../model/queries/useAutocompleteFilterOptionsQuery";
+import { useFilterOptionsByCodeQuery } from "../../../model/queries/useFilterOptionsQuery";
 import styles from "./styles.module.scss";
 
 interface ProvidedServiceFiltersGroupProps {
@@ -19,11 +19,11 @@ const ProvidedServiceFiltersGroup = ({
   const [inputProvidedServiceValue, setInputProvidedServiceValue] =
     useState("");
 
-  const { data: providedServiceFilterOptions, isPending } =
-    useAutocompleteFilterOptionsQuery(
-      "med-tools/med-view/filter-options/provided-services",
-      inputProvidedServiceValue,
-    );
+  const { data: providedServices, isPending } = useFilterOptionsByCodeQuery(
+    "Т003",
+    "provided-service",
+    inputProvidedServiceValue,
+  );
 
   return (
     <section className={styles.providedServiceFiltersGroup}>
@@ -44,7 +44,7 @@ const ProvidedServiceFiltersGroup = ({
             <MedViewAutocompleteInput
               label="Название услуги"
               values={providedServiceDraft.serviceCodes}
-              options={providedServiceFilterOptions ?? []}
+              options={providedServices ?? []}
               inputValue={inputProvidedServiceValue}
               onInputChange={setInputProvidedServiceValue}
               onChange={(newValue: FilterOption[]) =>

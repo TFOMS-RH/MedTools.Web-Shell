@@ -1,9 +1,9 @@
-import type { AdditionalDiseaseFiltersGroupDraft } from "../../../../../workspace/model/types/FiltersDraft";
-import type { FilterOption } from "../../../../../workspace/model/types/FilterOptions";
+import type { AdditionalDiseaseFiltersGroupDraft } from "../../../../workspace/model/types/FiltersDraft";
+import type { FilterOption } from "../../../../workspace/model/types/FilterOptions";
+import { MedViewAutocompleteInput } from "../../../../../../../shared/ui/medView/inputs/MedViewAutocompleteInput/MedViewAutocompleteInput";
+import { useFilterOptionsByCodeQuery } from "../../../model/queries/useFilterOptionsQuery";
 import { useState } from "react";
-import { MedViewAutocompleteInput } from "../../../../../../../../shared/ui/medView/inputs/MedViewAutocompleteInput/MedViewAutocompleteInput";
-import { useAutocompleteFilterOptionsQuery } from "../../../../model/queries/useAutocompleteFilterOptionsQuery";
-import styles from "../styles.module.scss";
+import styles from "./styles.module.scss";
 
 interface AdditionalDiseaseFiltersSubgroupProps {
   additionalDiseaseFiltersSubgroupDraft: AdditionalDiseaseFiltersGroupDraft;
@@ -23,22 +23,23 @@ export const AdditionalDiseaseFiltersSubgroup = ({
   const [complicationDiagnosesInputValue, setComplicationDiagnosesInputValue] =
     useState("");
 
-  const { data: initialDiagnosesOptions } = useAutocompleteFilterOptionsQuery(
-    "med-tools/med-view/filter-options/diseases",
+  const { data: initialDiagnoses } = useFilterOptionsByCodeQuery(
+    "ICD",
+    "disease",
     initialDiagnosesInputValue,
   );
 
-  const { data: concomitantDiagnosesOptions } =
-    useAutocompleteFilterOptionsQuery(
-      "med-tools/med-view/filter-options/diseases",
-      concomitantDiagnosesInputValue,
-    );
+  const { data: concomitantDiagnoses } = useFilterOptionsByCodeQuery(
+    "ICD",
+    "disease",
+    concomitantDiagnosesInputValue,
+  );
 
-  const { data: complicationDiagnosesOptions } =
-    useAutocompleteFilterOptionsQuery(
-      "med-tools/med-view/filter-options/diseases",
-      complicationDiagnosesInputValue,
-    );
+  const { data: complicationDiagnoses } = useFilterOptionsByCodeQuery(
+    "ICD",
+    "disease",
+    complicationDiagnosesInputValue,
+  );
 
   return (
     <div className={styles.additionalDiseaseFiltersSubgroup}>
@@ -50,7 +51,7 @@ export const AdditionalDiseaseFiltersSubgroup = ({
           <MedViewAutocompleteInput
             label="Первичный диагноз"
             inputValue={initialDiagnosesInputValue}
-            options={initialDiagnosesOptions ?? []}
+            options={initialDiagnoses ?? []}
             onInputChange={setInitialDiagnosesInputValue}
             values={additionalDiseaseFiltersSubgroupDraft.initialDiagnoses}
             onChange={(newValue: FilterOption[]) =>
@@ -67,7 +68,7 @@ export const AdditionalDiseaseFiltersSubgroup = ({
           <MedViewAutocompleteInput
             label="Диагноз осложнения заболевания"
             inputValue={complicationDiagnosesInputValue}
-            options={complicationDiagnosesOptions ?? []}
+            options={concomitantDiagnoses ?? []}
             onInputChange={setComplicationDiagnosesInputValue}
             values={additionalDiseaseFiltersSubgroupDraft.complicationDiagnoses}
             onChange={(newValue: FilterOption[]) =>
@@ -84,7 +85,7 @@ export const AdditionalDiseaseFiltersSubgroup = ({
           <MedViewAutocompleteInput
             label="Сопутствующие заболевания"
             inputValue={concomitantDiagnosesInputValue}
-            options={concomitantDiagnosesOptions ?? []}
+            options={complicationDiagnoses ?? []}
             onInputChange={setConcomitantDiagnosesInputValue}
             values={additionalDiseaseFiltersSubgroupDraft.concomitantDiagnoses}
             onChange={(newValue: FilterOption[]) =>

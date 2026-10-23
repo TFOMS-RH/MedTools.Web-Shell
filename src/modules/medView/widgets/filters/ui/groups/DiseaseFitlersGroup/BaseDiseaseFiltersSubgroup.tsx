@@ -1,11 +1,10 @@
-import type { BaseDiseaseFiltersGroupDraft } from "../../../../../workspace/model/types/FiltersDraft";
-import type { FilterOption } from "../../../../../workspace/model/types/FilterOptions";
-import { MedViewMultipleSelectInput } from "../../../../../../../../shared/ui/medView/inputs/MedViewMultipleSelectInput/MedViewMultipleSelectInput";
-import { useFilterOptionsQuery } from "../../../../model/queries/useFilterOptionsQuery";
-import { useAutocompleteFilterOptionsQuery } from "../../../../model/queries/useAutocompleteFilterOptionsQuery";
+import type { BaseDiseaseFiltersGroupDraft } from "../../../../workspace/model/types/FiltersDraft";
+import type { FilterOption } from "../../../../workspace/model/types/FilterOptions";
+import { useFilterOptionsByCodeQuery } from "../../../model/queries/useFilterOptionsQuery";
+import { MedViewAutocompleteInput } from "../../../../../../../shared/ui/medView/inputs/MedViewAutocompleteInput/MedViewAutocompleteInput";
+import { MedViewMultipleSelectInput } from "../../../../../../../shared/ui/medView/inputs/MedViewMultipleSelectInput/MedViewMultipleSelectInput";
 import { useState } from "react";
-import { MedViewAutocompleteInput } from "../../../../../../../../shared/ui/medView/inputs/MedViewAutocompleteInput/MedViewAutocompleteInput";
-import styles from "../styles.module.scss";
+import styles from "./styles.module.scss";
 
 interface BaseDiseaseFiltersSubgroupProps {
   baseDiseaseFitlersSubgroupDraft: BaseDiseaseFiltersGroupDraft;
@@ -21,21 +20,21 @@ export const BaseDiseaseFiltersSubgroup = ({
   const [primaryDiagnosisInputValue, setPrimaryDiagnosisInputValue] =
     useState("");
 
-  const { data: icdClassesFilterOptions } = useFilterOptionsQuery(
-    "med-tools/med-view/filter-options/disease-classes",
+  const { data: icdClasses } = useFilterOptionsByCodeQuery(
+    "ICD_CLASSES",
     "icd-class",
   );
 
-  const { data: icdSubClassesFilterOptions } = useFilterOptionsQuery(
-    "med-tools/med-view/filter-options/disease-sub-classes",
+  const { data: icdSubClasses } = useFilterOptionsByCodeQuery(
+    "ICD_SUBCLASSES",
     "icd-sub-class",
   );
 
-  const { data: primaryDiagnosisFilterOptions } =
-    useAutocompleteFilterOptionsQuery(
-      "med-tools/med-view/filter-options/diseases",
-      primaryDiagnosisInputValue,
-    );
+  const { data: primaryDiagnosis } = useFilterOptionsByCodeQuery(
+    "ICD",
+    "disease",
+    primaryDiagnosisInputValue,
+  );
 
   return (
     <div className={styles.baseDiseaseFiltersSubgroup}>
@@ -47,7 +46,7 @@ export const BaseDiseaseFiltersSubgroup = ({
           <MedViewAutocompleteInput
             label="Основное заболевание"
             inputValue={primaryDiagnosisInputValue}
-            options={primaryDiagnosisFilterOptions ?? []}
+            options={primaryDiagnosis ?? []}
             values={baseDiseaseFitlersSubgroupDraft.primaryDiagnoses}
             onInputChange={setPrimaryDiagnosisInputValue}
             onChange={(newValue: FilterOption[]) =>
@@ -64,7 +63,7 @@ export const BaseDiseaseFiltersSubgroup = ({
         <div className={styles.span12}>
           <MedViewMultipleSelectInput
             label="Классы МКБ"
-            options={icdClassesFilterOptions ?? []}
+            options={icdClasses ?? []}
             values={baseDiseaseFitlersSubgroupDraft.diagnosisClasses}
             onChange={(newValue: string[]) =>
               setBaseDiseaseFitlersSubgroupDraft({
@@ -79,7 +78,7 @@ export const BaseDiseaseFiltersSubgroup = ({
         <div className={styles.span12}>
           <MedViewMultipleSelectInput
             label="Подклассы МКБ"
-            options={icdSubClassesFilterOptions ?? []}
+            options={icdSubClasses ?? []}
             values={baseDiseaseFitlersSubgroupDraft.diagnosisSubClasses}
             onChange={(newValue: string[]) =>
               setBaseDiseaseFitlersSubgroupDraft({

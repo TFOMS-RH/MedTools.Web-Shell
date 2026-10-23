@@ -1,14 +1,12 @@
+import type { PrescriptionFiltersSubgroupDraft } from "../../../../workspace/model/types/FiltersDraft";
+import type { FilterOption } from "../../../../workspace/model/types/FilterOptions";
 import type { Dayjs } from "dayjs";
+import { useFilterOptionsByCodeQuery } from "../../../model/queries/useFilterOptionsQuery";
+import { MedViewDateInput } from "../../../../../../../shared/ui/medView/inputs/MedViewDateInput/MedViewDateInput";
+import { MedViewMultipleSelectInput } from "../../../../../../../shared/ui/medView/inputs/MedViewMultipleSelectInput/MedViewMultipleSelectInput";
+import { MedViewAutocompleteInput } from "../../../../../../../shared/ui/medView/inputs/MedViewAutocompleteInput/MedViewAutocompleteInput";
 import { useState } from "react";
-import { MedViewDateInput } from "../../../../../../../../shared/ui/medView/inputs/MedViewDateInput/MedViewDateInput";
-import { MedViewMultipleSelectInput } from "../../../../../../../../shared/ui/medView/inputs/MedViewMultipleSelectInput/MedViewMultipleSelectInput";
-import { MedViewAutocompleteInput } from "../../../../../../../../shared/ui/medView/inputs/MedViewAutocompleteInput/MedViewAutocompleteInput";
-import styles from "../styles.module.scss";
-import { useFilterOptionsQuery } from "../../../../model/queries/useFilterOptionsQuery";
-import type { PrescriptionFiltersSubgroupDraft } from "../../../../../workspace/model/types/FiltersDraft";
-import { useAutocompleteFilterOptionsQuery } from "../../../../model/queries/useAutocompleteFilterOptionsQuery";
-import type { FilterOption } from "../../../../../workspace/model/types/FilterOptions";
-import { useMedicalOrganizationFilterOptionsQuery } from "../../../../model/queries/useMedicalOrganizationFilterOptions";
+import styles from "./styles.module.scss";
 
 interface PrescriptionFiltersSubgroupProps {
   prescriptionFiltersSubgroup: PrescriptionFiltersSubgroupDraft;
@@ -23,34 +21,26 @@ export const PrescriptionFiltersSubgroup = ({
 }: PrescriptionFiltersSubgroupProps) => {
   const [inputServiceValue, setInputServiceValue] = useState("");
 
-  const { data: diagnosticMethodFilterOptions } = useFilterOptionsQuery(
-    "med-tools/med-view/filter-options/diagnostic-methods",
+  const { data: diagnosticMethods } = useFilterOptionsByCodeQuery(
+    "V029",
     "diagnostic-method",
   );
 
-  const { data: referredToMedicalOrganizationFilterOptions } =
-    useMedicalOrganizationFilterOptionsQuery(
-      "med-tools/med-view/filter-options/medical-organizations",
-      "medical-organization",
-      "SMODB18",
-      "PrescriptionReferredToMedicalOrgs",
-    );
-
-  const { data: medicalCareFilterOptions } = useFilterOptionsQuery(
-    "med-tools/med-view/filter-options/medical-care-profiles",
+  const { data: medicalCares } = useFilterOptionsByCodeQuery(
+    "V002",
     "medical-care-profile",
   );
 
-  const { data: bedProfileFilterOptions } = useFilterOptionsQuery(
-    "med-tools/med-view/filter-options/bed-profiles",
+  const { data: bedProfiles } = useFilterOptionsByCodeQuery(
+    "V020",
     "bed-profile",
   );
 
-  const { data: medicalServiceFilterOptions, isPending } =
-    useAutocompleteFilterOptionsQuery(
-      "med-tools/med-view/filter-options/medical-services",
-      inputServiceValue,
-    );
+  const { data: medicalServices, isPending } = useFilterOptionsByCodeQuery(
+    "V001",
+    "medical-service",
+    inputServiceValue,
+  );
 
   return (
     <div className={styles.prescriptionSubgroup}>
@@ -80,12 +70,7 @@ export const PrescriptionFiltersSubgroup = ({
                 referredToMedicalOrganizations: newValue,
               })
             }
-            options={
-              referredToMedicalOrganizationFilterOptions?.map((option) => ({
-                label: option.label,
-                value: option.value,
-              })) ?? []
-            }
+            options={[]}
           />
         </div>
       </div>
@@ -145,7 +130,7 @@ export const PrescriptionFiltersSubgroup = ({
               })
             }
             options={
-              diagnosticMethodFilterOptions?.map((option) => ({
+              diagnosticMethods?.map((option) => ({
                 label: option.label,
                 value: option.value,
               })) ?? []
@@ -166,7 +151,7 @@ export const PrescriptionFiltersSubgroup = ({
               })
             }
             options={
-              medicalCareFilterOptions?.map((option) => ({
+              medicalCares?.map((option) => ({
                 label: option.label,
                 value: option.value,
               })) ?? []
@@ -187,7 +172,7 @@ export const PrescriptionFiltersSubgroup = ({
               })
             }
             options={
-              bedProfileFilterOptions?.map((option) => ({
+              bedProfiles?.map((option) => ({
                 label: option.label,
                 value: option.value,
               })) ?? []
@@ -201,7 +186,7 @@ export const PrescriptionFiltersSubgroup = ({
           <MedViewAutocompleteInput
             label="Услуги, указанные в направлении"
             values={prescriptionFiltersSubgroup.services}
-            options={medicalServiceFilterOptions ?? []}
+            options={medicalServices ?? []}
             inputValue={inputServiceValue}
             onInputChange={setInputServiceValue}
             onChange={(newValue: FilterOption[]) =>

@@ -1,10 +1,9 @@
+import type { CompletedCaseDetailsFiltersSubgroupDraft } from "../../../../workspace/model/types/FiltersDraft";
 import type { Dayjs } from "dayjs";
-import { MedViewDateInput } from "../../../../../../../../shared/ui/medView/inputs/MedViewDateInput/MedViewDateInput";
-import { MedViewMultipleSelectInput } from "../../../../../../../../shared/ui/medView/inputs/MedViewMultipleSelectInput/MedViewMultipleSelectInput";
-import styles from "../styles.module.scss";
-import { useFilterOptionsQuery } from "../../../../model/queries/useFilterOptionsQuery";
-import type { CompletedCaseDetailsFiltersSubgroupDraft } from "../../../../../workspace/model/types/FiltersDraft";
-import { useMedicalOrganizationFilterOptionsQuery } from "../../../../model/queries/useMedicalOrganizationFilterOptions";
+import { MedViewDateInput } from "../../../../../../../shared/ui/medView/inputs/MedViewDateInput/MedViewDateInput";
+import { MedViewMultipleSelectInput } from "../../../../../../../shared/ui/medView/inputs/MedViewMultipleSelectInput/MedViewMultipleSelectInput";
+import { useFilterOptionsByCodeQuery } from "../../../model/queries/useFilterOptionsQuery";
+import styles from "./styles.module.scss";
 
 interface CompletedCaseDetailsFiltersSubgroupProps {
   completedCaseDetailsFiltersSubgroupDraft: CompletedCaseDetailsFiltersSubgroupDraft;
@@ -17,54 +16,36 @@ export const CompletedCaseDetailsFiltersSubgroup = ({
   completedCaseDetailsFiltersSubgroupDraft,
   setCompletedCaseDetailsFiltersSubgroupDraft,
 }: CompletedCaseDetailsFiltersSubgroupProps) => {
-  const { data: careConditionFilterOptions } = useFilterOptionsQuery(
-    "med-tools/med-view/filter-options/care-conditions",
+  const { data: careConditionFilterOptions } = useFilterOptionsByCodeQuery(
+    "V006",
     "care-condition",
   );
 
-  const { data: medicalCareTypeFilterOptions } = useFilterOptionsQuery(
-    "med-tools/med-view/filter-options/medical-care-types",
+  const { data: medicalCareTypeFilterOptions } = useFilterOptionsByCodeQuery(
+    "V008",
     "medical-care-type",
   );
 
-  const { data: medicalCareFormFilterOptions } = useFilterOptionsQuery(
-    "med-tools/med-view/filter-options/medical-care-forms",
+  const { data: medicalCareFormFilterOptions } = useFilterOptionsByCodeQuery(
+    "V014",
     "medical-care-form",
   );
 
-  const { data: medicalOrgsInCompletedCaseFilterOptions } =
-    useMedicalOrganizationFilterOptionsQuery(
-      "med-tools/med-view/filter-options/medical-organizations",
-      "medical-organization",
-      "SMODB18",
-      "CompletedCaseMedicalOrgs",
-    );
-
-  const { data: referringMedicalOrgsInCompletedCaseFilterOptions } =
-    useMedicalOrganizationFilterOptionsQuery(
-      "med-tools/med-view/filter-options/medical-organizations",
-      "medical-organization",
-      "SMODB18",
-      "ReferralMedicalOrgs",
-    );
-
-  const { data: diseaseOutcomeFilterOptions } = useFilterOptionsQuery(
-    "med-tools/med-view/filter-options/disease-outcomes",
+  const { data: diseaseOutcomeFilterOptions } = useFilterOptionsByCodeQuery(
+    "V012",
     "disease-outcome",
   );
 
-  const { data: screeningResultFilterOptions } = useFilterOptionsQuery(
-    "med-tools/med-view/filter-options/screening-results",
+  const { data: screeningResultFilterOptions } = useFilterOptionsByCodeQuery(
+    "V017",
     "screening-result",
   );
 
-  const { data: hospitalizationOutcomeFilterOptions } = useFilterOptionsQuery(
-    "med-tools/med-view/filter-options/hospitalization-outcomes",
-    "hospitalization-outcome",
-  );
+  const { data: hospitalizationOutcomeFilterOptions } =
+    useFilterOptionsByCodeQuery("V009", "hospitalization-outcome");
 
-  const { data: paymentMethodFilterOptions } = useFilterOptionsQuery(
-    "med-tools/med-view/filter-options/payment-methods",
+  const { data: paymentMethodFilterOptions } = useFilterOptionsByCodeQuery(
+    "V010",
     "payment-method",
   );
 
@@ -171,12 +152,7 @@ export const CompletedCaseDetailsFiltersSubgroup = ({
                 medicalOrganizations: newValue,
               })
             }
-            options={
-              medicalOrgsInCompletedCaseFilterOptions?.map((option) => ({
-                label: option.label,
-                value: option.value,
-              })) ?? []
-            }
+            options={[]}
           />
         </div>
       </div>
@@ -194,14 +170,7 @@ export const CompletedCaseDetailsFiltersSubgroup = ({
                 referringMedicalOrganizations: newValue,
               })
             }
-            options={
-              referringMedicalOrgsInCompletedCaseFilterOptions?.map(
-                (option) => ({
-                  label: option.label,
-                  value: option.value,
-                }),
-              ) ?? []
-            }
+            options={[]}
           />
         </div>
       </div>

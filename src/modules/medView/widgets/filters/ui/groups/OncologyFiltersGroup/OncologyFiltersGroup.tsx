@@ -1,8 +1,8 @@
-import { OncologyCaseFiltersSubgroup } from "./OncologyCaseFiltersSubgroup/OncologyCaseFiltersSubgroup";
-import { OncologyServiceFiltersSubgroup } from "./OncologyServiceFiltersSubgroup/OncologyServiceFiltersSubgroup";
-import { MedicationFiltersSubgroup } from "./OncologyMedicationFiltersSubgroup/MedicationFiltersSubgroup";
-import styles from "./styles.module.scss";
 import type { OncologyFiltersGroupDraft } from "../../../../workspace/model/types/FiltersDraft";
+import { OncologyCaseFiltersSubgroup } from "./OncologyCaseFiltersSubgroup";
+import { OncologyServiceFiltersSubgroup } from "./OncologyServiceFiltersSubgroup";
+import { MedicationFiltersSubgroup } from "./MedicationFiltersSubgroup";
+import styles from "./styles.module.scss";
 
 interface OncologyFiltersGroupProps {
   oncologyFiltersGroupDraft: OncologyFiltersGroupDraft;

@@ -1,12 +1,12 @@
+import type { HighTechMedicalCareSubgroupDraft } from "../../../../workspace/model/types/FiltersDraft";
+import type { FilterOption } from "../../../../workspace/model/types/FilterOptions";
 import type { Dayjs } from "dayjs";
-import { MedViewDateInput } from "../../../../../../../../shared/ui/medView/inputs/MedViewDateInput/MedViewDateInput";
-import { MedViewDefaultInput } from "../../../../../../../../shared/ui/medView/inputs/MedViewDefaultInput/MedViewDefaultInput";
 import { useState } from "react";
-import { MedViewAutocompleteInput } from "../../../../../../../../shared/ui/medView/inputs/MedViewAutocompleteInput/MedViewAutocompleteInput";
-import styles from "../styles.module.scss";
-import type { HighTechMedicalCareSubgroupDraft } from "../../../../../workspace/model/types/FiltersDraft";
-import { useAutocompleteFilterOptionsQuery } from "../../../../model/queries/useAutocompleteFilterOptionsQuery";
-import type { FilterOption } from "../../../../../workspace/model/types/FilterOptions";
+import { MedViewAutocompleteInput } from "../../../../../../../shared/ui/medView/inputs/MedViewAutocompleteInput/MedViewAutocompleteInput";
+import { MedViewDateInput } from "../../../../../../../shared/ui/medView/inputs/MedViewDateInput/MedViewDateInput";
+import { MedViewDefaultInput } from "../../../../../../../shared/ui/medView/inputs/MedViewDefaultInput/MedViewDefaultInput";
+import styles from "./styles.module.scss";
+import { useFilterOptionsByCodeQuery } from "../../../model/queries/useFilterOptionsQuery";
 
 interface HighTechMedicalCareFiltersSubgroupProps {
   highTechMedicalCareFiltersSubgroupDraft: HighTechMedicalCareSubgroupDraft;
@@ -24,19 +24,19 @@ export const HighTechMedicalCareFiltersSubgroup = ({
   const [inputHighTechCareMethodValue, setInputHighTechCareMethodValue] =
     useState("");
 
-  const {
-    data: highTechCareTypeFilterOptions,
-    isPending: highTechCareTypePending,
-  } = useAutocompleteFilterOptionsQuery(
-    "med-tools/med-view/filter-options/high-tech-care-types",
-    inputHighTechCareTypeValue,
-  );
+  const { data: highTechCareTypes, isPending: highTechCareTypePending } =
+    useFilterOptionsByCodeQuery(
+      "V018",
+      "high-tech-care-type",
+      inputHighTechCareTypeValue,
+    );
 
   const {
     data: highTechCareMethodFilterOptions,
     isPending: highTechCareMethodPending,
-  } = useAutocompleteFilterOptionsQuery(
-    "med-tools/med-view/filter-options/high-tech-care-methods",
+  } = useFilterOptionsByCodeQuery(
+    "V019",
+    "high-tech-care-medthod",
     inputHighTechCareMethodValue,
   );
 
@@ -50,7 +50,7 @@ export const HighTechMedicalCareFiltersSubgroup = ({
           <MedViewAutocompleteInput
             label="Вид ВМП"
             values={highTechMedicalCareFiltersSubgroupDraft.highTechCareTypes}
-            options={highTechCareTypeFilterOptions ?? []}
+            options={highTechCareTypes ?? []}
             inputValue={inputHighTechCareTypeValue}
             onInputChange={setInputHighTechCareTypeValue}
             onChange={(newValue: FilterOption[]) =>

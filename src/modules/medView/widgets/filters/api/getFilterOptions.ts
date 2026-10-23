@@ -1,5 +1,6 @@
 import apiClient from "../../../../../shared/api/client/apiClient";
 import type { ResultResponse } from "../../../../../shared/types/ResultResponse";
+import type { MedicalReferenceType } from "../model/types/MedicalReferenceType";
 import type {
   FilterOption,
   FilterOptionsResponse,
@@ -20,4 +21,20 @@ export const getFilterOptions = async (
   }
 
   return response.data.value.filterOptions;
+};
+
+export const getFilterOptionsByCode = async (
+  type: MedicalReferenceType,
+  searchString?: string,
+): Promise<FilterOption[]> => {
+  const response = await apiClient.get<FilterOption[]>(
+    `/references/medical-references/${type}/options`,
+    {
+      params: searchString ? { searchString } : undefined,
+    },
+  );
+
+  console.log(response);
+
+  return response.data;
 };

@@ -1,7 +1,7 @@
-import { MedViewMultipleSelectInput } from "../../../../../../../../shared/ui/medView/inputs/MedViewMultipleSelectInput/MedViewMultipleSelectInput";
-import type { OncologyServiceFiltersSubgroupDraft } from "../../../../../workspace/model/types/FiltersDraft";
-import { useFilterOptionsQuery } from "../../../../model/queries/useFilterOptionsQuery";
-import styles from "../styles.module.scss";
+import type { OncologyServiceFiltersSubgroupDraft } from "../../../../workspace/model/types/FiltersDraft";
+import { MedViewMultipleSelectInput } from "../../../../../../../shared/ui/medView/inputs/MedViewMultipleSelectInput/MedViewMultipleSelectInput";
+import { useFilterOptionsByCodeQuery } from "../../../model/queries/useFilterOptionsQuery";
+import styles from "./styles.module.scss";
 
 interface OncologyServiceFiltersSubgroupProps {
   oncologyServiceFiltersSubgroupDraft: OncologyServiceFiltersSubgroupDraft;
@@ -14,28 +14,28 @@ export const OncologyServiceFiltersSubgroup = ({
   oncologyServiceFiltersSubgroupDraft,
   setOncologyServiceFiltersSubgroupDraft,
 }: OncologyServiceFiltersSubgroupProps) => {
-  const { data: oncologyServiceTypeFilterOptions } = useFilterOptionsQuery(
-    "med-tools/med-view/filter-options/oncology-service-types",
+  const { data: oncologyServiceTypes } = useFilterOptionsByCodeQuery(
+    "N013",
     "oncology-service-type",
   );
 
-  const { data: surgicalTreatmentTypeFilterOptions } = useFilterOptionsQuery(
-    "med-tools/med-view/filter-options/surgical-treatment-types",
+  const { data: surgicalTreatmentTypes } = useFilterOptionsByCodeQuery(
+    "N014",
     "surgical-treatment-type",
   );
 
-  const { data: radioTherapyTypeFilterOptions } = useFilterOptionsQuery(
-    "med-tools/med-view/filter-options/radio-therapy-types",
+  const { data: radioTherapyTypes } = useFilterOptionsByCodeQuery(
+    "N017",
     "radio-therapy-type",
   );
 
-  const { data: drugTherapyLineFilterOptions } = useFilterOptionsQuery(
-    "med-tools/med-view/filter-options/drug-therapy-lines",
+  const { data: drugTherapyLines } = useFilterOptionsByCodeQuery(
+    "N015",
     "drug-therapy-line",
   );
 
-  const { data: drugTherapyCycleFilterOptions } = useFilterOptionsQuery(
-    "med-tools/med-view/filter-options/drug-therapy-cycles",
+  const { data: drugTherapyCycles } = useFilterOptionsByCodeQuery(
+    "N016",
     "drug-therapy-cycle",
   );
 
@@ -56,7 +56,7 @@ export const OncologyServiceFiltersSubgroup = ({
               })
             }
             options={
-              surgicalTreatmentTypeFilterOptions?.map((option) => ({
+              surgicalTreatmentTypes?.map((option) => ({
                 label: option.label,
                 value: option.value,
               })) ?? []
@@ -77,7 +77,7 @@ export const OncologyServiceFiltersSubgroup = ({
               })
             }
             options={
-              oncologyServiceTypeFilterOptions?.map((option) => ({
+              oncologyServiceTypes?.map((option) => ({
                 label: option.label,
                 value: option.value,
               })) ?? []
@@ -96,7 +96,7 @@ export const OncologyServiceFiltersSubgroup = ({
               })
             }
             options={
-              radioTherapyTypeFilterOptions?.map((option) => ({
+              radioTherapyTypes?.map((option) => ({
                 label: option.label,
                 value: option.value,
               })) ?? []
@@ -117,7 +117,7 @@ export const OncologyServiceFiltersSubgroup = ({
               })
             }
             options={
-              drugTherapyLineFilterOptions?.map((option) => ({
+              drugTherapyLines?.map((option) => ({
                 label: option.label,
                 value: option.value,
               })) ?? []
@@ -135,7 +135,7 @@ export const OncologyServiceFiltersSubgroup = ({
               })
             }
             options={
-              drugTherapyCycleFilterOptions?.map((option) => ({
+              drugTherapyCycles?.map((option) => ({
                 label: option.label,
                 value: option.value,
               })) ?? []

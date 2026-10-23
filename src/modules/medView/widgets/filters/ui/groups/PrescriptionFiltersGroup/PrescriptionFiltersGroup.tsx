@@ -1,6 +1,6 @@
 import type { PrescriptionFiltersGroupDraft } from "../../../../workspace/model/types/FiltersDraft";
-import { PrescriptionFiltersSubgroup } from "./PrescriptionFiltersSubgroup/PrescriptionFiltersSubgroup";
-import { ReferralFiltersSubgroup } from "./ReferralFiltersSubgroup/ReferralFiltersSubgroup";
+import { PrescriptionFiltersSubgroup } from "./PrescriptionFiltersSubgroup";
+import { ReferralFiltersSubgroup } from "./ReferralFiltersSubgroup";
 import styles from "./styles.module.scss";
 
 interface PrescriptionFiltersGroupProps {

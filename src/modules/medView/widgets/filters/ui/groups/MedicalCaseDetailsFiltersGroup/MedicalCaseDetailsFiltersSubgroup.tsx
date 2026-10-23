@@ -1,10 +1,10 @@
 import type { Dayjs } from "dayjs";
-import { MedViewMultipleSelectInput } from "../../../../../../../../shared/ui/medView/inputs/MedViewMultipleSelectInput/MedViewMultipleSelectInput";
-import { MedViewDefaultInput } from "../../../../../../../../shared/ui/medView/inputs/MedViewDefaultInput/MedViewDefaultInput";
-import { MedViewDateInput } from "../../../../../../../../shared/ui/medView/inputs/MedViewDateInput/MedViewDateInput";
-import styles from "../styles.module.scss";
-import { useFilterOptionsQuery } from "../../../../model/queries/useFilterOptionsQuery";
-import type { MedicalCaseDetailsFiltersSubgroupDraft } from "../../../../../workspace/model/types/FiltersDraft";
+import type { MedicalCaseDetailsFiltersSubgroupDraft } from "../../../../workspace/model/types/FiltersDraft";
+import { useFilterOptionsByCodeQuery } from "../../../model/queries/useFilterOptionsQuery";
+import { MedViewDateInput } from "../../../../../../../shared/ui/medView/inputs/MedViewDateInput/MedViewDateInput";
+import { MedViewDefaultInput } from "../../../../../../../shared/ui/medView/inputs/MedViewDefaultInput/MedViewDefaultInput";
+import { MedViewMultipleSelectInput } from "../../../../../../../shared/ui/medView/inputs/MedViewMultipleSelectInput/MedViewMultipleSelectInput";
+import styles from "./styles.module.scss";
 
 interface MedicalCaseDetailsFiltersSubgroupProps {
   medicalCaseDetailsFiltersSubgroupDraft: MedicalCaseDetailsFiltersSubgroupDraft;
@@ -17,35 +17,33 @@ export const MedicalCaseDetailsFiltersSubgroup = ({
   medicalCaseDetailsFiltersSubgroupDraft,
   setMedicalCaseDetailsFiltersSubgroupDraft,
 }: MedicalCaseDetailsFiltersSubgroupProps) => {
-  const { data: medicalCareFilterOptions } = useFilterOptionsQuery(
-    "med-tools/med-view/filter-options/medical-care-profiles",
+  const { data: medicalCareFilterOptions } = useFilterOptionsByCodeQuery(
+    "V002",
     "medical-care-profile",
   );
 
-  const { data: bedProfileFilterOptions } = useFilterOptionsQuery(
-    "med-tools/med-view/filter-options/bed-profiles",
+  const { data: bedProfileFilterOptions } = useFilterOptionsByCodeQuery(
+    "V020",
     "bed-profile",
   );
 
-  const { data: visitPlaceFilterOptions } = useFilterOptionsQuery(
-    "med-tools/med-view/filter-options/visit-places",
+  const { data: visitPlaceFilterOptions } = useFilterOptionsByCodeQuery(
+    "V040",
     "visit-place",
   );
 
-  const { data: visitPurposeFilterOptions } = useFilterOptionsQuery(
-    "med-tools/med-view/filter-options/visit-purposes",
+  const { data: visitPurposeFilterOptions } = useFilterOptionsByCodeQuery(
+    "V025",
     "visit-purpose",
   );
 
-  const { data: diseaseCharacterFilterOptions } = useFilterOptionsQuery(
-    "med-tools/med-view/filter-options/disease-characters",
+  const { data: diseaseCharacterFilterOptions } = useFilterOptionsByCodeQuery(
+    "V027",
     "disease-character",
   );
 
-  const { data: physicianSpecialitiesFilterOptions } = useFilterOptionsQuery(
-    "med-tools/med-view/filter-options/physician-specialities",
-    "physician-speciality",
-  );
+  const { data: physicianSpecialitiesFilterOptions } =
+    useFilterOptionsByCodeQuery("V021", "physician-speciality");
 
   return (
     <div className={styles.medicalCaseDetailsSubgroup}>

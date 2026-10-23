@@ -1,11 +1,10 @@
-import { MedViewMultipleSelectInput } from "../../../../../../../../shared/ui/medView/inputs/MedViewMultipleSelectInput/MedViewMultipleSelectInput";
-import styles from "../styles.module.scss";
+import type { FilterOption } from "../../../../workspace/model/types/FilterOptions";
+import type { ClinicalGroupsFiltersSubgroupDraft } from "../../../../workspace/model/types/FiltersDraft";
+import { MedViewAutocompleteInput } from "../../../../../../../shared/ui/medView/inputs/MedViewAutocompleteInput/MedViewAutocompleteInput";
+import { MedViewMultipleSelectInput } from "../../../../../../../shared/ui/medView/inputs/MedViewMultipleSelectInput/MedViewMultipleSelectInput";
+import { useFilterOptionsByCodeQuery } from "../../../model/queries/useFilterOptionsQuery";
 import { useState } from "react";
-import { MedViewAutocompleteInput } from "../../../../../../../../shared/ui/medView/inputs/MedViewAutocompleteInput/MedViewAutocompleteInput";
-import type { ClinicalGroupsFiltersSubgroupDraft } from "../../../../../workspace/model/types/FiltersDraft";
-import { useFilterOptionsQuery } from "../../../../model/queries/useFilterOptionsQuery";
-import { useAutocompleteFilterOptionsQuery } from "../../../../model/queries/useAutocompleteFilterOptionsQuery";
-import type { FilterOption } from "../../../../../workspace/model/types/FilterOptions";
+import styles from "./styles.module.scss";
 
 interface ClinicalGroupFiltersSubgroupProps {
   clinicalGroupFiltersSubgroupDraft: ClinicalGroupsFiltersSubgroupDraft;
@@ -23,19 +22,20 @@ export const ClinicalGroupFiltersSubgroup = ({
     setInputCLinicalStatisticGroupValue,
   ] = useState("");
 
-  const { data: complexityCoefficientFilterOptions } = useFilterOptionsQuery(
-    "med-tools/med-view/filter-options/complexity-coefficients",
+  const { data: complexityCoefficientNumbers } = useFilterOptionsByCodeQuery(
+    "V041",
     "complexity-coefficient",
   );
 
-  const { data: interruptedCasePaymentReason } = useFilterOptionsQuery(
-    "med-tools/med-view/filter-options/interrupted-case-payment-reasons",
+  const { data: interruptedCasePaymentReasons } = useFilterOptionsByCodeQuery(
+    "V042",
     "interrupted-case-payment-reason",
   );
 
-  const { data: clinicalStatisticGroupFilterOptions, isPending } =
-    useAutocompleteFilterOptionsQuery(
-      "med-tools/med-view/filter-options/clinical-groups",
+  const { data: clinicalStatisticGroupNumbers, isPending } =
+    useFilterOptionsByCodeQuery(
+      "V023",
+      "clinical-statistic-group-number",
       inputCLinicalStatisticGroupValue,
     );
 
@@ -51,7 +51,7 @@ export const ClinicalGroupFiltersSubgroup = ({
             values={
               clinicalGroupFiltersSubgroupDraft.clinicalStatisticGroupNumbers
             }
-            options={clinicalStatisticGroupFilterOptions ?? []}
+            options={clinicalStatisticGroupNumbers ?? []}
             inputValue={inputCLinicalStatisticGroupValue}
             onInputChange={setInputCLinicalStatisticGroupValue}
             onChange={(newValue: FilterOption[]) =>
@@ -78,7 +78,7 @@ export const ClinicalGroupFiltersSubgroup = ({
               })
             }
             options={
-              complexityCoefficientFilterOptions?.map((option) => ({
+              complexityCoefficientNumbers?.map((option) => ({
                 label: option.label,
                 value: option.value,
               })) ?? []
@@ -100,7 +100,7 @@ export const ClinicalGroupFiltersSubgroup = ({
               })
             }
             options={
-              interruptedCasePaymentReason?.map((option) => ({
+              interruptedCasePaymentReasons?.map((option) => ({
                 label: option.label,
                 value: option.value,
               })) ?? []
