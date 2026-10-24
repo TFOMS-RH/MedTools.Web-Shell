@@ -1,114 +1,42 @@
 import type { OncologyCaseDto } from "../../../../../../../../../../shared/model/types/invoiceStructure/results/oncology/GetOncologyCaseResult";
-import { CardField } from "../../../../../../../../../../shared/ui/CardField/CardField";
 import { Skeleton } from "@mui/material";
-import { formatNullableValue } from "../../../../../../../../../../shared/helpers/formatNullableValue";
-
-interface MedViewOncologyCaseCardBodyProps {
-  oncologyCase: OncologyCaseDto;
-  isPending: boolean;
-}
+import styles from "../../styles.module.scss";
+import { displayValue, codeDescription } from "../../presentation";
 
 export const MedViewOncologyCaseCardBody = ({
-  oncologyCase,
+  oncologyCase: c,
   isPending,
-}: MedViewOncologyCaseCardBodyProps) => {
+}: {
+  oncologyCase: OncologyCaseDto;
+  isPending: boolean;
+}) => {
+  const fields = [
+    [
+      "Повод обращения",
+      codeDescription(c?.referralReason, c?.referralReasonCode),
+    ],
+    ["Стадия заболевания", codeDescription(c?.stage, c?.stageCode)],
+    ["Значение Tumor", displayValue(c?.tumorValue)],
+    ["Значение Nodus", displayValue(c?.nodusValue)],
+    ["Значение Metastatsis", displayValue(c?.metastasisValue)],
+    [
+      "Выявления метастазов",
+      c?.isMetastasisDetected == null
+        ? "—"
+        : c.isMetastasisDetected
+          ? "Да"
+          : "Нет",
+    ],
+    ["Суммарная очаговая доза", displayValue(c?.totalFocusDose)],
+  ] as const;
   return (
-    <div className="cardContent">
-      {isPending ? (
-        <div className="cardBlock">
-          <div className="cardBlockField">
-            <CardField
-              label="Повод обращения"
-              value={<Skeleton />}
-              inline={true}
-            />
-            <CardField
-              label="Стадия заболевания"
-              value={<Skeleton />}
-              inline={true}
-            />
-          </div>
-          <div className="cardBlockField">
-            <CardField
-              label="Значение Tumor"
-              value={<Skeleton />}
-              inline={true}
-            />
-            <CardField
-              label="Значение Nodus"
-              value={<Skeleton />}
-              inline={true}
-            />
-            <CardField
-              label="Значение Metastatsis"
-              value={<Skeleton />}
-              inline={true}
-            />
-          </div>
-          <div className="cardBlockField">
-            <CardField
-              label="Выявления метастазов"
-              value={<Skeleton />}
-              inline={true}
-            />
-            <CardField
-              label="Суммарная очаговая доза"
-              value={<Skeleton />}
-              inline={true}
-            />
-          </div>
+    <dl className={styles.fields}>
+      {fields.map(([label, value], index) => (
+        <div key={label} className={index < 2 ? styles.wideField : undefined}>
+          <dt>{label}</dt>
+          <dd>{isPending ? <Skeleton /> : value}</dd>
         </div>
-      ) : (
-        <div className="cardBlock">
-          <div className="cardBlockField">
-            <CardField
-              label="Повод обращения"
-              value={formatNullableValue(oncologyCase.referralReason)}
-              inline={true}
-            />
-            <CardField
-              label="Стадия заболевания"
-              value={formatNullableValue(oncologyCase.stage)}
-              inline={true}
-            />
-          </div>
-          <div className="cardBlockField">
-            <CardField
-              label="Значение Tumor"
-              value={formatNullableValue(oncologyCase.tumorValue)}
-              inline={true}
-            />
-            <CardField
-              label="Значение Nodus"
-              value={formatNullableValue(oncologyCase.nodusValue)}
-              inline={true}
-            />
-            <CardField
-              label="Значение Metastatsis"
-              value={formatNullableValue(oncologyCase.metastasisValue)}
-              inline={true}
-            />
-          </div>
-          <div className="cardBlockField">
-            <CardField
-              label="Выявления метастазов"
-              value={
-                oncologyCase.isMetastasisDetected === null
-                  ? "—"
-                  : oncologyCase.isMetastasisDetected
-                    ? "Да"
-                    : "Нет"
-              }
-              inline={true}
-            />
-            <CardField
-              label="Суммарная очаговая доза"
-              value={formatNullableValue(oncologyCase.totalFocusDose)}
-              inline={true}
-            />
-          </div>
-        </div>
-      )}
-    </div>
+      ))}
+    </dl>
   );
 };

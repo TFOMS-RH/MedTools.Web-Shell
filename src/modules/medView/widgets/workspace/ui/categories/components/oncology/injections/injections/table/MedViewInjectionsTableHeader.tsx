@@ -1,7 +1,5 @@
-export const MedViewInjectionsTableHeader = () => {
-  return (
-    <header className="cardHeader">
-      <h2>Инъекции</h2>
-    </header>
-  );
-};
+import styles from "../../../styles.module.scss";
+
+export const MedViewInjectionsTableHeader = () => (
+  <h3 className={styles.groupHeading}>Инъекции</h3>
+);

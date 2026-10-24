@@ -5,17 +5,22 @@ import { useMedViewFiltersStore } from "../../../../../../../filters/model/store
 import { useMedViewWorkspaceStore } from "../../../../../../model/stores/useMedViewWorkspaceStore";
 import { MedViewMedicationCards } from "./MedViewMedicationCards";
 
-export const MedViewMedicationCardsGroupRoot = () => {
+import { MedViewMedicationCardSkeletons } from "./MedViewMedicationCardSkeletons";
+
+interface MedViewMedicationCardsGroupRootProps {
+  selectedOncologyServiceUid: number;
+  selectedMedicationUid: number | null;
+}
+
+export const MedViewMedicationCardsGroupRoot = ({
+  selectedOncologyServiceUid,
+  selectedMedicationUid,
+}: MedViewMedicationCardsGroupRootProps) => {
   const { targetDb } = useMedViewFiltersStore();
-  const {
-    selectedOncologyServiceUid,
-    selectedMedicationUid,
-    selectMedication,
-  } = useMedViewWorkspaceStore();
+  const { selectMedication } = useMedViewWorkspaceStore();
   const {
     data: medications,
     isLoading,
-    isPending,
     isError,
     isSuccess,
     error,
@@ -37,6 +42,8 @@ export const MedViewMedicationCardsGroupRoot = () => {
           description={error?.message ?? "Неизвестная ошибка"}
           variant="error"
         />
+      ) : dataState === "loading" ? (
+        <MedViewMedicationCardSkeletons />
       ) : dataState === "empty" ? (
         <DataState
           title="Данных не найдено"
@@ -46,7 +53,6 @@ export const MedViewMedicationCardsGroupRoot = () => {
       ) : (
         <MedViewMedicationCards
           medications={medications ?? []}
-          isPending={isPending}
           selectMedication={selectMedication}
           selectedMedicationUid={selectedMedicationUid}
         />

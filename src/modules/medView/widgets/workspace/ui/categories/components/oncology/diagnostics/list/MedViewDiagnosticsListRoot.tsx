@@ -1,10 +1,10 @@
+import styles from "../../styles.module.scss";
 import { resolveDataState } from "../../../../../../../../../../shared/helpers/resolveDataState";
 import { DataState } from "../../../../../../../../../../shared/ui/DataState/DataState";
 import { useDiagnosticsQuery } from "../../../../../../../../../../shared/model/queries/invoiceStructure/oncology/useDiagnosticsQuery";
 import { useMedViewFiltersStore } from "../../../../../../../filters/model/stores/useMedViewFiltersStore";
 import { MedViewDiagnosticsListBody } from "./MedViewDiagnosticsListBody";
 import { MedViewDiagnosticsListHeader } from "./MedViewDiagnosticsListHeader";
-import styles from "./styles.module.scss";
 
 interface MedViewDiagnosticsListRootProps {
   oncologyCaseUid: number | null;
@@ -32,7 +32,7 @@ export const MedViewDiagnosticsListRoot = ({
   });
 
   return (
-    <section className={styles.diagnosticsListRoot}>
+    <section className={styles.panel}>
       <MedViewDiagnosticsListHeader />
       {dataState === "error" ? (
         <DataState

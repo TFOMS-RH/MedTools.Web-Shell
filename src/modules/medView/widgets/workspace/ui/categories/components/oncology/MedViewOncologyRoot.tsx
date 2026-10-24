@@ -1,8 +1,10 @@
-import { Divider } from "../../../../../../../../components/ui/Divider/Divider";
-import { DataState } from "../../../../../../../../shared/ui/DataState/DataState";
-import { CategoryLineHeader } from "../../../../../../../../shared/ui/CategoryLineHeader/CategoryLineHeader";
+import { MedViewOncologyLayout } from "./MedViewOncologyLayout";
 import { useMedViewFiltersStore } from "../../../../../filters/model/stores/useMedViewFiltersStore";
-import { useOncologyCaseQuery } from "../../../../../../../../shared/model/queries/invoiceStructure/oncology/useOncologyCaseQuery";
+import { useOncologyServicesQuery } from "../../../../../../../../shared/model/queries/invoiceStructure/oncology/useOncologyServicesQuery";
+import { useMedicationsQuery } from "../../../../../../../../shared/model/queries/invoiceStructure/oncology/useMedicationsQuery";
+import { displayValue } from "./presentation";
+import { DataState } from "../../../../../../../../shared/ui/DataState/DataState";
+import { useOncologySelection } from "./useOncologySelection";
 import { useMedViewWorkspaceStore } from "../../../../model/stores/useMedViewWorkspaceStore";
 import { MedViewDiagnosticsListRoot } from "./diagnostics/list/MedViewDiagnosticsListRoot";
 import { MedViewContraindicationsListRoot } from "./contraindications/list/MedViewContraindicationsListRoot";
@@ -15,119 +17,154 @@ import { MedViewOncologyServiceCardsGroupRoot } from "./oncologyServices/cardsGr
 import styles from "./styles.module.scss";
 
 const MedViewOncologyRoot = () => {
+  const { selectedMedicalCaseUid, selectOncologyService } =
+    useMedViewWorkspaceStore();
+  const { oncologyCase, oncologyCaseUid, serviceUid, medicationUid } =
+    useOncologySelection();
+  const dependencyState =
+    selectedMedicalCaseUid === null ? (
+      <DataState
+        title="Выберите медицинский случай"
+        description="Данные станут доступны после выбора медицинского случая"
+        variant="waiting"
+      />
+    ) : oncologyCase.isError ? (
+      <DataState
+        title="Ошибка получения онкологического случая"
+        description={oncologyCase.error?.message ?? "Неизвестная ошибка"}
+        variant="error"
+      />
+    ) : oncologyCase.isSuccess && oncologyCase.data === null ? (
+      <DataState
+        title="Онкологический случай отсутствует"
+        description="Для выбранного медицинского случая нет зависимых онкологических сведений"
+        variant="empty"
+      />
+    ) : (
+      <DataState
+        title="Получение онкологического случая"
+        description="После получения данных станут доступны зависимые сведения"
+        variant="waiting"
+      />
+    );
+
+  // Presentation-only observers reuse the existing keyed requests and validated IDs.
   const { targetDb } = useMedViewFiltersStore();
-  const {
-    selectedMedicalCaseUid,
-    selectedOncologyServiceUid,
-    selectedMedicationUid,
-    selectOncologyService,
-  } = useMedViewWorkspaceStore();
-  const { data: oncologyCase } = useOncologyCaseQuery(
-    selectedMedicalCaseUid,
+  const { data: services } = useOncologyServicesQuery(
+    oncologyCaseUid,
     targetDb,
   );
-
-  const oncologyCaseUid = oncologyCase?.oncologyCaseUid ?? null;
+  const { data: medications } = useMedicationsQuery(serviceUid, targetDb);
+  const service = services?.find(
+    (item) => item.oncologyServiceUid === serviceUid,
+  );
+  const medication = medications?.find(
+    (item) => item.medicamentUid === medicationUid,
+  );
+  const unavailable = (title: string) => (
+    <section className={styles.panel}>
+      <h3 className={styles.groupHeading}>{title}</h3>
+      {dependencyState}
+    </section>
+  );
+  const chooseService = (
+    <DataState
+      title="Выберите онкологическую услугу"
+      description="Нажмите на запись услуги для отображения препаратов"
+      variant="waiting"
+    />
+  );
+  const chooseMedication = (
+    <DataState
+      title="Выберите лекарственный препарат"
+      description="Нажмите на запись препарата для отображения дат введения и инъекций"
+      variant="waiting"
+    />
+  );
 
   return (
-    <section className={styles.oncologyRoot}>
-      <div className={styles.categoryLine}>
-        <CategoryLineHeader
-          number={1}
-          title="Данные по медицинскому случаю"
-          description="Все, что относится к медицинскому случаю в рамках категории"
-        />
-        {selectedMedicalCaseUid === null ? (
-          <DataState
-            title="Выберите медицинский случай"
-            description="Нажмите на карточку медицинского случая для отображения данных об онкологическом случае и проведенных консилиумах"
-            variant="waiting"
-          />
+    <MedViewOncologyLayout
+      casePanel={
+        selectedMedicalCaseUid === null ? (
+          unavailable("Онкологический случай")
         ) : (
-          <div className={styles.medicalCaseOncologyDetailsLine}>
-            <MedViewOncologyCaseCardRoot />
-            <MedViewConsultationsListRoot />
-          </div>
-        )}
-      </div>
-
-      <Divider />
-
-      <div className={styles.categoryLine}>
-        <CategoryLineHeader
-          number={2}
-          title="Данные по онкологическому случаю"
-          description="Все, что относится к онкологическому случаю в рамках категории"
-        />
-
-        {oncologyCaseUid === null ? (
-          <DataState
-            title="Получение онкологического случая"
-            description="После получения данных станут доступны диагностика, противопоказания и онкологические услуги"
-            variant="waiting"
-          />
+          <MedViewOncologyCaseCardRoot />
+        )
+      }
+      consultationsPanel={
+        selectedMedicalCaseUid === null ? (
+          unavailable("Консилиумы")
         ) : (
-          <>
-            <div className={styles.diagnosticsGroupLine}>
-              <MedViewDiagnosticsListRoot oncologyCaseUid={oncologyCaseUid} />
-              <MedViewContraindicationsListRoot
-                oncologyCaseUid={oncologyCaseUid}
-              />
-            </div>
-
-            <Divider />
-
-            <MedViewOncologyServiceCardsGroupRoot
-              oncologyCaseUid={oncologyCaseUid}
-              selectOncologyService={selectOncologyService}
-              selectedOncologyServiceUid={selectedOncologyServiceUid}
-            />
-          </>
-        )}
-      </div>
-
-      <Divider />
-
-      <div className={styles.categoryLine}>
-        <CategoryLineHeader
-          number={3}
-          title="Данные по онкологической услуге"
-          description="Все, что относится к онкологической услуге в рамках категории"
-        />
-        {selectedOncologyServiceUid === null ? (
-          <DataState
-            title="Выберите онкологическую услугу"
-            description="Нажмите на карточку онкологической услуги для отображения данных по лекарственным препаратам"
-            variant="waiting"
-          />
+          <MedViewConsultationsListRoot />
+        )
+      }
+      diagnosticsPanel={
+        oncologyCaseUid === null ? (
+          unavailable("Диагностика")
         ) : (
-          <MedViewMedicationCardsGroupRoot />
-        )}
-      </div>
-
-      <Divider />
-
-      <div className={styles.categoryLine}>
-        <CategoryLineHeader
-          number={4}
-          title="Данные по лекарственному препарату"
-          description="Все, что относится к лекарственному препарату в рамках категории"
-        />
-
-        {selectedMedicationUid === null ? (
-          <DataState
-            title="Выберите лекарственный препарат"
-            description="Нажмите на карточку лекарственного препарата для отображения данных о датах введения препарата и инъекциях"
-            variant="waiting"
-          />
+          <MedViewDiagnosticsListRoot oncologyCaseUid={oncologyCaseUid} />
+        )
+      }
+      contraindicationsPanel={
+        oncologyCaseUid === null ? (
+          unavailable("Противопоказания")
         ) : (
-          <div className={styles.injectionsGroup}>
-            <MedViewInjectionDateChipsGroupRoot />
-            <MedViewInjectionsTableRoot />
-          </div>
-        )}
-      </div>
-    </section>
+          <MedViewContraindicationsListRoot oncologyCaseUid={oncologyCaseUid} />
+        )
+      }
+      services={
+        oncologyCaseUid === null ? (
+          dependencyState
+        ) : (
+          <MedViewOncologyServiceCardsGroupRoot
+            oncologyCaseUid={oncologyCaseUid}
+            selectedOncologyServiceUid={serviceUid}
+            selectOncologyService={selectOncologyService}
+          />
+        )
+      }
+      medications={
+        oncologyCaseUid === null ? (
+          dependencyState
+        ) : serviceUid === null ? (
+          chooseService
+        ) : (
+          <MedViewMedicationCardsGroupRoot
+            selectedOncologyServiceUid={serviceUid}
+            selectedMedicationUid={medicationUid}
+          />
+        )
+      }
+      dates={
+        oncologyCaseUid === null ? (
+          dependencyState
+        ) : medicationUid === null ? (
+          chooseMedication
+        ) : (
+          <MedViewInjectionDateChipsGroupRoot
+            selectedMedicationUid={medicationUid}
+          />
+        )
+      }
+      injections={
+        medicationUid === null ? null : (
+          <MedViewInjectionsTableRoot selectedMedicationUid={medicationUid} />
+        )
+      }
+      selection={
+        service && medication
+          ? {
+              serviceType: displayValue(
+                service.serviceType?.trim()
+                  ? service.serviceType
+                  : service.serviceTypeCode,
+              ),
+              drugIdentifier: displayValue(medication.drugIdentifier),
+              therapyRegimenCode: medication.therapyRegimenCode,
+            }
+          : null
+      }
+    />
   );
 };
 

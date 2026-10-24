@@ -1,28 +1,14 @@
 import { Skeleton } from "@mui/material";
-import styles from "./styles.module.scss";
+import styles from "../../styles.module.scss";
 
-export const MedViewMedicationCardSkeletons = () => {
-  return (
-    <section className={styles.medicationsCards}>
-      {Array.from({ length: 4 }).map((_, index) => (
-        <article className={"cardRoot"} key={index}>
-          <header className="cardHeader">
-            <h2>Препарат</h2>
-          </header>
-          <div className="cardContent">
-            <div className="cardBlock">
-              <div className="cardBlockField">
-                <p className={styles.drugIdentifier}>
-                  <Skeleton />
-                </p>
-                <p className={styles.therapyRegimenCode}>
-                  <Skeleton />
-                </p>
-              </div>
-            </div>
-          </div>
-        </article>
-      ))}
-    </section>
-  );
-};
+export const MedViewMedicationCardSkeletons = () => (
+  <div className={styles.selectionList} aria-label="Загрузка списка">
+    {Array.from({ length: 4 }, (_, i) => (
+      <div className={styles.selectionCard} key={i} aria-hidden="true">
+        {Array.from({ length: 2 }, (_, j) => (
+          <Skeleton key={j} height={22} />
+        ))}
+      </div>
+    ))}
+  </div>
+);

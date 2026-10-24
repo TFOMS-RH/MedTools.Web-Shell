@@ -1,3 +1,4 @@
+import styles from "../../styles.module.scss";
 import { DataState } from "../../../../../../../../../../shared/ui/DataState/DataState";
 import { useConsultationsQuery } from "../../../../../../../../../../shared/model/queries/invoiceStructure/oncology/useConsultationsQuery";
 import { useMedViewWorkspaceStore } from "../../../../../../model/stores/useMedViewWorkspaceStore";
@@ -5,7 +6,6 @@ import { useMedViewFiltersStore } from "../../../../../../../filters/model/store
 import { MedViewConsultationsListHeader } from "./MedViewConsultationsListHeader";
 import { MedViewConsultationsListBody } from "./MedViewConsultationsListBody";
 import { resolveDataState } from "../../../../../../../../../../shared/helpers/resolveDataState";
-import styles from "./styles.module.scss";
 
 export const MedViewConsultationsListRoot = () => {
   const { selectedMedicalCaseUid } = useMedViewWorkspaceStore();
@@ -28,7 +28,7 @@ export const MedViewConsultationsListRoot = () => {
   });
 
   return (
-    <section className={styles.consultationsListRoot}>
+    <section className={styles.panel}>
       <MedViewConsultationsListHeader />
       {dataState === "error" ? (
         <DataState

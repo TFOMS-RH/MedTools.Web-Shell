@@ -1,14 +1,18 @@
+import styles from "../../../styles.module.scss";
+import { MedViewInjectionDateChipSkeletons } from "./MedViewInjectionDateChipSkeletons";
 import { resolveDataState } from "../../../../../../../../../../../shared/helpers/resolveDataState";
 import { DataState } from "../../../../../../../../../../../shared/ui/DataState/DataState";
 import { useInjectionDatesQuery } from "../../../../../../../../../../../shared/model/queries/invoiceStructure/oncology/useInjectionDatesQuery";
 import { useMedViewFiltersStore } from "../../../../../../../../filters/model/stores/useMedViewFiltersStore";
-import { useMedViewWorkspaceStore } from "../../../../../../../model/stores/useMedViewWorkspaceStore";
 import { MedViewInjectionDateChipsGroupHeader } from "./MedViewInjectionDateChipsGroupHeader";
 import { MedViewInjectionDateChips } from "./MedViewInjectionDateChips";
 
-export const MedViewInjectionDateChipsGroupRoot = () => {
+export const MedViewInjectionDateChipsGroupRoot = ({
+  selectedMedicationUid,
+}: {
+  selectedMedicationUid: number;
+}) => {
   const { targetDb } = useMedViewFiltersStore();
-  const { selectedMedicationUid } = useMedViewWorkspaceStore();
   const {
     data: injectionDates,
     isLoading,
@@ -26,7 +30,7 @@ export const MedViewInjectionDateChipsGroupRoot = () => {
   });
 
   return (
-    <section className="cardRoot">
+    <section className={styles.panel}>
       <MedViewInjectionDateChipsGroupHeader />
       {dataState === "error" ? (
         <DataState
@@ -34,6 +38,8 @@ export const MedViewInjectionDateChipsGroupRoot = () => {
           description={error?.message ?? "Неизвестная ошибка"}
           variant="error"
         />
+      ) : dataState === "loading" ? (
+        <MedViewInjectionDateChipSkeletons />
       ) : dataState === "empty" ? (
         <DataState
           title="Данных не найдено"

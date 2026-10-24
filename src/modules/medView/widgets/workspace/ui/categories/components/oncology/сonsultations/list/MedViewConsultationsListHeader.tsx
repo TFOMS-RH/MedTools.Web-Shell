@@ -1,9 +1,5 @@
-import styles from "./styles.module.scss";
+import styles from "../../styles.module.scss";
 
-export const MedViewConsultationsListHeader = () => {
-  return (
-    <header className={styles.consultationsListHeader}>
-      <h2>Консилиум</h2>
-    </header>
-  );
-};
+export const MedViewConsultationsListHeader = () => (
+  <h3 className={styles.groupHeading}>Консилиумы</h3>
+);
