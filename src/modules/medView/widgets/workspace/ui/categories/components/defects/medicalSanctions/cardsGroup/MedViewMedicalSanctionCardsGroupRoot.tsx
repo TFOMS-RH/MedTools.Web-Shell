@@ -5,6 +5,7 @@ import { useMedViewFiltersStore } from "../../../../../../../filters/model/store
 import { useMedViewWorkspaceStore } from "../../../../../../model/stores/useMedViewWorkspaceStore";
 import { MedViewMedicalSanctionCards } from "./MedViewMedicalSanctionCards";
 import { MedViewMedicalSanctionCardSkeletons } from "./MedViewMedicalSanctionCardSkeletons";
+import styles from "../../styles.module.scss";
 
 export const MedViewMedicalSanctionCardsGroupRoot = () => {
   const { targetDb } = useMedViewFiltersStore();
@@ -27,7 +28,8 @@ export const MedViewMedicalSanctionCardsGroupRoot = () => {
   });
 
   return (
-    <>
+    <section className={styles.section} aria-labelledby="medview-sanctions-heading">
+      <h3 id="medview-sanctions-heading" className={styles.sectionHeading}>Санкции</h3>
       {dataState === "error" ? (
         <DataState
           title="Ошибка данных"
@@ -48,6 +50,6 @@ export const MedViewMedicalSanctionCardsGroupRoot = () => {
           medicalSanctions={medicalSanctions ?? []}
         />
       )}
-    </>
+    </section>
   );
 };

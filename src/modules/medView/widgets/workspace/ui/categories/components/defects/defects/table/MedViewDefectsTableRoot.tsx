@@ -1,4 +1,3 @@
-import { Divider } from "../../../../../../../../../../components/ui/Divider/Divider";
 import { resolveDataState } from "../../../../../../../../../../shared/helpers/resolveDataState";
 import { DataState } from "../../../../../../../../../../shared/ui/DataState/DataState";
 import { useDefectsQuery } from "../../../../../../../../../../shared/model/queries/invoiceStructure/defects/useDefectsQuery";
@@ -6,6 +5,7 @@ import { useMedViewFiltersStore } from "../../../../../../../filters/model/store
 import { useMedViewWorkspaceStore } from "../../../../../../model/stores/useMedViewWorkspaceStore";
 import { MedViewDefectsTableHeader } from "./MedViewDefectsTableHeader";
 import { MedViewDefectsTableBody } from "./MedViewDefectsTableBody";
+import styles from "../../styles.module.scss";
 
 export const MedViewDefectsTableRoot = () => {
   const { targetDb } = useMedViewFiltersStore();
@@ -60,7 +60,7 @@ export const MedViewDefectsTableRoot = () => {
   });
 
   return (
-    <article className="cardRoot">
+    <section className={styles.section} aria-labelledby="medview-defects-heading">
       <MedViewDefectsTableHeader
         page={defectsTablePagination.page}
         pageSize={defectsTablePagination.pageSize}
@@ -69,7 +69,6 @@ export const MedViewDefectsTableRoot = () => {
         onPageChange={onPageChange}
         onRowsPerPageChange={onRowsPerPageChange}
       />
-      <Divider />
       {dataState === "error" ? (
         <DataState
           title="Ошибка данных"
@@ -89,6 +88,6 @@ export const MedViewDefectsTableRoot = () => {
           pageSize={defectsTablePagination.pageSize}
         />
       )}
-    </article>
+    </section>
   );
 };
