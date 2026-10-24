@@ -1,10 +1,6 @@
 import type { MedicalCaseDto } from "../../../../../../../../shared/model/types/invoiceStructure/results/medicalCases/GetMedicalCaseListItemsResult";
-import { CardField } from "../../../../../../../../shared/ui/CardField/CardField";
-import { Divider } from "../../../../../../../../components/ui/Divider/Divider";
 import { formatNullableValue } from "../../../../../../../../shared/helpers/formatNullableValue";
 import { formatCurrency } from "../../../../../../../../shared/helpers/formatCurrency";
-import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
-import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
 import styles from "./styles.module.scss";
 import dayjs from "dayjs";
 
@@ -14,105 +10,108 @@ interface MedViewMedicalCaseCardsProps {
   selectMedicalCase: (medicalCaseUid: number | null) => void;
 }
 
+const formatTreatmentDate = (value: string) => {
+  const date = value ? dayjs(value) : null;
+  return date?.isValid() ? date.format("DD.MM.YYYY") : "—";
+};
+
 export const MedViewMedicalCaseCards = ({
   medicalCases,
   selectedMedicalCaseUid,
   selectMedicalCase,
 }: MedViewMedicalCaseCardsProps) => {
   return (
-    <section className={styles.medicalCasesCards}>
-      {medicalCases.map((medicalCase) => (
-        <article
-          key={medicalCase.medicalCaseUid}
-          onClick={() => selectMedicalCase(medicalCase.medicalCaseUid)}
-          className={`cardRoot selectedCardRoot ${selectedMedicalCaseUid === medicalCase.medicalCaseUid ? "selectedCard" : ""}`}
-        >
-          <header className="cardHeader">
-            <h2>Медицинский случай</h2>
-            {selectedMedicalCaseUid === medicalCase.medicalCaseUid ? (
-              <RadioButtonCheckedIcon />
-            ) : (
-              <RadioButtonUncheckedIcon />
-            )}
-          </header>
-          <div className="cardContent">
-            <div className="cardBlock">
-              <div className="cardBlockField">
-                <CardField
-                  label="Профиль"
-                  inline={true}
-                  value={formatNullableValue(medicalCase.medicalProfile)}
-                />
-                <CardField
-                  inline={true}
-                  label="Диагноз"
-                  value={medicalCase.primaryDiagnosis}
-                />
-                <CardField
-                  inline={true}
-                  label="Специальность"
-                  value={medicalCase.physicianSpecialty}
-                />
+    <section className={styles.medicalCasesCards} aria-label="Медицинские случаи">
+      <ul className={styles.list}>
+        {medicalCases.map((medicalCase, index) => (
+          <li key={medicalCase.medicalCaseUid}>
+            <article
+              onClick={() => selectMedicalCase(medicalCase.medicalCaseUid)}
+              className={`${styles.card} ${
+                selectedMedicalCaseUid === medicalCase.medicalCaseUid
+                  ? styles.selected
+                  : ""
+              }`}
+            >
+              <div className={styles.identity}>
+                <h3 className={styles.heading}>
+                  <button
+                    type="button"
+                    className={styles.selectButton}
+                    aria-label={`Выбрать медицинский случай ${index + 1} из ${medicalCases.length}`}
+                    aria-pressed={
+                      selectedMedicalCaseUid === medicalCase.medicalCaseUid
+                    }
+                  >
+                    Медицинский случай
+                  </button>
+                </h3>
+                <p className={styles.period}>
+                  <span className={styles.periodLabel}>Период лечения</span>
+                  <span>
+                    {formatTreatmentDate(medicalCase.treatmentStartDate)} —{" "}
+                    {formatTreatmentDate(medicalCase.treatmentEndDate)}
+                  </span>
+                </p>
+                <dl className={styles.facts}>
+                  <div>
+                    <dt>Категория</dt>
+                    <dd>{medicalCase.isPediatric ? "Ребёнок" : "Взрослый"}</dd>
+                  </div>
+                  <div>
+                    <dt>Количество</dt>
+                    <dd>{formatNullableValue(medicalCase.paidUnits)}</dd>
+                  </div>
+                </dl>
               </div>
 
-              <div className="cardBlockField">
-                <CardField
-                  inline={true}
-                  label="Дата лечения"
-                  value={`${dayjs(medicalCase.treatmentStartDate).format("DD.MM.YYYY")} — ${dayjs(medicalCase.treatmentEndDate).format("DD.MM.YYYY")}`}
-                />
+              <section className={styles.medicalInfo} aria-label="Медицинская информация">
+                <div className={styles.diagnosis}>
+                  <h4 className={styles.diagnosisLabel}>Основной диагноз</h4>
+                  <p className={styles.diagnosisCode}>
+                    {medicalCase.primaryDiagnosis || "—"}
+                  </p>
+                </div>
+                <dl className={styles.medicalDetails}>
+                  <div>
+                    <dt>Профиль медицинской помощи</dt>
+                    <dd>
+                      <span>{formatNullableValue(medicalCase.medicalProfile)}</span>
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Специальность врача</dt>
+                    <dd>
+                      <span>{formatNullableValue(medicalCase.physicianSpecialty)}</span>
+                    </dd>
+                  </div>
+                </dl>
+              </section>
 
-                <CardField
-                  inline={true}
-                  label="Категория"
-                  value={medicalCase.isPediatric ? "Ребенок" : "Взрослый"}
-                />
-              </div>
-            </div>
-
-            <Divider />
-
-            <div className="cardBlock">
-              <div className="cardBlockField">
-                <CardField
-                  inline={true}
-                  label="Тариф"
-                  value={formatCurrency(medicalCase.unitRate)}
-                />
-
-                <CardField
-                  inline={true}
-                  label="Количество"
-                  value={formatNullableValue(medicalCase.paidUnits)}
-                />
-              </div>
-
-              <div className="cardBlockField">
-                <CardField
-                  inline={true}
-                  spaceBetween={true}
-                  label="Предъявлено"
-                  value={formatCurrency(medicalCase.amountBilled)}
-                />
-                <CardField
-                  inline={true}
-                  spaceBetween={true}
-                  label="Принято"
-                  value={formatCurrency(medicalCase.approvedAmount)}
-                />
-                <CardField
-                  inline={true}
-                  spaceBetween={true}
-                  label="Принято СМО"
-                  value={formatCurrency(
-                    medicalCase.insuranceCompanyApprovedAmount,
-                  )}
-                />
-              </div>
-            </div>
-          </div>
-        </article>
-      ))}
+              <dl className={styles.finances} aria-label="Финансовые показатели">
+                <div>
+                  <dt>Тариф</dt>
+                  <dd>{formatCurrency(medicalCase.unitRate)}</dd>
+                </div>
+                <div>
+                  <dt>Предъявлено</dt>
+                  <dd>{formatCurrency(medicalCase.amountBilled)}</dd>
+                </div>
+                <div>
+                  <dt>Принято</dt>
+                  <dd>{formatCurrency(medicalCase.approvedAmount)}</dd>
+                </div>
+                <div>
+                  <dt>Принято СМО</dt>
+                  <dd>
+                    {formatCurrency(medicalCase.insuranceCompanyApprovedAmount)}
+                  </dd>
+                </div>
+              </dl>
+            </article>
+          </li>
+        ))}
+      </ul>
     </section>
   );
 };
