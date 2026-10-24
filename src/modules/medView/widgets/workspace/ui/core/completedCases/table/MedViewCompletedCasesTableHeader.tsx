@@ -29,14 +29,16 @@ export const MedViewCompletedCasesTableHeader = ({
       <div className={styles.titleGroup}>
         <h2>Законченные случаи</h2>
       </div>
-      <AppTablePagination
-        pagination={pagination}
-        totalCount={totalCount}
-        onRowsPerPageChange={onRowsPerPageChange}
-        onPageChange={onPageChange}
-        isLoading={isLoading}
-        disabled={disabled}
-      />
+      <div className={styles.pagination}>
+        <AppTablePagination
+          pagination={pagination}
+          totalCount={totalCount}
+          onRowsPerPageChange={onRowsPerPageChange}
+          onPageChange={onPageChange}
+          isLoading={isLoading}
+          disabled={disabled}
+        />
+      </div>
     </header>
   );
 };

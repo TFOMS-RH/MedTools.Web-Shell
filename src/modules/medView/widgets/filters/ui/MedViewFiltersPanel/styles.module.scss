@@ -29,14 +29,13 @@
       min-width: 0;
       gap: var(--mt-space-1);
       border: 0;
-      border-radius: var(--radius-xl);
-      background: var(--mt-surface-subtle);
+      background: transparent;
     }
 
     :global(.MuiToggleButtonGroup-root .MuiToggleButton-root) {
       flex: 1;
       min-width: 0;
-      min-height: var(--mt-space-12);
+      min-height: 44px;
       margin: 0;
       padding: var(--mt-space-2) var(--mt-space-3);
       border: 0;

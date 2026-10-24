@@ -7,8 +7,28 @@ import { resolveDataState } from "../../../../../../../../shared/helpers/resolve
 import { MedViewCompletedCasesTableHeader } from "./MedViewCompletedCasesTableHeader";
 import { Divider } from "../../../../../../../../components/ui/Divider/Divider";
 import { DataState } from "../../../../../../../../shared/ui/DataState/DataState";
+import { lazy, Suspense } from "react";
+
+const MedViewCompletedCasesTablePreview = import.meta.env.DEV
+  ? lazy(() => import("./MedViewCompletedCasesTablePreview"))
+  : null;
 
 export const MedViewCompletedCasesTableRoot = () => {
+  if (
+    MedViewCompletedCasesTablePreview &&
+    new URLSearchParams(window.location.search).get("demoTable") === "1"
+  ) {
+    return (
+      <Suspense fallback={null}>
+        <MedViewCompletedCasesTablePreview />
+      </Suspense>
+    );
+  }
+
+  return <MedViewCompletedCasesTable />;
+};
+
+const MedViewCompletedCasesTable = () => {
   const {
     completedCasePaginationState,
     setCompletedCasesTablePagination,
@@ -75,33 +95,35 @@ export const MedViewCompletedCasesTableRoot = () => {
       />
       <Divider />
 
-      {dataState === "waiting" ? (
-        <DataState
-          variant="waiting"
-          title="Примените фильтры"
-          description="Просто укажите по каким полям будем искать случаи"
-        />
-      ) : dataState === "error" ? (
-        <DataState
-          variant="error"
-          title="Ошибка данных"
-          description={error?.message ?? "Неизвестная ошибка"}
-        />
-      ) : dataState === "empty" ? (
-        <DataState
-          variant="empty"
-          title="Данных не найдено"
-          description="Нет данных по текущим фильтрам"
-        />
-      ) : (
-        <MedViewCompletedCasesTableBody
-          isPending={isPending}
-          completedCases={completedCases}
-          totalCount={completedCasePaginationState.pageSize}
-          selectCompletedCase={selectCompletedCase}
-          selectedCompletedCaseUid={selectedCompletedCaseUid}
-        />
-      )}
+      <div className={styles.content}>
+        {dataState === "waiting" ? (
+          <DataState
+            variant="waiting"
+            title="Примените фильтры"
+            description="Просто укажите по каким полям будем искать случаи"
+          />
+        ) : dataState === "error" ? (
+          <DataState
+            variant="error"
+            title="Ошибка данных"
+            description={error?.message ?? "Неизвестная ошибка"}
+          />
+        ) : dataState === "empty" ? (
+          <DataState
+            variant="empty"
+            title="Данных не найдено"
+            description="Нет данных по текущим фильтрам"
+          />
+        ) : (
+          <MedViewCompletedCasesTableBody
+            isPending={isPending}
+            completedCases={completedCases}
+            totalCount={completedCasePaginationState.pageSize}
+            selectCompletedCase={selectCompletedCase}
+            selectedCompletedCaseUid={selectedCompletedCaseUid}
+          />
+        )}
+      </div>
     </section>
   );
 };
