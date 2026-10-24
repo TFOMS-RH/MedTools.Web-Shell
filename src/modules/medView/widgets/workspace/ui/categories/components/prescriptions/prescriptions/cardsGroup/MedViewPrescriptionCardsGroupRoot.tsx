@@ -4,6 +4,7 @@ import { usePrescriptionsQuery } from "../../../../../../../../../../shared/mode
 import { useMedViewFiltersStore } from "../../../../../../../filters/model/stores/useMedViewFiltersStore";
 import { useMedViewWorkspaceStore } from "../../../../../../model/stores/useMedViewWorkspaceStore";
 import { MedViewPrescriptionCards } from "./MedViewPrescriptionCards";
+import styles from "../../styles.module.scss";
 
 export const MedViewPrescriptionCardsGroupRoot = () => {
   const { targetDb } = useMedViewFiltersStore();
@@ -26,7 +27,8 @@ export const MedViewPrescriptionCardsGroupRoot = () => {
   });
 
   return (
-    <>
+    <section className={styles.section} aria-labelledby="medview-prescriptions-heading">
+      <h3 id="medview-prescriptions-heading" className={styles.sectionHeading}>Назначения</h3>
       {dataState === "error" ? (
         <DataState
           title="Ошибка данных"
@@ -45,6 +47,6 @@ export const MedViewPrescriptionCardsGroupRoot = () => {
           isPending={isPending}
         />
       )}
-    </>
+    </section>
   );
 };

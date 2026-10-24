@@ -54,7 +54,9 @@
         background: color-mix(in srgb, var(--mt-surface) 65%, transparent);
       }
 
-      &:active { background: var(--mt-surface-hover); }
+      &:active {
+        background: var(--mt-surface-hover);
+      }
 
       &:global(.Mui-selected) {
         background: var(--mt-surface);
@@ -63,12 +65,14 @@
 
         &:hover {
           background: var(--mt-surface);
-          box-shadow: 0 1px 3px color-mix(in srgb, var(--mt-text-primary) 10%, transparent);
+          box-shadow: 0 1px 3px
+            color-mix(in srgb, var(--mt-text-primary) 10%, transparent);
         }
 
         &:active {
           background: var(--mt-surface);
-          box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--mt-medview-accent) 18%, transparent);
+          box-shadow: inset 0 0 0 1px
+            color-mix(in srgb, var(--mt-medview-accent) 18%, transparent);
         }
       }
 
@@ -103,7 +107,9 @@
       list-style: none;
     }
 
-    li { min-width: 0; }
+    li {
+      min-width: 0;
+    }
 
     button {
       position: relative;
@@ -125,7 +131,9 @@
       cursor: pointer;
       transition: background-color var(--mt-duration-fast);
 
-      &:hover { background: var(--mt-canvas); }
+      &:hover {
+        background: var(--mt-canvas);
+      }
 
       &:focus-visible {
         outline: 2px solid var(--mt-medview-accent);
@@ -133,21 +141,19 @@
       }
 
       &.selectedRow {
-        background: color-mix(in srgb, var(--mt-medview-cover) 65%, var(--mt-surface));
+        background: color-mix(
+          in srgb,
+          var(--mt-medview-cover) 65%,
+          var(--mt-surface)
+        );
         color: var(--mt-medview-accent);
 
-        &::before {
-          position: absolute;
-          inset-inline-start: 0;
-          inset-block: var(--mt-space-3);
-          width: 3px;
-          border-radius: var(--mt-radius-pill);
-          background: var(--mt-medview-accent);
-          content: "";
-        }
-
         &:hover {
-          background: color-mix(in srgb, var(--mt-medview-cover) 85%, var(--mt-surface));
+          background: color-mix(
+            in srgb,
+            var(--mt-medview-cover) 85%,
+            var(--mt-surface)
+          );
         }
       }
     }
@@ -200,7 +206,11 @@
 
       &:hover {
         border-color: transparent;
-        background: color-mix(in srgb, var(--mt-medview-accent) 88%, var(--mt-text-primary));
+        background: color-mix(
+          in srgb,
+          var(--mt-medview-accent) 88%,
+          var(--mt-text-primary)
+        );
         box-shadow: none;
       }
 

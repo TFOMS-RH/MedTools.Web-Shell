@@ -1,17 +1,64 @@
 .prescriptionsRoot {
   display: flex;
   flex-direction: column;
-  gap: var(--space-10);
+  min-width: 0;
+  gap: var(--mt-space-8);
+}
 
-  .categoryLine {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-5);
+.section {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: var(--mt-space-4);
+}
 
-    .prescriptionsGroup {
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-5);
-    }
+.sectionHeading {
+  margin: 0;
+  color: var(--mt-text-primary);
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-bold);
+  line-height: 1.4;
+}
+
+.referenceValue,
+.referenceCode {
+  display: block;
+  overflow-wrap: anywhere;
+}
+
+.referenceCode {
+  margin-top: var(--mt-space-1);
+  color: var(--mt-text-secondary);
+  font-size: var(--mt-font-body);
+  font-weight: var(--fw-default);
+  line-height: 1.5;
+}
+
+.tableViewport {
+  --mt-table-accent: var(--mt-medview-accent);
+}
+
+.referralsTable {
+  min-width: 56rem;
+  table-layout: fixed;
+
+  .organizationColumn { width: 16%; }
+  .dateColumn { width: 9rem; }
+  .typeColumn { width: 22%; }
+  .methodColumn { width: 25%; }
+
+  > thead > tr > th {
+    white-space: normal;
+    overflow-wrap: anywhere;
   }
+
+  > tbody > tr > td {
+    vertical-align: top;
+    overflow-wrap: anywhere;
+  }
+}
+
+.dateValue {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
 }
