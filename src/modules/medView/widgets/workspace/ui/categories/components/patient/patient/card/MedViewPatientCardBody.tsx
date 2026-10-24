@@ -1,212 +1,87 @@
-import type { PatientDto } from "../../../../../../../../../../shared/model/types/invoiceStructure/results/patient/GetPatientResult";
+﻿import type { PatientDto } from "../../../../../../../../../../shared/model/types/invoiceStructure/results/patient/GetPatientResult";
 import { CardField } from "../../../../../../../../../../shared/ui/CardField/CardField";
 import { Skeleton } from "@mui/material";
 import { formatNullableValue } from "../../../../../../../../../../shared/helpers/formatNullableValue";
 import { formatDate } from "../../../../../../../../../../shared/helpers/formatDate";
 
+import { MedViewPatientCardHeader } from "./MedViewPatientCardHeader";
+import styles from "../../styles.module.scss";
+
 interface MedViewPatientCardBodyProps {
   patient: PatientDto;
   isPending: boolean;
+  section?: "profile" | "document" | "representative";
 }
 
 export const MedViewPatientCardBody = ({
   patient,
   isPending,
+  section = "profile",
 }: MedViewPatientCardBodyProps) => {
+  if (section === "document") {
+    return (
+      <section className={styles.informationGroup} aria-labelledby="medview-patient-1">
+        <h3 id="medview-patient-1" className={styles.groupHeading}>Удостоверение личности</h3>
+        <div className={styles.fieldGrid}>
+          <div className={styles.wideField}>
+            <CardField
+              label="Тип"
+              value={isPending ? <Skeleton /> : `${formatNullableValue(patient.documentTypeCode)} ${patient.documentTypeName}`}
+            />
+          </div>
+          <CardField
+            label="Серия"
+            value={isPending ? <Skeleton /> : formatNullableValue(patient.documentSeries)}
+          />
+          <CardField
+            label="Номер"
+            value={isPending ? <Skeleton /> : formatNullableValue(patient.documentNumber)}
+          />
+          <CardField
+            label="Дата выдачи"
+            value={isPending ? <Skeleton /> : formatDate(patient.documentIssueDate)}
+          />
+          <div className={styles.wideField}>
+            <CardField
+              label="Кем выдан"
+              value={isPending ? <Skeleton /> : formatNullableValue(patient.issuedBy)}
+            />
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  const representative = section === "representative";
+  const fullName = isPending ? "" : (representative
+    ? [patient.patientRepresentativeLastName, patient.patientRepresentativeFirstName, patient.patientRepresentativeMiddleName]
+    : [patient.patientLastName, patient.patientFirstName, patient.patientMiddleName])
+    .map((part) => part?.trim())
+    .filter(Boolean)
+    .join(" ");
+
   return (
-    <div className="cardContent">
-      {isPending ? (
-        <div className="cardLineGroup">
-          <div className="cardLine">
-            <div className="cardLineHeader">
-              <h3>ОСНОВНОЕ</h3>
-            </div>
-            <div className="cardBlockLineTwoGrid">
-              <CardField label="Фамилия" value={<Skeleton />} inline={true} />
-              <CardField
-                label="Фамилия представителя"
-                value={<Skeleton />}
-                inline={true}
-              />
-            </div>
-            <div className="cardBlockLineTwoGrid">
-              <CardField label="Имя" value={<Skeleton />} inline={true} />
-              <CardField
-                label="Имя представителя"
-                value={<Skeleton />}
-                inline={true}
-              />
-            </div>
-            <div className="cardBlockLineTwoGrid">
-              <CardField label="Отчество" value={<Skeleton />} inline={true} />
-              <CardField
-                label="Отчество представителя"
-                value={<Skeleton />}
-                inline={true}
-              />
-            </div>
-          </div>
-          <div className="cardLine">
-            <div className="cardBlockLineTwoGrid">
-              <CardField
-                label="Дата рождения"
-                value={<Skeleton />}
-                inline={true}
-              />
-              <CardField
-                label="Дата рождения представителя"
-                value={<Skeleton />}
-                inline={true}
-              />
-            </div>
-            <div className="cardBlockLineTwoGrid">
-              <CardField label="Пол" value={<Skeleton />} inline={true} />
-              <CardField
-                label="Пол представителя"
-                value={<Skeleton />}
-                inline={true}
-              />
-            </div>
-          </div>
-          <div className="cardLine">
-            <div className="cardLineHeader">
-              <h3>ДОКУМЕНТ</h3>
-            </div>
-            <div className="cardBlockLineOneGrid">
-              <CardField label="Тип" value={<Skeleton />} inline={true} />
-            </div>
-            <div className="cardBlockLineOneGrid">
-              <CardField label="Серия" value={<Skeleton />} inline={true} />
-            </div>
-            <div className="cardBlockLineOneGrid">
-              <CardField label="Номер" value={<Skeleton />} inline={true} />
-            </div>
-          </div>
-          <div className="cardLine">
-            <div className="cardBlockLineOneGrid">
-              <CardField
-                label="Дата выдачи"
-                value={<Skeleton />}
-                inline={true}
-              />
-            </div>
-            <div className="cardBlockLineOneGrid">
-              <CardField label="Кем выдан" value={<Skeleton />} inline={true} />
-            </div>
-          </div>
-        </div>
-      ) : (
-        <div className="cardLineGroup">
-          <div className="cardLine">
-            <div className="cardBlockLineTwoGrid">
-              <CardField
-                label="Фамилия"
-                value={patient.patientLastName}
-                inline={true}
-              />
-              <CardField
-                label="Фамилия представителя"
-                value={formatNullableValue(
-                  patient.patientRepresentativeLastName,
-                )}
-                inline={true}
-              />
-            </div>
-            <div className="cardBlockLineTwoGrid">
-              <CardField
-                label="Имя"
-                value={patient.patientFirstName}
-                inline={true}
-              />
-              <CardField
-                label="Имя представителя"
-                value={formatNullableValue(
-                  patient.patientRepresentativeFirstName,
-                )}
-                inline={true}
-              />
-            </div>
-            <div className="cardBlockLineTwoGrid">
-              <CardField
-                label="Отчество"
-                value={patient.patientMiddleName}
-                inline={true}
-              />
-              <CardField
-                label="Отчество представителя"
-                value={formatNullableValue(
-                  patient.patientRepresentativeMiddleName,
-                )}
-                inline={true}
-              />
-            </div>
-          </div>
-          <div className="cardLine">
-            <div className="cardBlockLineTwoGrid">
-              <CardField
-                label="Дата рождения"
-                value={formatDate(patient.patientBirthDate)}
-                inline={true}
-              />
-              <CardField
-                label="Дата рождения представителя"
-                value={formatDate(patient.patientRepresentativeBirthday)}
-                inline={true}
-              />
-            </div>
-            <div className="cardBlockLineTwoGrid">
-              <CardField label="Пол" value={patient.patientSex} inline={true} />
-              <CardField
-                label="Пол представителя"
-                value={formatNullableValue(patient.patientRepresentativeSex)}
-                inline={true}
-              />
-            </div>
-          </div>
-          <div className="cardLine">
-            <div className="cardLineHeader">
-              <h3>ДОКУМЕНТ</h3>
-            </div>
-            <div className="cardBlockLineOneGrid">
-              <CardField
-                label="Тип"
-                value={`${formatNullableValue(patient.documentTypeCode)} ${patient.documentTypeName}`}
-                inline={true}
-              />
-            </div>
-            <div className="cardBlockLineOneGrid">
-              <CardField
-                label="Серия"
-                value={formatNullableValue(patient.documentSeries)}
-                inline={true}
-              />
-            </div>
-            <div className="cardBlockLineOneGrid">
-              <CardField
-                label="Номер"
-                value={formatNullableValue(patient.documentNumber)}
-                inline={true}
-              />
-            </div>
-          </div>
-          <div className="cardLine">
-            <div className="cardBlockLineOneGrid">
-              <CardField
-                label="Дата выдачи"
-                value={formatDate(patient.documentIssueDate)}
-                inline={true}
-              />
-            </div>
-            <div className="cardBlockLineOneGrid">
-              <CardField
-                label="Кем выдан"
-                value={formatNullableValue(patient.issuedBy)}
-                inline={true}
-              />
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+    <section
+      className={representative ? styles.representative : styles.profile}
+      aria-labelledby={representative ? "medview-patient-2" : "medview-patient-0"}
+      aria-busy={isPending}
+    >
+      {representative ? (
+        <h3 id="medview-patient-2" className={styles.groupHeading}>Представитель</h3>
+      ) : <MedViewPatientCardHeader />}
+      <p className={representative ? styles.representativeName : styles.patientName}>
+        {isPending ? <Skeleton /> : fullName || "—"}
+      </p>
+      <div className={styles.identityAttributes}>
+        <CardField
+          label={representative ? "Дата рождения представителя" : "Дата рождения"}
+          value={isPending ? <Skeleton /> : formatDate(representative ? patient.patientRepresentativeBirthday : patient.patientBirthDate)}
+        />
+        <CardField
+          label={representative ? "Пол представителя" : "Пол"}
+          value={isPending ? <Skeleton /> : formatNullableValue(representative ? patient.patientRepresentativeSex : patient.patientSex)}
+        />
+      </div>
+    </section>
   );
 };

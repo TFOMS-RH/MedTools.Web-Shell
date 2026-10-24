@@ -14,8 +14,16 @@ export const MedView = () => {
         <Divider />
         <MedViewWorkspace />
         <Divider />
-        <MedViewCategoriesPanel />
-        <MedViewCategoryRender />
+        <section className={styles.caseDetailsSection} aria-labelledby="medview-case-heading">
+          <header className={styles.caseDetailsHeader}>
+            <h2 id="medview-case-heading">Сведения о медицинском случае</h2>
+            <button className={styles.exportButton} type="button" disabled>
+              Экспорт
+            </button>
+          </header>
+          <MedViewCategoriesPanel />
+          <MedViewCategoryRender />
+        </section>
       </div>
     </PageContainer>
   );

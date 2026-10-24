@@ -1,4 +1,3 @@
-import { CategoryLineHeader } from "../../../../../../../../shared/ui/CategoryLineHeader/CategoryLineHeader";
 import { DataState } from "../../../../../../../../shared/ui/DataState/DataState";
 import { useMedViewWorkspaceStore } from "../../../../model/stores/useMedViewWorkspaceStore";
 import { MedViewInsuranceCardRoot } from "./insurance/card/MedViewInsuranceCardRoot";
@@ -10,25 +9,15 @@ const Patient = () => {
 
   return (
     <section className={styles.patientCategoryRoot}>
-      <div className={styles.categoryLine}>
-        <CategoryLineHeader
-          number={1}
-          title="Данные по медицинскому случаю"
-          description="Все, что относится к медицинскому случаю в рамках категории"
+      {selectedMedicalCaseUid === null ? (
+        <DataState
+          title="Выберите медицинский случай"
+          description="Нажмите на карточку медицинского случая для отображения данных о пациенте и СМО"
+          variant="waiting"
         />
-        {selectedMedicalCaseUid === null ? (
-          <DataState
-            title="Выберите медицинский случай"
-            description="Нажмите на карточку медицинского случая для отображения данных о пациенте и СМО"
-            variant="waiting"
-          />
-        ) : (
-          <div className={styles.patientInsuranceGroup}>
-            <MedViewPatientCardRoot />
-            <MedViewInsuranceCardRoot />
-          </div>
-        )}
-      </div>
+      ) : (
+        <MedViewPatientCardRoot insurance={<MedViewInsuranceCardRoot />} />
+      )}
     </section>
   );
 };

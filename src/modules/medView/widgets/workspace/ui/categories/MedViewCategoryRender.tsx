@@ -8,6 +8,10 @@ import {
 import { useMedViewWorkspaceStore } from "../../model/stores/useMedViewWorkspaceStore";
 import CategoryFallback from "./components/default/CategoryFallback/CategoryFallback";
 
+const PatientCategoryPreview = import.meta.env.DEV
+  ? lazy(() => import("./components/patient/MedViewPatientCategoryPreview"))
+  : null;
+
 const DefaultCategoryComponent = lazy(
   () =>
     import("../categories/components/default/DefaultCategory/DefaultCategory"),
@@ -57,13 +61,28 @@ const categoryMap = {
   export: DefaultCategoryComponent,
 } satisfies Record<MedViewCategoryId, LazyExoticComponent<ComponentType>>;
 
-export const MedViewCategoryRender = ({}) => {
-  const { targetCategory } = useMedViewWorkspaceStore();
+export const MedViewCategoryRender = () => {
+  const { targetCategory, selectedCompletedCaseUid, selectedMedicalCaseUid } =
+    useMedViewWorkspaceStore();
   const CategoryComponent = categoryMap[targetCategory];
+  const hasActiveTab = targetCategory !== "default" && targetCategory !== "export";
+  const needsSelection = selectedCompletedCaseUid === null ||
+    selectedMedicalCaseUid === null || !hasActiveTab;
+  const showPatientPreview = PatientCategoryPreview && targetCategory === "patient" &&
+    new URLSearchParams(window.location.search).get("demoPatient") === "1";
 
   return (
-    <Suspense fallback={<CategoryFallback />}>
-      <CategoryComponent />
-    </Suspense>
+    <div
+      id="medview-case-panel"
+      role={hasActiveTab ? "tabpanel" : "region"}
+      aria-labelledby={hasActiveTab ? `medview-case-tab-${targetCategory}` : "medview-case-heading"}
+      tabIndex={0}
+    >
+      <Suspense fallback={<CategoryFallback />}>
+        {showPatientPreview ? (
+          <PatientCategoryPreview />
+        ) : needsSelection ? <DefaultCategoryComponent /> : <CategoryComponent />}
+      </Suspense>
+    </div>
   );
 };

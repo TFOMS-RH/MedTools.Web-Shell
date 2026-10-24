@@ -3,15 +3,13 @@ import styles from "./styles.module.scss";
 
 const CategoryFallback = () => {
   return (
-    <div className={styles.fallback}>
-      <div className={styles.loaderContainer}>
-        <CircularProgress
-          size={30}
-          aria-label="Загрузка категории ..."
-          sx={{ color: "black" }}
-        />
-      </div>
-      <p className={styles.loaderText}>Пытаемся отобразить категорию ... </p>
+    <div className={styles.fallback} role="status">
+      <CircularProgress
+        size={20}
+        aria-label="Загрузка раздела"
+        sx={{ color: "var(--mt-medview-accent)" }}
+      />
+      <p className={styles.loaderText}>Загрузка раздела…</p>
     </div>
   );
 };
