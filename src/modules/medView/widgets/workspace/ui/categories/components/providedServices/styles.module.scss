@@ -1,11 +1,35 @@
 .providedServicesRoot {
   display: flex;
   flex-direction: column;
-  gap: var(--space-10);
+  min-width: 0;
+  gap: var(--mt-space-8);
+}
 
-  .categoryLine {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-5);
-  }
+.section {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: var(--mt-space-4);
+}
+
+.sectionHeading {
+  margin: 0;
+  color: var(--mt-text-primary);
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-bold);
+  line-height: 1.4;
+}
+
+.referenceValue,
+.referenceCode {
+  display: block;
+  overflow-wrap: anywhere;
+}
+
+.referenceCode {
+  margin-top: var(--mt-space-1);
+  color: var(--mt-text-secondary);
+  font-size: var(--mt-font-body);
+  font-weight: var(--fw-default);
+  line-height: 1.5;
 }

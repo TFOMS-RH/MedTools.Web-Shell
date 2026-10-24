@@ -1,6 +1,124 @@
-.providedServicesCards {
+.viewport {
+  --mt-table-accent: var(--mt-medview-accent);
+  container: medview-services / inline-size;
+}
+
+.servicesTable {
+  min-width: 64rem;
+  table-layout: fixed;
+
+  .periodColumn { width: 15rem; }
+  .quantityColumn { width: 7rem; }
+  .rateColumn { width: 11rem; }
+  .amountColumn { width: 12rem; }
+
+  > tbody > tr > :is(th, td) {
+    vertical-align: top;
+    overflow-wrap: anywhere;
+  }
+
+  > tbody > tr.mainRow > :is(th, td) {
+    border-bottom: 0;
+  }
+
+  > tbody > tr.detailsRow > td {
+    padding-top: 0;
+    padding-bottom: var(--mt-space-4);
+    border-bottom: 1px solid var(--mt-surface-subtle);
+  }
+
+  > tbody:last-child > tr.detailsRow > td { border-bottom: 0; }
+
+  > tbody:hover > tr { background: var(--mt-canvas); }
+
+  > tbody.selectedGroup > tr,
+  > tbody.selectedGroup:hover > tr {
+    background: color-mix(in srgb, var(--mt-medview-accent) 5%, var(--mt-surface));
+  }
+
+  > tbody.selectedGroup .serviceChoice {
+    color: var(--mt-medview-accent);
+  }
+
+  > :is(thead, tbody) > tr > .numeric,
+  > tbody > tr > .money {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  > tbody > tr > .money { white-space: nowrap; }
+  > tbody > tr > .amount { font-weight: var(--fw-bold); }
+}
+
+.serviceChoice {
+  display: flex;
+  align-items: flex-start;
+  min-width: 0;
+  gap: var(--mt-space-3);
+  color: var(--mt-text-primary);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semibold);
+  line-height: 1.5;
+  cursor: pointer;
+
+  > span { min-width: 0; }
+
+  input {
+    flex: 0 0 auto;
+    width: 18px;
+    height: 18px;
+    margin: 3px 0 0;
+    accent-color: var(--mt-medview-accent);
+    cursor: pointer;
+
+    &:focus-visible {
+      outline: 2px solid var(--mt-medview-accent);
+      outline-offset: 3px;
+    }
+  }
+}
+
+.period {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.detailsGrid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  column-gap: var(--space-5);
-  row-gap: var(--space-5);
+  grid-template-columns: minmax(0, 1fr);
+  min-width: 0;
+  margin: 0;
+  gap: var(--mt-space-3) var(--mt-space-5);
+
+  > div { min-width: 0; }
+
+  dt {
+    margin-bottom: var(--mt-space-1);
+    color: var(--mt-text-secondary);
+    font-size: var(--mt-font-body);
+    font-weight: var(--fw-default);
+    line-height: 1.5;
+  }
+
+  dd {
+    min-width: 0;
+    margin: 0;
+    color: var(--mt-text-primary);
+    font-size: var(--mt-font-body);
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+  }
+}
+
+.comment {
+  grid-column: 1 / -1;
+  dd { white-space: pre-wrap; }
+}
+
+@container medview-services (min-width: 40rem) {
+  .detailsGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@container medview-services (min-width: 64rem) {
+  .detailsGrid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }

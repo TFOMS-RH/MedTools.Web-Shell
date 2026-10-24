@@ -20,6 +20,10 @@ const PrescriptionsCategoryPreview = import.meta.env.DEV
   ? lazy(() => import("./components/prescriptions/MedViewPrescriptionsCategoryPreview"))
   : null;
 
+const ProvidedServicesCategoryPreview = import.meta.env.DEV
+  ? lazy(() => import("./components/providedServices/MedViewProvidedServicesCategoryPreview"))
+  : null;
+
 const DefaultCategoryComponent = lazy(
   () =>
     import("../categories/components/default/DefaultCategory/DefaultCategory"),
@@ -82,6 +86,8 @@ export const MedViewCategoryRender = () => {
     new URLSearchParams(window.location.search).get("demoCaseDetails") === "1";
   const showPrescriptionsPreview = PrescriptionsCategoryPreview && targetCategory === "prescriptions" &&
     new URLSearchParams(window.location.search).get("demoPrescriptions") === "1";
+  const showProvidedServicesPreview = ProvidedServicesCategoryPreview && targetCategory === "provided-services" &&
+    new URLSearchParams(window.location.search).get("demoProvidedServices") === "1";
 
   return (
     <div
@@ -97,6 +103,8 @@ export const MedViewCategoryRender = () => {
           <CaseDetailsCategoryPreview />
         ) : showPrescriptionsPreview ? (
           <PrescriptionsCategoryPreview />
+        ) : showProvidedServicesPreview ? (
+          <ProvidedServicesCategoryPreview />
         ) : needsSelection ? <DefaultCategoryComponent /> : <CategoryComponent />}
       </Suspense>
     </div>

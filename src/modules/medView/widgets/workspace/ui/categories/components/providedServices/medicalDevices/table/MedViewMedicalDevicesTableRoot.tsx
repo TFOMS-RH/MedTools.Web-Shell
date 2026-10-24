@@ -5,6 +5,7 @@ import { useMedViewFiltersStore } from "../../../../../../../filters/model/store
 import { MedViewMedicalDevicesTableHeader } from "./MedViewMedicalDevicesTableHeader";
 import { useMedViewWorkspaceStore } from "../../../../../../model/stores/useMedViewWorkspaceStore";
 import { MedViewMedicalDevicesTableBody } from "./MedViewMedicalDevicesTableBody";
+import styles from "../../styles.module.scss";
 
 export const MedViewMedicalDevicesTableRoot = () => {
   const { targetDb } = useMedViewFiltersStore();
@@ -26,7 +27,7 @@ export const MedViewMedicalDevicesTableRoot = () => {
   });
 
   return (
-    <div className="cardRoot">
+    <section className={styles.section} aria-labelledby="medview-devices-heading">
       <MedViewMedicalDevicesTableHeader />
       {dataState === "error" ? (
         <DataState
@@ -46,6 +47,6 @@ export const MedViewMedicalDevicesTableRoot = () => {
           medicalDevices={medicalDevices ?? []}
         />
       )}
-    </div>
+    </section>
   );
 };
