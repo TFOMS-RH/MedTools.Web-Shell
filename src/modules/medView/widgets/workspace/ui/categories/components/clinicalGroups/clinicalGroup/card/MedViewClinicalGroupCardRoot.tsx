@@ -1,3 +1,4 @@
+import styles from "../../styles.module.scss";
 import { resolveDataState } from "../../../../../../../../../../shared/helpers/resolveDataState";
 import { DataState } from "../../../../../../../../../../shared/ui/DataState/DataState";
 import { useMedViewFiltersStore } from "../../../../../../../filters/model/stores/useMedViewFiltersStore";
@@ -27,7 +28,7 @@ export const MedViewClinicalGroupCardRoot = () => {
   });
 
   return (
-    <div className="cardRoot">
+    <section className={styles.panel} aria-labelledby="medview-csg-heading">
       <MedViewClinicalGroupCardHeader />
       {dataState === "error" ? (
         <DataState
@@ -47,6 +48,6 @@ export const MedViewClinicalGroupCardRoot = () => {
           isPending={isPending}
         />
       )}
-    </div>
+    </section>
   );
 };

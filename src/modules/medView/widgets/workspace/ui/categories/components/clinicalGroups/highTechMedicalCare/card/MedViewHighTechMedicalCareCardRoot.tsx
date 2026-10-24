@@ -1,3 +1,4 @@
+import styles from "../../styles.module.scss";
 import { resolveDataState } from "../../../../../../../../../../shared/helpers/resolveDataState";
 import { DataState } from "../../../../../../../../../../shared/ui/DataState/DataState";
 import { useHighTechMedicalCareQuery } from "../../../../../../../../../../shared/model/queries/invoiceStructure/clinicalGroups/useHighTechMedicalCareQuery";
@@ -27,7 +28,7 @@ export const MedViewHighTechMedicalCareCardRoot = () => {
   });
 
   return (
-    <article className="cardRoot">
+    <section className={styles.panel} aria-labelledby="medview-vmp-heading">
       <MedViewHighTechMedicalCareCardHeader />
       {dataState === "error" ? (
         <DataState
@@ -47,6 +48,6 @@ export const MedViewHighTechMedicalCareCardRoot = () => {
           isPending={isPending}
         />
       )}
-    </article>
+    </section>
   );
 };

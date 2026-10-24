@@ -1,3 +1,4 @@
+import styles from "../../styles.module.scss";
 import { resolveDataState } from "../../../../../../../../../../shared/helpers/resolveDataState";
 import { DataState } from "../../../../../../../../../../shared/ui/DataState/DataState";
 import { useTreatmentComplexityCoefficientsQuery } from "../../../../../../../../../../shared/model/queries/invoiceStructure/clinicalGroups/useTreatmentComplexityCoefficientsQuery";
@@ -31,7 +32,7 @@ export const MedViewTreatmentCoefficientsListRoot = ({
   });
 
   return (
-    <article className="cardRoot">
+    <section className={styles.panel} aria-labelledby="medview-csg-coefficients-heading">
       <MedViewTreatmentCoefficientsListHeader />
       {dataState === "error" ? (
         <DataState
@@ -53,6 +54,6 @@ export const MedViewTreatmentCoefficientsListRoot = ({
           isPending={isPending}
         />
       )}
-    </article>
+    </section>
   );
 };

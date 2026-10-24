@@ -1,3 +1,4 @@
+import styles from "../../styles.module.scss";
 import { resolveDataState } from "../../../../../../../../../../shared/helpers/resolveDataState";
 import { DataState } from "../../../../../../../../../../shared/ui/DataState/DataState";
 import { useClassificationCriteriaQuery } from "../../../../../../../../../../shared/model/queries/invoiceStructure/clinicalGroups/useClassificationCriteriaQuery";
@@ -31,7 +32,7 @@ export const MedViewClassificationCriterionChipsGroupRoot = ({
   });
 
   return (
-    <div className="cardRoot">
+    <section className={styles.panel} aria-labelledby="medview-csg-criteria-heading">
       <MedViewClassificationCriterionChipsGroupHeader />
       {dataState === "error" ? (
         <DataState
@@ -52,6 +53,6 @@ export const MedViewClassificationCriterionChipsGroupRoot = ({
           classificationCriteria={classificationCriteria ?? []}
         />
       )}
-    </div>
+    </section>
   );
 };

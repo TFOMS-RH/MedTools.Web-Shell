@@ -1,6 +1,8 @@
+import type { ReactNode } from "react";
 import type { ClinicalGroupDto } from "../../../../../../../../../../shared/model/types/invoiceStructure/results/clinicalGroup/GetClinicalGroupResult";
-import { CardField } from "../../../../../../../../../../shared/ui/CardField/CardField";
 import { Skeleton } from "@mui/material";
+import { displayValue } from "../../presentation";
+import styles from "../../styles.module.scss";
 
 interface MedViewClinicalGroupCardBodyProps {
   clinicalGroup: ClinicalGroupDto;
@@ -11,177 +13,41 @@ export const MedViewClinicalGroupCardBody = ({
   clinicalGroup,
   isPending,
 }: MedViewClinicalGroupCardBodyProps) => {
+  const identityFields: [string, ReactNode][] = [
+    ["КСГ", displayValue(clinicalGroup?.clinicalStatisticalGroupNumber)],
+    ["Расчётная КСГ", displayValue(clinicalGroup?.calculatedClinicalStatisticalGroupNumber)],
+    ["КПГ", displayValue(clinicalGroup?.clinicalProfileGroupNumber)],
+    ["Модель определения КСГ", displayValue(clinicalGroup?.clinicalStatisticalGroupModelVersion)],
+    ["Использование подгруппы КСГ", clinicalGroup?.isCsgSubgroupUsed ? "Да" : "Нет"],
+    ["Использование КСЛП", clinicalGroup?.isClspUsed ? "Да" : "Нет"],
+  ];
+  const coefficientFields: [string, ReactNode][] = [
+    ["Коэффициент затратоёмкости", displayValue(clinicalGroup?.costCoefficient)],
+    ["Коэффициент управления", displayValue(clinicalGroup?.managementCoefficient)],
+    ["Базовая ставка", displayValue(clinicalGroup?.baseRate)],
+    ["Коэффициент дифференциации", displayValue(clinicalGroup?.differentiationCoefficient)],
+    ["Коэффициент уровня", displayValue(clinicalGroup?.levelCoefficient)],
+    ["Применённый КСЛП", displayValue(clinicalGroup?.complexityCoefficient)],
+  ];
+
   return (
-    <div className="cardContent">
-      {isPending ? (
-        <div className="cardLineGroup">
-          <div className="cardLine">
-            <div className="cardBlockLineTwoGrid">
-              <CardField label="КСГ" value={<Skeleton />} inline={true} />
-              <CardField label="КСГ" value={<Skeleton />} inline={true} />
-            </div>
-            <div className="cardBlockLineOneGrid">
-              <CardField label="КПГ" value={<Skeleton />} inline={true} />
-            </div>
-            <div className="cardBlockLineTwoGrid">
-              <CardField
-                label="Модель определения КСГ"
-                value={<Skeleton />}
-                inline={true}
-              />
-              <CardField
-                label="Использование подгруппы КСГ"
-                value={<Skeleton />}
-                inline={true}
-              />
-            </div>
-          </div>
-          <div className="cardLine">
-            <div className="cardBlockLineOneGrid">
-              <CardField
-                label="Коэффициент затратоемскости"
-                value={<Skeleton />}
-                inline={true}
-              />
-            </div>
-            <div className="cardBlockLineOneGrid">
-              <CardField
-                label="Коэффициент управления"
-                value={<Skeleton />}
-                inline={true}
-              />
-            </div>
-            <div className="cardBlockLineOneGrid">
-              <CardField
-                label="Коэффициент дифференциации"
-                value={<Skeleton />}
-                inline={true}
-              />
-            </div>
-            <div className="cardBlockLineOneGrid">
-              <CardField
-                label="Коэффициент уровня"
-                value={<Skeleton />}
-                inline={true}
-              />
-            </div>
-          </div>
-          <div className="cardLine">
-            <div className="cardBlockLineOneGrid">
-              <CardField
-                label="Базовая ставка"
-                value={<Skeleton />}
-                inline={true}
-              />
-            </div>
-          </div>
-          <div className="cardLine">
-            <div className="cardBlockLineTwoGrid">
-              <CardField
-                label="Использование КСЛП"
-                value={<Skeleton />}
-                inline={true}
-              />
-              <CardField
-                label="Примененный КСЛП"
-                value={<Skeleton />}
-                inline={true}
-              />
-            </div>
-          </div>
-        </div>
-      ) : (
-        <div className="cardLineGroup">
-          <div className="cardLine">
-            <div className="cardBlockLineTwoGrid">
-              <CardField
-                label="КСГ"
-                value={clinicalGroup.clinicalStatisticalGroupNumber}
-                inline={true}
-              />
-              <CardField
-                label="КСГ"
-                value={
-                  clinicalGroup.calculatedClinicalStatisticalGroupNumber ?? "—"
-                }
-                inline={true}
-              />
-            </div>
-            <div className="cardBlockLineOneGrid">
-              <CardField
-                label="КПГ"
-                value={clinicalGroup.clinicalProfileGroupNumber ?? "—"}
-                inline={true}
-              />
-            </div>
-            <div className="cardBlockLineTwoGrid">
-              <CardField
-                label="Модель определения КСГ"
-                value={clinicalGroup.clinicalStatisticalGroupModelVersion}
-                inline={true}
-              />
-              <CardField
-                label="Использование подгруппы КСГ"
-                value={clinicalGroup.isCsgSubgroupUsed ? "Да" : "Нет"}
-                inline={true}
-              />
-            </div>
-          </div>
-          <div className="cardLine">
-            <div className="cardBlockLineOneGrid">
-              <CardField
-                label="Коэффициент затратоемскости"
-                value={clinicalGroup.costCoefficient}
-                inline={true}
-              />
-            </div>
-            <div className="cardBlockLineOneGrid">
-              <CardField
-                label="Коэффициент управления"
-                value={clinicalGroup.managementCoefficient}
-                inline={true}
-              />
-            </div>
-            <div className="cardBlockLineOneGrid">
-              <CardField
-                label="Коэффициент дифференциации"
-                value={clinicalGroup.differentiationCoefficient}
-                inline={true}
-              />
-            </div>
-            <div className="cardBlockLineOneGrid">
-              <CardField
-                label="Коэффициент уровня"
-                value={clinicalGroup.levelCoefficient}
-                inline={true}
-              />
-            </div>
-          </div>
-          <div className="cardLine">
-            <div className="cardBlockLineOneGrid">
-              <CardField
-                label="Базовая ставка"
-                value={clinicalGroup.baseRate}
-                inline={true}
-              />
-            </div>
-          </div>
-          <div className="cardLine">
-            <div className="cardBlockLineTwoGrid">
-              <CardField
-                label="Использование КСЛП"
-                value={clinicalGroup.isClspUsed ? "Да" : "Нет"}
-                inline={true}
-              />
-              <CardField
-                label="Примененный КСЛП"
-                value={clinicalGroup.complexityCoefficient ?? "—"}
-                inline={true}
-              />
-            </div>
-          </div>
-        </div>
-      )}
+    <div className={styles.groups} aria-busy={isPending}>
+      <div className={styles.informationGroup}>
+        <h4 className={styles.groupHeading}>Номера, модель и признаки</h4>
+        <dl className={styles.fields}>
+          {identityFields.map(([label, value]) => (
+            <div key={label}><dt>{label}</dt><dd>{isPending ? <Skeleton /> : value}</dd></div>
+          ))}
+        </dl>
+      </div>
+      <div className={styles.informationGroup}>
+        <h4 className={styles.groupHeading}>Коэффициенты и базовая ставка</h4>
+        <dl className={styles.fields}>
+          {coefficientFields.map(([label, value]) => (
+            <div key={label}><dt>{label}</dt><dd>{isPending ? <Skeleton /> : value}</dd></div>
+          ))}
+        </dl>
+      </div>
     </div>
   );
 };

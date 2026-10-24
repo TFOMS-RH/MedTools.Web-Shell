@@ -28,6 +28,10 @@ const DefectsCategoryPreview = import.meta.env.DEV
   ? lazy(() => import("./components/defects/MedViewDefectsCategoryPreview"))
   : null;
 
+const ClinicalGroupsCategoryPreview = import.meta.env.DEV
+  ? lazy(() => import("./components/clinicalGroups/MedViewClinicalGroupsCategoryPreview"))
+  : null;
+
 const DefaultCategoryComponent = lazy(
   () =>
     import("../categories/components/default/DefaultCategory/DefaultCategory"),
@@ -94,6 +98,8 @@ export const MedViewCategoryRender = () => {
     new URLSearchParams(window.location.search).get("demoProvidedServices") === "1";
   const showDefectsPreview = DefectsCategoryPreview && targetCategory === "defects" &&
     new URLSearchParams(window.location.search).get("demoDefects") === "1";
+  const showClinicalGroupsPreview = ClinicalGroupsCategoryPreview && targetCategory === "clinical-groups" &&
+    new URLSearchParams(window.location.search).get("demoClinicalGroups") === "1";
 
   return (
     <div
@@ -113,6 +119,8 @@ export const MedViewCategoryRender = () => {
           <ProvidedServicesCategoryPreview />
         ) : showDefectsPreview ? (
           <DefectsCategoryPreview />
+        ) : showClinicalGroupsPreview ? (
+          <ClinicalGroupsCategoryPreview />
         ) : needsSelection ? <DefaultCategoryComponent /> : <CategoryComponent />}
       </Suspense>
     </div>
