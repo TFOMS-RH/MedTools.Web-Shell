@@ -12,6 +12,10 @@ const PatientCategoryPreview = import.meta.env.DEV
   ? lazy(() => import("./components/patient/MedViewPatientCategoryPreview"))
   : null;
 
+const CaseDetailsCategoryPreview = import.meta.env.DEV
+  ? lazy(() => import("./components/medicalCaseDetails/MedViewCaseDetailsCategoryPreview"))
+  : null;
+
 const DefaultCategoryComponent = lazy(
   () =>
     import("../categories/components/default/DefaultCategory/DefaultCategory"),
@@ -70,6 +74,8 @@ export const MedViewCategoryRender = () => {
     selectedMedicalCaseUid === null || !hasActiveTab;
   const showPatientPreview = PatientCategoryPreview && targetCategory === "patient" &&
     new URLSearchParams(window.location.search).get("demoPatient") === "1";
+  const showCaseDetailsPreview = CaseDetailsCategoryPreview && targetCategory === "case-details" &&
+    new URLSearchParams(window.location.search).get("demoCaseDetails") === "1";
 
   return (
     <div
@@ -81,6 +87,8 @@ export const MedViewCategoryRender = () => {
       <Suspense fallback={<CategoryFallback />}>
         {showPatientPreview ? (
           <PatientCategoryPreview />
+        ) : showCaseDetailsPreview ? (
+          <CaseDetailsCategoryPreview />
         ) : needsSelection ? <DefaultCategoryComponent /> : <CategoryComponent />}
       </Suspense>
     </div>
