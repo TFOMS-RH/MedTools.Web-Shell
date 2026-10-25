@@ -24,6 +24,11 @@ const sections = [
 export const AdminNavigation = () => {
   const permissions = useAuthStore((state) => state.permissions);
   return (
+    <>
+    <header className={styles.workspaceHeading}>
+      <h1>Администрирование</h1>
+      <p>Управление пользователями, ролями и разрешениями MedTools Web.</p>
+    </header>
     <nav className={styles.navigation} aria-label="Разделы администрирования">
       {sections
         .filter((section) =>
@@ -35,5 +40,6 @@ export const AdminNavigation = () => {
           </NavLink>
         ))}
     </nav>
+    </>
   );
 };

@@ -17,10 +17,8 @@ import {
   useUpdateAdminUserRolesMutation,
 } from "../model/useAdminUsersQueries";
 import { getApiError } from "../../../shared/helpers/getApiError";
-import { medToolsInputSx } from "../../../shared/sxConfigs/medToolsInputSx";
-import { medToolsButtonSx } from "../../../shared/sxConfigs/medToolsButtonSx";
 import { AdminQueryError } from "./AdminQueryError";
-import styles from "./styles.module.scss";
+import styles from "./userDialog.module.scss";
 
 interface UserRolesPanelProps {
   userId: string;
@@ -150,38 +148,50 @@ export const UserRolesPanel = ({
               />
             ) : (
               <>
-                <Autocomplete
-                  multiple
-                  options={catalogQuery.data}
-                  value={selectedIds
-                    .map(
-                      (id) =>
-                        catalogQuery.data.find((role) => role.id === id) ??
-                        assignedQuery.data.find((role) => role.id === id),
-                    )
-                    .filter((role) => role !== undefined)}
-                  getOptionLabel={(role) => role.name}
-                  isOptionEqualToValue={(option, value) =>
-                    option.id === value.id
-                  }
-                  disabled={
-                    blockedByProfile ||
-                    mutation.isPending ||
-                    catalogQuery.isFetching ||
-                    assignedQuery.isFetching
-                  }
-                  onChange={(_event, roles) => {
-                    setDraft(roles.map((role) => role.id));
-                    setSaved(false);
-                    setError(null);
-                  }}
-                  noOptionsText="Нет доступных ролей"
-                  size="small"
-                  sx={medToolsInputSx}
-                  renderInput={(params) => (
-                    <TextField {...params} label="Назначенные роли" />
-                  )}
-                />
+                <div className={styles.field}>
+                  <label htmlFor="admin-user-roles" className={styles.label}>Назначенные роли</label>
+                  <Autocomplete
+                    id="admin-user-roles"
+                    className={`${styles.control} ${styles.autocomplete}`}
+                    slotProps={{
+                      paper: { className: styles.menu },
+                      popper: { className: styles.popper },
+                      listbox: { className: styles.listbox },
+                    }}
+                    multiple
+                    options={catalogQuery.data}
+                    value={selectedIds
+                      .map(
+                        (id) =>
+                          catalogQuery.data.find((role) => role.id === id) ??
+                          assignedQuery.data.find((role) => role.id === id),
+                      )
+                      .filter((role) => role !== undefined)}
+                    getOptionLabel={(role) => role.name}
+                    isOptionEqualToValue={(option, value) =>
+                      option.id === value.id
+                    }
+                    disabled={
+                      blockedByProfile ||
+                      mutation.isPending ||
+                      catalogQuery.isFetching ||
+                      assignedQuery.isFetching
+                    }
+                    onChange={(_event, roles) => {
+                      setDraft(roles.map((role) => role.id));
+                      setSaved(false);
+                      setError(null);
+                    }}
+                    noOptionsText="Нет доступных ролей"
+                    size="small"
+                    renderInput={(params) => (
+                      <TextField {...params} variant="standard" slotProps={{
+                        ...params.slotProps,
+                        input: { ...params.slotProps.input, disableUnderline: true },
+                      }} />
+                    )}
+                  />
+                </div>
                 {currentUserId === userId && (
                   <Alert severity="info">
                     После изменения собственных ролей потребуется повторный
@@ -201,8 +211,7 @@ export const UserRolesPanel = ({
                 )}
                 <div className={styles.actions}>
                   <Button
-                    variant="outlined"
-                    sx={medToolsButtonSx}
+                    className={`${styles.button} ${styles.primaryButton}`}
                     onClick={handleSave}
                     loading={mutation.isPending}
                     disabled={
@@ -215,7 +224,7 @@ export const UserRolesPanel = ({
                     Сохранить роли
                   </Button>
                   <Button
-                    sx={medToolsButtonSx}
+                    className={`${styles.button} ${styles.secondaryButton}`}
                     disabled={!dirty || profileBusy || mutation.isPending}
                     onClick={() => {
                       setDraft(null);

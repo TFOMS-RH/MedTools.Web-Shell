@@ -7,8 +7,7 @@
   min-width: 0;
 }
 
-.pageHeader,
-.panelHeader {
+.pageHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -27,16 +26,14 @@
 
 .panel {
   min-width: 0;
-  overflow: hidden;
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-xxl);
-  background: var(--card-background);
-  box-shadow: var(--app-element-shadow);
 }
 
-.panelHeader {
-  padding: var(--space-8) var(--space-10);
-  border-bottom: 1px solid var(--border-default);
+.titleRow {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  min-width: 0;
+  gap: var(--mt-space-2) var(--mt-space-3);
 }
 
 .tableWrapper {

@@ -7,19 +7,16 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Divider,
 } from "@mui/material";
 import { useAdminUserQuery } from "../model/useAdminUsersQueries";
 import { useAuthStore } from "../../auth/stores/authStore";
 import { adminPermissions } from "../model/permissions";
-import { medToolsButtonSx } from "../../../shared/sxConfigs/medToolsButtonSx";
-import { CardField } from "../../../shared/ui/CardField/CardField";
 import { AdminQueryError } from "./AdminQueryError";
 import { UserProfileForm } from "./UserProfileForm";
 import { UserRolesPanel } from "./UserRolesPanel";
 import { UserStatusPanel } from "./UserStatusPanel";
 import { useUnsavedChanges } from "./useUnsavedChanges";
-import styles from "./styles.module.scss";
+import styles from "./userDialog.module.scss";
 
 export const UserDetailsDialog = ({
   userId,
@@ -56,11 +53,13 @@ export const UserDetailsDialog = ({
         maxWidth="md"
         onClose={requestClose}
         aria-labelledby="admin-user-title"
+        slotProps={{ paper: { className: styles.paper } }}
       >
-        <DialogTitle id="admin-user-title">
-          {query.data ? query.data.userName : "Пользователь"}
+        <DialogTitle component="div" id="admin-user-header" className={styles.header}>
+          <h2 id="admin-user-title">Редактирование пользователя</h2>
+          {query.data && <p className={styles.login}>{query.data.userName}</p>}
         </DialogTitle>
-        <DialogContent dividers>
+        <DialogContent className={styles.content}>
           {query.isPending ? (
             <CircularProgress
               color="inherit"
@@ -75,13 +74,6 @@ export const UserDetailsDialog = ({
             />
           ) : (
             <div className={styles.details}>
-              <div className={styles.identity}>
-                <CardField label="Идентификатор" value={query.data.id} />
-                <CardField
-                  label="Организация (ID)"
-                  value={query.data.organizationId}
-                />
-              </div>
               <UserProfileForm
                 user={query.data}
                 canEdit={canEdit}
@@ -89,7 +81,6 @@ export const UserDetailsDialog = ({
                 onDirtyChange={setProfileDirty}
                 onBusyChange={setProfileBusy}
               />
-              <Divider />
               <UserRolesPanel
                 userId={userId}
                 profileDirty={profileDirty}
@@ -103,11 +94,18 @@ export const UserDetailsDialog = ({
                 disabled={dirty || profileBusy || rolesBusy}
                 onBusyChange={setStatusBusy}
               />
+              <section className={styles.system} aria-labelledby="admin-user-system-title">
+                <h3 id="admin-user-system-title">Системная информация</h3>
+                <dl className={styles.identity}>
+                  <div><dt>Идентификатор</dt><dd>{query.data.id}</dd></div>
+                  <div><dt>Организация (ID)</dt><dd>{query.data.organizationId}</dd></div>
+                </dl>
+              </section>
             </div>
           )}
         </DialogContent>
-        <DialogActions>
-          <Button sx={medToolsButtonSx} disabled={busy} onClick={requestClose}>
+        <DialogActions className={styles.footer}>
+          <Button className={`${styles.button} ${styles.closeButton}`} disabled={busy} onClick={requestClose}>
             Закрыть
           </Button>
         </DialogActions>
@@ -116,6 +114,7 @@ export const UserDetailsDialog = ({
         open={confirmClose}
         onClose={() => setConfirmClose(false)}
         aria-labelledby="discard-user-title"
+        slotProps={{ paper: { className: `${styles.paper} ${styles.confirmation}` } }}
       >
         <DialogTitle id="discard-user-title">
           Закрыть без сохранения?
@@ -126,10 +125,10 @@ export const UserDetailsDialog = ({
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button sx={medToolsButtonSx} onClick={() => setConfirmClose(false)}>
+          <Button className={`${styles.button} ${styles.secondaryButton}`} onClick={() => setConfirmClose(false)}>
             Продолжить редактирование
           </Button>
-          <Button sx={medToolsButtonSx} onClick={onClose}>
+          <Button className={`${styles.button} ${styles.primaryButton}`} onClick={onClose}>
             Не сохранять
           </Button>
         </DialogActions>

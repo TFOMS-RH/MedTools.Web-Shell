@@ -1,7 +1,5 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { Alert, Button, TextField } from "@mui/material";
-import { medToolsInputSx } from "../../../shared/sxConfigs/medToolsInputSx";
-import { medToolsButtonSx } from "../../../shared/sxConfigs/medToolsButtonSx";
 import {
   getApiError,
   type ApiErrorInfo,
@@ -16,7 +14,7 @@ import {
   type UserFormValues,
 } from "../model/userForm";
 import type { AdminUser } from "../model/types";
-import styles from "./styles.module.scss";
+import styles from "./userDialog.module.scss";
 
 interface UserProfileFormProps {
   user: AdminUser;
@@ -89,40 +87,45 @@ export const UserProfileForm = ({
           (field) => {
             const error = validation[field] ?? serverError?.fields[field];
             return (
-              <TextField
-                key={field}
-                label={userFieldLabels[field]}
-                value={values[field]}
-                type={field === "birthDate" ? "date" : "text"}
-                size="small"
-                fullWidth
-                required={
-                  canEdit && (field === "firstName" || field === "lastName")
-                }
-                disabled={disabled || mutation.isPending}
-                error={Boolean(error)}
-                helperText={error}
-                sx={medToolsInputSx}
-                slotProps={{
-                  inputLabel: { shrink: true },
-                  input: { readOnly: !canEdit },
-                  htmlInput: {
-                    maxLength: field === "birthDate" ? undefined : 255,
-                  },
-                }}
-                onChange={(event) => {
-                  setValues((previous) => ({
-                    ...previous,
-                    [field]: event.target.value,
-                  }));
-                  setSaved(false);
-                  setValidation((previous) => ({
-                    ...previous,
-                    [field]: undefined,
-                  }));
-                  setServerError(null);
-                }}
-              />
+              <div key={field} className={styles.field}>
+                <label htmlFor={`admin-user-${field}`} className={styles.label}>
+                  {userFieldLabels[field]}
+                  {canEdit && (field === "firstName" || field === "lastName") && <span aria-hidden="true"> *</span>}
+                </label>
+                <TextField
+                  id={`admin-user-${field}`}
+                  variant="standard"
+                  className={styles.control}
+                  value={values[field]}
+                  type={field === "birthDate" ? "date" : "text"}
+                  size="small"
+                  fullWidth
+                  required={
+                    canEdit && (field === "firstName" || field === "lastName")
+                  }
+                  disabled={disabled || mutation.isPending}
+                  error={Boolean(error)}
+                  helperText={error}
+                  slotProps={{
+                    input: { readOnly: !canEdit, disableUnderline: true },
+                    htmlInput: {
+                      maxLength: field === "birthDate" ? undefined : 255,
+                    },
+                  }}
+                  onChange={(event) => {
+                    setValues((previous) => ({
+                      ...previous,
+                      [field]: event.target.value,
+                    }));
+                    setSaved(false);
+                    setValidation((previous) => ({
+                      ...previous,
+                      [field]: undefined,
+                    }));
+                    setServerError(null);
+                  }}
+                />
+              </div>
             );
           },
         )}
@@ -144,8 +147,7 @@ export const UserProfileForm = ({
         <div className={styles.actions}>
           <Button
             type="submit"
-            variant="outlined"
-            sx={medToolsButtonSx}
+            className={`${styles.button} ${styles.primaryButton}`}
             loading={mutation.isPending}
             disabled={!dirty || disabled}
           >
@@ -153,7 +155,7 @@ export const UserProfileForm = ({
           </Button>
           <Button
             type="button"
-            sx={medToolsButtonSx}
+            className={`${styles.button} ${styles.secondaryButton}`}
             disabled={!dirty || disabled || mutation.isPending}
             onClick={reset}
           >

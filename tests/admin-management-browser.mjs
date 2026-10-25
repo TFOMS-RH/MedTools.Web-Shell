@@ -234,12 +234,13 @@ try {
       throw new Error(JSON.stringify(result.exceptionDetails));
     return result.result.value;
   };
-  const waitFor = async (expression) => {
-    const deadline = Date.now() + 15_000;
+  const waitFor = async (expression, timeout = 15_000) => {
+    const deadline = Date.now() + timeout;
     while (Date.now() < deadline) {
       if (await evaluate(`Boolean(${expression})`)) return;
       await new Promise((resolve) => setTimeout(resolve, 100));
     }
+    console.error('Browser timeout diagnostics', await evaluate('({url:location.href,readyState:document.readyState,body:document.body?.innerText})'), exceptions);
     throw new Error(`Browser condition timed out: ${expression}`);
   };
   const click = (label) =>
@@ -264,10 +265,17 @@ try {
     );
     await call("Page.navigate", { url: `${origin}${route}` });
   };
+  const openCombobox = async () => {
+    await waitFor(`document.querySelector('[role=combobox]')?.disabled === false`);
+    const point = await evaluate(`(()=>{const e=document.querySelector('[role=combobox]');e.scrollIntoView({block:'center'});const r=e.getBoundingClientRect();return {x:r.x+r.width/2,y:r.y+r.height/2};})()`);
+    for (const type of ["mousePressed", "mouseReleased"])
+      await call("Input.dispatchMouseEvent", { type, ...point, button: "left", clickCount: 1 });
+  };
 
   await call("Page.navigate", { url: `${origin}/admin/roles` });
   await waitFor(
     `location.pathname === '/login' && document.querySelector('input[autocomplete=username]')`,
+    60_000, // Allow the first development module graph to load on a cold start.
   );
   console.log("PASS: guests cannot open administration");
 
@@ -285,7 +293,7 @@ try {
   await waitFor(`document.body.innerText.includes('Оператор')`);
   await click("Открыть");
   await waitFor(`document.querySelector('[role=combobox]')`);
-  await evaluate(`document.querySelector('[role=combobox]').click()`);
+  await openCombobox();
   await waitFor(`document.querySelector('[role=option]')`);
   await evaluate(
     `[...document.querySelectorAll('[role=option]')].find(option => option.textContent.includes('app.update')).click()`,
@@ -344,7 +352,7 @@ try {
   await waitFor(`document.querySelector('[role=combobox]')`);
   await click("Создать пользователя");
   await waitFor(`document.body.innerText.includes('Укажите логин.')`);
-  await evaluate(`document.querySelector('[role=combobox]').click()`);
+  await openCombobox();
   await waitFor(`document.querySelector('[role=option]')`);
   await evaluate(`document.querySelector('[role=option]').click()`);
   for (const [label, value] of [

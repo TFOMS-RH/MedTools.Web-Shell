@@ -13,6 +13,7 @@ import { UserDetailsDialog } from "../ui/UserDetailsDialog";
 import { AdminNavigation } from "../ui/AdminNavigation";
 import { CreateUserDialog } from "../ui/CreateUserDialog";
 import styles from "../ui/styles.module.scss";
+import workspaceStyles from "../ui/access.module.scss";
 
 export const AdminUsers = () => {
   const permissions = useAuthStore((state) => state.permissions);
@@ -46,36 +47,39 @@ const UsersCatalog = ({
   const [created, setCreated] = useState(false);
 
   return (
-    <section className={styles.page}>
+    <section className={`${styles.page} ${workspaceStyles.workspace}`}>
       <AdminNavigation />
-      <header className={styles.pageHeader}>
+      <header className={`${styles.pageHeader} ${workspaceStyles.catalogHeader}`}>
         <div>
-          <h2>Пользователи</h2>
+          <div className={styles.titleRow}>
+            <h2>Пользователи</h2>
+            {canRead && query.data && (
+              <span className={styles.secondary}>Всего: {query.data.length}</span>
+            )}
+          </div>
           <p className={styles.secondary}>Учётные записи MedTools Web</p>
         </div>
         <div className={styles.actions}>
-          {canCreate && (
-            <Button
-              variant="outlined"
-              sx={medToolsButtonSx}
-              onClick={() => {
-                setCreated(false);
-                setCreating(true);
-              }}
-            >
-              Создать пользователя
-            </Button>
-          )}
           {canRead && (
             <Button
-              variant="outlined"
-              sx={medToolsButtonSx}
+              className={workspaceStyles.button}
               disabled={query.isFetching}
               onClick={() => {
                 void query.refetch();
               }}
             >
               Обновить список
+            </Button>
+          )}
+          {canCreate && (
+            <Button
+              className={workspaceStyles.primaryButton}
+              onClick={() => {
+                setCreated(false);
+                setCreating(true);
+              }}
+            >
+              Создать пользователя
             </Button>
           )}
         </div>
@@ -91,14 +95,6 @@ const UsersCatalog = ({
           aria-label="Список пользователей"
           aria-busy={query.isFetching}
         >
-          <div className={styles.panelHeader}>
-            <h3>Учётные записи</h3>
-            {query.data && (
-              <span className={styles.secondary}>
-                Всего: {query.data.length}
-              </span>
-            )}
-          </div>
           {query.isFetching && (
             <LinearProgress
               color="inherit"

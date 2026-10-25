@@ -26,60 +26,33 @@
 
     :global(.MuiToggleButtonGroup-root) {
       display: flex;
-      min-width: 0;
-      gap: var(--mt-space-1);
-      border: 0;
-      background: transparent;
+      width: 100%;
+      padding: var(--mt-space-1);
+      border-radius: var(--radius-xl);
+      background: var(--mt-canvas);
+      box-sizing: border-box;
+      height: 44px;
     }
-
-    :global(.MuiToggleButtonGroup-root .MuiToggleButton-root) {
+    :global(.MuiToggleButton-root) {
       flex: 1;
       min-width: 0;
-      min-height: 44px;
       margin: 0;
-      padding: var(--mt-space-2) var(--mt-space-3);
+      padding: var(--mt-space-2);
       border: 0;
-      border-radius: var(--radius-xl);
-      background: transparent;
+      border-radius: var(--radius-l);
       color: var(--mt-text-secondary);
       font-size: var(--mt-font-body);
-      line-height: 1.5;
-      overflow-wrap: anywhere;
-      transition:
-        background-color var(--mt-duration-fast),
-        color var(--mt-duration-fast),
-        box-shadow var(--mt-duration-fast);
-
-      &:hover {
-        background: color-mix(in srgb, var(--mt-surface) 65%, transparent);
-      }
-
-      &:active {
-        background: var(--mt-surface-hover);
-      }
-
+      text-transform: none;
+      &:hover { background: var(--mt-surface-hover); }
       &:global(.Mui-selected) {
         background: var(--mt-surface);
         color: var(--mt-medview-accent);
-        font-weight: var(--fw-bold);
-
-        &:hover {
-          background: var(--mt-surface);
-          box-shadow: 0 1px 3px
-            color-mix(in srgb, var(--mt-text-primary) 10%, transparent);
-        }
-
-        &:active {
-          background: var(--mt-surface);
-          box-shadow: inset 0 0 0 1px
-            color-mix(in srgb, var(--mt-medview-accent) 18%, transparent);
-        }
+        font-weight: var(--fw-semibold);
+        &:hover { background: var(--mt-surface); }
       }
-
       &:global(.Mui-focusVisible) {
-        z-index: 1;
         outline: 2px solid var(--mt-medview-accent);
-        outline-offset: 2px;
+        outline-offset: 1px;
       }
     }
   }

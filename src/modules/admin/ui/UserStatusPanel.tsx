@@ -7,7 +7,7 @@ import { useAuthStore } from "../../auth/stores/authStore";
 import { adminPermissions } from "../model/permissions";
 import { useUpdateAdminUserStatusMutation } from "../model/useAdminUsersQueries";
 import { getApiError } from "../../../shared/helpers/getApiError";
-import styles from "./access.module.scss";
+import styles from "./userDialog.module.scss";
 
 export const UserStatusPanel = ({ userId, userName, disabled, onBusyChange }: {
   userId: string;
@@ -69,7 +69,8 @@ export const UserStatusPanel = ({ userId, userName, disabled, onBusyChange }: {
       )}
       <Dialog open={requestedStatus !== null} onClose={() => {
         if (!mutation.isPending) setRequestedStatus(null);
-      }} aria-labelledby="user-status-title">
+      }} aria-labelledby="user-status-title"
+        slotProps={{ paper: { className: `${styles.paper} ${styles.confirmation}` } }}>
         <DialogTitle id="user-status-title">
           {requestedStatus ? "Активировать учётную запись?" : "Отключить учётную запись?"}
         </DialogTitle>
@@ -81,8 +82,8 @@ export const UserStatusPanel = ({ userId, userName, disabled, onBusyChange }: {
           {error && <Alert severity="error">{error}</Alert>}
         </DialogContent>
         <DialogActions>
-          <Button disabled={mutation.isPending} onClick={() => setRequestedStatus(null)}>Отмена</Button>
-          <Button disabled={disabled || !canEdit} loading={mutation.isPending} onClick={save}>
+          <Button className={`${styles.button} ${styles.secondaryButton}`} disabled={mutation.isPending} onClick={() => setRequestedStatus(null)}>Отмена</Button>
+          <Button className={`${styles.button} ${styles.primaryButton}`} disabled={disabled || !canEdit} loading={mutation.isPending} onClick={save}>
             {requestedStatus ? "Активировать" : "Отключить"}
           </Button>
         </DialogActions>
