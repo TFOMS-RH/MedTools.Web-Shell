@@ -13,15 +13,24 @@ const PatientCategoryPreview = import.meta.env.DEV
   : null;
 
 const CaseDetailsCategoryPreview = import.meta.env.DEV
-  ? lazy(() => import("./components/medicalCaseDetails/MedViewCaseDetailsCategoryPreview"))
+  ? lazy(
+      () =>
+        import("./components/medicalCaseDetails/MedViewCaseDetailsCategoryPreview"),
+    )
   : null;
 
 const PrescriptionsCategoryPreview = import.meta.env.DEV
-  ? lazy(() => import("./components/prescriptions/MedViewPrescriptionsCategoryPreview"))
+  ? lazy(
+      () =>
+        import("./components/prescriptions/MedViewPrescriptionsCategoryPreview"),
+    )
   : null;
 
 const ProvidedServicesCategoryPreview = import.meta.env.DEV
-  ? lazy(() => import("./components/providedServices/MedViewProvidedServicesCategoryPreview"))
+  ? lazy(
+      () =>
+        import("./components/providedServices/MedViewProvidedServicesCategoryPreview"),
+    )
   : null;
 
 const DefectsCategoryPreview = import.meta.env.DEV
@@ -29,7 +38,10 @@ const DefectsCategoryPreview = import.meta.env.DEV
   : null;
 
 const ClinicalGroupsCategoryPreview = import.meta.env.DEV
-  ? lazy(() => import("./components/clinicalGroups/MedViewClinicalGroupsCategoryPreview"))
+  ? lazy(
+      () =>
+        import("./components/clinicalGroups/MedViewClinicalGroupsCategoryPreview"),
+    )
   : null;
 
 const OncologyCategoryPreview = import.meta.env.DEV
@@ -89,29 +101,64 @@ export const MedViewCategoryRender = () => {
   const { targetCategory, selectedCompletedCaseUid, selectedMedicalCaseUid } =
     useMedViewWorkspaceStore();
   const CategoryComponent = categoryMap[targetCategory];
-  const hasActiveTab = targetCategory !== "default" && targetCategory !== "export";
-  const needsSelection = selectedCompletedCaseUid === null ||
-    selectedMedicalCaseUid === null || !hasActiveTab;
-  const showPatientPreview = PatientCategoryPreview && targetCategory === "patient" &&
-    new URLSearchParams(window.location.search).get("demoPatient") === "1";
-  const showCaseDetailsPreview = CaseDetailsCategoryPreview && targetCategory === "case-details" &&
-    new URLSearchParams(window.location.search).get("demoCaseDetails") === "1";
-  const showPrescriptionsPreview = PrescriptionsCategoryPreview && targetCategory === "prescriptions" &&
-    new URLSearchParams(window.location.search).get("demoPrescriptions") === "1";
-  const showProvidedServicesPreview = ProvidedServicesCategoryPreview && targetCategory === "provided-services" &&
-    new URLSearchParams(window.location.search).get("demoProvidedServices") === "1";
-  const showDefectsPreview = DefectsCategoryPreview && targetCategory === "defects" &&
-    new URLSearchParams(window.location.search).get("demoDefects") === "1";
-  const showClinicalGroupsPreview = ClinicalGroupsCategoryPreview && targetCategory === "clinical-groups" &&
-    new URLSearchParams(window.location.search).get("demoClinicalGroups") === "1";
-  const showOncologyPreview = OncologyCategoryPreview && targetCategory === "oncology" &&
-    new URLSearchParams(window.location.search).get("demoOncology") === "1";
+  const hasActiveTab =
+    targetCategory !== "default" && targetCategory !== "export";
+  const needsSelection =
+    selectedCompletedCaseUid === null ||
+    selectedMedicalCaseUid === null ||
+    !hasActiveTab;
+  const workspacePreview =
+    import.meta.env.DEV &&
+    new URLSearchParams(window.location.search).get("demoWorkspace") === "1";
+  const showPatientPreview =
+    PatientCategoryPreview &&
+    targetCategory === "patient" &&
+    (new URLSearchParams(window.location.search).get("demoPatient") === "1" ||
+      workspacePreview);
+  const showCaseDetailsPreview =
+    CaseDetailsCategoryPreview &&
+    targetCategory === "case-details" &&
+    (new URLSearchParams(window.location.search).get("demoCaseDetails") ===
+      "1" ||
+      workspacePreview);
+  const showPrescriptionsPreview =
+    PrescriptionsCategoryPreview &&
+    targetCategory === "prescriptions" &&
+    (new URLSearchParams(window.location.search).get("demoPrescriptions") ===
+      "1" ||
+      workspacePreview);
+  const showProvidedServicesPreview =
+    ProvidedServicesCategoryPreview &&
+    targetCategory === "provided-services" &&
+    (new URLSearchParams(window.location.search).get("demoProvidedServices") ===
+      "1" ||
+      workspacePreview);
+  const showDefectsPreview =
+    DefectsCategoryPreview &&
+    targetCategory === "defects" &&
+    (new URLSearchParams(window.location.search).get("demoDefects") === "1" ||
+      workspacePreview);
+  const showClinicalGroupsPreview =
+    ClinicalGroupsCategoryPreview &&
+    targetCategory === "clinical-groups" &&
+    (new URLSearchParams(window.location.search).get("demoClinicalGroups") ===
+      "1" ||
+      workspacePreview);
+  const showOncologyPreview =
+    OncologyCategoryPreview &&
+    targetCategory === "oncology" &&
+    (new URLSearchParams(window.location.search).get("demoOncology") === "1" ||
+      workspacePreview);
 
   return (
     <div
       id="medview-case-panel"
       role={hasActiveTab ? "tabpanel" : "region"}
-      aria-labelledby={hasActiveTab ? `medview-case-tab-${targetCategory}` : "medview-case-heading"}
+      aria-labelledby={
+        hasActiveTab
+          ? `medview-case-tab-${targetCategory}`
+          : "medview-case-heading"
+      }
       tabIndex={0}
     >
       <Suspense fallback={<CategoryFallback />}>
@@ -129,7 +176,11 @@ export const MedViewCategoryRender = () => {
           <ClinicalGroupsCategoryPreview />
         ) : showOncologyPreview ? (
           <OncologyCategoryPreview />
-        ) : needsSelection ? <DefaultCategoryComponent /> : <CategoryComponent />}
+        ) : needsSelection ? (
+          <DefaultCategoryComponent />
+        ) : (
+          <CategoryComponent />
+        )}
       </Suspense>
     </div>
   );
