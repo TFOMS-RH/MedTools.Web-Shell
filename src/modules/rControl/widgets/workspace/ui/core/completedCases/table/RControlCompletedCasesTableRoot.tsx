@@ -5,7 +5,6 @@ import { RControlCompletedCasesTableHeader } from "./RControlCompletedCasesTable
 import { useRControlWorkspaceStore } from "../../../../model/store/useRControlWorkspaceStore";
 import { resolveDataState } from "../../../../../../../../shared/helpers/resolveDataState";
 import { DataState } from "../../../../../../../../shared/ui/DataState/DataState";
-import { Divider } from "../../../../../../../../components/ui/Divider/Divider";
 import styles from "./styles.module.scss";
 
 export const RControlCompletedCasesTableRoot = () => {
@@ -79,8 +78,6 @@ export const RControlCompletedCasesTableRoot = () => {
         isLoading={isLoading}
         disabled={isFetching}
       />
-      <Divider />
-
       {dataState === "waiting" ? (
         <DataState
           variant="waiting"

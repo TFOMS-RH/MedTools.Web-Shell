@@ -2,7 +2,7 @@ import { useRControlWorkspacePanelStore } from "../../../../model/store/useRCont
 import { useInvoiceListItemsQuery } from "../../../../../../../../shared/model/queries/invoiceStructure/invoices/useInvoiceListItemsQuery";
 import { resolveDataState } from "../../../../../../../../shared/helpers/resolveDataState";
 import { DataState } from "../../../../../../../../shared/ui/DataState/DataState";
-import { Divider } from "../../../../../../../../components/ui/Divider/Divider";
+import { RControlInvoiceSummaryCardRoot } from "../../invoiceSummary/card/RControlInvoiceSummaryCardRoot";
 import { useRControlWorkspaceStore } from "../../../../model/store/useRControlWorkspaceStore";
 import { RControlInvoicesTableHeader } from "./RControlInvoicesTableHeader";
 import { RControlInvoicesTableBody } from "./RControlInvoicesTableBody";
@@ -87,8 +87,6 @@ export const RControlInvoicesTableRoot = () => {
         disabled={isFetching}
       />
 
-      <Divider />
-
       {dataState === "waiting" ? (
         <DataState
           variant="waiting"
@@ -114,6 +112,11 @@ export const RControlInvoicesTableRoot = () => {
           invoices={invoices}
           selectInvoice={selectInvoice}
           selectedInvoiceUid={selectedInvoiceUid}
+        />
+      )}
+      {selectedInvoiceUid !== null && (
+        <RControlInvoiceSummaryCardRoot
+          invoiceNumber={invoices.find(invoice => invoice.invoiceUid === selectedInvoiceUid)?.number}
         />
       )}
     </section>

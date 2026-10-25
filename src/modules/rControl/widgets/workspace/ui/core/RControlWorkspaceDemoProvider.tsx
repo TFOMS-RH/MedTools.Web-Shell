@@ -58,16 +58,21 @@ export default function RControlWorkspaceDemoProvider({
         };
       } else if (path.endsWith("/invoices")) {
         kind = "Invoices";
+        const requestedCount = Number(flags.get("demoInvoiceCount") ?? 2);
+        const count = Number.isFinite(requestedCount)
+          ? Math.min(100, Math.max(0, Math.floor(requestedCount))) : 2;
+        const start = (Number(params.page) - 1) * Number(params.pageSize);
         value = {
-          recordsCount: 2,
-          invoices: [11, 12].map((uid) => ({
-            invoiceUid: uid,
-            number: `ДЕМО-${params.targetDb}-${uid}`,
-            billingDate: "2026-01-03",
-            amount: 1234.56,
-            medicalCasesCount: 2,
-            status: 0,
-          })),
+          recordsCount: count,
+          invoices: Array.from({ length: count }, (_, index) => index + 11)
+            .slice(start, start + Number(params.pageSize)).map((uid) => ({
+              invoiceUid: uid,
+              number: `ДЕМО-${params.targetDb}-${uid}`,
+              billingDate: "2026-01-03",
+              amount: 1234.56,
+              medicalCasesCount: 2,
+              status: 0,
+            })),
         };
       } else if (/\/invoices\/\d+\/summary$/.test(path)) {
         kind = "Summary";
@@ -134,12 +139,12 @@ export default function RControlWorkspaceDemoProvider({
         mode === "loading"
           ? 30000
           : Math.max(
-              0,
-              Math.min(
-                5000,
-                Number.isFinite(requestedDelay) ? requestedDelay : 200,
-              ),
-            );
+            0,
+            Math.min(
+              5000,
+              Number.isFinite(requestedDelay) ? requestedDelay : 200,
+            ),
+          );
       await new Promise((resolve) => window.setTimeout(resolve, delay));
       if (mode === "empty") {
         value =
@@ -167,19 +172,19 @@ export default function RControlWorkspaceDemoProvider({
         data:
           mode === "error"
             ? {
-                isFailure: true,
-                isSuccess: false,
-                error,
-                clientMessage: error,
-                value: null,
-              }
+              isFailure: true,
+              isSuccess: false,
+              error,
+              clientMessage: error,
+              value: null,
+            }
             : {
-                isFailure: false,
-                isSuccess: true,
-                error: "",
-                clientMessage: "",
-                value,
-              },
+              isFailure: false,
+              isSuccess: true,
+              error: "",
+              clientMessage: "",
+              value,
+            },
       };
     };
     setReady(true);

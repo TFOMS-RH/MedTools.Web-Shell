@@ -1,6 +1,5 @@
-import { Divider } from "../../../components/ui/Divider/Divider";
 import { PageContainer } from "../../../components/layouts/PageContainer/PageContainer";
-import { RControlWorkspacePanel } from "../widgets/workspace/ui/panels/workspacePanel/RControlWorkspacePanel";
+import { useRControlWorkspaceStore } from "../widgets/workspace/model/store/useRControlWorkspaceStore";
 import { RControlCategoryRender } from "../widgets/workspace/ui/categories/RControlCategoryRender";
 import { RControlWorkspace } from "../widgets/workspace/ui/core/RControlWorkspace";
 import { RControlCategoriesPanel } from "../widgets/workspace/ui/panels/categoriesPanel/RControlCategoriesPanel";
@@ -9,9 +8,9 @@ import { lazy, Suspense } from "react";
 
 const WorkspaceDemo = import.meta.env.DEV
   ? lazy(
-      () =>
-        import("../widgets/workspace/ui/core/RControlWorkspaceDemoProvider"),
-    )
+    () =>
+      import("../widgets/workspace/ui/core/RControlWorkspaceDemoProvider"),
+  )
   : null;
 
 export const RControl = () => {
@@ -31,18 +30,17 @@ export const RControl = () => {
 };
 
 const RControlContent = () => {
+  const { selectedMedicalCaseUid } = useRControlWorkspaceStore();
   return (
     <PageContainer width="wide">
       <div className={styles.page}>
-        <div className={styles.workspaceGroup}>
-          <RControlWorkspacePanel />
-          <RControlWorkspace />
-        </div>
-        <Divider />
-        <div className={styles.workspaceGroup}>
-          <RControlCategoriesPanel />
-          <RControlCategoryRender />
-        </div>
+        <RControlWorkspace />
+        {selectedMedicalCaseUid !== null && (
+          <div className={styles.workspaceGroup} tabIndex={0} role="region" aria-label="Информационные категории медицинского случая">
+            <RControlCategoriesPanel />
+            <RControlCategoryRender />
+          </div>
+        )}
       </div>
     </PageContainer>
   );

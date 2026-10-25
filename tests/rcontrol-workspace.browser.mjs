@@ -361,8 +361,8 @@ try {
     if(client===queryClient) throw Error('Demo QueryClient not found');
   }
   window.rcStore=store;window.rcPanel=panel;window.rcClient=client;
-  window.rcArea=t=>[...document.querySelectorAll('h2')].find(e=>e.textContent.trim()===t)?.closest('section,article');
-  window.rcInv=()=>rcArea('Счета');window.rcComp=()=>rcArea('Законченные случаи');
+  window.rcArea=t=>[...document.querySelectorAll('h2,h3')].find(e=>e.textContent.trim()===t)?.closest('section,article');
+  window.rcInv=()=>rcArea('Реестр счетов')??rcArea('Счета');window.rcComp=()=>rcArea('Законченные случаи');
   window.rcMeds=()=>[...document.querySelectorAll('[class*=medicalCasesCards_] > article.selectedCardRoot')];
  })()`);
   await initialize();
@@ -443,11 +443,11 @@ try {
     await evaluate(
       'rcInv().querySelectorAll("tbody button")[' + index + "].click()",
     );
-    await until('rcComp().querySelectorAll("tbody button").length===2');
+    await until('rcComp()?.querySelectorAll("tbody button").length===2');
   };
   const selectCompleted = async (index) => {
     await evaluate(
-      'rcComp().querySelectorAll("tbody button")[' + index + "].click()",
+      'rcComp()?.querySelectorAll("tbody button")[' + index + "].click()",
     );
     await until(
       "rcMeds().length===2&&rcStore.getState().selectedMedicalCaseUid!==null",
@@ -468,7 +468,7 @@ try {
     await originalChoose(1,"2026");await originalChoose(2,"1");
     await until('rcInv().querySelectorAll("tbody tr").length===2');
     await evaluate('rcInv().querySelector("tbody tr").click()');
-    await until('rcComp().querySelectorAll("tbody tr").length===2');
+    await until('rcComp()?.querySelectorAll("tbody tr").length===2');
     await evaluate('rcComp().querySelector("tbody tr").click()');
     await until('rcMeds().length===2');
     await evaluate('document.fonts.ready.then(()=>true)');
@@ -490,13 +490,11 @@ try {
       )),
   );
   await evaluate('rcStore.getState().setTargetCategory("patient")');
-  await until(
-    'document.body.textContent.includes("Подробные сведения доступны")',
-  );
+  await pause();
   check(
-    "no category loading or requests without medical parent",
+    "no categories, tables, medical blocks or requests without their parent",
     requests.length === 0 &&
-      (await evaluate('!document.querySelector(".MuiSkeleton-root")')),
+      (await evaluate('!document.querySelector(".MuiSkeleton-root")&&!rcComp()&&!document.querySelector("[class*=invoicesTableRoot_]")&&!document.querySelector("[class*=categoriesPanelRoot_]")&&rcMeds().length===0')),
   );
   await evaluate('rcStore.getState().setTargetCategory("default")');
   modes.org = "error";
@@ -585,7 +583,7 @@ try {
   await pause();
   await evaluate('rcInv().querySelector("tbody button").focus()');
   await press("Enter");
-  await until('rcComp().querySelectorAll("tbody button").length===2');
+  await until('rcComp()?.querySelectorAll("tbody button").length===2');
   check(
     "native invoice Enter activates once",
     await evaluate(
@@ -619,7 +617,7 @@ try {
     ),
   );
   await input("rcComp", "");
-  await until('rcComp().querySelectorAll("tbody button").length===2');
+  await until('rcComp()?.querySelectorAll("tbody button").length===2');
   await evaluate(
     "(()=>{const original=rcStore.getState().selectCompletedCase;window.completedActions=0;rcStore.setState({selectCompletedCase:uid=>{window.completedActions++;original(uid);}});})()",
   );
@@ -678,7 +676,7 @@ try {
   check(
     "missing invoice on partial page does not reset or hide confirmed child",
     await evaluate(
-      'rcStore.getState().selectedInvoiceUid===11&&rcStore.getState().selectedMedicalCaseUid===1112&&rcComp().querySelectorAll("tbody button").length===2',
+      'rcStore.getState().selectedInvoiceUid===11&&rcStore.getState().selectedMedicalCaseUid===1112&&rcComp()?.querySelectorAll("tbody button").length===2',
     ),
   );
   shiftedInvoices = false;
@@ -709,6 +707,7 @@ try {
   await selectInvoice(1);
   await evaluate('rcComp().querySelector("tbody button").click()');
   await pause();
+  check("medical area opens while loading but categories remain hidden",await evaluate(`document.querySelector('[aria-label="Медицинские случаи"]')&&!document.querySelector('[class*=categoriesPanelRoot_]')`));
   const oldParent = await evaluate(
     "rcStore.getState().selectedCompletedCaseUid",
   );
@@ -892,12 +891,15 @@ try {
   const demoMode = async (name, mode) => {
     await evaluate(`(()=>{const u=new URL(location.href);u.searchParams.set(${JSON.stringify('demo'+name)},${JSON.stringify(mode)});history.replaceState(history.state,'',u);})()`);
   };
-  const screenshot = async (name) => {
-    const result = await send("Page.captureScreenshot", { format:"png" });
+  const screenshot = async (name, selector) => {
+    const clip = selector ? await evaluate(`(()=>{const r=document.querySelector(${JSON.stringify(selector)}).getBoundingClientRect();return {x:r.x+scrollX,y:r.y+scrollY,width:r.width,height:r.height,scale:1};})()`) : undefined;
+    const result = await send("Page.captureScreenshot", { format:"png", ...(clip ? {clip,captureBeyondViewport:true} : {}) });
     const path = join(profile, name + ".png");
     await writeFile(path, Buffer.from(result.data, "base64"));
     console.log("SCREENSHOT " + path);
   };
+  await screenshot("rcontrol-context-initial");
+  check("demo state A shows one accounts workspace and no dependent areas",await evaluate(`document.querySelector('#rcontrol-accounts-title')&&document.querySelector('#rcontrol-context-title')&&!document.querySelector('[class*=invoicesTableRoot_]')&&!rcComp()&&!document.querySelector('[aria-label="Медицинские случаи"]')&&!document.querySelector('[class*=categoriesPanelRoot_]')`));
   await mouse('document.querySelector("button[value=SMODB18]")');
   await until('document.body.textContent.includes("Загрузка организаций")');
   check("demo initial organizations loading", await evaluate('document.querySelector("[aria-label=Организация]").getAttribute("aria-busy")==="true"'));
@@ -921,16 +923,37 @@ try {
   await choose("Год","2026");
   await choose("Месяц","1");
   await until('rcInv().querySelectorAll("tbody button").length===2');
+  const summary = 'document.querySelector("[aria-labelledby=rcontrol-invoice-summary-title]")';
+  check("demo summary absent before invoice selection",await evaluate(`!${summary}`));
+  check("demo state B hides completed and medical areas",await evaluate(`!rcComp()&&rcMeds().length===0&&!document.querySelector('[class*=categoriesPanelRoot_]')`));
+  await demoMode("Invoices","empty");
+  await invalidate("invoice-list-items");
+  check("demo invoices empty keeps summary hidden",await evaluate(`rcInv().textContent.includes('Нет найденных счетов')&&!${summary}`));
+  await screenshot("rcontrol-invoices-empty");
+  await demoMode("Invoices","error");
+  await invalidate("invoice-list-items");
+  check("demo invoices error keeps summary hidden",await evaluate(`rcInv().textContent.includes('Демонстрационная ошибка: Invoices')&&!${summary}`));
+  await screenshot("rcontrol-invoices-error");
+  await demoMode("Invoices","ready");
+  await evaluate(`(()=>{const u=new URL(location.href);u.searchParams.set('demoDelay','1000');history.replaceState(history.state,'',u);void rcClient.resetQueries({queryKey:['r-control','invoice-list-items']});})()`);
+  await until('rcInv().querySelector(".MuiSkeleton-root")');
+  await screenshot("rcontrol-invoices-loading");
+  await until('rcInv().querySelectorAll("tbody button").length===2');
+  await evaluate(`(()=>{const u=new URL(location.href);u.searchParams.set('demoDelay','400');history.replaceState(history.state,'',u);})()`);
+  await screenshot("rcontrol-context-ready");
   await evaluate(`(()=>{const original=rcStore.getState().selectInvoice;window.invoiceActions=0;rcStore.setState({selectInvoice:uid=>{invoiceActions++;original(uid)}});const originalCase=rcStore.getState().selectCompletedCase;window.completedActions=0;rcStore.setState({selectCompletedCase:uid=>{completedActions++;originalCase(uid)}});})()`);
   await pause();
   await mouse('rcInv().querySelector("tbody tr td:nth-child(2)")');
-  await until('rcComp().querySelectorAll("tbody button").length===2');
+  await until('rcComp()?.querySelectorAll("tbody button").length===2');
   check("demo native mouse invoice row selects once",await evaluate("invoiceActions===1&&rcStore.getState().selectedInvoiceUid===11"));
+  check("demo state C shows completed cases as a separate sibling section",await evaluate(`(()=>{const accounts=document.querySelector('[aria-labelledby=rcontrol-accounts-title]'),completed=rcComp();return ${summary}?.closest('[aria-labelledby=rcontrol-accounts-title]')===accounts&&!accounts.contains(completed)&&accounts.nextElementSibling===completed&&getComputedStyle(completed).backgroundColor==='rgb(255, 255, 255)'&&rcMeds().length===0&&!document.querySelector('[class*=categoriesPanelRoot_]');})()`));
+  await screenshot("rcontrol-workspace-invoice-selected",'[aria-labelledby=rcontrol-accounts-title]');
   await mouse('rcComp().querySelector("tbody button")');
   await until("rcStore.getState().selectedMedicalCaseUid===1111");
   check("demo native mouse case button selects once and reaches medical",await evaluate("completedActions===1&&rcStore.getState().selectedCompletedCaseUid===111&&rcMeds().length===2"));
+  check("demo state E shows all seven categories after automatic medical selection",await evaluate(`document.querySelector('[class*=categoriesPanelRoot_]')?.children.length===7`));
   await mouse('rcInv().querySelectorAll("tbody button")[1]');
-  await until("rcStore.getState().selectedInvoiceUid===12&&rcComp().querySelectorAll('tbody button').length===2");
+  await until("rcStore.getState().selectedInvoiceUid===12&&rcComp()?.querySelectorAll('tbody button').length===2");
   check("demo invoice button has no double activation",await evaluate("invoiceActions===2&&rcStore.getState().selectedMedicalCaseUid===null"));
   await mouse('rcComp().querySelector("tbody tr td:nth-child(2)")');
   await until("rcStore.getState().selectedMedicalCaseUid===1211");
@@ -943,7 +966,7 @@ try {
   };
   await tabTo('rcInv().querySelector("tbody button")');
   await press("Enter");
-  await until('rcStore.getState().selectedInvoiceUid===11&&rcComp().querySelectorAll("tbody button").length===2');
+  await until('rcStore.getState().selectedInvoiceUid===11&&rcComp()?.querySelectorAll("tbody button").length===2');
   check("demo Enter invoice once",await evaluate("invoiceActions===3"));
   await press(" ");
   check("demo Space invoice once",await evaluate("invoiceActions===4"));
@@ -957,18 +980,41 @@ try {
   await evaluate('rcComp().querySelector("tbody button").scrollIntoView({block:"center"})');
   await screenshot("rcontrol-selected-focus-1440");
   for(const area of ["rcInv","rcComp"]) {
-    const colors=await evaluate(`(()=>{const rows=${area}().querySelectorAll('tbody tr');return [...rows].map(e=>({selected:e.classList.contains('selectedRow'),background:getComputedStyle(e).backgroundColor}));})()`);
+    const colors=await evaluate(`(()=>{const rows=${area}().querySelectorAll('tbody tr');return [...rows].map(e=>({selected:e.classList.contains('selectedRow')||e.classList.contains('mt-table__row--selected'),background:getComputedStyle(e).backgroundColor}));})()`);
     check("demo selected styling "+area,colors.some(e=>e.selected)&&colors[0].background!==colors[1].background);
   }
+  check("demo summary is inside invoices below the table",await evaluate(`${summary}?.closest('[class*=invoicesTableRoot_]')===rcInv()&&${summary}.getBoundingClientRect().top>=rcInv().querySelector('table').getBoundingClientRect().bottom`));
+  check("demo summary identifies selected invoice",await evaluate(`${summary}.querySelector('header').textContent.includes('ДЕМО-SMODB18-11')`));
+  await demoMode("Summary","error");
+  await invalidate("invoice-summary");
+  check("demo summary error does not block completed cases",await evaluate(`${summary}.textContent.includes('Демонстрационная ошибка: Summary')&&rcComp()?.querySelectorAll('tbody button').length===2`));
+  await screenshot("rcontrol-summary-error");
+  await demoMode("Summary","empty");
+  await invalidate("invoice-summary");
+  check("demo summary empty",await evaluate(`${summary}.textContent.includes('Подробных данных о счете не найдено')`));
+  await demoMode("Summary","ready");
+  await evaluate(`(()=>{const u=new URL(location.href);u.searchParams.set('demoDelay','1000');history.replaceState(history.state,'',u);void rcClient.resetQueries({queryKey:['r-control','invoice-summary']});})()`);
+  await until(`${summary}?.querySelector('.MuiSkeleton-root')`);
+  check("demo summary loading leaves completed cases usable",await evaluate('rcComp()?.querySelectorAll("tbody button").length===2'));
+  await screenshot("rcontrol-summary-loading");
+  await until(`!${summary}?.querySelector('.MuiSkeleton-root')`);
+  check("demo summary preserves all financial and metadata fields",await evaluate(`${summary}.querySelectorAll('dd').length===12`));
+  await demoMode("Completed","error");
+  await invalidate("completed-cases");
+  check("demo completed error does not hide financial information",await evaluate(`rcComp().textContent.includes('Демонстрационная ошибка: Completed')&&${summary}.querySelectorAll('dd').length===12`));
+  await demoMode("Completed","ready");
+  await invalidate("completed-cases");
+  await evaluate(`(()=>{const u=new URL(location.href);u.searchParams.set('demoDelay','400');history.replaceState(history.state,'',u);})()`);
   await input("rcInv","saved-invoice");
+  check("demo invoice search uses RControl focus",await evaluate(`getComputedStyle(rcInv().querySelector('.MuiOutlinedInput-notchedOutline')).borderColor==='rgb(36, 135, 109)'`));
   await until('rcInv().querySelectorAll("tbody button").length===2');
   await selectInvoice(0);
   await input("rcComp","saved-case");
-  await until('rcComp().querySelectorAll("tbody button").length===2');
+  await until('rcComp()?.querySelectorAll("tbody button").length===2');
   await input("rcComp","unsent",false);
   await mouse('rcInv().querySelectorAll("tbody button")[1]');
   check("demo parent restores applied search",await evaluate('rcComp().querySelector("input[placeholder]").value==="saved-case"'));
-  await until('rcComp().querySelectorAll("tbody button").length===2');
+  await until('rcComp()?.querySelectorAll("tbody button").length===2');
   await selectCompleted(0);
   await demoMode("Medical","empty");
   await invalidate("medical-cases");
@@ -983,6 +1029,36 @@ try {
     await pause();
     const geometry=await evaluate(`({viewport:innerWidth,page:document.documentElement.scrollWidth,body:document.body.scrollWidth,overflow:[...document.querySelectorAll('body *')].filter(e=>e.getBoundingClientRect().right>innerWidth+1).slice(0,8).map(e=>({tag:e.tagName,cls:e.className,right:e.getBoundingClientRect().right}))})`);
     console.log("DEMO GEOMETRY "+JSON.stringify(geometry));
+    const scoped=await evaluate(`(()=>{const elements=[document.querySelector('[aria-labelledby=rcontrol-context-title]'),rcInv(),rcComp(),document.querySelector('[aria-labelledby=rcontrol-accounts-title]')];return elements.map(e=>({width:e.clientWidth,scroll:e.scrollWidth,right:e.getBoundingClientRect().right}));})()`);
+    check("demo redesigned areas fit at "+width,scoped.every(e=>e.scroll<=e.width+1&&e.right<=width+1));
+    check("accounts and completed sections share width and alignment at "+width,await evaluate(`(()=>{const a=document.querySelector('[aria-labelledby=rcontrol-accounts-title]').getBoundingClientRect(),b=rcComp().getBoundingClientRect();return Math.abs(a.width-b.width)<1&&Math.abs(a.left-b.left)<1&&b.top>=a.bottom;})()`));
+    check("demo page does not overflow at "+width,geometry.page<=width+1&&geometry.body<=width+1);
+    if(width===360||width===1440) {
+      await screenshot("rcontrol-workspace-"+width,'[aria-labelledby=rcontrol-accounts-title]');
+      await screenshot("rcontrol-completed-"+width,'[class*=CompletedCasesTableRoot_]');
+    }
+    const contextControls=await evaluate(`(()=>{const panel=document.querySelector('[aria-labelledby=rcontrol-context-title]');return [...panel.querySelectorAll('.MuiToggleButtonGroup-root,.MuiInputBase-root')].map(e=>Math.round(e.getBoundingClientRect().height));})()`);
+    check("demo context controls have a consistent 44px height at "+width,contextControls.length===4&&contextControls.every(h=>h===44));
+    if(width===360) {
+      await evaluate(`(()=>{window.originalOrganizations=rcClient.getQueryData(['r-control','medical-organizations','SMODB18']);rcClient.setQueryData(['r-control','medical-organizations','SMODB18'],originalOrganizations.map((e,i)=>i===0?{...e,medicalOrganizationName:'ДЕМОНСТРАЦИОННОЕ ДЛИННОЕ НАЗВАНИЕ ОРГАНИЗАЦИИ '.repeat(5)}:e));})()`);
+      await pause();
+      await evaluate(`document.querySelector('[aria-label=Организация] [role=combobox]').dispatchEvent(new MouseEvent('mousedown',{bubbles:true,button:0}))`);
+      await until('document.querySelector("[role=listbox]")');
+      check("demo long organization names wrap fully in menu",await evaluate(`(()=>{const e=document.querySelector('[role=option][data-value="001"]');const r=e.getBoundingClientRect();return e.textContent.includes('ДЛИННОЕ НАЗВАНИЕ')&&getComputedStyle(e).whiteSpace==='normal'&&e.scrollWidth<=e.clientWidth+1&&r.right<=innerWidth;})()`));
+      await pause(300);
+      await screenshot("rcontrol-organization-long-360");
+      await send('Input.dispatchKeyEvent',{type:'keyDown',key:'Escape',code:'Escape',windowsVirtualKeyCode:27});
+      await send('Input.dispatchKeyEvent',{type:'keyUp',key:'Escape',code:'Escape',windowsVirtualKeyCode:27});
+      await until('!document.querySelector("[role=listbox]")');
+      await evaluate(`rcClient.setQueryData(['r-control','medical-organizations','SMODB18'],originalOrganizations)`);
+      await pause();
+    }
+    const scrollTable=await evaluate(`(()=>{const e=rcInv().querySelector('.mt-table-viewport');e.scrollLeft=e.scrollWidth;return {width:e.clientWidth,scroll:e.scrollWidth,left:e.scrollLeft};})()`);
+    if(width===360) check("demo invoices scroll horizontally inside the section",scrollTable.scroll>scrollTable.width&&scrollTable.left>0);
+    if(width===360||width===768||width===1024||width===1920) {
+      await evaluate('rcInv().scrollIntoView({block:"start"})');
+      await screenshot("rcontrol-invoices-"+width);
+    }
     if(geometry.page>width+1||geometry.body>width+1) {
       const baseline=JSON.parse(await readFile(baselinePath,'utf8')).find(e=>e.viewport===width);
       console.log('LIMIT existing horizontal overflow at '+width+'; baseline='+JSON.stringify(baseline));
@@ -993,6 +1069,20 @@ try {
       await screenshot("rcontrol-demo-"+width);
     }
   }
+  await evaluate(`(()=>{const u=new URL(location.href);u.searchParams.set('demoInvoiceCount','100');history.replaceState(history.state,'',u);})()`);
+  for(const pageSize of [10,25,50,100]) {
+    await evaluate(`rcStore.getState().setInvoicesTablePagination({page:0,pageSize:${pageSize}})`);
+    await invalidate("invoice-list-items");
+    await until(`rcInv().querySelectorAll('tbody button').length===${pageSize}`);
+    check("pagination change collapses invoice descendants at "+pageSize,await evaluate(`!rcComp()&&!${summary}&&rcMeds().length===0&&!document.querySelector('[class*=categoriesPanelRoot_]')`));
+    const sticky=await evaluate(`(()=>{const e=rcInv().querySelector('.mt-table-viewport');e.scrollTop=e.scrollHeight;const r=e.getBoundingClientRect(),h=e.querySelector('th').getBoundingClientRect();return {height:e.clientHeight,scroll:e.scrollHeight,top:e.scrollTop,offset:Math.abs(r.top-h.top)};})()`);
+    check("invoice viewport is bounded with CSS sticky at "+pageSize,sticky.height<=400&&sticky.scroll>sticky.height&&sticky.top>0&&sticky.offset<2);
+  }
+  await evaluate(`rcInv().scrollIntoView({block:'start'})`);
+  await screenshot("rcontrol-invoices-100-sticky");
+  await evaluate(`(()=>{const u=new URL(location.href);u.searchParams.delete('demoInvoiceCount');history.replaceState(history.state,'',u);rcStore.getState().setInvoicesTablePagination({page:0,pageSize:10});})()`);
+  await until('rcInv().querySelectorAll("tbody button").length===2');
+  await selectInvoice(0);await selectCompleted(0);
   await choose("Месяц","2");
   check("demo month clears descendants",await evaluate("rcStore.getState().selectedInvoiceUid===null&&rcStore.getState().selectedMedicalCaseUid===null&&rcMeds().length===0"));
   await until('rcInv().querySelectorAll("tbody button").length===2');
@@ -1010,6 +1100,7 @@ try {
   await selectInvoice(0);await selectCompleted(0);
   await mouse('document.querySelector("button[value=INOGOROD18]")');
   check("demo source clears old descendants immediately",await evaluate("rcStore.getState().selectedInvoiceUid===null&&rcStore.getState().selectedCompletedCaseUid===null&&rcStore.getState().selectedMedicalCaseUid===null&&rcMeds().length===0"));
+  check("demo summary hides after context reset",await evaluate(`!${summary}`));
   console.log("RCONTROL DEMO BROWSER CHECKS COMPLETE");
   check("no runtime exceptions or out-of-range select values", runtimeErrors.length === 0);
   }

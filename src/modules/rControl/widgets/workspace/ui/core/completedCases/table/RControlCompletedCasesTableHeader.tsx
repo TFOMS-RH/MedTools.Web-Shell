@@ -69,23 +69,29 @@ export const RControlCompletedCasesTableHeader = ({
   return (
     <header className={styles.completedCasesTableHeader}>
       <div className={styles.titleGroup}>
-        <h2>Законченные случаи</h2>
+        <h3>Законченные случаи</h3>
         <StatusBadge state={state} />
       </div>
-      <SearchInput
-        placeholder="Поиск внутри счёта — Enter"
-        searchValue={searchValue}
-        onChange={onChangeSearchValue}
-        onSearch={onSearch}
-      />
-      <AppTablePagination
-        pagination={pagination}
-        totalCount={totalCount}
-        onRowsPerPageChange={onRowsPerPageChange}
-        onPageChange={onPageChange}
-        isLoading={isLoading}
-        disabled={disabled}
-      />
+      <div className={styles.toolbar}>
+        <div className={styles.search}>
+          <SearchInput
+            placeholder="Поиск внутри счёта — Enter"
+            searchValue={searchValue}
+            onChange={onChangeSearchValue}
+            onSearch={onSearch}
+          />
+        </div>
+        <div className={styles.pagination}>
+          <AppTablePagination
+            pagination={pagination}
+            totalCount={totalCount}
+            onRowsPerPageChange={onRowsPerPageChange}
+            onPageChange={onPageChange}
+            isLoading={isLoading}
+            disabled={disabled}
+          />
+        </div>
+      </div>
     </header>
   );
 };
