@@ -1,21 +1,21 @@
+import { useRControlWorkspacePanelStore } from "../../../../model/store/useRControlWorkspacePanelStore";
 import { useCompletedCaseListItemsQuery } from "../../../../../../../../shared/model/queries/invoiceStructure/completedCases/useCompletedCaseListItemsQuery";
 import { RControlCompletedCasesTableBody } from "./RControlCompletedCasesTableBody";
 import { RControlCompletedCasesTableHeader } from "./RControlCompletedCasesTableHeader";
 import { useRControlWorkspaceStore } from "../../../../model/store/useRControlWorkspaceStore";
 import { resolveDataState } from "../../../../../../../../shared/helpers/resolveDataState";
-import { useRControlWorkspacePanelStore } from "../../../../model/store/useRControlWorkspacePanelStore";
 import { DataState } from "../../../../../../../../shared/ui/DataState/DataState";
 import { Divider } from "../../../../../../../../components/ui/Divider/Divider";
 import styles from "./styles.module.scss";
 
 export const RControlCompletedCasesTableRoot = () => {
   const {
-    selectedInvoiceUid,
-    selectedCompletedCaseUid,
     completedCasesTablePagination,
     completedCasesTableSearchString,
     selectCompletedCase,
     setCompletedCasesTablePagination,
+    selectedInvoiceUid,
+    selectedCompletedCaseUid,
   } = useRControlWorkspaceStore();
 
   const { targetDb } = useRControlWorkspacePanelStore();

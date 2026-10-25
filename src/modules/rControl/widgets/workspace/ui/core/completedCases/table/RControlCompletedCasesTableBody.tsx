@@ -1,3 +1,4 @@
+import styles from "../../styles.module.scss";
 import type { CompletedCaseListItemDto } from "../../../../../../../../shared/model/types/invoiceStructure/results/medicalCases/GetCompletedCaseListItemsResult";
 import { formatCurrency } from "../../../../../../../../shared/helpers/formatCurrency";
 import { formatNullableValue } from "../../../../../../../../shared/helpers/formatNullableValue";
@@ -65,7 +66,23 @@ export const RControlCompletedCasesTableBody = ({
                   selectCompletedCase(completedCase.completedCaseUid)
                 }
               >
-                <td>{completedCase.entryPositionNumber}</td>
+                <td>
+                  <button
+                    type="button"
+                    className={styles.rowSelectButton}
+                    aria-label={`Выбрать законченный случай ${completedCase.entryNumber}: ${completedCase.patientLastName} ${completedCase.patientFirstName} ${completedCase.patientMiddleName}`}
+                    aria-pressed={
+                      selectedCompletedCaseUid ===
+                      completedCase.completedCaseUid
+                    }
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      selectCompletedCase(completedCase.completedCaseUid);
+                    }}
+                  >
+                    {completedCase.entryPositionNumber}
+                  </button>
+                </td>
                 <td>{completedCase.entryNumber}</td>
                 <td>{completedCase.patientLastName}</td>
                 <td>{completedCase.patientFirstName}</td>

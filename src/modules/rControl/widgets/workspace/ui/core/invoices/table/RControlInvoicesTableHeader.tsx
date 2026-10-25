@@ -1,10 +1,11 @@
+import { useRControlWorkspacePanelStore } from "../../../../model/store/useRControlWorkspacePanelStore";
 import type { DataState } from "../../../../../../../../shared/types/DataState";
 import type { PaginationState } from "../../../../../../../../shared/types/PaginationState";
 import { AppTablePagination } from "../../../../../../../../shared/ui/AppTablePagination/AppTablePagination";
 import { SearchInput } from "../../../../../../../../shared/ui/SearchInput/SearchInput";
 import { StatusBadge } from "../../../../../../../../shared/ui/StatusBadge/StatusBadge";
 import { useRControlWorkspaceStore } from "../../../../model/store/useRControlWorkspaceStore";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./styles.module.scss";
 
 interface RControlInvoicesTableHeaderProps {
@@ -31,8 +32,25 @@ export const RControlInvoicesTableHeader = ({
   isLoading,
   disabled,
 }: RControlInvoicesTableHeaderProps) => {
-  const [searchValue, setSearchValue] = useState("");
-  const { setInvoicesSearch } = useRControlWorkspaceStore();
+  const { setInvoicesSearch, invoiceTableSearchString } =
+    useRControlWorkspaceStore();
+  const {
+    targetDb,
+    selectedMedicalOrganization,
+    selectedBillingYear,
+    selectedBillingMonth,
+  } = useRControlWorkspacePanelStore();
+  const [searchValue, setSearchValue] = useState(invoiceTableSearchString);
+  useEffect(
+    () => setSearchValue(invoiceTableSearchString),
+    [
+      invoiceTableSearchString,
+      targetDb,
+      selectedMedicalOrganization,
+      selectedBillingYear,
+      selectedBillingMonth,
+    ],
+  );
 
   const onChangeSearchValue = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchValue(event.target.value);
@@ -49,6 +67,7 @@ export const RControlInvoicesTableHeader = ({
         <StatusBadge state={state} />
       </div>
       <SearchInput
+        placeholder="Поиск среди счетов — Enter"
         searchValue={searchValue}
         onChange={onChangeSearchValue}
         onSearch={onSearch}

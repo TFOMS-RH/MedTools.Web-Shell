@@ -1,3 +1,4 @@
+import { DataState } from "../../../../../../shared/ui/DataState/DataState";
 import type { RControlCategoryId } from "../../../../../../shared/model/types/CategoryId";
 import { useRControlWorkspaceStore } from "../../model/store/useRControlWorkspaceStore";
 import CategoryFallback from "./components/default/CategoryFallback/CategoryFallback";
@@ -54,8 +55,17 @@ const categoryMap = {
 } satisfies Record<RControlCategoryId, LazyExoticComponent<ComponentType>>;
 
 export const RControlCategoryRender = () => {
-  const { targetCategory } = useRControlWorkspaceStore();
+  const { targetCategory, selectedMedicalCaseUid } = useRControlWorkspaceStore();
   const CategoryComponent = categoryMap[targetCategory];
+  if (targetCategory !== "default" && selectedMedicalCaseUid === null) {
+    return (
+      <DataState
+        title="Выберите медицинский случай"
+        description="Подробные сведения доступны после выбора актуальной медицинской карточки."
+        variant="waiting"
+      />
+    );
+  }
 
   return (
     <Suspense fallback={<CategoryFallback />}>

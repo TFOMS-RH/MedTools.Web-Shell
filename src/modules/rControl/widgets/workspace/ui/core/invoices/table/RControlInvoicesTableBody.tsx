@@ -1,3 +1,4 @@
+import styles from "../../styles.module.scss";
 import type { InvoiceListItemDto } from "../../../../../../../../shared/model/types/invoiceStructure/results/invoices/GetInvoiceListItemsResult";
 import { formatCurrency } from "../../../../../../../../shared/helpers/formatCurrency";
 import { TableSkeleton } from "../../../../../../../../shared/ui/TableSkeleton/TableSkeleton";
@@ -42,7 +43,20 @@ export const RControlInvoicesTableBody = ({
                 key={invoice.invoiceUid}
                 onClick={() => selectInvoice(invoice.invoiceUid)}
               >
-                <td>{invoice.number}</td>
+                <td>
+                  <button
+                    type="button"
+                    className={styles.rowSelectButton}
+                    aria-label={`Выбрать счёт ${invoice.number} от ${dayjs(invoice.billingDate).format("DD.MM.YYYY")}`}
+                    aria-pressed={selectedInvoiceUid === invoice.invoiceUid}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      selectInvoice(invoice.invoiceUid);
+                    }}
+                  >
+                    {invoice.number}
+                  </button>
+                </td>
                 <td>{dayjs(invoice.billingDate).format("DD.MM.YYYY")}</td>
                 <td>{formatCurrency(invoice.amount)}</td>
                 <td>{invoice.medicalCasesCount}</td>

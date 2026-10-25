@@ -1,6 +1,6 @@
+import { useRControlWorkspacePanelStore } from "../../../../model/store/useRControlWorkspacePanelStore";
 import { useInvoiceListItemsQuery } from "../../../../../../../../shared/model/queries/invoiceStructure/invoices/useInvoiceListItemsQuery";
 import { resolveDataState } from "../../../../../../../../shared/helpers/resolveDataState";
-import { useRControlWorkspacePanelStore } from "../../../../model/store/useRControlWorkspacePanelStore";
 import { DataState } from "../../../../../../../../shared/ui/DataState/DataState";
 import { Divider } from "../../../../../../../../components/ui/Divider/Divider";
 import { useRControlWorkspaceStore } from "../../../../model/store/useRControlWorkspaceStore";
@@ -12,9 +12,9 @@ export const RControlInvoicesTableRoot = () => {
   const {
     invoiceTableSearchString,
     invoicesTablePagination,
-    selectedInvoiceUid,
     setInvoicesTablePagination,
     selectInvoice,
+    selectedInvoiceUid,
   } = useRControlWorkspaceStore();
   const {
     targetDb,

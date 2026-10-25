@@ -1,10 +1,11 @@
+import { useRControlWorkspacePanelStore } from "../../../../model/store/useRControlWorkspacePanelStore";
 import type { PaginationState } from "../../../../../../../../shared/types/PaginationState";
 import type { DataState } from "../../../../../../../../shared/types/DataState";
 import { AppTablePagination } from "../../../../../../../../shared/ui/AppTablePagination/AppTablePagination";
 import { useRControlWorkspaceStore } from "../../../../model/store/useRControlWorkspaceStore";
 import { SearchInput } from "../../../../../../../../shared/ui/SearchInput/SearchInput";
 import { StatusBadge } from "../../../../../../../../shared/ui/StatusBadge/StatusBadge";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./styles.module.scss";
 
 interface RControlCompletedCasesTableHeaderProps {
@@ -31,8 +32,31 @@ export const RControlCompletedCasesTableHeader = ({
   isLoading,
   disabled,
 }: RControlCompletedCasesTableHeaderProps) => {
-  const [searchValue, setSearchValue] = useState("");
-  const { setCompletedCasesSearch } = useRControlWorkspaceStore();
+  const {
+    setCompletedCasesSearch,
+    completedCasesTableSearchString,
+    selectedInvoiceUid,
+  } = useRControlWorkspaceStore();
+  const {
+    targetDb,
+    selectedMedicalOrganization,
+    selectedBillingYear,
+    selectedBillingMonth,
+  } = useRControlWorkspacePanelStore();
+  const [searchValue, setSearchValue] = useState(
+    completedCasesTableSearchString,
+  );
+  useEffect(
+    () => setSearchValue(completedCasesTableSearchString),
+    [
+      completedCasesTableSearchString,
+      targetDb,
+      selectedMedicalOrganization,
+      selectedBillingYear,
+      selectedBillingMonth,
+      selectedInvoiceUid,
+    ],
+  );
 
   const onChangeSearchValue = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchValue(event.target.value);
@@ -49,6 +73,7 @@ export const RControlCompletedCasesTableHeader = ({
         <StatusBadge state={state} />
       </div>
       <SearchInput
+        placeholder="Поиск внутри счёта — Enter"
         searchValue={searchValue}
         onChange={onChangeSearchValue}
         onSearch={onSearch}

@@ -1,26 +1,39 @@
+import { useEffect } from "react";
+import { useRControlWorkspacePanelStore } from "../../../../model/store/useRControlWorkspacePanelStore";
 import { useMedicalCasesListItemsQuery } from "../../../../../../../../shared/model/queries/invoiceStructure/medicalCases/useMedicalCasesListItemsQuery";
 import { RControlMedicalCaseCardSkeletons } from "./RControlMedicalCaseCardSkeletons";
 import { useRControlWorkspaceStore } from "../../../../model/store/useRControlWorkspaceStore";
 import { resolveDataState } from "../../../../../../../../shared/helpers/resolveDataState";
-import { useRControlWorkspacePanelStore } from "../../../../model/store/useRControlWorkspacePanelStore";
 import { RControlMedicalCaseCards } from "./RControlMedicalCaseCards";
 import { DataState } from "../../../../../../../../shared/ui/DataState/DataState";
-import { useEffect } from "react";
 
 export const RControlMedicalCaseCardsGroupRoot = () => {
   const { targetDb } = useRControlWorkspacePanelStore();
-  const {
-    selectedCompletedCaseUid,
-    selectedMedicalCaseUid,
-    selectMedicalCase,
-  } = useRControlWorkspaceStore();
+  const { selectedCompletedCaseUid, selectedMedicalCaseUid, selectMedicalCase } =
+    useRControlWorkspaceStore();
   const {
     data: medicalCases,
     isLoading,
     isError,
     isSuccess,
+    isFetching,
     error,
   } = useMedicalCasesListItemsQuery(selectedCompletedCaseUid, targetDb);
+
+  useEffect(() => {
+    if (!isSuccess || isFetching || !medicalCases || selectedCompletedCaseUid === null)
+      return;
+    const current = useRControlWorkspaceStore.getState();
+    // A response for the previous parent must not select a card in the new case.
+    if (
+      current.selectedCompletedCaseUid !== selectedCompletedCaseUid ||
+      useRControlWorkspacePanelStore.getState().targetDb !== targetDb
+    ) return;
+    if (medicalCases.some(item => item.medicalCaseUid === current.selectedMedicalCaseUid))
+      return;
+    const nextUid = medicalCases[0]?.medicalCaseUid ?? null;
+    if (nextUid !== current.selectedMedicalCaseUid) current.selectMedicalCase(nextUid);
+  }, [medicalCases, isSuccess, isFetching, selectedCompletedCaseUid, selectedMedicalCaseUid, targetDb]);
 
   const dataState = resolveDataState({
     isEnabled: selectedCompletedCaseUid !== null && targetDb !== null,
@@ -29,20 +42,6 @@ export const RControlMedicalCaseCardsGroupRoot = () => {
     isEmpty: medicalCases?.length === 0 && isSuccess,
     isSuccess: isSuccess,
   });
-
-  useEffect(() => {
-    if (!medicalCases?.length) {
-      return;
-    }
-
-    const hasSelectedMedicalCase = medicalCases.some(
-      (medicalCase) => medicalCase.medicalCaseUid === selectedMedicalCaseUid,
-    );
-
-    if (!hasSelectedMedicalCase) {
-      selectMedicalCase(medicalCases[0].medicalCaseUid);
-    }
-  }, [medicalCases, selectedMedicalCaseUid, selectMedicalCase]);
 
   return (
     <>

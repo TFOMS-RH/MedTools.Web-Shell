@@ -42,6 +42,27 @@
   }
 }
 
+.lookupField {
+  min-width: 0;
+
+  &[aria-disabled="true"] > div {
+    opacity: 0.65;
+  }
+}
+.lookupHint,
+.lookupError {
+  margin: var(--space-2) 0 0;
+  font-size: var(--fs-body2);
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+.lookupHint {
+  color: var(--text-secondary);
+}
+.lookupError {
+  color: var(--text-error);
+}
+
 @media (max-width: 40rem) {
   .filtersPanelRoot .actions .selectsGroup {
     grid-template-columns: minmax(0, 1fr);

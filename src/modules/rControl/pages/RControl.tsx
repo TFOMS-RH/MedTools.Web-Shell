@@ -5,8 +5,32 @@ import { RControlCategoryRender } from "../widgets/workspace/ui/categories/RCont
 import { RControlWorkspace } from "../widgets/workspace/ui/core/RControlWorkspace";
 import { RControlCategoriesPanel } from "../widgets/workspace/ui/panels/categoriesPanel/RControlCategoriesPanel";
 import styles from "./styles.module.scss";
+import { lazy, Suspense } from "react";
+
+const WorkspaceDemo = import.meta.env.DEV
+  ? lazy(
+      () =>
+        import("../widgets/workspace/ui/core/RControlWorkspaceDemoProvider"),
+    )
+  : null;
 
 export const RControl = () => {
+  if (
+    WorkspaceDemo &&
+    new URLSearchParams(window.location.search).get("demoWorkspace") === "1"
+  ) {
+    return (
+      <Suspense fallback={null}>
+        <WorkspaceDemo>
+          <RControlContent />
+        </WorkspaceDemo>
+      </Suspense>
+    );
+  }
+  return <RControlContent />;
+};
+
+const RControlContent = () => {
   return (
     <PageContainer width="wide">
       <div className={styles.page}>
