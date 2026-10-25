@@ -1,12 +1,8 @@
+import { useId, type ReactNode } from "react";
 import type { ProvidedServiceDto } from "../../../../../../../../../../shared/model/types/invoiceStructure/results/providedServices/GetProvidedServicesResult";
-import { formatNullableValue } from "../../../../../../../../../../shared/helpers/formatNullableValue";
 import { formatCurrency } from "../../../../../../../../../../shared/helpers/formatCurrency";
-import { CardField } from "../../../../../../../../../../shared/ui/CardField/CardField";
-import { Divider } from "../../../../../../../../../../components/ui/Divider/Divider";
-import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
-import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
+import { displayValue, formatServiceDate, renderReference } from "../../presentation";
 import styles from "./styles.module.scss";
-import dayjs from "dayjs";
 
 interface RControlProvidedServiceCardsProps {
   providedSevices: ProvidedServiceDto[];
@@ -14,131 +10,106 @@ interface RControlProvidedServiceCardsProps {
   selectProvidedService: (providedServiceUid: number | null) => void;
 }
 
+// Local table shell shared by the loaded rows and their skeleton.
+export const RControlProvidedServicesTable = ({
+  children,
+  isPending = false,
+}: { children: ReactNode; isPending?: boolean }) => (
+  <div
+    className={`mt-table-viewport ${styles.viewport}`}
+    role="region"
+    aria-label="Таблица оказанных услуг"
+    tabIndex={0}
+    aria-busy={isPending}
+  >
+    <table className={`mt-table ${styles.servicesTable}`} aria-labelledby="rcontrol-services-heading">
+      <colgroup>
+        <col />
+        <col className={styles.periodColumn} />
+        <col className={styles.quantityColumn} />
+        <col className={styles.rateColumn} />
+        <col className={styles.amountColumn} />
+      </colgroup>
+      <thead>
+        <tr>
+          <th scope="col">Услуга / выбор</th>
+          <th scope="col">Период</th>
+          <th scope="col" className={styles.numeric}>Количество</th>
+          <th scope="col" className={styles.numeric}>Тариф</th>
+          <th scope="col" className={styles.numeric}>Сумма</th>
+        </tr>
+      </thead>
+      {children}
+    </table>
+  </div>
+);
+
 export const RControlProvidedServiceCards = ({
   providedSevices,
   selectedProvidedServiceUid,
   selectProvidedService,
 }: RControlProvidedServiceCardsProps) => {
+  const selectionName = useId();
+
   return (
-    <section className={styles.providedServicesCards}>
-      {providedSevices.map((providedService) => (
-        <article
-          onClick={() =>
-            selectProvidedService(providedService.providedServiceUid)
-          }
-          className={`cardRoot selectedCardRoot ${selectedProvidedServiceUid === providedService.providedServiceUid ? "selectedCard" : ""}`}
-          key={providedService.providedServiceUid}
+    <RControlProvidedServicesTable>
+      {providedSevices.map((service) => (
+        <tbody
+          className={selectedProvidedServiceUid === service.providedServiceUid ? styles.selectedGroup : undefined}
+          key={service.providedServiceUid}
         >
-          <header className="cardHeader">
-            <h2>Оказанная услуга — {providedService.serviceCode}</h2>
-            {selectedProvidedServiceUid ===
-            providedService.providedServiceUid ? (
-              <RadioButtonCheckedIcon />
-            ) : (
-              <RadioButtonUncheckedIcon />
-            )}
-          </header>
-          <div className="cardContent">
-            <div className="cardLineGroup">
-              <div className="cardLine">
-                <div className="cardBlockLineOneGrid">
-                  <CardField
-                    label="Наименование услуги"
-                    value={formatNullableValue(providedService.service)}
-                    inline={true}
-                  />
+          <tr className={`noneHover ${styles.mainRow}`}>
+            <th scope="row">
+              <label className={styles.serviceChoice}>
+                <input
+                  type="radio"
+                  name={selectionName}
+                  checked={selectedProvidedServiceUid === service.providedServiceUid}
+                  onChange={() => selectProvidedService(service.providedServiceUid)}
+                  aria-label={`Выбрать услугу: ${displayValue(service.service).trim() === "—" ? displayValue(service.serviceCode) : service.service}`}
+                />
+                <span>{renderReference(service.service, service.serviceCode)}</span>
+              </label>
+            </th>
+            <td className={styles.period}>
+              {formatServiceDate(service.serviceStartDate)} — {formatServiceDate(service.serviceEndDate)}
+            </td>
+            <td className={styles.numeric}>{displayValue(service.serviceQuantity)}</td>
+            <td className={styles.money}>{formatCurrency(service.unitRate)}</td>
+            <td className={`${styles.money} ${styles.amount}`}>{formatCurrency(service.amountBilled)}</td>
+          </tr>
+          <tr className={`noneHover ${styles.detailsRow}`}>
+            <td colSpan={5}>
+              <dl className={styles.detailsGrid}>
+                <div>
+                  <dt>Вид медицинского вмешательства</dt>
+                  <dd>{displayValue(service.medicalInterventionType)}</dd>
                 </div>
-              </div>
-              <div className="cardLine">
-                <div className="cardBlockLineOneGrid">
-                  <CardField
-                    label="Вид медицинского вмешательства"
-                    value={formatNullableValue(
-                      providedService.medicalInterventionType,
-                    )}
-                    inline={true}
-                  />
+                <div>
+                  <dt>Профиль</dt>
+                  <dd>{renderReference(service.medicalProfile, service.medicalProfileCode)}</dd>
                 </div>
-                <div className="cardBlockLineTwoGrid">
-                  <CardField
-                    label="Профиль"
-                    value={`${providedService.medicalProfileCode} : ${providedService.medicalProfile}`}
-                    inline={true}
-                  />
-                  <CardField
-                    label="Специальность"
-                    value={`${providedService.physicianSpecialtyCode} : ${providedService.physicianSpecialty}`}
-                    inline={true}
-                  />
+                <div>
+                  <dt>Специальность</dt>
+                  <dd>{renderReference(service.physicianSpecialty, service.physicianSpecialtyCode)}</dd>
                 </div>
-                <div className="cardBlockLineOneGrid">
-                  <CardField
-                    label="Категория"
-                    value={providedService.isPediatric ? "Ребенок" : "Взрослый"}
-                    inline={true}
-                  />
+                <div>
+                  <dt>Категория</dt>
+                  <dd>{service.isPediatric ? "Ребенок" : "Взрослый"}</dd>
                 </div>
-              </div>
-              <div className="cardLine">
-                <div className="cardBlockLineOneGrid">
-                  <CardField
-                    label="Диагноз"
-                    value={providedService.diagnosis}
-                    inline={true}
-                  />
+                <div>
+                  <dt>Диагноз</dt>
+                  <dd>{displayValue(service.diagnosis)}</dd>
                 </div>
-              </div>
-              <div className="cardLine">
-                <div className="cardBlockLineOneGrid">
-                  <CardField
-                    label="Период"
-                    value={`${dayjs(providedService.serviceStartDate).format(
-                      "DD.MM.YYYY",
-                    )} — ${dayjs(providedService.serviceEndDate).format("DD.MM.YYYY")}`}
-                    inline={true}
-                  />
+                <div className={styles.comment}>
+                  <dt>Комментарий</dt>
+                  <dd>{displayValue(service.internalComment)}</dd>
                 </div>
-              </div>
-            </div>
-            <Divider />
-            <div className="cardLineGroup">
-              <div className="cardLine">
-                <div className="cardBlockLineOneGrid">
-                  <CardField
-                    label="Количество"
-                    value={providedService.serviceQuantity}
-                    inline={true}
-                    spaceBetween={true}
-                  />
-                </div>
-                <div className="cardBlockLineOneGrid">
-                  <CardField
-                    label="Тариф"
-                    value={formatCurrency(providedService.unitRate)}
-                    inline={true}
-                    spaceBetween={true}
-                  />
-                </div>
-                <div className="cardBlockLineOneGrid">
-                  <CardField
-                    label="Сумма"
-                    value={formatCurrency(providedService.amountBilled)}
-                    inline={true}
-                    spaceBetween={true}
-                  />
-                </div>
-                <div className="cardBlockLineOneGrid">
-                  <CardField
-                    label="Комментарий"
-                    value={formatNullableValue(providedService.internalComment)}
-                    inline={true}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </article>
+              </dl>
+            </td>
+          </tr>
+        </tbody>
       ))}
-    </section>
+    </RControlProvidedServicesTable>
   );
 };

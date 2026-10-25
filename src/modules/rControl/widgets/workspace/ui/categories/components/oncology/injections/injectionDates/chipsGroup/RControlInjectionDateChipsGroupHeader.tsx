@@ -1,7 +1,5 @@
-export const RControlInjectionDateChipsGroupHeader = () => {
-  return (
-    <header className="cardHeader">
-      <h2>Даты введения инъекций</h2>
-    </header>
-  );
-};
+import styles from "../../../styles.module.scss";
+
+export const RControlInjectionDateChipsGroupHeader = () => (
+  <h3 className={styles.groupHeading}>Даты введения</h3>
+);

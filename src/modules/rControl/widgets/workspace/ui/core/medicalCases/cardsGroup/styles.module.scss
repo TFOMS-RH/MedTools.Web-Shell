@@ -1,8 +1,224 @@
 .medicalCasesCards {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  column-gap: var(--space-5);
-  row-gap: var(--space-5);
+  container: rcontrol-cases / inline-size;
+  min-width: 0;
+}
 
-  
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mt-space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  > li { min-width: 0; }
+}
+
+.card {
+  display: grid;
+  grid-template-columns: minmax(13rem, 1fr) minmax(0, 2.1fr) minmax(18rem, 1.3fr);
+  align-items: start;
+  min-width: 0;
+  gap: var(--mt-space-6);
+  box-sizing: border-box;
+  padding: var(--mt-space-5);
+  border: 1px solid var(--border-default);
+  border-radius: var(--mt-radius-card);
+  background: var(--mt-surface);
+  color: var(--mt-text-primary);
+  font-size: var(--mt-font-body);
+  line-height: 1.5;
+  cursor: pointer;
+
+  &:hover { border-color: var(--border-hover); }
+
+  &.selected {
+    border-color: var(--mt-rcontrol-accent);
+
+    &:hover { border-color: var(--mt-rcontrol-accent); }
+  }
+
+  > * { min-width: 0; }
+}
+
+.identity,
+.medicalInfo,
+.diagnosis {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mt-space-2);
+}
+
+.heading {
+  font-size: var(--fs-h4);
+  font-weight: var(--fw-bold);
+  line-height: 1.5;
+}
+
+.selectButton {
+  display: inline-block;
+  max-width: 100%;
+  min-height: var(--mt-space-8);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-l);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid var(--mt-rcontrol-accent);
+    outline-offset: var(--mt-space-1);
+  }
+}
+
+.period {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--mt-space-2);
+  margin: 0;
+
+  > span { overflow-wrap: anywhere; }
+}
+
+.periodLabel,
+.zoneLabel,
+.facts dt,
+.medicalDetails dt,
+.finances dt {
+  color: var(--mt-text-secondary);
+  font-size: var(--mt-font-body);
+  font-weight: var(--fw-default);
+}
+
+.facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--mt-space-1) var(--mt-space-3);
+  margin: 0;
+
+  > div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--mt-space-1);
+    min-width: 0;
+  }
+
+  dd {
+    margin: 0;
+    overflow-wrap: anywhere;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.diagnosis {
+  padding-top: var(--mt-space-1);
+}
+
+.zoneLabel { margin: 0; }
+
+.medicalInfo { gap: var(--mt-space-3); }
+
+.diagnosisLabel {
+  margin: 0;
+  font-size: var(--mt-font-body);
+  font-weight: var(--fw-bold);
+}
+
+.diagnosis > p {
+  margin: 0;
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-semibold);
+  overflow-wrap: anywhere;
+}
+
+.diagnosis > .diagnosisCode {
+  margin: 0;
+  font-size: var(--fs-h4);
+  font-weight: var(--fw-semibold);
+  overflow-wrap: anywhere;
+}
+
+.medicalDetails {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--mt-space-3) var(--mt-space-5);
+  margin: 0;
+
+  > div { min-width: 0; }
+
+  dt { overflow-wrap: anywhere; }
+
+  dd {
+    display: flex;
+    flex-direction: column;
+    gap: var(--mt-space-1);
+    margin: var(--mt-space-1) 0 0;
+    overflow-wrap: anywhere;
+
+    > p { margin: 0; }
+  }
+}
+
+.finances {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mt-space-2);
+  margin: 0;
+  padding-top: var(--mt-space-1);
+
+  > div {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0 var(--mt-space-3);
+    min-width: 0;
+  }
+
+  dd {
+    margin: 0 0 0 auto;
+    color: var(--mt-text-primary);
+    font-weight: var(--fw-semibold);
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+    white-space: nowrap;
+  }
+}
+
+.skeletonCard {
+  cursor: default;
+
+  &:hover { border-color: var(--border-default); }
+}
+
+@container rcontrol-cases (max-width: 64rem) {
+  .card {
+    grid-template-columns: minmax(14rem, 1fr) minmax(0, 2fr);
+    gap: var(--mt-space-4) var(--mt-space-5);
+  }
+
+  .finances {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--mt-space-2) var(--mt-space-6);
+    padding-top: 0;
+  }
+}
+
+@container rcontrol-cases (max-width: 42rem) {
+  .card {
+    grid-template-columns: minmax(0, 1fr);
+    padding: var(--mt-space-4);
+  }
+
+  .diagnosis { padding-top: 0; }
+
+  .medicalDetails { grid-template-columns: minmax(0, 1fr); }
+
+  .finances { grid-template-columns: minmax(0, 1fr); }
 }

@@ -1,7 +1,5 @@
-export const RControlReferralsTableHeader = () => {
-  return (
-    <section className="cardHeader">
-      <h2>Направления</h2>
-    </section>
-  );
-};
+import styles from "../../styles.module.scss";
+
+export const RControlReferralsTableHeader = () => (
+  <h3 id="rcontrol-referrals-heading" className={styles.sectionHeading}>Направления</h3>
+);

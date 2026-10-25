@@ -1,11 +1,11 @@
-import { Divider } from "../../../../../../../../../../components/ui/Divider/Divider";
 import { resolveDataState } from "../../../../../../../../../../shared/helpers/resolveDataState";
 import { DataState } from "../../../../../../../../../../shared/ui/DataState/DataState";
-import { useRControlWorkspacePanelStore } from "../../../../../../model/store/useRControlWorkspacePanelStore";
 import { useDefectsQuery } from "../../../../../../../../../../shared/model/queries/invoiceStructure/defects/useDefectsQuery";
+import { useRControlWorkspacePanelStore } from "../../../../../../model/store/useRControlWorkspacePanelStore";
 import { useRControlWorkspaceStore } from "../../../../../../model/store/useRControlWorkspaceStore";
-import { RControlDefectsTableBody } from "./RControlDefectsTableBody";
 import { RControlDefectsTableHeader } from "./RControlDefectsTableHeader";
+import { RControlDefectsTableBody } from "./RControlDefectsTableBody";
+import styles from "../../styles.module.scss";
 
 export const RControlDefectsTableRoot = () => {
   const { targetDb } = useRControlWorkspacePanelStore();
@@ -60,7 +60,7 @@ export const RControlDefectsTableRoot = () => {
   });
 
   return (
-    <article className="cardRoot">
+    <section className={styles.section} aria-labelledby="rcontrol-defects-heading">
       <RControlDefectsTableHeader
         page={defectsTablePagination.page}
         pageSize={defectsTablePagination.pageSize}
@@ -69,7 +69,6 @@ export const RControlDefectsTableRoot = () => {
         onPageChange={onPageChange}
         onRowsPerPageChange={onRowsPerPageChange}
       />
-      <Divider />
       {dataState === "error" ? (
         <DataState
           title="Ошибка данных"
@@ -89,6 +88,6 @@ export const RControlDefectsTableRoot = () => {
           pageSize={defectsTablePagination.pageSize}
         />
       )}
-    </article>
+    </section>
   );
 };

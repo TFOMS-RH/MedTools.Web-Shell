@@ -22,21 +22,27 @@ export const RControlCompletedCasesTableBody = ({
 }: RControlCompletedCasesTableBodyProps) => {
   return (
     <div className={tableStyles.tableContent}>
-      <div className="mt-table-viewport" tabIndex={0} role="region" aria-label="Законченные случаи, прокручиваемая таблица">
+      <div className="mt-table-viewport mt-table-viewport--scrollable" tabIndex={0} role="region" aria-label="Законченные случаи, прокручиваемая таблица">
         <table className={`mt-table ${tableStyles.table}`}>
+          <colgroup>
+            <col className={tableStyles.numberColumn} /><col className={tableStyles.numberColumn} />
+            <col className={tableStyles.nameColumn} /><col className={tableStyles.nameColumn} /><col className={tableStyles.nameColumn} />
+            <col className={tableStyles.conditionColumn} /><col className={tableStyles.seriesColumn} /><col className={tableStyles.policyColumn} />
+            <col className={tableStyles.amountColumn} /><col className={tableStyles.amountColumn} /><col className={tableStyles.amountColumn} />
+          </colgroup>
           <thead>
             <tr>
-              <th>№ поз.</th>
-              <th>№ зап.</th>
-              <th>Фамилия</th>
-              <th>Имя</th>
-              <th>Отчество</th>
-              <th>Усл. ок.</th>
-              <th>С. полиса</th>
-              <th>Н. полиса</th>
-              <th className={tableStyles.amount}>Предъявлено</th>
-              <th className={tableStyles.amount}>Принято</th>
-              <th className={tableStyles.amount}>Принято СМО</th>
+              <th scope="col" title="Номер позиции">№ поз.</th>
+              <th scope="col" title="Номер записи">№ зап.</th>
+              <th scope="col" title="Фамилия пациента">Фамилия</th>
+              <th scope="col" title="Имя пациента">Имя</th>
+              <th scope="col" title="Отчество пациента">Отчество</th>
+              <th scope="col" title="Условия оказания медицинской помощи">Усл. ок.</th>
+              <th scope="col" title="Серия страхового полиса">С. полиса</th>
+              <th scope="col" title="Номер страхового полиса">Н. полиса</th>
+              <th scope="col" title="Предъявленная сумма" className={tableStyles.amount}>Предъявлено</th>
+              <th scope="col" title="Принятая сумма" className={tableStyles.amount}>Принято</th>
+              <th scope="col" title="Сумма, принятая СМО" className={tableStyles.amount}>Принято СМО</th>
             </tr>
           </thead>
           <tbody>

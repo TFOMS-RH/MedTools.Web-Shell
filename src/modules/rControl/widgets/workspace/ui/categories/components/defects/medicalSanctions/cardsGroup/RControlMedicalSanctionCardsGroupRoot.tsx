@@ -1,10 +1,11 @@
 import { resolveDataState } from "../../../../../../../../../../shared/helpers/resolveDataState";
 import { DataState } from "../../../../../../../../../../shared/ui/DataState/DataState";
-import { useRControlWorkspacePanelStore } from "../../../../../../model/store/useRControlWorkspacePanelStore";
 import { useMedicalSanctionsQuery } from "../../../../../../../../../../shared/model/queries/invoiceStructure/defects/useMedicalSanctionsQuery";
+import { useRControlWorkspacePanelStore } from "../../../../../../model/store/useRControlWorkspacePanelStore";
 import { useRControlWorkspaceStore } from "../../../../../../model/store/useRControlWorkspaceStore";
 import { RControlMedicalSanctionCards } from "./RControlMedicalSanctionCards";
 import { RControlMedicalSanctionCardSkeletons } from "./RControlMedicalSanctionCardSkeletons";
+import styles from "../../styles.module.scss";
 
 export const RControlMedicalSanctionCardsGroupRoot = () => {
   const { targetDb } = useRControlWorkspacePanelStore();
@@ -27,7 +28,8 @@ export const RControlMedicalSanctionCardsGroupRoot = () => {
   });
 
   return (
-    <>
+    <section className={styles.section} aria-labelledby="rcontrol-sanctions-heading">
+      <h3 id="rcontrol-sanctions-heading" className={styles.sectionHeading}>Санкции</h3>
       {dataState === "error" ? (
         <DataState
           title="Ошибка данных"
@@ -48,6 +50,6 @@ export const RControlMedicalSanctionCardsGroupRoot = () => {
           medicalSanctions={medicalSanctions ?? []}
         />
       )}
-    </>
+    </section>
   );
 };

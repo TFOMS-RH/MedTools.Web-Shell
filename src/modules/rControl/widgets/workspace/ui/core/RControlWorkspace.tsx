@@ -26,11 +26,7 @@ export const RControlWorkspace = () => {
         )}
       </section>
       {selectedInvoiceUid !== null && <RControlCompletedCasesTableRoot />}
-      {selectedCompletedCaseUid !== null && (
-        <div className={styles.medicalCasesViewport} tabIndex={0} role="region" aria-label="Медицинские случаи">
-          <RControlMedicalCaseCardsGroupRoot />
-        </div>
-      )}
+      {selectedCompletedCaseUid !== null && <RControlMedicalCaseCardsGroupRoot />}
     </>
   );
 };

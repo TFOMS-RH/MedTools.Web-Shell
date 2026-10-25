@@ -1,90 +1,33 @@
 import { Skeleton } from "@mui/material";
-import { CardField } from "../../../../../../../../../../shared/ui/CardField/CardField";
+import { RControlMedicalSanctionsTable } from "./RControlMedicalSanctionCards";
+import styles from "./styles.module.scss";
 
-export const RControlMedicalSanctionCardSkeletons = () => {
-  return Array.from({ length: 2 }).map((_, index) => (
-    <div className="cardRoot" key={index}>
-      <header className="cardHeader">
-        <h2>Санкции</h2>
-      </header>
-      <div className="cardContent">
-        <div className="cardLineGroup">
-          <div className="cardLine">
-            <div className="cardLineHeader">
-              <h3>ОСНОВНОЕ</h3>
-              <div className="cardBlockLineOneGrid">
-                <CardField
-                  label="Тип санкции"
-                  value={<Skeleton />}
-                  inline={true}
-                />
+export const RControlMedicalSanctionCardSkeletons = () => (
+  <RControlMedicalSanctionsTable isPending>
+    {Array.from({ length: 2 }, (_, index) => (
+      <tbody key={index} aria-hidden="true">
+        <tr className={`noneHover ${styles.mainRow}`}>
+          {Array.from({ length: 5 }, (_, column) => (
+            <td key={column}><Skeleton />{column === 4 && <Skeleton width="7rem" />}</td>
+          ))}
+        </tr>
+        <tr className={`noneHover ${styles.detailsRow}`}>
+          <td colSpan={5}>
+            <div className={styles.detailsContent}>
+              <div className={styles.detailsGrid}>
+                {Array.from({ length: 4 }, (_, field) => (
+                  <div key={field}><Skeleton width="70%" /><Skeleton /></div>
+                ))}
               </div>
-              <div className="cardBlockLineTwoGrid">
-                <CardField label="Сумма" value={<Skeleton />} inline={true} />
-                <CardField
-                  label="Количество"
-                  value={<Skeleton />}
-                  inline={true}
-                />
-              </div>
-              <div className="cardBlockLineOneGrid">
-                <CardField
-                  label="Код отказа"
-                  value={<Skeleton />}
-                  inline={true}
-                />
+              <div className={styles.textFields}>
+                {Array.from({ length: 2 }, (_, field) => (
+                  <div key={field}><Skeleton width="7rem" /><Skeleton /></div>
+                ))}
               </div>
             </div>
-          </div>
-          <div className="cardLine">
-            <div className="cardLineHeader">
-              <h3>АКТ</h3>
-            </div>
-            <div className="cardBlockLineTwoGrid">
-              <CardField
-                label="Номер акта"
-                value={<Skeleton />}
-                inline={true}
-              />
-              <CardField label="Дата акта" value={<Skeleton />} inline={true} />
-            </div>
-          </div>
-          <div className="cardLine">
-            <div className="cardLineHeader">
-              <h3>ВЫГРУЗКА</h3>
-            </div>
-            <div className="cardBlockLineTwoGrid">
-              <CardField label="Месяц" value={<Skeleton />} inline={true} />
-              <CardField label="Год" value={<Skeleton />} inline={true} />
-            </div>
-            <div className="cardBlockLineOneGrid">
-              <CardField
-                label="Дата загрузки"
-                value={<Skeleton />}
-                inline={true}
-              />
-            </div>
-            <div className="cardBlockLineOneGrid">
-              <CardField label="Имя файла" value={<Skeleton />} inline={true} />
-            </div>
-          </div>
-          <div className="cardLine">
-            <div className="cardLineHeader">
-              <h3>ДОПОЛНИТЕЛЬНО</h3>
-            </div>
-            <div className="cardBlockLineOneGrid">
-              <CardField label="Код врача" value={<Skeleton />} inline={true} />
-            </div>
-            <div className="cardBlockLineOneGrid">
-              <CardField
-                label="Комментарий"
-                value={<Skeleton />}
-                inline={true}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  ));
-};
+          </td>
+        </tr>
+      </tbody>
+    ))}
+  </RControlMedicalSanctionsTable>
+);

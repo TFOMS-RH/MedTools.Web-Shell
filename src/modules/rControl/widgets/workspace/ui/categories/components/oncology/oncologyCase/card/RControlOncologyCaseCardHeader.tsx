@@ -1,7 +1,5 @@
-export const RControlOncologyCaseCardHeader = () => {
-  return (
-    <header className="cardHeader">
-      <h2>Онкологический случай</h2>
-    </header>
-  );
-};
+import styles from "../../styles.module.scss";
+
+export const RControlOncologyCaseCardHeader = () => (
+  <h3 className={styles.groupHeading}>Онкологический случай</h3>
+);

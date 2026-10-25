@@ -68,8 +68,12 @@ export const RControlCategoryRender = () => {
   }
 
   return (
-    <Suspense fallback={<CategoryFallback />}>
-      <CategoryComponent />
-    </Suspense>
+    <div id="rcontrol-case-panel" role={targetCategory === "default" ? "region" : "tabpanel"}
+      aria-labelledby={targetCategory === "default" ? "rcontrol-case-heading" : `rcontrol-case-tab-${targetCategory}`}
+      tabIndex={0}>
+      <Suspense fallback={<CategoryFallback />}>
+        <CategoryComponent />
+      </Suspense>
+    </div>
   );
 };

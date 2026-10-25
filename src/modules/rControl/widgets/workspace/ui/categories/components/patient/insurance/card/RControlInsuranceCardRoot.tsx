@@ -5,6 +5,9 @@ import { useInsuranceQuery } from "../../../../../../../../../../shared/model/qu
 import { useRControlWorkspaceStore } from "../../../../../../model/store/useRControlWorkspaceStore";
 import { RControlInsuranceCardBody } from "./RControlInsuranceCardBody";
 import { RControlInsuranceCardHeader } from "./RControlInsuranceCardHeader";
+import type { InsuranceDto } from "../../../../../../../../../../shared/model/types/invoiceStructure/results/patient/GetInsuranceResult";
+import type { DataState as DataStateValue } from "../../../../../../../../../../shared/types/DataState";
+import styles from "../../styles.module.scss";
 
 export const RControlInsuranceCardRoot = () => {
   const { targetDb } = useRControlWorkspacePanelStore();
@@ -26,27 +29,35 @@ export const RControlInsuranceCardRoot = () => {
     isEmpty: insurance === null && isSuccess,
   });
 
-  return (
-    <article className="cardRoot">
-      <RControlInsuranceCardHeader />
-      {dataState === "error" ? (
-        <DataState
-          title="Ошибка данных"
-          description={error?.message ?? "Неизвестная ошибка"}
-          variant="error"
-        />
-      ) : dataState === "empty" ? (
-        <DataState
-          title="Данных не найдено"
-          description="Медицинский случай не содержит информации о СМО"
-          variant="empty"
-        />
-      ) : (
-        <RControlInsuranceCardBody
-          insurance={insurance!}
-          isPending={isPending}
-        />
-      )}
-    </article>
-  );
+  return <RControlInsuranceCardContent insurance={insurance} isPending={isPending}
+    dataState={dataState} error={error?.message} />;
 };
+
+export const RControlInsuranceCardContent = ({ insurance, isPending, dataState, error }: {
+  insurance?: InsuranceDto | null;
+  isPending: boolean;
+  dataState: DataStateValue;
+  error?: string;
+}) => (
+  <section className={styles.insuranceGroup} aria-labelledby="rcontrol-patient-insurance">
+    <RControlInsuranceCardHeader />
+    {dataState === "error" ? (
+      <DataState
+        title="Ошибка данных"
+        description={error ?? "Неизвестная ошибка"}
+        variant="error"
+      />
+    ) : dataState === "empty" ? (
+      <DataState
+        title="Данных не найдено"
+        description="Медицинский случай не содержит информации о СМО"
+        variant="empty"
+      />
+    ) : (
+      <RControlInsuranceCardBody
+        insurance={insurance!}
+        isPending={isPending}
+      />
+    )}
+  </section>
+);

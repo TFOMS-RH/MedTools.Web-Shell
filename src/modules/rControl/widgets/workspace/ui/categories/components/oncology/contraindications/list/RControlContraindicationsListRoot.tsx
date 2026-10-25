@@ -1,10 +1,10 @@
+import styles from "../../styles.module.scss";
 import { resolveDataState } from "../../../../../../../../../../shared/helpers/resolveDataState";
 import { DataState } from "../../../../../../../../../../shared/ui/DataState/DataState";
-import { useRControlWorkspacePanelStore } from "../../../../../../model/store/useRControlWorkspacePanelStore";
 import { useContraindicationsQuery } from "../../../../../../../../../../shared/model/queries/invoiceStructure/oncology/useContraindicationsQuery";
+import { useRControlWorkspacePanelStore } from "../../../../../../model/store/useRControlWorkspacePanelStore";
 import { RControlContraindicationsListBody } from "./RControlContraindicationsListBody";
 import { RControlContraindicationsListHeader } from "./RControlContraindicationsListHeader";
-import styles from "./styles.module.scss";
 
 interface RControlContraindicationsListRootProps {
   oncologyCaseUid: number | null;
@@ -32,7 +32,7 @@ export const RControlContraindicationsListRoot = ({
   });
 
   return (
-    <section className={styles.contraindicationsListRoot}>
+    <section className={styles.panel}>
       <RControlContraindicationsListHeader />
       {dataState === "error" ? (
         <DataState

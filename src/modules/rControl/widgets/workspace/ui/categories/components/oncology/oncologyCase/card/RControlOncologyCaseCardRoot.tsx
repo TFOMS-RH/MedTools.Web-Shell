@@ -1,10 +1,11 @@
+import styles from "../../styles.module.scss";
 import { resolveDataState } from "../../../../../../../../../../shared/helpers/resolveDataState";
 import { DataState } from "../../../../../../../../../../shared/ui/DataState/DataState";
-import { useRControlWorkspacePanelStore } from "../../../../../../model/store/useRControlWorkspacePanelStore";
 import { useOncologyCaseQuery } from "../../../../../../../../../../shared/model/queries/invoiceStructure/oncology/useOncologyCaseQuery";
+import { useRControlWorkspacePanelStore } from "../../../../../../model/store/useRControlWorkspacePanelStore";
 import { useRControlWorkspaceStore } from "../../../../../../model/store/useRControlWorkspaceStore";
-import { RControlOncologyCaseCardBody } from "./RControlOncologyCaseCardBody";
 import { RControlOncologyCaseCardHeader } from "./RControlOncologyCaseCardHeader";
+import { RControlOncologyCaseCardBody } from "./RControlOncologyCaseCardBody";
 
 export const RControlOncologyCaseCardRoot = () => {
   const { targetDb } = useRControlWorkspacePanelStore();
@@ -27,7 +28,7 @@ export const RControlOncologyCaseCardRoot = () => {
   });
 
   return (
-    <section className="cardRoot">
+    <section className={styles.panel}>
       <RControlOncologyCaseCardHeader />
       {dataState === "error" ? (
         <DataState

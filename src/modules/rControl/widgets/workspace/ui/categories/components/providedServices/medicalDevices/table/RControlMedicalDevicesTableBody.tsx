@@ -1,8 +1,7 @@
 import type { MedicalDeviceDto } from "../../../../../../../../../../shared/model/types/invoiceStructure/results/providedServices/GetMedicalDevicesResult";
-import { CardField } from "../../../../../../../../../../shared/ui/CardField/CardField";
-import { Skeleton } from "@mui/material";
+import { TableSkeleton } from "../../../../../../../../../../shared/ui/TableSkeleton/TableSkeleton";
+import { displayValue, formatServiceDate } from "../../presentation";
 import styles from "./styles.module.scss";
-import dayjs from "dayjs";
 
 interface RControlMedicalDevicesTableBodyProps {
   medicalDevices: MedicalDeviceDto[];
@@ -12,54 +11,36 @@ interface RControlMedicalDevicesTableBodyProps {
 export const RControlMedicalDevicesTableBody = ({
   medicalDevices,
   isPending,
-}: RControlMedicalDevicesTableBodyProps) => {
-  return (
-    <div className="cardContent">
-      <div className={styles.listContainer}>
-        {isPending
-          ? Array.from({ length: 5 }).map((_, index) => (
-              <div className={styles.listRow} key={index}>
-                <Skeleton variant="rounded" width={40} height={40} />
-                <div className={styles.listRowContent}>
-                  <p className={styles.date}>
-                    <Skeleton />
-                  </p>
-                  <p className={styles.description}>
-                    <Skeleton animation="wave" height={25} />
-                  </p>
-                </div>
-              </div>
-            ))
-          : medicalDevices.map((medicalDevice, _index) => (
-              <div
-                className={styles.listRow}
-                key={medicalDevice.medicalDeviceUid}
-              >
-                <div className={styles.number}>
-                  <p>{_index + 1}</p>
-                </div>
-                <div className={styles.listRowContent}>
-                  <CardField
-                    label="Дата установки"
-                    value={dayjs(medicalDevice.implantationDate).format(
-                      "DD.MM.YYYY",
-                    )}
-                    inline={true}
-                  />
-                  <CardField
-                    label="Код вида"
-                    value={medicalDevice.medicalDeviceTypeCode}
-                    inline={true}
-                  />
-                  <CardField
-                    label="Серийный номер"
-                    value={medicalDevice.serialNumber}
-                    inline={true}
-                  />
-                </div>
-              </div>
-            ))}
-      </div>
-    </div>
-  );
-};
+}: RControlMedicalDevicesTableBodyProps) => (
+  <div
+    className={`mt-table-viewport ${styles.viewport}`}
+    role="region"
+    aria-label="Таблица медицинских изделий"
+    tabIndex={0}
+    aria-busy={isPending}
+  >
+    <table className={`mt-table ${styles.devicesTable}`} aria-labelledby="rcontrol-devices-heading">
+      <colgroup>
+        <col className={styles.dateColumn} />
+        <col className={styles.codeColumn} />
+        <col />
+      </colgroup>
+      <thead>
+        <tr>
+          <th scope="col">Дата установки</th>
+          <th scope="col">Код вида</th>
+          <th scope="col">Серийный номер</th>
+        </tr>
+      </thead>
+      <tbody>
+        {isPending ? <TableSkeleton columns={3} rows={5} /> : medicalDevices.map((device) => (
+          <tr key={device.medicalDeviceUid}>
+            <td className={styles.dateValue}>{formatServiceDate(device.implantationDate)}</td>
+            <td>{displayValue(device.medicalDeviceTypeCode)}</td>
+            <td>{displayValue(device.serialNumber)}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+);

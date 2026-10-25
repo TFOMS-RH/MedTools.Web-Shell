@@ -68,7 +68,7 @@ export const RControlCompletedCasesTableRoot = () => {
   });
 
   return (
-    <section className={styles.CompletedCasesTableRoot}>
+    <section className={styles.CompletedCasesTableRoot} aria-labelledby="rcontrol-completed-heading">
       <RControlCompletedCasesTableHeader
         totalCount={getCompletedCasesResult?.totalCount ?? 0}
         state={dataState}

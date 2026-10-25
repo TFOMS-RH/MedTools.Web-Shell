@@ -1,18 +1,19 @@
+import styles from "../../styles.module.scss";
 import { resolveDataState } from "../../../../../../../../../../shared/helpers/resolveDataState";
 import { DataState } from "../../../../../../../../../../shared/ui/DataState/DataState";
-import { useMedViewFiltersStore } from "../../../../../../../../../medView/widgets/filters/model/stores/useMedViewFiltersStore";
 import { useTreatmentComplexityCoefficientsQuery } from "../../../../../../../../../../shared/model/queries/invoiceStructure/clinicalGroups/useTreatmentComplexityCoefficientsQuery";
-import { RControlTreatmentCoefficientsListBody } from "./RControlTreatmentCoefficientsListBody";
+import { useRControlWorkspacePanelStore } from "../../../../../../model/store/useRControlWorkspacePanelStore";
 import { RControlTreatmentCoefficientsListHeader } from "./RControlTreatmentCoefficientsListHeader";
+import { RControlTreatmentCoefficientsListBody } from "./RControlTreatmentCoefficientsListBody";
 
-interface RControlTreatmentCoefficientsListRootProps {
+interface TreatmentComplexityCoefficientsRootProps {
   clinicalGroupUid: number | null;
 }
 
 export const RControlTreatmentCoefficientsListRoot = ({
   clinicalGroupUid,
-}: RControlTreatmentCoefficientsListRootProps) => {
-  const { targetDb } = useMedViewFiltersStore();
+}: TreatmentComplexityCoefficientsRootProps) => {
+  const { targetDb } = useRControlWorkspacePanelStore();
   const {
     data: treatmentComplexityCoefficients,
     isLoading,
@@ -31,7 +32,7 @@ export const RControlTreatmentCoefficientsListRoot = ({
   });
 
   return (
-    <article className="cardRoot">
+    <section className={styles.panel} aria-labelledby="rcontrol-csg-coefficients-heading">
       <RControlTreatmentCoefficientsListHeader />
       {dataState === "error" ? (
         <DataState
@@ -53,6 +54,6 @@ export const RControlTreatmentCoefficientsListRoot = ({
           isPending={isPending}
         />
       )}
-    </article>
+    </section>
   );
 };

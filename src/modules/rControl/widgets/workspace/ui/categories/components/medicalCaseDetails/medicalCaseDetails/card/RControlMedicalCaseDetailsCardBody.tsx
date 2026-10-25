@@ -1,8 +1,9 @@
-import type { MedicalCaseDetailsDto } from "../../../../../../../../../../shared/model/types/invoiceStructure/results/medicalCases/GetMedicalCaseDetailsResult";
-import { CardField } from "../../../../../../../../../../shared/ui/CardField/CardField";
-import { formatNullableValue } from "../../../../../../../../../../shared/helpers/formatNullableValue";
 import { Skeleton } from "@mui/material";
+import { CardField } from "../../../../../../../../../../shared/ui/CardField/CardField";
 import dayjs from "dayjs";
+import { formatNullableValue } from "../../../../../../../../../../shared/helpers/formatNullableValue";
+import type { MedicalCaseDetailsDto } from "../../../../../../../../../../shared/model/types/invoiceStructure/results/medicalCases/GetMedicalCaseDetailsResult";
+import styles from "../../styles.module.scss";
 
 interface RControlMedicalCaseDetailsCardBodyProps {
   medicalCaseDetails: MedicalCaseDetailsDto;
@@ -14,324 +15,118 @@ export const RControlMedicalCaseDetailsCardBody = ({
   isPending,
 }: RControlMedicalCaseDetailsCardBodyProps) => {
   return (
-    <div className="cardContent">
-      {isPending ? (
-        <div className="cardLineGroup">
-          <div className="cardLine">
-            <header className="cardLineHeader">
-              <h3>ОСНОВНОЕ</h3>
-            </header>
-            <div className="cardBlockLineTwoGrid">
-              <CardField label="Профиль" value={<Skeleton />} inline={true} />
-              <CardField
-                label="Специальность"
-                value={<Skeleton />}
-                inline={true}
-              />
-            </div>
-            <div className="cardBlockLineTwoGrid">
-              <CardField
-                label="Номер истории"
-                value={<Skeleton />}
-                inline={true}
-              />
-              <CardField
-                label="Код лечащего врача"
-                value={<Skeleton />}
-                inline={true}
-              />
-            </div>
-            <div className="cardBlockLineTwoGrid">
-              <CardField
-                label="Количество"
-                value={<Skeleton />}
-                inline={true}
-              />
-              <CardField label="Категория" value={<Skeleton />} inline={true} />
-            </div>
-            <div className="cardBlockLineTwoGrid">
-              <CardField
-                label="Цель посещения"
-                value={<Skeleton />}
-                inline={true}
-              />
-              <CardField
-                label="Уровень ЛПУ"
-                value={<Skeleton />}
-                inline={true}
-              />
-            </div>
+    <div className={styles.groups} aria-busy={isPending}>
+      <section className={styles.informationGroup} aria-labelledby="rcontrol-details-basic">
+        <h4 id="rcontrol-details-basic" className={styles.groupHeading}>Основное</h4>
+        <div className={styles.fieldGrid}>
+          <CardField
+            label="Номер истории"
+            value={isPending ? <Skeleton /> : medicalCaseDetails.medicalRecordNumber}
+          />
+          <CardField
+            label="Код лечащего врача"
+            value={isPending ? <Skeleton /> : medicalCaseDetails.physicianCode}
+          />
+          <CardField
+            label="Количество"
+            value={isPending ? <Skeleton /> : formatNullableValue(medicalCaseDetails.paidUnits)}
+          />
+          <CardField
+            label="Категория"
+            value={isPending ? <Skeleton /> : medicalCaseDetails.isPediatric ? "Ребенок" : "Взрослый"}
+          />
+        </div>
+      </section>
+      <section className={styles.informationGroup} aria-labelledby="rcontrol-details-characteristics">
+        <h4 id="rcontrol-details-characteristics" className={styles.groupHeading}>Медицинские характеристики</h4>
+        <div className={styles.fieldGrid}>
+          <CardField
+            label="Профиль"
+            value={isPending ? <Skeleton /> : medicalCaseDetails.medicalProfile}
+          />
+          <CardField
+            label="Специальность"
+            value={isPending ? <Skeleton /> : medicalCaseDetails.physicianSpecialty}
+          />
+          <CardField
+            label="Цель посещения"
+            value={isPending ? <Skeleton /> : formatNullableValue(medicalCaseDetails.visitPurpose)}
+          />
+          <CardField
+            label="Уровень ЛПУ"
+            value={isPending ? <Skeleton /> : formatNullableValue(medicalCaseDetails.facilityLevel)}
+          />
+        </div>
+      </section>
+      <section className={`${styles.informationGroup} ${styles.wideGroup}`} aria-labelledby="rcontrol-details-diagnosis">
+        <h4 id="rcontrol-details-diagnosis" className={styles.groupHeading}>Диагноз</h4>
+        <div className={styles.fieldGrid}>
+          <div className={styles.wideField}>
+            <CardField
+              label="Основной диагноз"
+              value={<span className={styles.primaryValue}>{isPending ? <Skeleton /> : medicalCaseDetails.primaryDiagnosis}</span>}
+            />
           </div>
-
-          <div className="cardLine">
-            <header className="cardLineHeader">
-              <h3>ЛЕЧЕНИЕ</h3>
-            </header>
-            <div className="cardBlockLineOneGrid">
-              <CardField
-                label="Период лечения"
-                value={<Skeleton />}
-                inline={true}
-              />
-            </div>
-            <div className="cardBlockLineTwoGrid">
-              <CardField
-                label="Профиль койки"
-                value={<Skeleton />}
-                inline={true}
-              />
-              <CardField
-                label="Масса тела (кг)"
-                value={<Skeleton />}
-                inline={true}
-              />
-            </div>
-            <div className="cardBlockLineTwoGrid">
-              <CardField
-                label="Реабилитация"
-                value={<Skeleton />}
-                inline={true}
-              />
-              <CardField
-                label="Подозрение на ЗНО"
-                value={<Skeleton />}
-                inline={true}
-              />
-            </div>
-            <div className="cardBlockLineOneGrid">
-              <CardField
-                label="Поступление или перевод"
-                value={<Skeleton />}
-                inline={true}
-              />
-            </div>
+          <CardField
+            label="Первичный диагноз"
+            value={isPending ? <Skeleton /> : formatNullableValue(medicalCaseDetails.initialDiagnosis)}
+          />
+          <CardField
+            label="Характер основного заболевания"
+            value={isPending ? <Skeleton /> : formatNullableValue(medicalCaseDetails.diseaseCharacter)}
+          />
+        </div>
+      </section>
+      <section className={styles.informationGroup} aria-labelledby="rcontrol-details-treatment">
+        <h4 id="rcontrol-details-treatment" className={styles.groupHeading}>Лечение</h4>
+        <div className={styles.fieldGrid}>
+          <div className={styles.wideField}>
+            <CardField
+              label="Период лечения"
+              value={isPending ? <Skeleton /> : `${dayjs(medicalCaseDetails.treatmentStartDate).format("DD.MM.YYYY")} — ${dayjs(medicalCaseDetails.treatmentEndDate).format("DD.MM.YYYY")}`}
+            />
           </div>
-
-          <div className="cardLine">
-            <header className="cardLineHeader">
-              <h3>ДИАГНОЗ</h3>
-            </header>
-
-            <div className="cardBlockLineOneGrid">
-              <CardField
-                label="Основной диагноз"
-                value={<Skeleton />}
-                inline={true}
-              />
-            </div>
-            <div className="cardBlockLineOneGrid">
-              <CardField
-                label="Первичный диагноз"
-                value={<Skeleton />}
-                inline={true}
-              />
-            </div>
-            <div className="cardBlockLineOneGrid">
-              <CardField
-                label="Характер основного заболевания"
-                value={<Skeleton />}
-                inline={true}
-              />
-            </div>
-          </div>
-
-          <div className="cardLine">
-            <header className="cardLineHeader">
-              <h3>ДОПОЛНИТЕЛЬНО</h3>
-            </header>
-            <div className="cardBlockLineTwoGrid">
-              <CardField
-                label="Подразделение"
-                value={<Skeleton />}
-                inline={true}
-              />
-              <CardField label="Отделение" value={<Skeleton />} inline={true} />
-            </div>
-            <div className="cardBlockLineOneGrid">
-              <CardField
-                label="Комментарий"
-                value={<Skeleton />}
-                inline={true}
-              />
-            </div>
+          <CardField
+            label="Профиль койки"
+            value={isPending ? <Skeleton /> : formatNullableValue(medicalCaseDetails.bedProfile)}
+          />
+          <CardField
+            label="Масса тела (кг)"
+            value={isPending ? <Skeleton /> : formatNullableValue(medicalCaseDetails.weight)}
+          />
+          <CardField
+            label="Реабилитация"
+            value={isPending ? <Skeleton /> : medicalCaseDetails.isRehabilitation === null ? "—" : medicalCaseDetails.isRehabilitation ? "Да" : "Нет"}
+          />
+          <CardField
+            label="Подозрение на ЗНО"
+            value={isPending ? <Skeleton /> : medicalCaseDetails.isOncologySuspicion === null ? "—" : medicalCaseDetails.isOncologySuspicion ? "Да" : "Нет"}
+          />
+          <CardField
+            label="Поступление или перевод"
+            value={isPending ? <Skeleton /> : medicalCaseDetails.isAdmissionTransfer === null ? "—" : medicalCaseDetails.isAdmissionTransfer ? "Да" : "Нет"}
+          />
+        </div>
+      </section>
+      <section className={styles.informationGroup} aria-labelledby="rcontrol-details-additional">
+        <h4 id="rcontrol-details-additional" className={styles.groupHeading}>Дополнительно</h4>
+        <div className={styles.fieldGrid}>
+          <CardField
+            label="Подразделение"
+            value={isPending ? <Skeleton /> : formatNullableValue(medicalCaseDetails.department)}
+          />
+          <CardField
+            label="Отделение"
+            value={isPending ? <Skeleton /> : formatNullableValue(medicalCaseDetails.departmentCode)}
+          />
+          <div className={styles.wideField}>
+            <CardField
+              label="Комментарий"
+              value={<span className={styles.comment}>{isPending ? <Skeleton /> : formatNullableValue(medicalCaseDetails.internalComment)}</span>}
+            />
           </div>
         </div>
-      ) : (
-        <div className="cardLineGroup">
-          <div className="cardLine">
-            <header className="cardLineHeader">
-              <h3>ОСНОВНОЕ</h3>
-            </header>
-            <div className="cardBlockLineTwoGrid">
-              <CardField
-                label="Профиль"
-                value={medicalCaseDetails.medicalProfile}
-                inline={true}
-              />
-              <CardField
-                label="Специальность"
-                value={medicalCaseDetails.physicianSpecialty}
-                inline={true}
-              />
-            </div>
-            <div className="cardBlockLineTwoGrid">
-              <CardField
-                label="Номер истории"
-                value={medicalCaseDetails.medicalRecordNumber}
-                inline={true}
-              />
-              <CardField
-                label="Код лечащего врача"
-                value={medicalCaseDetails.physicianCode}
-                inline={true}
-              />
-            </div>
-            <div className="cardBlockLineTwoGrid">
-              <CardField
-                label="Количество"
-                value={formatNullableValue(medicalCaseDetails.paidUnits)}
-                inline={true}
-              />
-              <CardField
-                label="Категория"
-                value={medicalCaseDetails.isPediatric ? "Ребенок" : "Взрослый"}
-                inline={true}
-              />
-            </div>
-            <div className="cardBlockLineTwoGrid">
-              <CardField
-                label="Цель посещения"
-                value={formatNullableValue(medicalCaseDetails.visitPurpose)}
-                inline={true}
-              />
-              <CardField
-                label="Уровень ЛПУ"
-                value={formatNullableValue(medicalCaseDetails.facilityLevel)}
-                inline={true}
-              />
-            </div>
-          </div>
-
-          <div className="cardLine">
-            <header className="cardLineHeader">
-              <h3>ЛЕЧЕНИЕ</h3>
-            </header>
-            <div className="cardBlockLineOneGrid">
-              <CardField
-                label="Период лечения"
-                value={`${dayjs(medicalCaseDetails.treatmentStartDate).format(
-                  "DD.MM.YYYY",
-                )} — ${dayjs(medicalCaseDetails.treatmentEndDate).format(
-                  "DD.MM.YYYY",
-                )}`}
-                inline={true}
-              />
-            </div>
-            <div className="cardBlockLineTwoGrid">
-              <CardField
-                label="Профиль койки"
-                value={formatNullableValue(medicalCaseDetails.bedProfile)}
-                inline={true}
-              />
-              <CardField
-                label="Масса тела (кг)"
-                value={formatNullableValue(medicalCaseDetails.weight)}
-                inline={true}
-              />
-            </div>
-            <div className="cardBlockLineTwoGrid">
-              <CardField
-                label="Реабилитация"
-                value={
-                  medicalCaseDetails.isRehabilitation === null
-                    ? "—"
-                    : medicalCaseDetails.isRehabilitation
-                      ? "Да"
-                      : "Нет"
-                }
-                inline={true}
-              />
-              <CardField
-                label="Подозрение на ЗНО"
-                value={
-                  medicalCaseDetails.isOncologySuspicion === null
-                    ? "—"
-                    : medicalCaseDetails.isOncologySuspicion
-                      ? "Да"
-                      : "Нет"
-                }
-                inline={true}
-              />
-            </div>
-            <div className="cardBlockLineOneGrid">
-              <CardField
-                label="Поступление или перевод"
-                value={
-                  medicalCaseDetails.isAdmissionTransfer === null
-                    ? "—"
-                    : medicalCaseDetails.isAdmissionTransfer
-                      ? "Да"
-                      : "Нет"
-                }
-                inline={true}
-              />
-            </div>
-          </div>
-
-          <div className="cardLine">
-            <header className="cardLineHeader">
-              <h3>ДИАГНОЗ</h3>
-            </header>
-
-            <div className="cardBlockLineOneGrid">
-              <CardField
-                label="Основной диагноз"
-                value={medicalCaseDetails.primaryDiagnosis}
-                inline={true}
-              />
-            </div>
-            <div className="cardBlockLineOneGrid">
-              <CardField
-                label="Первичный диагноз"
-                value={formatNullableValue(medicalCaseDetails.initialDiagnosis)}
-                inline={true}
-              />
-            </div>
-            <div className="cardBlockLineOneGrid">
-              <CardField
-                label="Характер основного заболевания"
-                value={formatNullableValue(medicalCaseDetails.diseaseCharacter)}
-                inline={true}
-              />
-            </div>
-          </div>
-
-          <div className="cardLine">
-            <header className="cardLineHeader">
-              <h3>ДОПОЛНИТЕЛЬНО</h3>
-            </header>
-            <div className="cardBlockLineTwoGrid">
-              <CardField
-                label="Подразделение"
-                value={formatNullableValue(medicalCaseDetails.department)}
-                inline={true}
-              />
-              <CardField
-                label="Отделение"
-                value={formatNullableValue(medicalCaseDetails.departmentCode)}
-                inline={true}
-              />
-            </div>
-            <div className="cardBlockLineOneGrid">
-              <CardField
-                label="Комментарий"
-                value={formatNullableValue(medicalCaseDetails.internalComment)}
-                inline={true}
-              />
-            </div>
-          </div>
-        </div>
-      )}
+      </section>
     </div>
   );
 };

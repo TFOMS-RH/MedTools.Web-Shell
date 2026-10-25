@@ -1,19 +1,21 @@
+import styles from "../../../styles.module.scss";
+import { RControlInjectionDateChipSkeletons } from "./RControlInjectionDateChipSkeletons";
 import { resolveDataState } from "../../../../../../../../../../../shared/helpers/resolveDataState";
 import { DataState } from "../../../../../../../../../../../shared/ui/DataState/DataState";
-import { useRControlWorkspacePanelStore } from "../../../../../../../model/store/useRControlWorkspacePanelStore";
 import { useInjectionDatesQuery } from "../../../../../../../../../../../shared/model/queries/invoiceStructure/oncology/useInjectionDatesQuery";
-import { useRControlWorkspaceStore } from "../../../../../../../model/store/useRControlWorkspaceStore";
+import { useRControlWorkspacePanelStore } from "../../../../../../../model/store/useRControlWorkspacePanelStore";
 import { RControlInjectionDateChipsGroupHeader } from "./RControlInjectionDateChipsGroupHeader";
 import { RControlInjectionDateChips } from "./RControlInjectionDateChips";
-import { RControlInjectionDateChipSkeletons } from "./RControlInjectionDateChipSkeletons";
 
-export const RControlInjectionDateChipsGroupRoot = () => {
+export const RControlInjectionDateChipsGroupRoot = ({
+  selectedMedicationUid,
+}: {
+  selectedMedicationUid: number;
+}) => {
   const { targetDb } = useRControlWorkspacePanelStore();
-  const { selectedMedicationUid } = useRControlWorkspaceStore();
   const {
     data: injectionDates,
     isLoading,
-    isPending,
     isSuccess,
     isError,
     error,
@@ -28,7 +30,7 @@ export const RControlInjectionDateChipsGroupRoot = () => {
   });
 
   return (
-    <section className="cardRoot">
+    <section className={styles.panel}>
       <RControlInjectionDateChipsGroupHeader />
       {dataState === "error" ? (
         <DataState
@@ -36,7 +38,7 @@ export const RControlInjectionDateChipsGroupRoot = () => {
           description={error?.message ?? "Неизвестная ошибка"}
           variant="error"
         />
-      ) : isLoading ? (
+      ) : dataState === "loading" ? (
         <RControlInjectionDateChipSkeletons />
       ) : dataState === "empty" ? (
         <DataState
@@ -45,10 +47,7 @@ export const RControlInjectionDateChipsGroupRoot = () => {
           variant="empty"
         />
       ) : (
-        <RControlInjectionDateChips
-          injectionDates={injectionDates ?? []}
-          isPending={isPending}
-        />
+        <RControlInjectionDateChips injectionDates={injectionDates ?? []} />
       )}
     </section>
   );

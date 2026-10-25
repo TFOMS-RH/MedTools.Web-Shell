@@ -1,23 +1,24 @@
 .CompletedCasesTableRoot {
   --mt-table-accent: var(--mt-rcontrol-accent);
-  --mt-table-selection-bg: color-mix(in srgb, var(--mt-rcontrol-cover) 60%, var(--mt-surface));
-  --mt-table-selection-hover-bg: var(--mt-rcontrol-cover);
+  --mt-table-selection-bg: color-mix(in srgb, var(--mt-rcontrol-cover) 45%, var(--mt-surface));
+  --mt-table-selection-hover-bg: color-mix(in srgb, var(--mt-rcontrol-cover) 65%, var(--mt-surface));
   container: rcontrol-completed / inline-size;
   display: flex;
   flex-direction: column;
   min-width: 0;
   color: var(--mt-text-primary);
   background: var(--mt-surface);
-  border-radius: var(--mt-radius-inner);
-  padding: var(--mt-space-5) 0 var(--mt-space-6);
+  border-radius: var(--mt-radius-card);
 }
 
 .completedCasesTableHeader {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
   min-width: 0;
-  padding: 0 var(--mt-space-6) var(--mt-space-3);
-  gap: var(--mt-space-3);
+  padding: var(--mt-space-4) var(--mt-space-6);
+  gap: var(--mt-space-3) var(--mt-space-6);
 }
 
 .titleGroup {
@@ -25,10 +26,11 @@
   align-items: center;
   min-width: 0;
   gap: var(--mt-space-3);
-  h3 { font-size: var(--fs-h3); font-weight: var(--fw-semibold); }
+  h2 { font-size: var(--fs-h3); font-weight: var(--fw-bold); line-height: 1.4; }
 }
 
 .toolbar {
+  flex: 1 1 38rem;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -53,12 +55,13 @@
   min-width: 0;
   max-width: 100%;
   :global(.MuiTablePagination-root) { overflow: visible; }
-  :global(.MuiTablePagination-toolbar) { flex-wrap: wrap; min-height: 44px; padding: 0; gap: var(--mt-space-2); }
+  :global(.MuiTablePagination-toolbar) { flex-wrap: wrap; min-height: 0; padding: 0; gap: var(--mt-space-2); }
   :global(.MuiTablePagination-spacer) { display: none; }
   :global(.MuiTablePagination-selectLabel),
   :global(.MuiTablePagination-displayedRows),
   :global(.MuiTablePagination-input),
   :global(.MuiTablePagination-actions) { margin: 0; }
+  :global(.MuiTablePagination-input) { background: var(--mt-canvas); border-radius: var(--radius-l); }
   :global(.MuiTablePagination-actions .MuiIconButton-root) {
     min-width: 44px; min-height: 44px; color: var(--mt-text-primary);
     &:global(.Mui-disabled) { color: var(--mt-text-tertiary); }
@@ -70,17 +73,28 @@
   }
 }
 
-.tableContent { min-width: 0; padding: 0 var(--mt-space-6); }
+.tableContent { min-width: 0; padding: var(--mt-space-2) var(--mt-space-6) var(--mt-space-6); }
 .table {
-  min-width: 80rem;
+  min-width: 84rem;
+  .numberColumn { width: 5rem; }
+  .nameColumn { width: 12rem; }
+  .conditionColumn { width: 5rem; }
+  .seriesColumn { width: 7rem; }
+  .policyColumn { width: 13rem; }
+  .amountColumn { width: 11rem; }
   .identifier { white-space: nowrap; font-variant-numeric: tabular-nums; }
-  .personName { min-width: 10rem; max-width: 18rem; overflow-wrap: anywhere; }
-  .amount { min-width: 9rem; white-space: nowrap; font-variant-numeric: tabular-nums; text-align: right; }
+  .personName { min-width: 12rem; max-width: 20rem; overflow-wrap: anywhere; }
+  .amount { min-width: 11rem; white-space: nowrap; font-variant-numeric: tabular-nums; text-align: right; }
+}
+
+@container rcontrol-completed (max-width: 48rem) {
+  .completedCasesTableHeader { padding: var(--mt-space-3) var(--mt-space-4); }
+  .titleGroup { width: 100%; }
+  .toolbar { flex-basis: 100%; }
+  .tableContent { padding: var(--mt-space-2) var(--mt-space-4) var(--mt-space-4); }
+  .search { max-width: none; }
 }
 
 @container rcontrol-completed (max-width: 42rem) {
-  .completedCasesTableHeader { padding: 0 var(--mt-space-4) var(--mt-space-3); }
-  .tableContent { padding: 0 var(--mt-space-4); }
-  .search { max-width: none; }
   .pagination { flex: 1 1 100%; }
 }

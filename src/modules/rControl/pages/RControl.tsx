@@ -36,10 +36,13 @@ const RControlContent = () => {
       <div className={styles.page}>
         <RControlWorkspace />
         {selectedMedicalCaseUid !== null && (
-          <div className={styles.workspaceGroup} tabIndex={0} role="region" aria-label="Информационные категории медицинского случая">
+          <section className={styles.caseDetailsSection} aria-labelledby="rcontrol-case-heading">
+            <header className={styles.caseDetailsHeader}>
+              <h2 id="rcontrol-case-heading">Сведения о медицинском случае</h2>
+            </header>
             <RControlCategoriesPanel />
             <RControlCategoryRender />
-          </div>
+          </section>
         )}
       </div>
     </PageContainer>

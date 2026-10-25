@@ -1,103 +1,62 @@
 import type { DiagnosticListItemDto } from "../../../../../../../../../../shared/model/types/invoiceStructure/results/oncology/GetDiagnosticsResult";
-import { CardField } from "../../../../../../../../../../shared/ui/CardField/CardField";
-import { Skeleton } from "@mui/material";
-import { formatNullableValue } from "../../../../../../../../../../shared/helpers/formatNullableValue";
+import { TableSkeleton } from "../../../../../../../../../../shared/ui/TableSkeleton/TableSkeleton";
 import { formatDate } from "../../../../../../../../../../shared/helpers/formatDate";
-import styles from "./styles.module.scss";
-
-interface RControlDiagnosticsListBodyProps {
-  diagnosticRecords: DiagnosticListItemDto[];
-  isPending: boolean;
-}
+import { displayValue } from "../../presentation";
+import styles from "../../styles.module.scss";
 
 export const RControlDiagnosticsListBody = ({
   diagnosticRecords,
   isPending,
-}: RControlDiagnosticsListBodyProps) => {
-  return (
-    <section className={styles.diagnosticsListBodyRoot}>
-      {isPending
-        ? Array.from({ length: 5 }).map((_, index) => (
-            <div className={styles.listRow} key={index}>
-              <div className={styles.listRowContent}>
-                <div className={styles.lineOneGrid}>
-                  <p className={styles.lineTitle}>
-                    <Skeleton width={50} />
-                  </p>
-                </div>
-                <div className={styles.lineTwoGrid}>
-                  <CardField
-                    label="Тип д.п."
-                    value={<Skeleton />}
-                    inline={true}
-                  />
-                  <CardField
-                    label="Код д.п."
-                    value={<Skeleton />}
-                    inline={true}
-                  />
-                </div>
-                <div className={styles.lineTwoGrid}>
-                  <CardField
-                    label="Код результата диагностики"
-                    value={<Skeleton />}
-                    inline={true}
-                  />
-                  <CardField
-                    label="Результат диагностики"
-                    value={<Skeleton />}
-                    inline={true}
-                  />
-                </div>
-              </div>
-            </div>
-          ))
-        : diagnosticRecords.map((diagnosticRecord, _index) => (
-            <div
-              className={styles.listRow}
-              key={diagnosticRecord.diagnosticsUid}
-            >
-              <div className={styles.listRowContent}>
-                <div className={styles.lineOneGrid}>
-                  <p className={styles.lineTitle}>
-                    {formatDate(diagnosticRecord.specimenCollectionDate)}
-                  </p>
-                </div>
-                <div className={styles.lineTwoGrid}>
-                  <CardField
-                    label="Тип д.п."
-                    value={formatNullableValue(diagnosticRecord.diagnosticType)}
-                    inline={true}
-                  />
-                  <CardField
-                    label="Код д.п."
-                    value={formatNullableValue(diagnosticRecord.diagnosticCode)}
-                    inline={true}
-                  />
-                </div>
-                <div className={styles.lineTwoGrid}>
-                  <CardField
-                    label="Код результата диагностики"
-                    value={formatNullableValue(
-                      diagnosticRecord.diagnosticResultCode,
-                    )}
-                    inline={true}
-                  />
-                  <CardField
-                    label="Результат диагностики"
-                    value={
-                      diagnosticRecord.isResultReceived === null
-                        ? "—"
-                        : diagnosticRecord.isResultReceived
-                          ? "Положительный"
-                          : "Отрицательный"
-                    }
-                    inline={true}
-                  />
-                </div>
-              </div>
-            </div>
+}: {
+  diagnosticRecords: DiagnosticListItemDto[];
+  isPending: boolean;
+}) => (
+  <div
+    className={"mt-table-viewport " + styles.tableViewport}
+    role="region"
+    aria-label="Таблица диагностики"
+    tabIndex={0}
+  >
+    <table
+      className={"mt-table " + styles.diagnosticsTable}
+      aria-label="Диагностика"
+    >
+      <thead>
+        <tr>
+          {[
+            "Дата взятия материала",
+            "Тип диагностики",
+            "Код диагностики",
+            "Код результата",
+            "Результат",
+          ].map((label) => (
+            <th scope="col" key={label}>
+              {label}
+            </th>
           ))}
-    </section>
-  );
-};
+        </tr>
+      </thead>
+      <tbody>
+        {isPending ? (
+          <TableSkeleton columns={5} rows={5} />
+        ) : (
+          diagnosticRecords.map((record) => (
+            <tr key={record.diagnosticsUid}>
+              <td>{formatDate(record.specimenCollectionDate)}</td>
+              <td>{displayValue(record.diagnosticType)}</td>
+              <td>{displayValue(record.diagnosticCode)}</td>
+              <td>{displayValue(record.diagnosticResultCode)}</td>
+              <td>
+                {record.isResultReceived === null
+                  ? "—"
+                  : record.isResultReceived
+                    ? "Положительный"
+                    : "Отрицательный"}
+              </td>
+            </tr>
+          ))
+        )}
+      </tbody>
+    </table>
+  </div>
+);

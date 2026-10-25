@@ -69,7 +69,7 @@ export const RControlCompletedCasesTableHeader = ({
   return (
     <header className={styles.completedCasesTableHeader}>
       <div className={styles.titleGroup}>
-        <h3>Законченные случаи</h3>
+        <h2 id="rcontrol-completed-heading">Законченные случаи</h2>
         <StatusBadge state={state} />
       </div>
       <div className={styles.toolbar}>

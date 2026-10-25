@@ -1,91 +1,72 @@
 import type { PrescriptionDto } from "../../../../../../../../../../shared/model/types/invoiceStructure/results/prescriptions/GetPrescriptionsResult";
-import { CardField } from "../../../../../../../../../../shared/ui/CardField/CardField";
-import { formatNullableValue } from "../../../../../../../../../../shared/helpers/formatNullableValue";
+import { displayValue, renderReference } from "../../presentation";
+import { RControlPrescriptionCardSkeletons } from "./RControlPrescriptionCardSkeletons";
 import styles from "./styles.module.scss";
 
 interface RControlPrescriptionCardsProps {
   prescriptions: PrescriptionDto[];
+  isPending: boolean;
 }
 
 export const RControlPrescriptionCards = ({
   prescriptions,
+  isPending,
 }: RControlPrescriptionCardsProps) => {
-  return (
-    <section className={styles.prescriptionsCards}>
-      {prescriptions.map((prescription) => (
-        <article className="cardRoot" key={prescription.perscriptionUid}>
-          <header className="cardHeader">
-            <h2>Назначение №{prescription.sequenceNumber}</h2>
-          </header>
-          <div className="cardContent">
-            <div className="cardLineGroup">
-              <div className="cardLine">
-                <div className="cardLineHeader">
-                  <h3>НАЗНАЧЕНИЕ</h3>
-                </div>
-                <div className="cardBlockLineOneGrid">
-                  <CardField
-                    label="Вид назначения"
-                    value={prescription.prescriptionType}
-                    inline={true}
-                  />
-                </div>
-                <div className="cardBlockLineOneGrid">
-                  <CardField
-                    label="Метод диагностического лечения"
-                    value={formatNullableValue(prescription.diagnosticMethod)}
-                    inline={true}
-                  />
-                </div>
-                <div className="cardBlockLineOneGrid">
-                  <CardField
-                    label="Медицинская услуга в направление"
-                    value={formatNullableValue(prescription.serviceCode)}
-                    inline={true}
-                  />
-                </div>
-              </div>
-              <div className="cardLine">
-                <div className="cardLineHeader">
-                  <h3>НАПРАВЛЕНИЕ</h3>
-                </div>
-                <div className="cardBlockLineOneGrid">
-                  <CardField
-                    label="Дата направления"
-                    value={formatNullableValue(prescription.referralDate)}
-                    inline={true}
-                  />
-                </div>
-                <div className="cardBlockLineOneGrid">
-                  <CardField
-                    label="Медицинская организация назначения"
-                    value={formatNullableValue(prescription.referredToMoCode)}
-                    inline={true}
-                  />
-                </div>
-              </div>
+  if (isPending) return <RControlPrescriptionCardSkeletons />;
 
-              <div className="cardLine">
-                <div className="cardLineHeader">
-                  <h3>ПРОФИЛЬ</h3>
+  return (
+    <div className={styles.prescriptionsCards}>
+      {prescriptions.map((prescription) => (
+        <article className={styles.panel} key={prescription.perscriptionUid}>
+          <h4 className={styles.panelHeading}>Назначение №{prescription.sequenceNumber}</h4>
+          <div className={styles.groups}>
+            <div className={styles.mainGroup}>
+              <dl className={styles.fields}>
+                <div className={styles.wideField}>
+                  <dt>Вид назначения</dt>
+                  <dd className={styles.primaryValue}>
+                    {renderReference(prescription.prescriptionType, prescription.prescriptionTypeCode)}
+                  </dd>
                 </div>
-                <div className="cardBlockLineTwoGrid">
-                  <CardField
-                    label="Профиль МП"
-                    value={formatNullableValue(prescription.medicalCareProfile)}
-                    inline={true}
-                  />
-                  <CardField
-                    label="Профиль койки"
-                    value={formatNullableValue(prescription.bedProfile)}
-                    inline={true}
-                  />
+                <div>
+                  <dt>Метод диагностического лечения</dt>
+                  <dd>{renderReference(prescription.diagnosticMethod, prescription.diagnosticMethodCode)}</dd>
                 </div>
-              </div>
+                <div>
+                  <dt>Медицинская услуга в направлении</dt>
+                  <dd>{displayValue(prescription.serviceCode)}</dd>
+                </div>
+              </dl>
+            </div>
+            <div className={styles.group}>
+              <h5 className={styles.groupHeading}>Направление</h5>
+              <dl className={styles.fields}>
+                <div>
+                  <dt>Дата направления</dt>
+                  <dd>{displayValue(prescription.referralDate)}</dd>
+                </div>
+                <div>
+                  <dt>Медицинская организация назначения</dt>
+                  <dd>{displayValue(prescription.referredToMoCode)}</dd>
+                </div>
+              </dl>
+            </div>
+            <div className={styles.group}>
+              <h5 className={styles.groupHeading}>Профиль</h5>
+              <dl className={styles.fields}>
+                <div>
+                  <dt>Профиль МП</dt>
+                  <dd>{displayValue(prescription.medicalCareProfile)}</dd>
+                </div>
+                <div>
+                  <dt>Профиль койки</dt>
+                  <dd>{displayValue(prescription.bedProfile)}</dd>
+                </div>
+              </dl>
             </div>
           </div>
         </article>
       ))}
-    </section>
+    </div>
   );
 };

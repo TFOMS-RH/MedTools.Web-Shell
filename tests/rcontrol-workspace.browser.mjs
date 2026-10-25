@@ -1,35 +1,18 @@
 // Run from the repository root: node tests/rcontrol-workspace.browser.mjs
 // Requires Chrome (override CHROME_PATH if needed). Runs intercepted regressions and the dev demo.
 // Pass --demo-only to run just /rcontrol?demoWorkspace=1 without browser API interception.
-// Layout checks first measure HEAD with matching data; no checkout or working-tree mutation.
-import { spawn, spawnSync } from "node:child_process";
-import { mkdtemp, writeFile, readFile } from "node:fs/promises";
+import { spawn } from "node:child_process";
+import { mkdtemp, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 const root = process.cwd();
-const baselineLayout = process.argv.includes("--baseline-layout");
-const layoutCheck = baselineLayout || process.argv.includes("--current-layout");
-const baselinePath = join(tmpdir(), "rcontrol-baseline-layout.json");
-if (!layoutCheck) {
-  const baseline = spawnSync(process.execPath, [process.argv[1], "--baseline-layout"], {
-    cwd: root, stdio: "inherit", windowsHide: true,
-  });
-  if (baseline.status !== 0) throw new Error("Baseline Chrome layout check failed");
-}
 
 const { createServer } = await import(
   pathToFileURL(join(root, "node_modules/vite/dist/node/index.js"))
 );
 const server = await createServer({
   logLevel: "silent",
-  plugins: baselineLayout ? [{name:"rcontrol-before-stabilization",enforce:"pre",load(id){
-    const path=id.replaceAll('\\','/').split('?')[0];
-    const relative=path.slice(root.replaceAll('\\','/').length+1);
-    if(!relative.startsWith('src/modules/rControl/')||! /\.(tsx?|scss)$/.test(relative)) return;
-    const result=spawnSync('git',['show','HEAD:'+relative],{cwd:root,encoding:'utf8',windowsHide:true});
-    if(result.status===0) return result.stdout;
-  }}] : [],
   server: { host: "127.0.0.1", port: 5189, strictPort: true },
 });
 await server.listen();
@@ -167,7 +150,7 @@ try {
     });
   const invoice = (uid) => ({
     invoiceUid: uid,
-    number: layoutCheck ? "ДЕМО-SMODB18-" + uid : "ТЕСТ-СЧЕТ-" + uid,
+    number: "ТЕСТ-СЧЕТ-" + uid,
     billingDate: "2026-01-03",
     amount: 1234.56,
     medicalCasesCount: 2,
@@ -175,10 +158,10 @@ try {
   });
   const completed = (uid) => ({
     completedCaseUid: uid,
-    entryNumber: layoutCheck ? Math.floor(uid/10)*100+uid%10 : uid * 10,
-    entryPositionNumber: layoutCheck ? uid%10 : uid,
-    patientLastName: layoutCheck ? "Демонстрационный" : "Тестовый",
-    patientFirstName: layoutCheck ? `Пациент ${uid%10}` : "Пациент",
+    entryNumber: uid * 10,
+    entryPositionNumber: uid,
+    patientLastName: "Тестовый",
+    patientFirstName: "Пациент",
     patientMiddleName: "",
     medicalCareConditions: 0,
     insurancePolicySeries: null,
@@ -194,7 +177,7 @@ try {
     physicianSpecialty: 0,
     treatmentStartDate: "2026-01-01",
     treatmentEndDate: "2026-01-03",
-    primaryDiagnosis: layoutCheck ? "" : "ТЕСТ-МЕД-" + uid,
+    primaryDiagnosis: "ТЕСТ-МЕД-" + uid,
     paidUnits: 1,
     unitRate: null,
     amountBilled: 1234.56,
@@ -282,7 +265,7 @@ try {
             );
       value = {
         invoices: rows,
-        recordsCount: mode === "empty" ? 0 : fullInvoices || layoutCheck ? rows.length : 100,
+        recordsCount: mode === "empty" ? 0 : fullInvoices ? rows.length : 100,
       };
     }
     if (kind === "completed") {
@@ -299,7 +282,7 @@ try {
             );
       value = {
         completedCases: rows,
-        totalCount: mode === "empty" ? 0 : fullCompleted || layoutCheck ? rows.length : 50,
+        totalCount: mode === "empty" ? 0 : fullCompleted ? rows.length : 50,
       };
     }
     if (kind === "medical")
@@ -311,7 +294,7 @@ try {
       value = {
         invoiceSummary: {
           invoiceUid: parent,
-          filename: layoutCheck ? "demo-invoice.xml" : "ТЕСТ-ФАЙЛ-" + parent,
+          filename: "ТЕСТ-ФАЙЛ-" + parent,
           invoiceUploadDate: "2026-01-03",
           invoiceAmount: 1234.56,
           approvedAmount: 0,
@@ -347,7 +330,7 @@ try {
   });
   await send("Page.navigate", { url: "http://127.0.0.1:5189/rcontrol" });
   await until(
-    baselineLayout ? 'document.querySelector("[class*=selectsGroup_]")' : 'document.body.textContent.includes("Сначала выберите источник данных")',
+    'document.body.textContent.includes("Сначала выберите источник данных")',
   );
   const initialize = async () => evaluate(`(async()=>{
   const {useRControlWorkspaceStore:store}=await import('/src/modules/rControl/widgets/workspace/model/store/useRControlWorkspaceStore.ts');
@@ -363,7 +346,7 @@ try {
   window.rcStore=store;window.rcPanel=panel;window.rcClient=client;
   window.rcArea=t=>[...document.querySelectorAll('h2,h3')].find(e=>e.textContent.trim()===t)?.closest('section,article');
   window.rcInv=()=>rcArea('Реестр счетов')??rcArea('Счета');window.rcComp=()=>rcArea('Законченные случаи');
-  window.rcMeds=()=>[...document.querySelectorAll('[class*=medicalCasesCards_] > article.selectedCardRoot')];
+  window.rcMeds=()=>[...document.querySelectorAll('[class*=medicalCasesCards_] article.selectedCardRoot, [class*=medicalCasesCards_] article:has(button[aria-pressed])')];
  })()`);
   await initialize();
   const invalidate = async (key) => {
@@ -453,34 +436,6 @@ try {
       "rcMeds().length===2&&rcStore.getState().selectedMedicalCaseUid!==null",
     );
   };
-  if (layoutCheck) {
-    await evaluate('document.querySelector("button[value=SMODB18]").click()');
-    // The baseline has no local lookup wrappers or row buttons.
-    const originalChoose=async(index,value)=>{
-      await evaluate(`document.querySelectorAll('[class*=selectsGroup_] [role=combobox]')[${index}].dispatchEvent(new MouseEvent('mousedown',{bubbles:true,button:0}))`);
-      await until('document.querySelector("[role=listbox]")');
-      await evaluate(`[...document.querySelectorAll('[role=option]')].find(e=>e.getAttribute('data-value')===${JSON.stringify(value)}).click()`);
-      await pause();
-    };
-    await until('rcClient.getQueryData(["r-control","medical-organizations","SMODB18"])');
-    await originalChoose(0,"001");
-    await until('rcClient.getQueryData(["r-control","billing-periods","001","SMODB18"])');
-    await originalChoose(1,"2026");await originalChoose(2,"1");
-    await until('rcInv().querySelectorAll("tbody tr").length===2');
-    await evaluate('rcInv().querySelector("tbody tr").click()');
-    await until('rcComp()?.querySelectorAll("tbody tr").length===2');
-    await evaluate('rcComp().querySelector("tbody tr").click()');
-    await until('rcMeds().length===2');
-    await evaluate('document.fonts.ready.then(()=>true)');
-    const measurements=[];
-    for(const width of [360,768,1024,1440,1920]) {
-      await send('Emulation.setDeviceMetricsOverride',{width,height:1000,deviceScaleFactor:1,mobile:false});await pause();
-      const geometry=await evaluate(`({viewport:innerWidth,page:document.documentElement.scrollWidth,body:document.body.scrollWidth,overflow:[...document.querySelectorAll('body *')].filter(e=>e.getBoundingClientRect().right>innerWidth+1).slice(0,5).map(e=>({cls:e.className,right:e.getBoundingClientRect().right}))})`);
-      measurements.push(geometry);console.log((baselineLayout?'BASELINE':'CURRENT')+' GEOMETRY '+JSON.stringify(geometry));
-    }
-    if(baselineLayout) await writeFile(baselinePath,JSON.stringify(measurements));
-    if(baselineLayout) console.log('BASELINE MEASUREMENTS '+baselinePath);
-  } else {
   if (!process.argv.includes("--demo-only")) {
   check(
     "initial dependencies inert without requests",
@@ -707,7 +662,7 @@ try {
   await selectInvoice(1);
   await evaluate('rcComp().querySelector("tbody button").click()');
   await pause();
-  check("medical area opens while loading but categories remain hidden",await evaluate(`document.querySelector('[aria-label="Медицинские случаи"]')&&!document.querySelector('[class*=categoriesPanelRoot_]')`));
+  check("medical area opens while loading but categories remain hidden",await evaluate(`document.querySelector('[aria-label="Загрузка медицинских случаев"]')&&!document.querySelector('[class*=categoriesPanelRoot_]')`));
   const oldParent = await evaluate(
     "rcStore.getState().selectedCompletedCaseUid",
   );
@@ -951,7 +906,7 @@ try {
   await mouse('rcComp().querySelector("tbody button")');
   await until("rcStore.getState().selectedMedicalCaseUid===1111");
   check("demo native mouse case button selects once and reaches medical",await evaluate("completedActions===1&&rcStore.getState().selectedCompletedCaseUid===111&&rcMeds().length===2"));
-  check("demo state E shows all seven categories after automatic medical selection",await evaluate(`document.querySelector('[class*=categoriesPanelRoot_]')?.children.length===7`));
+  check("demo state E shows all seven tabs after automatic medical selection",await evaluate(`document.querySelectorAll('[class*=categoriesPanelRoot_] [role=tab]').length===7`));
   await mouse('rcInv().querySelectorAll("tbody button")[1]');
   await until("rcStore.getState().selectedInvoiceUid===12&&rcComp()?.querySelectorAll('tbody button').length===2");
   check("demo invoice button has no double activation",await evaluate("invoiceActions===2&&rcStore.getState().selectedMedicalCaseUid===null"));
@@ -976,7 +931,36 @@ try {
   check("demo Enter completed once",await evaluate("completedActions===3"));
   await press(" ");
   await until("rcStore.getState().selectedMedicalCaseUid===1111");
-  check("demo Space completed once restores the first medical card",await evaluate("completedActions===4&&rcMeds()[0].classList.contains('selectedCard')"));
+  check("demo Space completed once restores the first medical card",await evaluate("completedActions===4&&rcMeds()[0].querySelector('button').getAttribute('aria-pressed')==='true'"));
+  await evaluate(`(()=>{const original=rcStore.getState().selectMedicalCase;window.medicalActions=0;rcStore.setState({selectMedicalCase:uid=>{medicalActions++;original(uid)}});})()`);
+  await pause();
+  await mouse('rcMeds()[1].querySelector("button")');
+  check("medical button mouse activates once",await evaluate('medicalActions===1&&rcStore.getState().selectedMedicalCaseUid===1112'));
+  await mouse('rcMeds()[0].querySelector("section")');
+  check("medical card mouse activates once",await evaluate('medicalActions===2&&rcStore.getState().selectedMedicalCaseUid===1111'));
+  await tabTo('rcMeds()[1].querySelector("button")');
+  await press(" ");
+  check("medical Space selects second card once",await evaluate('medicalActions===3&&rcStore.getState().selectedMedicalCaseUid===1112'));
+  check("medical cards keep white surfaces and selected accent",await evaluate(`rcMeds().every(e=>getComputedStyle(e).backgroundColor==='rgb(255, 255, 255)')&&getComputedStyle(rcMeds()[1]).borderColor==='rgb(36, 135, 109)'`));
+  await tabTo('rcMeds()[0].querySelector("button")');
+  await press("Enter");
+  check("medical Enter selects first card once",await evaluate('medicalActions===4&&rcStore.getState().selectedMedicalCaseUid===1111'));
+  await tabTo('document.getElementById("rcontrol-case-tab-patient")');
+  await press("Enter");
+  await until('rcStore.getState().targetCategory==="patient"');
+  for(const type of ['keyDown','keyUp']) await send('Input.dispatchKeyEvent',{type,key:'ArrowRight',code:'ArrowRight',windowsVirtualKeyCode:39});
+  await pause();
+  check("category arrow moves focus without changing selection",await evaluate(`document.activeElement.id==='rcontrol-case-tab-case-details'&&rcStore.getState().targetCategory==='patient'`));
+  await press("Enter");
+  check("category Enter selects focused tab",await evaluate(`rcStore.getState().targetCategory==='case-details'`));
+  for(const category of ['patient','case-details','oncology','prescriptions','clinical-groups','provided-services','defects']) {
+    await mouse(`document.getElementById('rcontrol-case-tab-${category}')`);
+    check('category ARIA and selection '+category,await evaluate(`(()=>{const t=document.getElementById('rcontrol-case-tab-${category}'),p=document.getElementById(t.getAttribute('aria-controls'));return rcStore.getState().targetCategory==='${category}'&&t.getAttribute('aria-selected')==='true'&&p?.getAttribute('role')==='tabpanel'&&p.getAttribute('aria-labelledby')===t.id;})()`));
+  }
+  await mouse('rcMeds()[1].querySelector("button")');
+  check("medical choice preserves category",await evaluate(`rcStore.getState().targetCategory==='defects'&&rcStore.getState().selectedMedicalCaseUid===1112`));
+  await mouse('rcMeds()[0].querySelector("button")');
+  await evaluate('rcStore.getState().setTargetCategory("default")');
   await evaluate('rcComp().querySelector("tbody button").scrollIntoView({block:"center"})');
   await screenshot("rcontrol-selected-focus-1440");
   for(const area of ["rcInv","rcComp"]) {
@@ -1033,6 +1017,22 @@ try {
     check("demo redesigned areas fit at "+width,scoped.every(e=>e.scroll<=e.width+1&&e.right<=width+1));
     check("accounts and completed sections share width and alignment at "+width,await evaluate(`(()=>{const a=document.querySelector('[aria-labelledby=rcontrol-accounts-title]').getBoundingClientRect(),b=rcComp().getBoundingClientRect();return Math.abs(a.width-b.width)<1&&Math.abs(a.left-b.left)<1&&b.top>=a.bottom;})()`));
     check("demo page does not overflow at "+width,geometry.page<=width+1&&geometry.body<=width+1);
+    const lower=await evaluate(`(()=>{const cards=rcMeds(),tabs=document.querySelector('[class*=categoriesPanelRoot_]'),scroller=tabs.querySelector('.MuiTabs-scroller'),list=tabs.querySelector('[role=tablist]');return {cards:cards.map(e=>({width:e.getBoundingClientRect().width,left:e.getBoundingClientRect().left,top:e.getBoundingClientRect().top,bottom:e.getBoundingClientRect().bottom,scroll:e.scrollWidth,client:e.clientWidth})),tabs:tabs.scrollWidth<=tabs.clientWidth+1,tabScrollable:scroller.scrollWidth>scroller.clientWidth,tabHeights:[...list.children].map(e=>e.getBoundingClientRect().height)};})()`);
+    check('horizontal medical list fits and stacks at '+width,lower.cards.length===2&&lower.cards[1].top>=lower.cards[0].bottom&&Math.abs(lower.cards[0].width-lower.cards[1].width)<1&&lower.cards.every(e=>e.scroll<=e.client+1));
+    check('category navigation remains one row at '+width,lower.tabs&&lower.tabHeights.every(h=>h===lower.tabHeights[0]));
+    if(width===360) check('category navigation scrolls locally',lower.tabScrollable);
+    if(width===360||width===1440) {
+      await evaluate(`document.querySelector('[class*=medicalCasesCards_]').scrollIntoView({block:'start',behavior:'instant'})`);
+      await pause();
+      await screenshot('rcontrol-lower-'+width);
+      await screenshot('rcontrol-medical-cards-'+width,'[class*=medicalCasesCards_]');
+      await screenshot('rcontrol-categories-'+width,'[aria-labelledby=rcontrol-case-heading]');
+      await evaluate('rcStore.getState().setTargetCategory("patient")');
+      await pause(300);
+      await screenshot('rcontrol-tabs-selected-'+width,'[class*=categoriesPanelRoot_]');
+      await evaluate('rcStore.getState().setTargetCategory("default")');
+      await pause();
+    }
     if(width===360||width===1440) {
       await screenshot("rcontrol-workspace-"+width,'[aria-labelledby=rcontrol-accounts-title]');
       await screenshot("rcontrol-completed-"+width,'[class*=CompletedCasesTableRoot_]');
@@ -1059,11 +1059,6 @@ try {
       await evaluate('rcInv().scrollIntoView({block:"start"})');
       await screenshot("rcontrol-invoices-"+width);
     }
-    if(geometry.page>width+1||geometry.body>width+1) {
-      const baseline=JSON.parse(await readFile(baselinePath,'utf8')).find(e=>e.viewport===width);
-      console.log('LIMIT existing horizontal overflow at '+width+'; baseline='+JSON.stringify(baseline));
-      check('demo no added page overflow compared to baseline at '+width,geometry.page<=baseline.page&&geometry.body<=baseline.body);
-    } else check("demo page has no horizontal overflow at "+width,true);
     if(width===360||width===1440) {
       await evaluate('document.querySelector("[class*=filtersPanelRoot_]").scrollIntoView({block:"start"})');
       await screenshot("rcontrol-demo-"+width);
@@ -1103,7 +1098,6 @@ try {
   check("demo summary hides after context reset",await evaluate(`!${summary}`));
   console.log("RCONTROL DEMO BROWSER CHECKS COMPLETE");
   check("no runtime exceptions or out-of-range select values", runtimeErrors.length === 0);
-  }
 } finally {
   ws?.close();
   chrome.kill();

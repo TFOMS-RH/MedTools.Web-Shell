@@ -1,10 +1,11 @@
-import { RControlMedicalDevicesTableHeader } from "./RControlMedicalDevicesTableHeader";
-import { RControlMedicalDevicesTableBody } from "./RControlMedicalDevicesTableBody";
-import { useMedicalDevicesQuery } from "../../../../../../../../../../shared/model/queries/invoiceStructure/providedServices/useMedicalDevicesQuery";
-import { useRControlWorkspaceStore } from "../../../../../../model/store/useRControlWorkspaceStore";
-import { resolveDataState } from "../../../../../../../../../../shared/helpers/resolveDataState";
-import { useRControlWorkspacePanelStore } from "../../../../../../model/store/useRControlWorkspacePanelStore";
 import { DataState } from "../../../../../../../../../../shared/ui/DataState/DataState";
+import { resolveDataState } from "../../../../../../../../../../shared/helpers/resolveDataState";
+import { useMedicalDevicesQuery } from "../../../../../../../../../../shared/model/queries/invoiceStructure/providedServices/useMedicalDevicesQuery";
+import { useRControlWorkspacePanelStore } from "../../../../../../model/store/useRControlWorkspacePanelStore";
+import { RControlMedicalDevicesTableHeader } from "./RControlMedicalDevicesTableHeader";
+import { useRControlWorkspaceStore } from "../../../../../../model/store/useRControlWorkspaceStore";
+import { RControlMedicalDevicesTableBody } from "./RControlMedicalDevicesTableBody";
+import styles from "../../styles.module.scss";
 
 export const RControlMedicalDevicesTableRoot = () => {
   const { targetDb } = useRControlWorkspacePanelStore();
@@ -26,7 +27,7 @@ export const RControlMedicalDevicesTableRoot = () => {
   });
 
   return (
-    <div className="cardRoot">
+    <section className={styles.section} aria-labelledby="rcontrol-devices-heading">
       <RControlMedicalDevicesTableHeader />
       {dataState === "error" ? (
         <DataState
@@ -46,6 +47,6 @@ export const RControlMedicalDevicesTableRoot = () => {
           medicalDevices={medicalDevices ?? []}
         />
       )}
-    </div>
+    </section>
   );
 };

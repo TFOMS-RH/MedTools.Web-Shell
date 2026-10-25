@@ -5,12 +5,35 @@
   min-width: 0;
 }
 
-.workspaceGroup {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-5);
+.caseDetailsSection {
   min-width: 0;
-  max-width: 100%;
-  overflow-x: auto;
-  &:focus-visible { outline: 2px solid var(--mt-rcontrol-accent); outline-offset: -2px; }
+  padding: var(--mt-space-5);
+  border-radius: var(--mt-radius-card);
+  background: var(--mt-surface);
+
+  > [id="rcontrol-case-panel"] {
+    min-width: 0;
+    padding-top: var(--mt-space-5);
+    overflow-x: auto;
+    &:focus-visible {
+      outline: 2px solid var(--mt-rcontrol-accent);
+      outline-offset: 4px;
+      border-radius: var(--mt-radius-control);
+    }
+  }
+}
+
+.caseDetailsHeader {
+  padding-bottom: var(--mt-space-3);
+  h2 {
+    margin: 0;
+    color: var(--mt-text-primary);
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+}
+
+@media (max-width: 600px) {
+  .caseDetailsSection { padding: var(--mt-space-3); }
 }

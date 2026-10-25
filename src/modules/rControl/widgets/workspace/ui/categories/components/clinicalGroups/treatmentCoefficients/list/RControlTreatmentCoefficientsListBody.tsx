@@ -1,6 +1,7 @@
-import { Skeleton } from "@mui/material";
-import styles from "./styles.module.scss";
 import type { TreatmentComplexityCoefficientDto } from "../../../../../../../../../../shared/model/types/invoiceStructure/results/clinicalGroup/GetTreatmentComplexityCoefficientsResult";
+import { TableSkeleton } from "../../../../../../../../../../shared/ui/TableSkeleton/TableSkeleton";
+import { displayValue } from "../../presentation";
+import styles from "./styles.module.scss";
 
 interface RControlTreatmentCoefficientsListBodyProps {
   treatmentComplexityCoefficients: TreatmentComplexityCoefficientDto[];
@@ -10,51 +11,19 @@ interface RControlTreatmentCoefficientsListBodyProps {
 export const RControlTreatmentCoefficientsListBody = ({
   treatmentComplexityCoefficients,
   isPending,
-}: RControlTreatmentCoefficientsListBodyProps) => {
-  return (
-    <div className="cardContent">
-      <div className="cardBlock">
-        {isPending
-          ? Array.from({ length: 2 }).map((_, index) => (
-              <div className={styles.listRow} key={index}>
-                <Skeleton variant="rounded" width={40} height={40} />
-                <div className={styles.listRowContent}>
-                  <p className={styles.date}>
-                    <Skeleton />
-                  </p>
-                  <p className={styles.description}>
-                    <Skeleton animation="wave" height={25} />
-                  </p>
-                </div>
-              </div>
-            ))
-          : treatmentComplexityCoefficients.map(
-              (treatmentComplexityCoefficient, _index) => (
-                <div
-                  className={styles.listRow}
-                  key={
-                    treatmentComplexityCoefficient.treatmentComplexityCoefficientUid
-                  }
-                >
-                  <div className={styles.number}>
-                    <p>{_index + 1}</p>
-                  </div>
-                  <div className={styles.listRowContent}>
-                    <p className={styles.date}>
-                      №
-                      {treatmentComplexityCoefficient.complexityCoefficientNumber ??
-                        "—"}
-                    </p>
-                    <p className={styles.description}>
-                      {
-                        treatmentComplexityCoefficient.complexityCoefficientValue
-                      }
-                    </p>
-                  </div>
-                </div>
-              ),
-            )}
-      </div>
-    </div>
-  );
-};
+}: RControlTreatmentCoefficientsListBodyProps) => (
+  <div className="mt-table-viewport" role="region" aria-label="Таблица коэффициентов сложности лечения" tabIndex={0} aria-busy={isPending}>
+    <table className={`mt-table ${styles.coefficientsTable}`} aria-labelledby="rcontrol-csg-coefficients-heading">
+      <colgroup><col /><col className={styles.valueColumn} /></colgroup>
+      <thead><tr><th scope="col">Номер</th><th scope="col" className={styles.numeric}>Значение</th></tr></thead>
+      <tbody>
+        {isPending ? <TableSkeleton columns={2} rows={2} /> : treatmentComplexityCoefficients.map((coefficient) => (
+          <tr key={coefficient.treatmentComplexityCoefficientUid} className="noneHover">
+            <td>{displayValue(coefficient.complexityCoefficientNumber)}</td>
+            <td className={styles.numeric}>{displayValue(coefficient.complexityCoefficientValue)}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+);

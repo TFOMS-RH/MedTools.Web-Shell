@@ -1,14 +1,17 @@
+import styles from "../../../styles.module.scss";
 import { resolveDataState } from "../../../../../../../../../../../shared/helpers/resolveDataState";
 import { DataState } from "../../../../../../../../../../../shared/ui/DataState/DataState";
-import { useRControlWorkspacePanelStore } from "../../../../../../../model/store/useRControlWorkspacePanelStore";
 import { useInjectionsQuery } from "../../../../../../../../../../../shared/model/queries/invoiceStructure/oncology/useInjectionsQuery";
-import { useRControlWorkspaceStore } from "../../../../../../../model/store/useRControlWorkspaceStore";
+import { useRControlWorkspacePanelStore } from "../../../../../../../model/store/useRControlWorkspacePanelStore";
 import { RControlInjectionsTableBody } from "./RControlInjectionsTableBody";
 import { RControlInjectionsTableHeader } from "./RControlInjectionsTableHeader";
 
-export const RControlInjectionsTableRoot = () => {
+export const RControlInjectionsTableRoot = ({
+  selectedMedicationUid,
+}: {
+  selectedMedicationUid: number;
+}) => {
   const { targetDb } = useRControlWorkspacePanelStore();
-  const { selectedMedicationUid } = useRControlWorkspaceStore();
   const {
     data: injections,
     isLoading,
@@ -27,7 +30,7 @@ export const RControlInjectionsTableRoot = () => {
   });
 
   return (
-    <section className="cardRoot">
+    <section className={styles.panel}>
       <RControlInjectionsTableHeader />
       {dataState === "error" ? (
         <DataState

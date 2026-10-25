@@ -1,7 +1,6 @@
 export const RControlPatientCardHeader = () => {
   return (
-    <div className="cardHeader">
-      <h2>Пациент</h2>
-    </div>
+    <h3 id="rcontrol-patient-0" className={styles.profileCaption}>Сведения о пациенте</h3>
   );
 };
+import styles from "../../styles.module.scss";

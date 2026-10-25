@@ -1,11 +1,11 @@
-import { useConsultationsQuery } from "../../../../../../../../../../shared/model/queries/invoiceStructure/oncology/useConsultationsQuery";
-import { useRControlWorkspacePanelStore } from "../../../../../../model/store/useRControlWorkspacePanelStore";
-import { useRControlWorkspaceStore } from "../../../../../../model/store/useRControlWorkspaceStore";
-import { resolveDataState } from "../../../../../../../../../../shared/helpers/resolveDataState";
+import styles from "../../styles.module.scss";
 import { DataState } from "../../../../../../../../../../shared/ui/DataState/DataState";
+import { useConsultationsQuery } from "../../../../../../../../../../shared/model/queries/invoiceStructure/oncology/useConsultationsQuery";
+import { useRControlWorkspaceStore } from "../../../../../../model/store/useRControlWorkspaceStore";
+import { useRControlWorkspacePanelStore } from "../../../../../../model/store/useRControlWorkspacePanelStore";
 import { RControlConsultationsListHeader } from "./RControlConsultationsListHeader";
 import { RControlConsultationsListBody } from "./RControlConsultationsListBody";
-import styles from "./styles.module.scss";
+import { resolveDataState } from "../../../../../../../../../../shared/helpers/resolveDataState";
 
 export const RControlConsultationsListRoot = () => {
   const { selectedMedicalCaseUid } = useRControlWorkspaceStore();
@@ -28,7 +28,7 @@ export const RControlConsultationsListRoot = () => {
   });
 
   return (
-    <section className={styles.consultationsListRoot}>
+    <section className={styles.panel}>
       <RControlConsultationsListHeader />
       {dataState === "error" ? (
         <DataState

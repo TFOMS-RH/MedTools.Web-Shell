@@ -1,10 +1,11 @@
 import { resolveDataState } from "../../../../../../../../../../shared/helpers/resolveDataState";
 import { DataState } from "../../../../../../../../../../shared/ui/DataState/DataState";
-import { useRControlWorkspacePanelStore } from "../../../../../../model/store/useRControlWorkspacePanelStore";
 import { useReferralsQuery } from "../../../../../../../../../../shared/model/queries/invoiceStructure/prescriptions/useReferralsQuery";
+import { useRControlWorkspacePanelStore } from "../../../../../../model/store/useRControlWorkspacePanelStore";
 import { useRControlWorkspaceStore } from "../../../../../../model/store/useRControlWorkspaceStore";
-import { RControlReferralsTableBody } from "./RControlReferralsTableBody";
 import { RControlReferralsTableHeader } from "./RControlReferralsTableHeader";
+import { RControlReferralsTableBody } from "./RControlReferralsTableBody";
+import styles from "../../styles.module.scss";
 
 export const RControlReferralsTableRoot = () => {
   const { targetDb } = useRControlWorkspacePanelStore();
@@ -27,7 +28,7 @@ export const RControlReferralsTableRoot = () => {
   });
 
   return (
-    <section className="cardRoot">
+    <section className={styles.section} aria-labelledby="rcontrol-referrals-heading">
       <RControlReferralsTableHeader />
       {dataState === "error" ? (
         <DataState

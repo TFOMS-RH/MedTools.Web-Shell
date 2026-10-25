@@ -1,7 +1,5 @@
-export const RControlHighTechMedicalCareCardHeader = () => {
-  return (
-    <header className="cardHeader">
-      <h2>Высокотехнологичная медицинская помощь</h2>
-    </header>
-  );
-};
+import styles from "../../styles.module.scss";
+
+export const RControlHighTechMedicalCareCardHeader = () => (
+  <h3 id="rcontrol-vmp-heading" className={styles.sectionHeading}>Высокотехнологичная медицинская помощь</h3>
+);

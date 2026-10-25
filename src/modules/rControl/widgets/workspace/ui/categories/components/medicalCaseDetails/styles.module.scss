@@ -1,17 +1,127 @@
 .medicalCaseDetailsRoot {
+  container: rcontrol-case-details / inline-size;
   display: flex;
   flex-direction: column;
-  gap: var(--space-10);
+  min-width: 0;
+  gap: var(--mt-space-8);
+}
 
-  .categoryLine {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-5);
+.caseSection {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: var(--mt-space-4);
+}
 
-    .medicalCaseDetailsGroup {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      column-gap: var(--space-5);
-    }
+.sectionHeading {
+  margin: 0;
+  color: var(--mt-text-primary);
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-bold);
+  line-height: 1.4;
+}
+
+.groups {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--mt-space-4);
+  align-items: start;
+  min-width: 0;
+}
+
+.informationGroup {
+  container: rcontrol-case-fields / inline-size;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: var(--mt-space-3);
+  padding: var(--mt-space-5);
+  border-radius: var(--radius-xl);
+  background: color-mix(in srgb, var(--mt-canvas) 80%, var(--mt-surface));
+}
+
+.wideGroup,
+.wideField {
+  grid-column: 1 / -1;
+  min-width: 0;
+}
+
+.groupHeading {
+  margin: 0;
+  color: var(--mt-text-primary);
+  font-size: var(--fs-h4);
+  font-weight: var(--fw-bold);
+  line-height: 1.5;
+}
+
+.fieldGrid,
+.organizationGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-width: 0;
+  gap: var(--mt-space-4) var(--mt-space-5);
+
+  > * {
+    min-width: 0;
+  }
+}
+
+.referral {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: var(--mt-space-4);
+}
+
+.referenceName,
+.referenceCode,
+.primaryValue,
+.comment {
+  display: block;
+  overflow-wrap: anywhere;
+}
+
+.referenceCode {
+  margin-top: var(--mt-space-1);
+  color: var(--mt-text-secondary);
+  font-size: var(--mt-font-body);
+  font-weight: var(--fw-default);
+  line-height: 1.5;
+}
+
+.primaryValue {
+  color: var(--mt-text-primary);
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-bold);
+  line-height: 1.5;
+}
+
+.comment {
+  white-space: pre-wrap;
+}
+
+@container rcontrol-case-details (min-width: 56rem) {
+  .groups {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
+  }
+}
+
+@container rcontrol-case-fields (min-width: 26rem) {
+  .fieldGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@container rcontrol-case-fields (min-width: 42rem) {
+  .organizationGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--mt-space-6);
+  }
+}
+
+@container rcontrol-case-fields (min-width: 48rem) {
+  .fieldGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
