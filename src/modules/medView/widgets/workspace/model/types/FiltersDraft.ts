@@ -35,6 +35,10 @@ export interface InternalServiceFiltersGroupDraft {
   patientUid: string;
   medicalCaseUid: string;
   completedCaseUid: string;
+  invoiceNumber: string;
+  invoiceUid: string;
+  invoiceBillingMonth: string;
+  invoiceBillingYear: string;
 }
 
 export interface SanctionFiltersGroupDraft {
@@ -173,8 +177,8 @@ export interface InsuranceFiltersSubgroupDraft {
   insurances: string[];
   insurancePolicyTypes: string[];
   insurancePolicySeries: string;
-  insurancePolicyNumber: string;
-  unifiedPolicyNumber: string;
+  insurancePolicyNumbers: string[];
+  unifiedPolicyNumbers: string[];
 }
 
 export const initialFiltersDraft: FiltersDraft = {
@@ -197,8 +201,8 @@ export const initialFiltersDraft: FiltersDraft = {
       insurances: [],
       insurancePolicyTypes: [],
       insurancePolicySeries: "",
-      insurancePolicyNumber: "",
-      unifiedPolicyNumber: "",
+      insurancePolicyNumbers: [],
+      unifiedPolicyNumbers: [],
     },
   },
   medicalCaseDetails: {
@@ -303,5 +307,9 @@ export const initialFiltersDraft: FiltersDraft = {
     completedCaseUid: "",
     medicalCaseUid: "",
     patientUid: "",
+    invoiceUid: "",
+    invoiceNumber: "",
+    invoiceBillingMonth: "",
+    invoiceBillingYear: "",
   },
 };

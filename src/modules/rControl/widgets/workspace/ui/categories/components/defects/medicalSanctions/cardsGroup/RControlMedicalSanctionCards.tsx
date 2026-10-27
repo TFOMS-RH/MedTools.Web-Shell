@@ -3,17 +3,20 @@ import type { MedicalSanctionDto } from "../../../../../../../../../../shared/mo
 import { formatCurrency } from "../../../../../../../../../../shared/helpers/formatCurrency";
 import { displayValue, formatSanctionDate } from "../../presentation";
 import styles from "./styles.module.scss";
+import { formatCodeNamePair } from "../../../oncology/presentation";
 
 interface RControlMedicalSanctionCardsProps {
   medicalSanctions: MedicalSanctionDto[];
   isPending: boolean;
 }
 
-// Local shell keeps loaded records and skeleton columns aligned.
 export const RControlMedicalSanctionsTable = ({
   children,
   isPending = false,
-}: { children: ReactNode; isPending?: boolean }) => (
+}: {
+  children: ReactNode;
+  isPending?: boolean;
+}) => (
   <div
     className={`mt-table-viewport ${styles.viewport}`}
     role="region"
@@ -21,7 +24,10 @@ export const RControlMedicalSanctionsTable = ({
     tabIndex={0}
     aria-busy={isPending}
   >
-    <table className={`mt-table ${styles.sanctionsTable}`} aria-labelledby="rcontrol-sanctions-heading">
+    <table
+      className={`mt-table ${styles.sanctionsTable}`}
+      aria-labelledby="rcontrol-sanctions-heading"
+    >
       <colgroup>
         <col />
         <col className={styles.refusalColumn} />
@@ -31,10 +37,15 @@ export const RControlMedicalSanctionsTable = ({
       </colgroup>
       <thead>
         <tr>
-          <th scope="col">Тип санкции</th>
+          <th scope="col">Вид контроля</th>
+          <th scope="col">Код санкции</th>
           <th scope="col">Код отказа</th>
-          <th scope="col" className={styles.numeric}>Количество</th>
-          <th scope="col" className={styles.numeric}>Сумма</th>
+          <th scope="col" className={styles.numeric}>
+            Количество
+          </th>
+          <th scope="col" className={styles.numeric}>
+            Сумма
+          </th>
           <th scope="col">Акт экспертизы</th>
         </tr>
       </thead>
@@ -50,27 +61,64 @@ export const RControlMedicalSanctionCards = ({
     {medicalSanctions.map((sanction) => (
       <tbody key={sanction.medicalSanctionUid}>
         <tr className={`noneHover ${styles.mainRow}`}>
-          <td>{displayValue(sanction.sanctionCode)}</td>
-          <td>{displayValue(sanction.refusalReasonCode)}</td>
-          <td className={styles.numeric}>{displayValue(sanction.unitsRemoved)}</td>
-          <td className={styles.amount}>{formatCurrency(sanction.sanctionAmount)}</td>
           <td>
-            <span className={styles.actNumber}>{displayValue(sanction.expertiseActNumber)}</span>
-            <span className={styles.actDate}>{formatSanctionDate(sanction.expertiseActDate)}</span>
+            {formatCodeNamePair(
+              sanction.controlTypeCode,
+              sanction.controlTypeName,
+            )}
+          </td>
+          <td>{displayValue(sanction.sanctionCode)}</td>
+          <td>
+            {formatCodeNamePair(
+              sanction.refusalReasonCode,
+              sanction.refusalReasonName,
+            )}
+          </td>
+          <td className={styles.numeric}>
+            {displayValue(sanction.unitsRemoved)}
+          </td>
+          <td className={styles.amount}>
+            {formatCurrency(sanction.sanctionAmount)}
+          </td>
+          <td>
+            <span className={styles.actNumber}>
+              {displayValue(sanction.expertiseActNumber)}
+            </span>
+            <span className={styles.actDate}>
+              {formatSanctionDate(sanction.expertiseActDate)}
+            </span>
           </td>
         </tr>
         <tr className={`noneHover ${styles.detailsRow}`}>
           <td colSpan={5}>
             <div className={styles.detailsContent}>
               <dl className={styles.detailsGrid}>
-                <div><dt>Год</dt><dd>{displayValue(sanction.year)}</dd></div>
-                <div><dt>Месяц</dt><dd>{displayValue(sanction.month)}</dd></div>
-                <div><dt>Дата загрузки</dt><dd>{formatSanctionDate(sanction.uploadDate)}</dd></div>
-                <div><dt>Код врача</dt><dd>{displayValue(sanction.expertCode)}</dd></div>
+                <div>
+                  <dt>Год</dt>
+                  <dd>{displayValue(sanction.year)}</dd>
+                </div>
+                <div>
+                  <dt>Месяц</dt>
+                  <dd>{displayValue(sanction.month)}</dd>
+                </div>
+                <div>
+                  <dt>Дата загрузки</dt>
+                  <dd>{formatSanctionDate(sanction.uploadDate)}</dd>
+                </div>
+                <div>
+                  <dt>Код врача</dt>
+                  <dd>{displayValue(sanction.expertCode)}</dd>
+                </div>
               </dl>
               <dl className={styles.textFields}>
-                <div><dt>Имя файла</dt><dd>{displayValue(sanction.filename)}</dd></div>
-                <div className={styles.comment}><dt>Комментарий</dt><dd>{displayValue(sanction.comment)}</dd></div>
+                <div>
+                  <dt>Имя файла</dt>
+                  <dd>{displayValue(sanction.filename)}</dd>
+                </div>
+                <div className={styles.comment}>
+                  <dt>Комментарий</dt>
+                  <dd>{displayValue(sanction.comment)}</dd>
+                </div>
               </dl>
             </div>
           </td>

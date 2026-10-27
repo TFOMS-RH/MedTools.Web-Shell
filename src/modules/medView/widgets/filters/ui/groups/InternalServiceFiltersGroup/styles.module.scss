@@ -34,6 +34,10 @@
   grid-column: span 12;
 }
 
+.span3 {
+  grid-column: span 3;
+}
+
 @container medview-group (max-width: 30rem) {
   .internalServiceFiltersSubgroup {
     padding: var(--mt-space-4);

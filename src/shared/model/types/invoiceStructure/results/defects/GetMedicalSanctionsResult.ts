@@ -7,7 +7,9 @@ export interface MedicalSanctionDto {
   sanctionCode: string;
   sanctionAmount: number;
   controlTypeCode: string;
+  controlTypeName: string | null;
   refusalReasonCode: number;
+  refusalReasonName: string | null;
   comment: string | null;
   source: number;
   unitsRemoved: number;

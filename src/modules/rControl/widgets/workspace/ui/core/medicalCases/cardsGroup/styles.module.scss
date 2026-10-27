@@ -11,12 +11,17 @@
   padding: 0;
   list-style: none;
 
-  > li { min-width: 0; }
+  > li {
+    min-width: 0;
+  }
 }
 
 .card {
   display: grid;
-  grid-template-columns: minmax(13rem, 1fr) minmax(0, 2.1fr) minmax(18rem, 1.3fr);
+  grid-template-columns: minmax(13rem, 1fr) minmax(0, 2.1fr) minmax(
+      18rem,
+      1.3fr
+    );
   align-items: start;
   min-width: 0;
   gap: var(--mt-space-6);
@@ -30,15 +35,21 @@
   line-height: 1.5;
   cursor: pointer;
 
-  &:hover { border-color: var(--border-hover); }
+  &:hover {
+    border-color: var(--border-hover);
+  }
 
   &.selected {
     border-color: var(--mt-rcontrol-accent);
 
-    &:hover { border-color: var(--mt-rcontrol-accent); }
+    &:hover {
+      border-color: var(--mt-rcontrol-accent);
+    }
   }
 
-  > * { min-width: 0; }
+  > * {
+    min-width: 0;
+  }
 }
 
 .identity,
@@ -81,7 +92,9 @@
   gap: 0 var(--mt-space-2);
   margin: 0;
 
-  > span { overflow-wrap: anywhere; }
+  > span {
+    overflow-wrap: anywhere;
+  }
 }
 
 .periodLabel,
@@ -118,9 +131,13 @@
   padding-top: var(--mt-space-1);
 }
 
-.zoneLabel { margin: 0; }
+.zoneLabel {
+  margin: 0;
+}
 
-.medicalInfo { gap: var(--mt-space-3); }
+.medicalInfo {
+  gap: var(--mt-space-3);
+}
 
 .diagnosisLabel {
   margin: 0;
@@ -148,9 +165,13 @@
   gap: var(--mt-space-3) var(--mt-space-5);
   margin: 0;
 
-  > div { min-width: 0; }
+  > div {
+    min-width: 0;
+  }
 
-  dt { overflow-wrap: anywhere; }
+  dt {
+    overflow-wrap: anywhere;
+  }
 
   dd {
     display: flex;
@@ -159,7 +180,9 @@
     margin: var(--mt-space-1) 0 0;
     overflow-wrap: anywhere;
 
-    > p { margin: 0; }
+    > p {
+      margin: 0;
+    }
   }
 }
 
@@ -192,7 +215,9 @@
 .skeletonCard {
   cursor: default;
 
-  &:hover { border-color: var(--border-default); }
+  &:hover {
+    border-color: var(--border-default);
+  }
 }
 
 @container rcontrol-cases (max-width: 64rem) {
@@ -216,9 +241,15 @@
     padding: var(--mt-space-4);
   }
 
-  .diagnosis { padding-top: 0; }
+  .diagnosis {
+    padding-top: 0;
+  }
 
-  .medicalDetails { grid-template-columns: minmax(0, 1fr); }
+  .medicalDetails {
+    grid-template-columns: minmax(0, 1fr);
+  }
 
-  .finances { grid-template-columns: minmax(0, 1fr); }
+  .finances {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }

@@ -5,8 +5,11 @@ export interface GetDiagnosticsResult {
 export interface DiagnosticListItemDto {
   diagnosticsUid: number;
   specimenCollectionDate: string | null;
-  diagnosticType: number | null;
+  diagnosticTypeCode: number | null;
+  diagnosticTypeName: string | null;
   diagnosticCode: number | null;
+  diagnosticName: string | null;
   diagnosticResultCode: number | null;
+  diagnosticResultName: string | null;
   isResultReceived: boolean | null;
 }

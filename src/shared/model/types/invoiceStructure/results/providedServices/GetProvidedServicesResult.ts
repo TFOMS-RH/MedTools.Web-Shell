@@ -5,7 +5,7 @@ export interface GetProvidedServicesResult {
 export interface ProvidedServiceDto {
   providedServiceUid: number;
   serviceCode: string;
-  service: string;
+  serviceName: string | null;
   medicalInterventionType: string | null;
   medicalProfileCode: number;
   medicalProfile: string;
@@ -14,7 +14,8 @@ export interface ProvidedServiceDto {
   isPediatric: boolean;
   serviceStartDate: string;
   serviceEndDate: string;
-  diagnosis: string;
+  diagnosisCode: string;
+  diagnosisName: string | null;
   serviceQuantity: number;
   unitRate: number | null;
   amountBilled: number;

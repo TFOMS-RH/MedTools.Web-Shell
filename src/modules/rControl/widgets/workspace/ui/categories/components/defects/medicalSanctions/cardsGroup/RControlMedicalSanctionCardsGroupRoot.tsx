@@ -28,8 +28,13 @@ export const RControlMedicalSanctionCardsGroupRoot = () => {
   });
 
   return (
-    <section className={styles.section} aria-labelledby="rcontrol-sanctions-heading">
-      <h3 id="rcontrol-sanctions-heading" className={styles.sectionHeading}>Санкции</h3>
+    <section
+      className={styles.section}
+      aria-labelledby="rcontrol-sanctions-heading"
+    >
+      <h3 id="rcontrol-sanctions-heading" className={styles.sectionHeading}>
+        Санкции
+      </h3>
       {dataState === "error" ? (
         <DataState
           title="Ошибка данных"

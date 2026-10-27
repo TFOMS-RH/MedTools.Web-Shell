@@ -1,9 +1,9 @@
+import type { FilterOption } from "../../../../../modules/medView/widgets/workspace/model/types/FilterOptions";
 import { Autocomplete, Box, CircularProgress, TextField } from "@mui/material";
 import { medViewSelectInputSx } from "../../../../sxConfigs/medViewSelectInput";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import { medViewAutocompleteListboxSx } from "../../../../sxConfigs/medViewAutocompleteListboxSx";
-import type { FilterOption } from "../../../../../modules/medView/widgets/workspace/model/types/FilterOptions";
 import { medViewPopupSx } from "../../../../sxConfigs/medViewPopupSx";
 
 interface MedViewAutocompleteInputProps {
@@ -84,7 +84,9 @@ export const MedViewAutocompleteInput = ({
                   />
                   {params.slotProps.input.endAdornment}
                 </Box>
-              ) : params.slotProps.input.endAdornment,
+              ) : (
+                params.slotProps.input.endAdornment
+              ),
             },
           }}
         />
@@ -112,12 +114,15 @@ export const MedViewAutocompleteInput = ({
               ? "calc((100% - var(--mt-space-12) - var(--mt-space-10)) / 0.75)"
               : "calc((100% - var(--mt-space-12) - var(--mt-space-4)) / 0.75)",
           },
-          // Override MUI's combined clear/popup icon spacing while loading.
-          "&& .MuiFilledInput-root.MuiInputBase-sizeSmall.MuiAutocomplete-inputRoot": {
-            ...(loading
-              ? { paddingRight: "calc(var(--mt-space-12) + var(--mt-space-10))" }
-              : {}),
-          },
+          "&& .MuiFilledInput-root.MuiInputBase-sizeSmall.MuiAutocomplete-inputRoot":
+            {
+              ...(loading
+                ? {
+                    paddingRight:
+                      "calc(var(--mt-space-12) + var(--mt-space-10))",
+                  }
+                : {}),
+            },
         },
       ]}
       slotProps={{

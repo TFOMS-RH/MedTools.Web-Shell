@@ -9,8 +9,11 @@ import { DataState } from "../../../../../../../../shared/ui/DataState/DataState
 
 export const RControlMedicalCaseCardsGroupRoot = () => {
   const { targetDb } = useRControlWorkspacePanelStore();
-  const { selectedCompletedCaseUid, selectedMedicalCaseUid, selectMedicalCase } =
-    useRControlWorkspaceStore();
+  const {
+    selectedCompletedCaseUid,
+    selectedMedicalCaseUid,
+    selectMedicalCase,
+  } = useRControlWorkspaceStore();
   const {
     data: medicalCases,
     isLoading,
@@ -21,19 +24,36 @@ export const RControlMedicalCaseCardsGroupRoot = () => {
   } = useMedicalCasesListItemsQuery(selectedCompletedCaseUid, targetDb);
 
   useEffect(() => {
-    if (!isSuccess || isFetching || !medicalCases || selectedCompletedCaseUid === null)
+    if (
+      !isSuccess ||
+      isFetching ||
+      !medicalCases ||
+      selectedCompletedCaseUid === null
+    )
       return;
     const current = useRControlWorkspaceStore.getState();
-    // A response for the previous parent must not select a card in the new case.
     if (
       current.selectedCompletedCaseUid !== selectedCompletedCaseUid ||
       useRControlWorkspacePanelStore.getState().targetDb !== targetDb
-    ) return;
-    if (medicalCases.some(item => item.medicalCaseUid === current.selectedMedicalCaseUid))
+    )
+      return;
+    if (
+      medicalCases.some(
+        (item) => item.medicalCaseUid === current.selectedMedicalCaseUid,
+      )
+    )
       return;
     const nextUid = medicalCases[0]?.medicalCaseUid ?? null;
-    if (nextUid !== current.selectedMedicalCaseUid) current.selectMedicalCase(nextUid);
-  }, [medicalCases, isSuccess, isFetching, selectedCompletedCaseUid, selectedMedicalCaseUid, targetDb]);
+    if (nextUid !== current.selectedMedicalCaseUid)
+      current.selectMedicalCase(nextUid);
+  }, [
+    medicalCases,
+    isSuccess,
+    isFetching,
+    selectedCompletedCaseUid,
+    selectedMedicalCaseUid,
+    targetDb,
+  ]);
 
   const dataState = resolveDataState({
     isEnabled: selectedCompletedCaseUid !== null && targetDb !== null,

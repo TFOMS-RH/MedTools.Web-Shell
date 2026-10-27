@@ -26,7 +26,7 @@ export const RControlPatientCardBody = ({
           <div className={styles.wideField}>
             <CardField
               label="Тип"
-              value={isPending ? <Skeleton /> : `${formatNullableValue(patient.documentTypeCode)} ${patient.documentTypeName}`}
+              value={isPending ? <Skeleton /> : `${formatNullableValue(patient.documentTypeCode)} : ${patient.documentTypeName}`}
             />
           </div>
           <CardField

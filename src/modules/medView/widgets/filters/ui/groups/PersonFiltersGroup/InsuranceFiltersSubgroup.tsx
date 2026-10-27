@@ -4,6 +4,7 @@ import { MedViewMultipleSelectInput } from "../../../../../../../shared/ui/medVi
 import { MedicalReferenceType } from "../../../../../../../shared/model/references/types/MedicalReferenceType";
 import { useFilterOptionsQuery } from "../../../../../../../shared/model/references/queries/useFilterOptionsQuery";
 import styles from "./styles.module.scss";
+import { MedViewBulkAutocompleteInput } from "../../../../../../../shared/ui/medView/inputs/MedViewBulkAutocompleteInput/MedViewBulkAutocompleteInput";
 
 interface InsuranceFiltersSubgroupProps {
   insuranceFiltersSubgroupDraft: InsuranceFiltersSubgroupDraft;
@@ -71,27 +72,27 @@ export const InsuranceFiltersSubgroup = ({
           />
         </div>
         <div className={styles.span4}>
-          <MedViewDefaultInput
+          <MedViewBulkAutocompleteInput
             label="Номер полиса"
-            placeholder="00000000"
-            value={insuranceFiltersSubgroupDraft.insurancePolicyNumber}
-            handleInputChange={(newValue: string) =>
+            placeholder="Укажите номера"
+            value={insuranceFiltersSubgroupDraft.insurancePolicyNumbers}
+            onChange={(newValue: string[]) =>
               setInsuranceFiltersSubgroupDraft({
                 ...insuranceFiltersSubgroupDraft,
-                insurancePolicyNumber: newValue,
+                insurancePolicyNumbers: newValue,
               })
             }
           />
         </div>
         <div className={styles.span5}>
-          <MedViewDefaultInput
+          <MedViewBulkAutocompleteInput
             label="ЕНП"
-            placeholder="0000000000000000"
-            value={insuranceFiltersSubgroupDraft.unifiedPolicyNumber}
-            handleInputChange={(newValue: string) =>
+            placeholder="Укажите ЕНП"
+            value={insuranceFiltersSubgroupDraft.unifiedPolicyNumbers}
+            onChange={(newValue: string[]) =>
               setInsuranceFiltersSubgroupDraft({
                 ...insuranceFiltersSubgroupDraft,
-                unifiedPolicyNumber: newValue,
+                unifiedPolicyNumbers: newValue,
               })
             }
           />

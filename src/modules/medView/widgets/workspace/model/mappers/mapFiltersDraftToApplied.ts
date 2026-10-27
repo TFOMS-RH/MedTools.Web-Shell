@@ -23,10 +23,10 @@ export const mapFiltersDraftToApplied = (
       },
       insurance: {
         insurances: draft.person.insurance.insurances,
-        insurancePolicyNumber: draft.person.insurance.insurancePolicyNumber,
+        insurancePolicyNumbers: draft.person.insurance.insurancePolicyNumbers,
         insurancePolicySeries: draft.person.insurance.insurancePolicySeries,
         insurancePolicyTypes: draft.person.insurance.insurancePolicyTypes,
-        unifiedPolicyNumber: draft.person.insurance.unifiedPolicyNumber,
+        unifiedPolicyNumbers: draft.person.insurance.unifiedPolicyNumbers,
       },
     },
     medicalCaseDetails: {
@@ -224,6 +224,10 @@ export const mapFiltersDraftToApplied = (
       completedCaseUid: draft.inrernalService.completedCaseUid,
       medicalCaseUid: draft.inrernalService.medicalCaseUid,
       patientUid: draft.inrernalService.patientUid,
+      invoiceUid: draft.inrernalService.invoiceUid,
+      invoiceNumber: draft.inrernalService.invoiceNumber,
+      invoiceBillingMonth: draft.inrernalService.invoiceBillingMonth,
+      invoiceBillingYear: draft.inrernalService.invoiceBillingYear,
     },
   };
 
