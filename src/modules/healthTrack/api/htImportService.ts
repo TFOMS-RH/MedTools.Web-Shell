@@ -39,7 +39,7 @@ export const htImportService = {
       headers: {
         "Content-Type": undefined,
       },
-      timeout: 5 * 60 * 1000,
+      timeout: 20 * 60 * 1000,
       onUploadProgress: (progressEvent) => {
         if (!onProgress || !progressEvent.total) return;
         const percent = Math.round(

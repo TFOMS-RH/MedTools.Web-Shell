@@ -248,8 +248,8 @@ export const HTDocumentsTab = ({
       try {
         const endpoint =
           doc.fileType === "DSPN"
-            ? `/export/dspn/${doc.id}/response`
-            : `/export/prof/${doc.id}/response`;
+            ? `/health-track/export/dspn/${doc.id}/response`
+            : `/health-track/export/prof/${doc.id}/response`;
 
         // Используем apiClient для унификации (он подставит baseURL и Bearer).
         // Но для blob — нужен responseType: "blob".
@@ -263,13 +263,13 @@ export const HTDocumentsTab = ({
         const blobUrl = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = blobUrl;
-        a.download = `${doc.fileName}_response.zip`;
+        a.download = `${doc.fileName}.zip`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(blobUrl);
 
-        notify.success(`Файл ${doc.fileName}_response.zip скачан`);
+        notify.success(`Файл ${doc.fileName}.zip скачан`);
       } catch (err) {
         notify.errorFrom(err, "Ошибка скачивания файла");
       }
