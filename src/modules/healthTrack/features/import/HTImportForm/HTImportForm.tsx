@@ -1,6 +1,3 @@
-// ==========================================
-// modules/healthTrack/features/import/HTImportForm/HTImportForm.tsx
-// ==========================================
 import { useCallback, useEffect, useMemo, useState } from "react";
 import LinearProgress from "@mui/material/LinearProgress";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
@@ -14,7 +11,6 @@ import { HTDocumentTypeBadge } from "../../../ui/HTDocumentTypeBadge/HTDocumentT
 
 import { useImportMutation } from "../../../hooks/useImportMutation";
 import { useHTNotify } from "../../../hooks/useHTNotify";
-import { useHealthTrackAuthStore } from "../../../stores/healthTrackAuthStore";
 
 import { parseHTFileName } from "../../../utils/htFileNameParser";
 
@@ -22,118 +18,57 @@ import type { HTImportDisplayResult } from "../../../types/htImport";
 
 import styles from "./styles.module.scss";
 
-// ==========================================
-// Пропсы.
-// ==========================================
+
 interface HTImportFormProps {
-  /** Колбэк: перейти к документу в разделе «Документы». */
+
   onGoToDocument: (documentId: number) => void;
 }
 
-/**
- * Главная форма импорта.
- *
- * Логика:
- *  1. Пользователь выбирает файл (drag&drop или клик).
- *  2. Парсер распознаёт тип / период / МО из имени.
- *  3. Период и код МО предзаполняются.
- *  4. Пользователь подтверждает (или правит период).
- *  5. Кнопка «Загрузить» → мутация.
- *  6. Прогресс-бар во время загрузки.
- *  7. Карточка результата (успех / ошибка).
- */
+
 export const HTImportForm = ({ onGoToDocument }: HTImportFormProps) => {
-  // ==========================================
-  // Стейт.
-  // ==========================================
+
   const [file, setFile] = useState<File | null>(null);
   const [period, setPeriod] = useState("");
-  const [hospitalCode, setHospitalCode] = useState("");
   const [progress, setProgress] = useState(0);
   const [result, setResult] = useState<HTImportDisplayResult | null>(null);
-
-  // ==========================================
-  // Хуки.
-  // ==========================================
   const importMutation = useImportMutation();
   const notify = useHTNotify();
 
-  const user = useHealthTrackAuthStore((s) => s.user);
-  const isAdmin = user?.roles.includes("Admin") ?? false;
 
-  // ==========================================
-  // Парсинг имени файла при выборе.
-  // ==========================================
   const parseResult = useMemo(() => {
     if (!file) return null;
     return parseHTFileName(file.name);
   }, [file]);
 
-  // ==========================================
-  // Автозаполнение полей из парсера.
-  // Срабатывает когда меняется file.
-  // ==========================================
+
   useEffect(() => {
     if (!parseResult) return;
 
     if (parseResult.isValid) {
-      // Предзаполняем период.
       if (parseResult.period) setPeriod(parseResult.period);
-
-      // Предзаполняем код МО, если роль Admin.
-      if (isAdmin && parseResult.hospitalCode) {
-        setHospitalCode(parseResult.hospitalCode);
-      }
     }
-  }, [parseResult, isAdmin]);
+  }, [parseResult]);
 
-  // ==========================================
-  // Эффективный код МО:
-  //  - Admin — что ввёл вручную.
-  //  - MO / SMO — из профиля (жёстко).
-  //  - Для файлов от ТФОМС — может быть пустым.
-  // ==========================================
-  const effectiveHospitalCode = useMemo(() => {
-    if (isAdmin) return hospitalCode.trim() || null;
-    return user?.hospitalCode ?? null;
-  }, [isAdmin, hospitalCode, user?.hospitalCode]);
 
-  // ==========================================
-  // Валидация формы.
-  // ==========================================
   const canSubmit = useMemo(() => {
     if (!file) return false;
     if (!parseResult?.isValid) return false;
     if (!period.trim()) return false;
-
-    // Формат периода: ГГГГ-ММ
     if (!/^\d{4}-\d{2}$/.test(period.trim())) return false;
-
-    // Для Admin нужен код МО (кроме случаев, когда тип TFOMS-only)
-    // Пока требуем всегда — упростим позже.
-    if (isAdmin && !hospitalCode.trim()) return false;
-
     return true;
-  }, [file, parseResult, period, isAdmin, hospitalCode]);
+  }, [file, parseResult, period]);
 
-  // ==========================================
-  // Обработчики.
-  // ==========================================
 
-  // Выбор файла.
   const handleFileChange = useCallback((selected: File | null) => {
     setFile(selected);
-    setResult(null); // сбрасываем прошлый результат
+    setResult(null);
     setProgress(0);
 
     if (!selected) {
-      // сброс полей, если файл убрали
       setPeriod("");
-      if (isAdmin) setHospitalCode("");
     }
-  }, [isAdmin]);
+  }, []);
 
-  // Ошибка валидации файла (из dropzone).
   const handleDropzoneError = useCallback(
     (message: string) => {
       notify.error(message);
@@ -141,7 +76,6 @@ export const HTImportForm = ({ onGoToDocument }: HTImportFormProps) => {
     [notify],
   );
 
-  // Отправка формы.
   const handleSubmit = useCallback(() => {
     if (!file || !parseResult?.isValid) return;
 
@@ -154,7 +88,7 @@ export const HTImportForm = ({ onGoToDocument }: HTImportFormProps) => {
         request: {
           file,
           period: period.trim(),
-          hospitalCode: effectiveHospitalCode,
+          hospitalCode: null,   // бэк возьмёт organization_code из токена
         },
         onProgress: setProgress,
       },
@@ -185,34 +119,20 @@ export const HTImportForm = ({ onGoToDocument }: HTImportFormProps) => {
         },
       },
     );
-  }, [
-    file,
-    parseResult,
-    period,
-    effectiveHospitalCode,
-    importMutation,
-    notify,
-  ]);
+  }, [file, parseResult, period, importMutation, notify]);
 
-  // Сброс формы — для кнопок «Загрузить ещё» / «Попробовать снова».
   const handleReset = useCallback(() => {
     setFile(null);
     setPeriod("");
-    setHospitalCode("");
     setProgress(0);
     setResult(null);
   }, []);
 
-  // ==========================================
-  // Рендер.
-  // ==========================================
+
   const isUploading = importMutation.isPending && result?.status === "uploading";
 
   return (
     <section className={styles.formRoot}>
-      {/* ============================== */}
-      {/* Заголовок секции */}
-      {/* ============================== */}
       <header className={styles.header}>
         <h3 className={styles.title}>Импорт файла</h3>
         <p className={styles.subtitle}>
@@ -221,9 +141,6 @@ export const HTImportForm = ({ onGoToDocument }: HTImportFormProps) => {
         </p>
       </header>
 
-      {/* ============================== */}
-      {/* Dropzone */}
-      {/* ============================== */}
       <HTFileDropzone
         file={file}
         onFileChange={handleFileChange}
@@ -231,9 +148,6 @@ export const HTImportForm = ({ onGoToDocument }: HTImportFormProps) => {
         disabled={isUploading}
       />
 
-      {/* ============================== */}
-      {/* Информация о распознанном файле */}
-      {/* ============================== */}
       {file && parseResult && !parseResult.isValid && (
         <div className={styles.parseError}>
           <span>⚠</span>
@@ -272,9 +186,6 @@ export const HTImportForm = ({ onGoToDocument }: HTImportFormProps) => {
         </div>
       )}
 
-      {/* ============================== */}
-      {/* Поля ввода */}
-      {/* ============================== */}
       {file && parseResult?.isValid && (
         <div className={styles.fieldsRow}>
           <AppInput
@@ -285,23 +196,9 @@ export const HTImportForm = ({ onGoToDocument }: HTImportFormProps) => {
             onChange={(e) => setPeriod(e.currentTarget.value)}
             disabled={isUploading}
           />
-
-          {isAdmin && (
-            <AppInput
-              label="Код МО"
-              variant="md"
-              placeholder="190006"
-              value={hospitalCode}
-              onChange={(e) => setHospitalCode(e.currentTarget.value)}
-              disabled={isUploading}
-            />
-          )}
         </div>
       )}
 
-      {/* ============================== */}
-      {/* Прогресс-бар */}
-      {/* ============================== */}
       {isUploading && (
         <div className={styles.progressBlock}>
           <LinearProgress
@@ -324,9 +221,6 @@ export const HTImportForm = ({ onGoToDocument }: HTImportFormProps) => {
         </div>
       )}
 
-      {/* ============================== */}
-      {/* Кнопка "Загрузить" */}
-      {/* ============================== */}
       {file && parseResult?.isValid && !result && (
         <div className={styles.actions}>
           <AppButton
@@ -341,9 +235,6 @@ export const HTImportForm = ({ onGoToDocument }: HTImportFormProps) => {
         </div>
       )}
 
-      {/* ============================== */}
-      {/* Карточка результата */}
-      {/* ============================== */}
       {result && result.status !== "uploading" && (
         <HTImportResultCard
           result={result}

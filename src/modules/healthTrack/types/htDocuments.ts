@@ -291,5 +291,7 @@ export const canCheckDocument = (doc: HTDocumentListItem): boolean => {
 // Только для Ready + (DSPN или PROF).
 export const canDownloadResponse = (doc: HTDocumentListItem): boolean => {
   const isResponseType = doc.fileType === "DSPN" || doc.fileType === "PROF";
-  return doc.status === "Ready" && isResponseType;
+  // Разрешаем скачивание для Ready и Error
+  const isValidStatus = doc.status === "Ready" || doc.status === "Error";
+  return isValidStatus && isResponseType;
 };

@@ -20,27 +20,25 @@ interface HTDocumentsHeaderProps {
 
   /** Идёт ли сейчас какая-то из операций (для disabled). */
   isLoading: boolean;
+
+  /** Есть ли право на проверку (permission). */
+  canCheck: boolean;
 }
 
 /**
  * Хедер раздела «Документы и экспорт».
- *
- * Слева — заголовок и описание раздела.
- * Справа — массовые действия: «Обновить» и «Проверить выбранные».
  */
 export const HTDocumentsHeader = ({
   selectedCount,
   onRefresh,
   onCheckSelected,
   isLoading,
+  canCheck,
 }: HTDocumentsHeaderProps) => {
   const hasSelection = selectedCount > 0;
 
   return (
     <header className={styles.headerRoot}>
-      {/* ============================== */}
-      {/* Левая часть: заголовок */}
-      {/* ============================== */}
       <div className={styles.titleBlock}>
         <h2 className={styles.title}>Документы и экспорт</h2>
         <p className={styles.subtitle}>
@@ -48,9 +46,6 @@ export const HTDocumentsHeader = ({
         </p>
       </div>
 
-      {/* ============================== */}
-      {/* Правая часть: действия */}
-      {/* ============================== */}
       <div className={styles.actionsBlock}>
         <AppButton
           variant="secondary"
@@ -62,17 +57,19 @@ export const HTDocumentsHeader = ({
           Обновить
         </AppButton>
 
-        <AppButton
-          variant="primary"
-          size="md"
-          onClick={onCheckSelected}
-          disabled={!hasSelection || isLoading}
-        >
-          <ChecklistIcon sx={{ fontSize: 18, color: "var(--white)" }} />
-          {hasSelection
-            ? `Проверить выбранные (${selectedCount})`
-            : "Проверить выбранные"}
-        </AppButton>
+        {canCheck && (
+          <AppButton
+            variant="primary"
+            size="md"
+            onClick={onCheckSelected}
+            disabled={!hasSelection || isLoading}
+          >
+            <ChecklistIcon sx={{ fontSize: 18, color: "var(--white)" }} />
+            {hasSelection
+              ? `Проверить выбранные (${selectedCount})`
+              : "Проверить выбранные"}
+          </AppButton>
+        )}
       </div>
     </header>
   );
