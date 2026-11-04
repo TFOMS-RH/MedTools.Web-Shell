@@ -1,9 +1,5 @@
-import styles from "./styles.module.scss";
+import styles from "../../styles.module.scss";
 
-export const RControlConsultationsListHeader = () => {
-  return (
-    <header className={styles.consultationsListHeader}>
-      <h2>Консилиум</h2>
-    </header>
-  );
-};
+export const RControlConsultationsListHeader = () => (
+  <h3 className={styles.groupHeading}>Консилиумы</h3>
+);

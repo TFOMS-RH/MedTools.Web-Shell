@@ -1,9 +1,23 @@
 import apiClient from "../../../shared/api/client/apiClient";
-import type { AdminRole, AdminUser, UpdateUserRequest } from "../model/types";
+import type {
+  AdminOrganization, AdminRole, AdminUser, CreateUserRequest, UpdateUserRequest,
+} from "../model/types";
 
 const usersUrl = "/identity/admin/users";
 
 export const adminUsersService = {
+  createUser: async (request: CreateUserRequest) => {
+    await apiClient.post(usersUrl, request);
+  },
+  getOrganizations: async (signal: AbortSignal) => {
+    const response = await apiClient.get<AdminOrganization[]>(
+      "/identity/admin/organizations", { signal },
+    );
+    return response.data;
+  },
+  updateUserStatus: async (id: string, isActive: boolean) => {
+    await apiClient.patch(`${usersUrl}/${encodeURIComponent(id)}/status`, { isActive });
+  },
   getUsers: async (signal: AbortSignal) => {
     const response = await apiClient.get<AdminUser[]>(usersUrl, { signal });
     return response.data;

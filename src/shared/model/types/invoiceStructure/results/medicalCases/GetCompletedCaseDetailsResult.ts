@@ -8,17 +8,23 @@ export interface CompletedCaseDetailsDto {
   referringMedicalOrganizationCode: string | null;
   referringMedicalOrganizationName: string | null;
   referralDate: string | null;
-  careConditions: number;
-  medicalCareType: number;
+  careConditionCode: number;
+  careConditionName: string | null;
+  medicalCareTypeCode: number;
+  medicalCareTypeName: string | null;
   paymentMethodCode: number;
-  medicalCareForm: number;
+  paymentMethodName: string | null;
+  medicalCareFormCode: number;
+  medicalCareFormName: string | null;
   treatmentStartDate: string;
   treatmentEndDate: string;
   hospitalizationDuration: number | null;
-  hospitalizationOutcome: number;
+  hospitalizationOutcomeCode: number;
+  hospitalizationOutcomeName: string | null;
   isIntrahospitalTransfer: boolean | null;
   screeningResult: number | null;
   isRefusal: boolean | null;
   isMobileTeam: boolean | null;
-  diseaseOutcome: number;
+  diseaseOutcomeCode: number;
+  diseaseOutcomeName: string | null;
 }

@@ -1,6 +1,99 @@
-.medicalSanctionsCards {
+.viewport {
+  container: medview-sanctions / inline-size;
+}
+
+.sanctionsTable {
+  min-width: 58rem;
+  table-layout: fixed;
+
+  .refusalColumn { width: 9rem; }
+  .quantityColumn { width: 8rem; }
+  .amountColumn { width: 12rem; }
+  .actColumn { width: 17rem; }
+
+  > tbody > tr > td {
+    vertical-align: top;
+    overflow-wrap: anywhere;
+  }
+
+  > tbody > tr.mainRow > td { border-bottom: 0; }
+
+  > tbody > tr.detailsRow > td {
+    padding-top: 0;
+    padding-bottom: var(--mt-space-4);
+    border-bottom: 1px solid var(--mt-surface-subtle);
+  }
+
+  > tbody:last-child > tr.detailsRow > td { border-bottom: 0; }
+
+  > :is(thead, tbody) > tr > .numeric,
+  > tbody > tr > .amount {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  > tbody > tr > .amount {
+    white-space: nowrap;
+    font-weight: var(--fw-semibold);
+  }
+}
+
+.actNumber,
+.actDate {
+  display: block;
+  overflow-wrap: anywhere;
+}
+
+.actDate {
+  margin-top: var(--mt-space-1);
+  color: var(--mt-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.detailsContent {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: var(--mt-space-3);
+}
+
+.detailsGrid,
+.textFields {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  column-gap: var(--space-5);
-  row-gap: var(--space-5);
+  grid-template-columns: minmax(0, 1fr);
+  min-width: 0;
+  margin: 0;
+  gap: var(--mt-space-3) var(--mt-space-5);
+
+  > div { min-width: 0; }
+
+  dt {
+    margin-bottom: var(--mt-space-1);
+    color: var(--mt-text-secondary);
+    font-size: var(--mt-font-body);
+    font-weight: var(--fw-default);
+    line-height: 1.5;
+  }
+
+  dd {
+    min-width: 0;
+    margin: 0;
+    color: var(--mt-text-primary);
+    font-size: var(--mt-font-body);
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+  }
+}
+
+.detailsGrid { grid-template-columns: minmax(0, 16rem); }
+.comment dd { white-space: pre-wrap; }
+
+@container medview-sanctions (min-width: 40rem) {
+  .detailsGrid { grid-template-columns: repeat(2, minmax(0, 12rem)); }
+}
+
+@container medview-sanctions (min-width: 64rem) {
+  .detailsGrid {
+    grid-template-columns: minmax(0, 6rem) minmax(0, 6rem) minmax(0, 10rem) minmax(0, 16rem);
+  }
 }

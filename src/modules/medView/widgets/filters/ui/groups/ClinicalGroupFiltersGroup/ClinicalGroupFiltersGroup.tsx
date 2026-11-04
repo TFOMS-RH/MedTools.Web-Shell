@@ -1,6 +1,6 @@
 import type { ClinicalGroupsFiltersGroupDraft } from "../../../../workspace/model/types/FiltersDraft";
-import { ClinicalGroupFiltersSubgroup } from "./ClinicalGroupFiltersSubgroup/ClinicalGroupFiltersSubgroup";
-import { HighTechMedicalCareFiltersSubgroup } from "./HighTechMedicalCareFiltersSubgroup/HighTechMedicalCareFiltersSubgroup";
+import { ClinicalGroupFiltersSubgroup } from "./ClinicalGroupFiltersSubgroup";
+import { HighTechMedicalCareFiltersSubgroup } from "./HighTechMedicalCareFiltersSubgroup";
 import styles from "./styles.module.scss";
 
 interface ClinicalGroupFiltersGroupProps {

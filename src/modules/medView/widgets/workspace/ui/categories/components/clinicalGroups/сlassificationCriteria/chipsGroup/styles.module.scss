@@ -1,5 +1,18 @@
-.classificationCriteriaChips {
+.criteriaList {
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-5);
+  flex-direction: column;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  gap: var(--mt-space-3);
+  list-style: none;
+
+  li {
+    min-width: 0;
+    color: var(--mt-text-primary);
+    font-size: var(--fs-body);
+    line-height: 1.5;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
 }

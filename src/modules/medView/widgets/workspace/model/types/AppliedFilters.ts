@@ -31,6 +31,10 @@ interface AppliedInternalServiceFilters {
   patientUid: string;
   medicalCaseUid: string;
   completedCaseUid: string;
+  invoiceUid: string;
+  invoiceNumber: string;
+  invoiceBillingMonth: string;
+  invoiceBillingYear: string;
 }
 
 interface AppliedSanctionFilters {
@@ -169,6 +173,6 @@ interface AppliedInsuranceFilters {
   insurances: string[];
   insurancePolicyTypes: string[];
   insurancePolicySeries: string;
-  insurancePolicyNumber: string;
-  unifiedPolicyNumber: string;
+  insurancePolicyNumbers: string[];
+  unifiedPolicyNumbers: string[];
 }

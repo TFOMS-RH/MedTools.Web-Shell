@@ -1,48 +1,51 @@
-import { useNavigate } from "react-router";
-import { Badge } from "../../../../ui/Badge/Badge";
+import { Link } from "react-router";
+import ArrowOutwardRoundedIcon from "@mui/icons-material/ArrowOutwardRounded";
 import styles from "./styles.module.scss";
-import { MedToolsButton } from "../../../../../shared/ui/medTools/buttons/MedToolsButton";
 
 interface ModuleCardProps {
   displayName: string;
-  moduleVersion: string;
   moduleDescription: string;
   navigatePath: string;
-  avatarText?: string;
+  accentColor: string;
+  coverBackground: string;
+  cover?: React.ReactNode;
 }
 
 export const ModuleCard = ({
   displayName,
-  moduleVersion,
   moduleDescription,
   navigatePath,
-  avatarText = "UNK",
+  accentColor,
+  coverBackground,
+  cover,
 }: ModuleCardProps) => {
-  const navigate = useNavigate();
-
   return (
-    <article className={styles.moduleCard}>
-      <header className={styles.moduleCardHeader}>
-        <div className={styles.logo}>{avatarText}</div>
+    <Link
+      to={navigatePath}
+      className={styles.moduleCard}
+      style={
+        {
+          "--module-accent": accentColor,
+          "--module-cover": coverBackground,
+        } as React.CSSProperties
+      }
+    >
+      <div className={styles.cover}>{cover}</div>
 
+      <div className={styles.content}>
         <div className={styles.description}>
-          <header className={styles.appCardDescriptionHeader}>
-            <h2>{displayName}</h2>
-            <Badge size="sm" text={`v${moduleVersion}`} />
-          </header>
-
+          <h2>{displayName}</h2>
           <p>{moduleDescription}</p>
         </div>
-      </header>
 
-      <section className={styles.appCardActions}>
-        <MedToolsButton
-          text="Открыть"
-          onClick={() => navigate(navigatePath)}
-          variant="outlined"
-          size="large"
-        />
-      </section>
-    </article>
+        <div className={styles.action}>
+          <span>Открыть</span>
+
+          <span className={styles.actionIcon} aria-hidden="true">
+            <ArrowOutwardRoundedIcon fontSize="small" />
+          </span>
+        </div>
+      </div>
+    </Link>
   );
 };

@@ -1,14 +1,17 @@
+import styles from "../../../styles.module.scss";
 import { resolveDataState } from "../../../../../../../../../../../shared/helpers/resolveDataState";
 import { DataState } from "../../../../../../../../../../../shared/ui/DataState/DataState";
 import { useInjectionsQuery } from "../../../../../../../../../../../shared/model/queries/invoiceStructure/oncology/useInjectionsQuery";
 import { useMedViewFiltersStore } from "../../../../../../../../filters/model/stores/useMedViewFiltersStore";
-import { useMedViewWorkspaceStore } from "../../../../../../../model/stores/useMedViewWorkspaceStore";
 import { MedViewInjectionsTableBody } from "./MedViewInjectionsTableBody";
 import { MedViewInjectionsTableHeader } from "./MedViewInjectionsTableHeader";
 
-export const MedViewInjectionsTableRoot = () => {
+export const MedViewInjectionsTableRoot = ({
+  selectedMedicationUid,
+}: {
+  selectedMedicationUid: number;
+}) => {
   const { targetDb } = useMedViewFiltersStore();
-  const { selectedMedicationUid } = useMedViewWorkspaceStore();
   const {
     data: injections,
     isLoading,
@@ -27,7 +30,7 @@ export const MedViewInjectionsTableRoot = () => {
   });
 
   return (
-    <section className="cardRoot">
+    <section className={styles.panel}>
       <MedViewInjectionsTableHeader />
       {dataState === "error" ? (
         <DataState

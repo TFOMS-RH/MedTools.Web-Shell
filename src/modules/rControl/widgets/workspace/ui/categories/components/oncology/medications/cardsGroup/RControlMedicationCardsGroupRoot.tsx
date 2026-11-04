@@ -1,18 +1,23 @@
 import { resolveDataState } from "../../../../../../../../../../shared/helpers/resolveDataState";
 import { DataState } from "../../../../../../../../../../shared/ui/DataState/DataState";
-import { useRControlWorkspacePanelStore } from "../../../../../../model/store/useRControlWorkspacePanelStore";
 import { useMedicationsQuery } from "../../../../../../../../../../shared/model/queries/invoiceStructure/oncology/useMedicationsQuery";
+import { useRControlWorkspacePanelStore } from "../../../../../../model/store/useRControlWorkspacePanelStore";
 import { useRControlWorkspaceStore } from "../../../../../../model/store/useRControlWorkspaceStore";
-import { RControlMedicalCaseCardSkeletons } from "../../../../../core/medicalCases/cardsGroup/RControlMedicalCaseCardSkeletons";
 import { RControlMedicationCards } from "./RControlMedicationCards";
 
-export const RControlMedicationCardsGroupRoot = () => {
+import { RControlMedicationCardSkeletons } from "./RControlMedicationCardSkeletons";
+
+interface RControlMedicationCardsGroupRootProps {
+  selectedOncologyServiceUid: number;
+  selectedMedicationUid: number | null;
+}
+
+export const RControlMedicationCardsGroupRoot = ({
+  selectedOncologyServiceUid,
+  selectedMedicationUid,
+}: RControlMedicationCardsGroupRootProps) => {
   const { targetDb } = useRControlWorkspacePanelStore();
-  const {
-    selectedOncologyServiceUid,
-    selectedMedicationUid,
-    selectMedication,
-  } = useRControlWorkspaceStore();
+  const { selectMedication } = useRControlWorkspaceStore();
   const {
     data: medications,
     isLoading,
@@ -37,8 +42,8 @@ export const RControlMedicationCardsGroupRoot = () => {
           description={error?.message ?? "Неизвестная ошибка"}
           variant="error"
         />
-      ) : isLoading ? (
-        <RControlMedicalCaseCardSkeletons />
+      ) : dataState === "loading" ? (
+        <RControlMedicationCardSkeletons />
       ) : dataState === "empty" ? (
         <DataState
           title="Данных не найдено"

@@ -1,37 +1,16 @@
-.listRow {
-  display: flex;
-  align-items: center;
-  gap: var(--space-5);
+.coefficientsTable {
+  min-width: 20rem;
+  table-layout: fixed;
 
-  .number {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  .valueColumn { width: 9rem; }
 
-    width: 2.5rem;
-    height: 2.5rem;
-
-    border: 1px solid var(--border-default);
-    border-radius: var(--radius-l);
-    color: var(--text-primary);
-    font-weight: var(--fw-bold);
+  > tbody > tr > td {
+    vertical-align: top;
+    overflow-wrap: anywhere;
   }
 
-  .listRowContent {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-1);
-    flex: 1;
-
-    .date {
-      font-size: var(--fs-body2);
-      color: var(--text-secondary);
-    }
-
-    .description {
-      font-weight: var(--fw-semibold);
-      font-size: var(--fs-body);
-      color: var(--text-primary);
-    }
+  > :is(thead, tbody) > tr > .numeric {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
   }
 }

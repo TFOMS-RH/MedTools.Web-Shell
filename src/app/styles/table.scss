@@ -53,3 +53,78 @@
     }
   }
 }
+
+
+// Explicitly enabled table styles. Legacy .tableContainer rules above stay unchanged.
+.mt-table-viewport {
+  min-width: 0;
+  max-width: 100%;
+  overflow: auto;
+  border-radius: var(--radius-xl);
+  scrollbar-color: auto;
+
+  &:focus-visible {
+    outline: 2px solid var(--mt-table-accent, var(--mt-text-secondary));
+    outline-offset: 2px;
+  }
+}
+
+.mt-table-viewport--scrollable {
+  max-height: var(--mt-table-max-height, min(65vh, 640px));
+}
+
+.mt-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: auto;
+  color: var(--mt-text-primary);
+  font-size: var(--mt-font-body);
+  line-height: 1.5;
+
+  > :is(thead, tbody, tfoot) > tr > :is(th, td) {
+    box-sizing: border-box;
+    padding: var(--mt-space-3) var(--mt-space-4);
+    border-bottom: 1px solid var(--mt-surface-subtle);
+    text-align: left;
+    vertical-align: middle;
+  }
+
+  > thead > tr > th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: var(--mt-canvas);
+    color: var(--mt-text-secondary);
+    font-weight: var(--fw-semibold);
+    white-space: nowrap;
+  }
+
+  > tbody > tr > td { font-weight: var(--fw-default); }
+
+  // Shared skeletons and state rows already use .noneHover.
+  > tbody > tr:not(.noneHover):hover { background: var(--mt-canvas); }
+
+  > tbody > tr.mt-table__row--interactive:not(.noneHover) {
+    cursor: pointer;
+  }
+
+  > tbody > tr.mt-table__row--selected {
+    background: var(--mt-table-selection-bg, var(--mt-surface-subtle));
+
+    &:hover {
+      background: var(--mt-table-selection-hover-bg, var(--mt-table-selection-bg, var(--mt-surface-subtle)));
+    }
+
+    > td:first-child {
+      box-shadow: inset 3px 0 var(--mt-table-accent, var(--mt-text-secondary));
+    }
+  }
+
+  > tbody > tr:focus-visible {
+    outline: 2px solid var(--mt-table-accent, var(--mt-text-secondary));
+    outline-offset: -2px;
+  }
+
+  > tbody > tr:last-child > td { border-bottom: 0; }
+}

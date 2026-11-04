@@ -1,7 +1,5 @@
-export const MedViewInjectionDateChipsGroupHeader = () => {
-  return (
-    <header className="cardHeader">
-      <h2>Даты введения инъекций</h2>
-    </header>
-  );
-};
+import styles from "../../../styles.module.scss";
+
+export const MedViewInjectionDateChipsGroupHeader = () => (
+  <h3 className={styles.groupHeading}>Даты введения</h3>
+);

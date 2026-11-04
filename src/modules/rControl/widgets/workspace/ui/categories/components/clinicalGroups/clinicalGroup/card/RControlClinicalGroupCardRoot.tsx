@@ -1,8 +1,9 @@
+import styles from "../../styles.module.scss";
+import { resolveDataState } from "../../../../../../../../../../shared/helpers/resolveDataState";
+import { DataState } from "../../../../../../../../../../shared/ui/DataState/DataState";
+import { useRControlWorkspacePanelStore } from "../../../../../../model/store/useRControlWorkspacePanelStore";
 import { useClinicalGroupQuery } from "../../../../../../../../../../shared/model/queries/invoiceStructure/clinicalGroups/useClinicalGroupQuery";
 import { useRControlWorkspaceStore } from "../../../../../../model/store/useRControlWorkspaceStore";
-import { resolveDataState } from "../../../../../../../../../../shared/helpers/resolveDataState";
-import { useRControlWorkspacePanelStore } from "../../../../../../model/store/useRControlWorkspacePanelStore";
-import { DataState } from "../../../../../../../../../../shared/ui/DataState/DataState";
 import { RControlClinicalGroupCardHeader } from "./RControlClinicalGroupCardHeader";
 import { RControlClinicalGroupCardBody } from "./RControlClinicalGroupCardBody";
 
@@ -27,7 +28,7 @@ export const RControlClinicalGroupCardRoot = () => {
   });
 
   return (
-    <div className="cardRoot">
+    <section className={styles.panel} aria-labelledby="rcontrol-csg-heading">
       <RControlClinicalGroupCardHeader />
       {dataState === "error" ? (
         <DataState
@@ -47,6 +48,6 @@ export const RControlClinicalGroupCardRoot = () => {
           isPending={isPending}
         />
       )}
-    </div>
+    </section>
   );
 };

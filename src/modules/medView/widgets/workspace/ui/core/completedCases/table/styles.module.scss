@@ -1,41 +1,145 @@
+﻿.CompletedCasesTableRoot {
+  --mt-table-accent: var(--mt-medview-accent);
+  --mt-table-selection-bg: color-mix(in srgb, var(--mt-medview-cover) 45%, var(--mt-surface));
+  --mt-table-selection-hover-bg: color-mix(in srgb, var(--mt-medview-cover) 65%, var(--mt-surface));
+
+  container: medview-results / inline-size;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border-radius: var(--mt-radius-card);
+  background: var(--mt-surface);
+  color: var(--mt-text-primary);
+}
+
+.previewNotice {
+  margin: var(--mt-space-3) var(--mt-space-6) 0;
+  color: var(--mt-text-secondary);
+  font-size: var(--fs-caption);
+  line-height: 1.5;
+}
+
 .completedCasesTableHeader {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-
-  padding: var(--space-3) var(--space-10);
-  gap: var(--space-10);
+  min-width: 0;
+  padding: var(--mt-space-4) var(--mt-space-6);
+  gap: var(--mt-space-3) var(--mt-space-6);
 
   .titleGroup {
-    display: flex;
-    align-items: center;
-    gap: var(--space-5);
+    min-width: 0;
 
     h2 {
-      flex-shrink: 0;
       font-size: var(--fs-h3);
+      font-weight: var(--fw-bold);
+      line-height: 1.4;
     }
   }
 }
 
-.CompletedCasesTableRoot {
-  display: flex;
-  flex-direction: column;
+.pagination {
+  min-width: 0;
+  max-width: 100%;
 
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-xxl);
-  background: var(--card-background);
+  :global(.MuiTablePagination-root) {
+    overflow: visible;
+    color: var(--mt-text-primary);
+  }
 
-  .CompletedCasesTableRootHeader {
+  :global(.MuiTablePagination-toolbar) {
+    flex-wrap: wrap;
+    min-height: 0;
+    padding: 0;
+    gap: var(--mt-space-2);
+  }
+
+  :global(.MuiTablePagination-spacer) { display: none; }
+
+  :global(.MuiTablePagination-selectLabel),
+  :global(.MuiTablePagination-displayedRows) {
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  :global(.MuiTablePagination-input) {
+    margin: 0;
+    border-radius: var(--radius-l);
+    background: var(--mt-canvas);
+  }
+
+  :global(.MuiTablePagination-actions) { margin-left: 0; }
+
+  :global(.MuiTablePagination-actions .MuiIconButton-root) {
+    min-width: 44px;
+    min-height: 44px;
+    color: var(--mt-text-primary);
+
+    &:global(.Mui-disabled) { color: var(--mt-text-tertiary); }
+
+    &:hover { background: var(--mt-canvas); }
+  }
+
+  :global(.MuiTablePagination-select) {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: var(--space-5) var(--space-10);
-    gap: var(--space-10);
+    box-sizing: border-box;
+    min-height: 44px;
+  }
 
-    h2 {
-      flex-shrink: 0;
-      font-size: var(--fs-h2);
-    }
+  :global(.MuiSelect-select:focus-visible),
+  :global(.MuiButtonBase-root.Mui-focusVisible) {
+    outline: 2px solid var(--mt-medview-accent);
+    outline-offset: 2px;
+  }
+}
+
+.content {
+  min-width: 0;
+  padding: var(--mt-space-2) var(--mt-space-6) var(--mt-space-6);
+  overflow-wrap: anywhere;
+}
+
+.table {
+  min-width: 84rem;
+
+  .numberColumn { width: 5rem; }
+  .nameColumn { width: 12rem; }
+  .conditionColumn { width: 5rem; }
+  .seriesColumn { width: 7rem; }
+  .policyColumn { width: 13rem; }
+  .amountColumn { width: 11rem; }
+
+  .identifier {
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .personName {
+    min-width: 12rem;
+    max-width: 20rem;
+    overflow-wrap: anywhere;
+  }
+
+  .amount {
+    min-width: 11rem;
+    text-align: right;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@container medview-results (max-width: 48rem) {
+  .completedCasesTableHeader {
+    align-items: stretch;
+    padding: var(--mt-space-3) var(--mt-space-4);
+  }
+
+  .titleGroup,
+  .pagination { width: 100%; }
+
+  .content {
+    padding: var(--mt-space-2) var(--mt-space-4) var(--mt-space-4);
   }
 }

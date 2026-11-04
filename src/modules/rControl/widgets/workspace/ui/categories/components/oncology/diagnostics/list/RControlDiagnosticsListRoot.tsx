@@ -1,10 +1,10 @@
+import styles from "../../styles.module.scss";
 import { resolveDataState } from "../../../../../../../../../../shared/helpers/resolveDataState";
 import { DataState } from "../../../../../../../../../../shared/ui/DataState/DataState";
-import { useRControlWorkspacePanelStore } from "../../../../../../model/store/useRControlWorkspacePanelStore";
 import { useDiagnosticsQuery } from "../../../../../../../../../../shared/model/queries/invoiceStructure/oncology/useDiagnosticsQuery";
+import { useRControlWorkspacePanelStore } from "../../../../../../model/store/useRControlWorkspacePanelStore";
 import { RControlDiagnosticsListBody } from "./RControlDiagnosticsListBody";
 import { RControlDiagnosticsListHeader } from "./RControlDiagnosticsListHeader";
-import styles from "./styles.module.scss";
 
 interface RControlDiagnosticsListRootProps {
   oncologyCaseUid: number | null;
@@ -32,7 +32,7 @@ export const RControlDiagnosticsListRoot = ({
   });
 
   return (
-    <section className={styles.diagnosticsListRoot}>
+    <section className={styles.panel}>
       <RControlDiagnosticsListHeader />
       {dataState === "error" ? (
         <DataState

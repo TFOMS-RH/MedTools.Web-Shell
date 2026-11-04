@@ -1,23 +1,23 @@
+import styles from "../../styles.module.scss";
 import { resolveDataState } from "../../../../../../../../../../shared/helpers/resolveDataState";
 import { DataState } from "../../../../../../../../../../shared/ui/DataState/DataState";
-import { useRControlWorkspacePanelStore } from "../../../../../../model/store/useRControlWorkspacePanelStore";
 import { useClassificationCriteriaQuery } from "../../../../../../../../../../shared/model/queries/invoiceStructure/clinicalGroups/useClassificationCriteriaQuery";
-import { RControlClassificationCriterionChips } from "./RControlClassificationCriterionChips";
+import { useRControlWorkspacePanelStore } from "../../../../../../model/store/useRControlWorkspacePanelStore";
 import { RControlClassificationCriterionChipsGroupHeader } from "./RControlClassificationCriterionChipsGroupHeader";
+import { RControlClassificationCriterionChips } from "./RControlClassificationCriterionChips";
 import { RControlClassificationCriterionChipSkeletons } from "./RControlClassificationCriterionChipSkeletons";
 
-interface RControlClassificationCriterionChipsGroupRootProps {
+interface ClassificationCriteriaRootProps {
   clinicalGroupUid: number | null;
 }
 
 export const RControlClassificationCriterionChipsGroupRoot = ({
   clinicalGroupUid,
-}: RControlClassificationCriterionChipsGroupRootProps) => {
+}: ClassificationCriteriaRootProps) => {
   const { targetDb } = useRControlWorkspacePanelStore();
   const {
     data: classificationCriteria,
     isLoading,
-    isPending,
     isError,
     isSuccess,
     error,
@@ -32,7 +32,7 @@ export const RControlClassificationCriterionChipsGroupRoot = ({
   });
 
   return (
-    <div className="cardRoot">
+    <section className={styles.panel} aria-labelledby="rcontrol-csg-criteria-heading">
       <RControlClassificationCriterionChipsGroupHeader />
       {dataState === "error" ? (
         <DataState
@@ -51,9 +51,8 @@ export const RControlClassificationCriterionChipsGroupRoot = ({
       ) : (
         <RControlClassificationCriterionChips
           classificationCriteria={classificationCriteria ?? []}
-          isPending={isPending}
         />
       )}
-    </div>
+    </section>
   );
 };

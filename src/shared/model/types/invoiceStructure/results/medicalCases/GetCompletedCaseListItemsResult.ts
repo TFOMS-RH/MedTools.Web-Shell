@@ -9,7 +9,8 @@ export interface CompletedCaseListItemDto {
   amountBilled: number;
   approvedAmount: number | null;
   insuranceCompanyApprovedAmount: number | null;
-  medicalCareConditions: number;
+  medicalCareConditionsCode: number;
+  medicalCareConditionsName: string;
   patientLastName: string;
   patientFirstName: string;
   patientMiddleName: string;

@@ -1,113 +1,29 @@
 import { Skeleton } from "@mui/material";
-import { CardField } from "../../../../../../../../../../shared/ui/CardField/CardField";
-import { Divider } from "../../../../../../../../../../components/ui/Divider/Divider";
+import { MedViewProvidedServicesTable } from "./MedViewProvidedServiceCards";
 import styles from "./styles.module.scss";
 
-export const MedViewProvidedServiceCardSkeletons = () => {
-  return (
-    <section className={styles.providedServicesCards}>
-      {Array.from({ length: 2 }).map((_, index) => (
-        <article className="cardRoot" key={index}>
-          <header className="cardHeader">
-            <h2>Оказанная услуга </h2>
-          </header>
-          <div className="cardContent">
-            <div className="cardLineGroup">
-              <div className="cardLine">
-                <div className="cardBlockLineOneGrid">
-                  <CardField
-                    label="Наименование услуги"
-                    value={<Skeleton />}
-                    inline={true}
-                  />
+export const MedViewProvidedServiceCardSkeletons = () => (
+  <MedViewProvidedServicesTable isPending>
+    {Array.from({ length: 2 }, (_, index) => (
+      <tbody key={index} aria-hidden="true">
+        <tr className={`noneHover ${styles.mainRow}`}>
+          {Array.from({ length: 5 }, (_, column) => (
+            <td key={column}><Skeleton /></td>
+          ))}
+        </tr>
+        <tr className={`noneHover ${styles.detailsRow}`}>
+          <td colSpan={5}>
+            <div className={styles.detailsGrid}>
+              {Array.from({ length: 6 }, (_, field) => (
+                <div key={field} className={field === 5 ? styles.comment : undefined}>
+                  <Skeleton width="9rem" />
+                  <Skeleton />
                 </div>
-              </div>
-              <div className="cardLine">
-                <div className="cardBlockLineOneGrid">
-                  <CardField
-                    label="Вид медицинского вмешательства"
-                    value={<Skeleton />}
-                    inline={true}
-                  />
-                </div>
-                <div className="cardBlockLineTwoGrid">
-                  <CardField
-                    label="Профиль"
-                    value={<Skeleton />}
-                    inline={true}
-                  />
-                  <CardField
-                    label="Специальность"
-                    value={<Skeleton />}
-                    inline={true}
-                  />
-                </div>
-                <div className="cardBlockLineOneGrid">
-                  <CardField
-                    label="Категория"
-                    value={<Skeleton />}
-                    inline={true}
-                  />
-                </div>
-              </div>
-              <div className="cardLine">
-                <div className="cardBlockLineOneGrid">
-                  <CardField
-                    label="Диагноз"
-                    value={<Skeleton />}
-                    inline={true}
-                  />
-                </div>
-              </div>
-              <div className="cardLine">
-                <div className="cardBlockLineOneGrid">
-                  <CardField
-                    label="Период"
-                    value={<Skeleton />}
-                    inline={true}
-                  />
-                </div>
-              </div>
+              ))}
             </div>
-            <Divider />
-            <div className="cardLineGroup">
-              <div className="cardLine">
-                <div className="cardBlockLineOneGrid">
-                  <CardField
-                    label="Количество"
-                    value={<Skeleton />}
-                    inline={true}
-                    spaceBetween={true}
-                  />
-                </div>
-                <div className="cardBlockLineOneGrid">
-                  <CardField
-                    label="Тариф"
-                    value={<Skeleton />}
-                    inline={true}
-                    spaceBetween={true}
-                  />
-                </div>
-                <div className="cardBlockLineOneGrid">
-                  <CardField
-                    label="Сумма"
-                    value={<Skeleton />}
-                    inline={true}
-                    spaceBetween={true}
-                  />
-                </div>
-                <div className="cardBlockLineOneGrid">
-                  <CardField
-                    label="Комментарий"
-                    value={<Skeleton />}
-                    inline={true}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </article>
-      ))}
-    </section>
-  );
-};
+          </td>
+        </tr>
+      </tbody>
+    ))}
+  </MedViewProvidedServicesTable>
+);

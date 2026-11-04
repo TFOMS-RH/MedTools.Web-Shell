@@ -1,7 +1,8 @@
 import type { HighTechMedicalCareDto } from "../../../../../../../../../../shared/model/types/invoiceStructure/results/clinicalGroup/GetHighTechMedicalCareResult";
-import { CardField } from "../../../../../../../../../../shared/ui/CardField/CardField";
 import { Skeleton } from "@mui/material";
-import dayjs from "dayjs";
+import { displayValue, formatVmpDate } from "../../presentation";
+import { formatCodeNamePair } from "../../../oncology/presentation";
+import styles from "../../styles.module.scss";
 
 interface RControlHighTechMedicalCareCardBodyProps {
   highTechMedicalCare: HighTechMedicalCareDto;
@@ -11,98 +12,63 @@ interface RControlHighTechMedicalCareCardBodyProps {
 export const RControlHighTechMedicalCareCardBody = ({
   highTechMedicalCare,
   isPending,
-}: RControlHighTechMedicalCareCardBodyProps) => {
-  return (
-    <div className="cardContent">
-      {isPending ? (
-        <div className="cardLineGroup">
-          <div className="cardLine">
-            <div className="cardBlockLineOneGrid">
-              <CardField label="Вид" value={<Skeleton />} inline={true} />
-            </div>
-            <div className="cardBlockLineOneGrid">
-              <CardField label="Метод" value={<Skeleton />} inline={true} />
-            </div>
-          </div>
-          <div className="cardLine">
-            <div className="cardBlockLineOneGrid">
-              <CardField
-                label="Дата выдачи талона"
-                value={<Skeleton />}
-                inline={true}
-              />
-            </div>
-            <div className="cardBlockLineOneGrid">
-              <CardField
-                label="Номер талона"
-                value={<Skeleton />}
-                inline={true}
-              />
-            </div>
-            <div className="cardBlockLineOneGrid">
-              <CardField
-                label="Дата планируемой госпитализации"
-                value={<Skeleton />}
-                inline={true}
-              />
-            </div>
-          </div>
-        </div>
-      ) : (
-        <div className="cardLineGroup">
-          <div className="cardLine">
-            <div className="cardBlockLineOneGrid">
-              <CardField
-                label="Вид"
-                value={highTechMedicalCare.highTechCareTypeCode ?? "—"}
-                inline={true}
-              />
-            </div>
-            <div className="cardBlockLineOneGrid">
-              <CardField
-                label="Метод"
-                value={highTechMedicalCare.highTechCareMethodCode ?? "—"}
-                inline={true}
-              />
-            </div>
-          </div>
-          <div className="cardLine">
-            <div className="cardBlockLineOneGrid">
-              <CardField
-                label="Дата выдачи талона"
-                value={
-                  highTechMedicalCare.voucherIssueDate
-                    ? dayjs(highTechMedicalCare.voucherIssueDate).format(
-                        "DD.MM.YYYY",
-                      )
-                    : "—"
-                }
-                inline={true}
-              />
-            </div>
-            <div className="cardBlockLineOneGrid">
-              <CardField
-                label="Номер талона"
-                value={highTechMedicalCare.voucherNumber ?? "—"}
-                inline={true}
-              />
-            </div>
-            <div className="cardBlockLineOneGrid">
-              <CardField
-                label="Дата планируемой госпитализации"
-                value={
-                  highTechMedicalCare.plannedAdmissionDate
-                    ? dayjs(highTechMedicalCare.plannedAdmissionDate).format(
-                        "DD.MM.YYYY",
-                      )
-                    : "—"
-                }
-                inline={true}
-              />
-            </div>
-          </div>
-        </div>
-      )}
+}: RControlHighTechMedicalCareCardBodyProps) => (
+  <dl className={styles.fields} aria-busy={isPending}>
+    <div>
+      <dt>Вид</dt>
+      <dd>
+        {isPending ? (
+          <Skeleton />
+        ) : (
+          formatCodeNamePair(
+            highTechMedicalCare.highTechCareTypeCode,
+            highTechMedicalCare.highTechCareTypeName,
+          )
+        )}
+      </dd>
     </div>
-  );
-};
+    <div>
+      <dt>Метод</dt>
+      <dd>
+        {isPending ? (
+          <Skeleton />
+        ) : (
+          formatCodeNamePair(
+            highTechMedicalCare.highTechCareMethodCode,
+            highTechMedicalCare.highTechCareMethodName,
+          )
+        )}
+      </dd>
+    </div>
+    <div className={styles.wideField}>
+      <dt>Номер талона</dt>
+      <dd>
+        {isPending ? (
+          <Skeleton />
+        ) : (
+          displayValue(highTechMedicalCare?.voucherNumber)
+        )}
+      </dd>
+    </div>
+    <div>
+      <dt>Дата выдачи талона</dt>
+      <dd>
+        {isPending ? (
+          <Skeleton />
+        ) : (
+          formatVmpDate(highTechMedicalCare?.voucherIssueDate)
+        )}
+      </dd>
+    </div>
+    <div>
+      <dt>Дата планируемой госпитализации</dt>
+      <dd>
+        {isPending ? (
+          <Skeleton />
+        ) : (
+          formatVmpDate(highTechMedicalCare?.plannedAdmissionDate)
+        )}
+      </dd>
+    </div>
+  </dl>
+);

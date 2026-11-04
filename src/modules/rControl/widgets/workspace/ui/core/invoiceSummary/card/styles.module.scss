@@ -1,0 +1,66 @@
+.summary {
+  container: rcontrol-summary / inline-size;
+  margin: var(--mt-space-4) var(--mt-space-6) 0;
+  padding: var(--mt-space-4);
+  min-width: 0;
+  border-radius: var(--radius-xl);
+  background: var(--mt-canvas);
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--mt-space-2) var(--mt-space-4);
+  margin-bottom: var(--mt-space-4);
+  h3 { font-size: var(--mt-font-body); font-weight: var(--fw-semibold); }
+  p { color: var(--mt-text-secondary); font-size: var(--fs-caption); overflow-wrap: anywhere; }
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--mt-space-4) var(--mt-space-8);
+}
+
+.metricGroup {
+  min-width: 0;
+  h4 { margin-bottom: var(--mt-space-2); font-size: var(--fs-caption); font-weight: var(--fw-semibold); }
+  dl { display: grid; gap: var(--mt-space-2); margin: 0; }
+}
+
+.body {
+  dt { color: var(--mt-text-secondary); font-size: var(--fs-caption); line-height: 1.5; overflow-wrap: anywhere; }
+  dd { margin: 0; color: var(--mt-text-primary); font-size: var(--mt-font-body); line-height: 1.5; }
+  :global(.MuiSkeleton-root) { width: 100%; min-width: 5rem; }
+}
+
+.metric {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: var(--mt-space-2);
+  dd { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+}
+
+.metadata {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) repeat(2, minmax(0, 1fr));
+  gap: var(--mt-space-3) var(--mt-space-6);
+  margin: var(--mt-space-4) 0 0;
+  > div { min-width: 0; }
+  dd { overflow-wrap: anywhere; }
+}
+
+@container rcontrol-summary (max-width: 52rem) {
+  .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@container rcontrol-summary (max-width: 34rem) {
+  .metrics, .metadata { grid-template-columns: minmax(0, 1fr); }
+}
+
+@container rcontrol-invoices (max-width: 42rem) {
+  .summary { margin: var(--mt-space-4) var(--mt-space-4) 0; }
+}

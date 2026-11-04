@@ -5,6 +5,7 @@ import { useMedViewFiltersStore } from "../../../../../../../filters/model/store
 import { useMedViewWorkspaceStore } from "../../../../../../model/stores/useMedViewWorkspaceStore";
 import { MedViewCompletedCaseDetailsCardHeader } from "./MedViewCompletedCaseDetailsCardHeader";
 import { MedViewCompletedCaseDetailsCardBody } from "./MedViewCompletedCaseDetailsCardBody";
+import styles from "../../styles.module.scss";
 
 export const MedViewCompletedCaseDetailsCardRoot = () => {
   const { targetDb } = useMedViewFiltersStore();
@@ -27,7 +28,7 @@ export const MedViewCompletedCaseDetailsCardRoot = () => {
   });
 
   return (
-    <article className="cardRoot">
+    <section className={styles.caseSection} aria-labelledby="medview-completed-details-heading">
       <MedViewCompletedCaseDetailsCardHeader />
       {dataState === "error" ? (
         <DataState
@@ -47,6 +48,6 @@ export const MedViewCompletedCaseDetailsCardRoot = () => {
           isPending={isPending}
         />
       )}
-    </article>
+    </section>
   );
 };

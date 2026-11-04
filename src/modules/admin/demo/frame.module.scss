@@ -1,0 +1,27 @@
+.shell.shell {
+  height: 100dvh;
+  min-height: 0;
+
+  > main {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+}
+
+.frame {
+  display: block;
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+  border: 0;
+}
+
+// A modal must use the visible host viewport, not a partially visible iframe.
+// 1300 is the existing MUI modal layer; this rule is development-only.
+.modalFrame {
+  position: fixed;
+  inset: 0;
+  height: 100dvh;
+  z-index: 1300;
+}

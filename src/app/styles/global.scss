@@ -6,6 +6,7 @@
 @use "./card.scss" as *;
 @use "./table.scss" as *;
 @use "./shadows.scss" as *;
+@use "./medtools.design.tokens.scss" as *;
 
 @import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
 
@@ -19,7 +20,7 @@ main {
   padding: 0;
   margin: 0;
   font-family: var(--inter);
-  background: var(--app-background);
+  background: var(--mt-canvas);
   color: var(--text-default);
 }
 

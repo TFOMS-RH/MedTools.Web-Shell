@@ -1,7 +1,7 @@
+import styles from "../../styles.module.scss";
+
 export const MedViewCompletedCaseDetailsCardHeader = () => {
   return (
-    <header className="cardHeader">
-      <h2>Детали законченного случая</h2>
-    </header>
+    <h3 id="medview-completed-details-heading" className={styles.sectionHeading}>Законченный случай</h3>
   );
 };

@@ -1,7 +1,5 @@
-export const RControlClassificationCriterionChipsGroupHeader = () => {
-  return (
-    <header className="cardHeader">
-      <h2>Классификационные критерии</h2>
-    </header>
-  );
-};
+import styles from "../../styles.module.scss";
+
+export const RControlClassificationCriterionChipsGroupHeader = () => (
+  <h4 id="rcontrol-csg-criteria-heading" className={styles.groupHeading}>Классификационные критерии</h4>
+);

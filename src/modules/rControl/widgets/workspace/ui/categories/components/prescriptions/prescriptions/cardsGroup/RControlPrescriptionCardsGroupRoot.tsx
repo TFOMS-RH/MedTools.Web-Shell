@@ -1,10 +1,10 @@
-import { RControlPrescriptionCards } from "./RControlPrescriptionCards";
-import { usePrescriptionsQuery } from "../../../../../../../../../../shared/model/queries/invoiceStructure/prescriptions/usePrescriptionsQuery";
-import { useRControlWorkspaceStore } from "../../../../../../model/store/useRControlWorkspaceStore";
 import { resolveDataState } from "../../../../../../../../../../shared/helpers/resolveDataState";
-import { useRControlWorkspacePanelStore } from "../../../../../../model/store/useRControlWorkspacePanelStore";
 import { DataState } from "../../../../../../../../../../shared/ui/DataState/DataState";
-import { RControlPrescriptionCardSkeletons } from "./RControlPrescriptionCardSkeletons";
+import { usePrescriptionsQuery } from "../../../../../../../../../../shared/model/queries/invoiceStructure/prescriptions/usePrescriptionsQuery";
+import { useRControlWorkspacePanelStore } from "../../../../../../model/store/useRControlWorkspacePanelStore";
+import { useRControlWorkspaceStore } from "../../../../../../model/store/useRControlWorkspaceStore";
+import { RControlPrescriptionCards } from "./RControlPrescriptionCards";
+import styles from "../../styles.module.scss";
 
 export const RControlPrescriptionCardsGroupRoot = () => {
   const { targetDb } = useRControlWorkspacePanelStore();
@@ -12,6 +12,7 @@ export const RControlPrescriptionCardsGroupRoot = () => {
   const {
     data: prescriptions,
     isLoading,
+    isPending,
     isError,
     isSuccess,
     error,
@@ -26,15 +27,14 @@ export const RControlPrescriptionCardsGroupRoot = () => {
   });
 
   return (
-    <>
+    <section className={styles.section} aria-labelledby="rcontrol-prescriptions-heading">
+      <h3 id="rcontrol-prescriptions-heading" className={styles.sectionHeading}>Назначения</h3>
       {dataState === "error" ? (
         <DataState
           title="Ошибка данных"
           description={error?.message ?? "Неизвестная ошибка"}
           variant="error"
         />
-      ) : isLoading ? (
-        <RControlPrescriptionCardSkeletons />
       ) : dataState === "empty" ? (
         <DataState
           title="Данных не найдено"
@@ -42,8 +42,11 @@ export const RControlPrescriptionCardsGroupRoot = () => {
           variant="empty"
         />
       ) : (
-        <RControlPrescriptionCards prescriptions={prescriptions ?? []} />
+        <RControlPrescriptionCards
+          prescriptions={prescriptions ?? []}
+          isPending={isPending}
+        />
       )}
-    </>
+    </section>
   );
 };

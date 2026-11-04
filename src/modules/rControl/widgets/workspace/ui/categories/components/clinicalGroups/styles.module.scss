@@ -1,23 +1,105 @@
 .clinicalGroupsRoot {
+  --mt-table-accent: var(--mt-rcontrol-accent);
+  container: rcontrol-clinical-groups / inline-size;
   display: flex;
   flex-direction: column;
-  gap: var(--space-10);
+  min-width: 0;
+  gap: var(--mt-space-8);
+}
 
-  .categoryLine {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-5);
+.topGrid,
+.relatedGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+  min-width: 0;
+  gap: var(--mt-space-6);
+}
 
-    .twoGridLine {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      column-gap: var(--space-5);
-    }
+.panel {
+  container: rcontrol-clinical-fields / inline-size;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: var(--mt-space-5);
+  gap: var(--mt-space-4);
+  border-radius: var(--radius-xl);
+  background: color-mix(in srgb, var(--mt-canvas) 80%, var(--mt-surface));
+}
 
-    .classificationCriteriaGroup {
-      display: grid;
-      grid-template-columns: 1fr 3fr;
-      column-gap: var(--space-5);
-    }
+.sectionHeading,
+.groupHeading {
+  margin: 0;
+  color: var(--mt-text-primary);
+  font-weight: var(--fw-bold);
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.sectionHeading { font-size: var(--fs-h3); }
+.groupHeading { font-size: var(--fs-h4); }
+
+.relatedSection,
+.groups {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: var(--mt-space-4);
+}
+
+.groups { gap: var(--mt-space-6); }
+
+.informationGroup {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: var(--mt-space-3);
+}
+
+.fields {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-width: 0;
+  margin: 0;
+  gap: var(--mt-space-4) var(--mt-space-5);
+
+  > div { min-width: 0; }
+
+  dt {
+    margin-bottom: var(--mt-space-1);
+    color: var(--mt-text-secondary);
+    font-size: var(--mt-font-body);
+    font-weight: var(--fw-default);
+    line-height: 1.5;
+    overflow-wrap: anywhere;
   }
+
+  dd {
+    min-width: 0;
+    margin: 0;
+    color: var(--mt-text-primary);
+    font-size: var(--fs-body);
+    font-weight: var(--fw-semibold);
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.wideField { grid-column: 1 / -1; }
+
+@container rcontrol-clinical-groups (min-width: 64rem) {
+  .topGrid { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); }
+}
+
+@container rcontrol-clinical-groups (min-width: 56rem) {
+  .relatedGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@container rcontrol-clinical-fields (min-width: 26rem) {
+  .fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@container rcontrol-clinical-fields (min-width: 42rem) {
+  .fields { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }

@@ -1,10 +1,11 @@
 import { resolveDataState } from "../../../../../../../../../../shared/helpers/resolveDataState";
 import { DataState } from "../../../../../../../../../../shared/ui/DataState/DataState";
-import { useRControlWorkspacePanelStore } from "../../../../../../model/store/useRControlWorkspacePanelStore";
 import { useMedicalCaseDetailsQuery } from "../../../../../../../../../../shared/model/queries/invoiceStructure/medicalCaseDetails/useMedicalCaseDetailsQuery";
-import { useRControlWorkspaceStore } from "../../../../../../model/store/useRControlWorkspaceStore";
+import { useRControlWorkspacePanelStore } from "../../../../../../model/store/useRControlWorkspacePanelStore";
 import { RControlMedicalCaseDetailsCardBody } from "./RControlMedicalCaseDetailsCardBody";
+import { useRControlWorkspaceStore } from "../../../../../../model/store/useRControlWorkspaceStore";
 import { RControlMedicalCaseDetailsCardHeader } from "./RControlMedicalCaseDetailsCardHeader";
+import styles from "../../styles.module.scss";
 
 export const RControlMedicalCaseDetailsCardRoot = () => {
   const { targetDb } = useRControlWorkspacePanelStore();
@@ -26,7 +27,7 @@ export const RControlMedicalCaseDetailsCardRoot = () => {
   });
 
   return (
-    <article className="cardRoot">
+    <section className={styles.caseSection} aria-labelledby="rcontrol-medical-details-heading">
       <RControlMedicalCaseDetailsCardHeader />
       {dataState === "error" ? (
         <DataState
@@ -46,6 +47,6 @@ export const RControlMedicalCaseDetailsCardRoot = () => {
           isPending={isPending}
         />
       )}
-    </article>
+    </section>
   );
 };

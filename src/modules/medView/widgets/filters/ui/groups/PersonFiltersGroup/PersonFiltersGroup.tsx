@@ -1,9 +1,7 @@
 import type { PersonFiltersGroupDraft } from "../../../../workspace/model/types/FiltersDraft";
-import { useFilterOptionsQuery } from "../../../model/queries/useFilterOptionsQuery";
-import { useMedicalOrganizationFilterOptionsQuery } from "../../../model/queries/useMedicalOrganizationFilterOptions";
-import { InsuranceFiltersSubgroup } from "./InsuranceFiltersSubgroup/InsuranceFiltersSubgroup";
-import { PatientFiltersSubgroup } from "./PatientFiltersSubgroup/PatientFiltersSubgroup";
-import { RepresentativeFiltersSubgroup } from "./RepresentativeFiltersSubgroup/RepresentativeFiltersSubgroup";
+import { InsuranceFiltersSubgroup } from "./InsuranceFiltersSubgroup";
+import { PatientFiltersSubgroup } from "./PatientFiltersSubgroup";
+import { RepresentativeFiltersSubgroup } from "./RepresentativeFiltersSubgroup";
 import styles from "./styles.module.scss";
 
 interface PersonFiltersGroupRootProps {
@@ -15,26 +13,13 @@ const PersonFiltersGroup = ({
   personFiltersGroupDraft,
   setPersonFiltersGroupDraft,
 }: PersonFiltersGroupRootProps) => {
-  const { data: insuranceFilterOptions } =
-    useMedicalOrganizationFilterOptionsQuery(
-      "med-tools/med-view/filter-options/available-insurance",
-      "insurance",
-      "SMODB18",
-      "Insurances",
-    );
-
-  const { data: insurancePolicyTypeFilterOptions } = useFilterOptionsQuery(
-    "med-tools/med-view/filter-options/policy-types",
-    "insurance-policy-type",
-  );
-
   return (
     <section className={styles.generalFiltersGroup}>
       <header className={styles.generalFiltersGroupHeader}>
         <div className={styles.titleGroup}>
-          <h2>Фильтрация по персональным данным</h2>
+          <h2>Персональные данные</h2>
           <p className={styles.description}>
-            Все поля, которые относятся к данным пациента
+            Пациент, представитель и сведения о страховании
           </p>
         </div>
       </header>
@@ -46,7 +31,6 @@ const PersonFiltersGroup = ({
             setPersonFiltersGroupDraft({ ...personFiltersGroupDraft, patient })
           }
         />
-
         <RepresentativeFiltersSubgroup
           representativeFiltersSubgroupDraft={
             personFiltersGroupDraft.representative
@@ -59,7 +43,6 @@ const PersonFiltersGroup = ({
           }
         />
       </div>
-
       <InsuranceFiltersSubgroup
         insuranceFiltersSubgroupDraft={personFiltersGroupDraft.insurance}
         setInsuranceFiltersSubgroupDraft={(insurance) =>
@@ -67,10 +50,6 @@ const PersonFiltersGroup = ({
             ...personFiltersGroupDraft,
             insurance,
           })
-        }
-        insuranceFilterOptions={insuranceFilterOptions ?? []}
-        insurancePolicyTypeFilterOptions={
-          insurancePolicyTypeFilterOptions ?? []
         }
       />
     </section>

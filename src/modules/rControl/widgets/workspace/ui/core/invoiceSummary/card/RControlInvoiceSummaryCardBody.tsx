@@ -1,257 +1,57 @@
 import type { InvoiceSummaryDto } from "../../../../../../../../shared/model/types/invoiceStructure/results/invoices/GetInvoiceSummaryResult";
 import { formatCurrency } from "../../../../../../../../shared/helpers/formatCurrency";
 import { formatDate } from "../../../../../../../../shared/helpers/formatDate";
-import { CardField } from "../../../../../../../../shared/ui/CardField/CardField";
-import { Divider } from "../../../../../../../../components/ui/Divider/Divider";
 import { Skeleton } from "@mui/material";
+import styles from "./styles.module.scss";
 
-interface RControlInvoiceSummaryCardBodyProps {
-  invoiceSummary: InvoiceSummaryDto;
+const metricGroups = [
+  {
+    title: "Суммы", fields: [
+      ["Предъявлено", "invoiceAmount"],
+      ["Принято ТФОМС", "approvedAmount"],
+      ["Принято СМО", "insuranceCompanyApprovedAmount"],
+    ]
+  },
+  {
+    title: "Снято ТФОМС", fields: [
+      ["ТФОМС снято МЭК", "medicalEconomicControlPenalty"],
+      ["ТФОМС снято МЭЭ", "medicalEconomicExpertisePenalty"],
+      ["ТФОМС снято ЭКМР", "medicalCareQualityExpertisePenalty"],
+    ]
+  },
+  {
+    title: "Снято СМО", fields: [
+      ["СМО снято МЭК", "insuranceCompanyMedicalEconomicControlPenalty"],
+      ["СМО снято МЭЭ", "insuranceCompanyMedicalEconomicExpertisePenalty"],
+      ["СМО снято ЭКМР", "insuranceCompanyMedicalCareQualityExpertisePenalty"],
+    ]
+  },
+] as const;
+
+export const RControlInvoiceSummaryCardBody = ({ invoiceSummary, isPending }: {
+  invoiceSummary?: InvoiceSummaryDto;
   isPending: boolean;
-}
-
-export const RControlInvoiceSummaryCardBody = ({
-  invoiceSummary,
-  isPending,
-}: RControlInvoiceSummaryCardBodyProps) => {
-  return (
-    <div className="cardContent">
-      {isPending ? (
-        <>
-          <div className="cardLineGroup">
-            <div className="cardLine">
-              <div className="cardBlockLineOneGrid">
-                <CardField
-                  label="Предъявлено"
-                  value={<Skeleton />}
-                  inline={true}
-                  spaceBetween={true}
-                />
+}) => (
+  <div className={styles.body}>
+    <div className={styles.metrics}>
+      {metricGroups.map(group => (
+        <div className={styles.metricGroup} key={group.title}>
+          <h4>{group.title}</h4>
+          <dl>
+            {group.fields.map(([label, key]) => (
+              <div className={styles.metric} key={key}>
+                <dt>{label}</dt>
+                <dd>{isPending ? <Skeleton /> : formatCurrency(invoiceSummary![key])}</dd>
               </div>
-            </div>
-            <div className="cardLine">
-              <div className="cardBlockLineOneGrid">
-                <CardField
-                  label="Принято ТФОМС"
-                  value={<Skeleton />}
-                  inline={true}
-                  spaceBetween={true}
-                />
-              </div>
-              <div className="cardBlockLineOneGrid">
-                <CardField
-                  label="Принято СМО"
-                  value={<Skeleton />}
-                  inline={true}
-                  spaceBetween={true}
-                />
-              </div>
-            </div>
-            <div className="cardLine">
-              <div className="cardBlockLineOneGrid">
-                <CardField
-                  label="ТФОМС снято МЭК"
-                  value={<Skeleton />}
-                  inline={true}
-                  spaceBetween={true}
-                />
-              </div>
-              <div className="cardBlockLineOneGrid">
-                <CardField
-                  label="ТФОМС снято МЭЭ"
-                  value={<Skeleton />}
-                  inline={true}
-                  spaceBetween={true}
-                />
-              </div>
-              <div className="cardBlockLineOneGrid">
-                <CardField
-                  label="ТФОМС снято ЭКМР"
-                  value={<Skeleton />}
-                  inline={true}
-                />
-              </div>
-            </div>
-            <div className="cardLine">
-              <div className="cardBlockLineOneGrid">
-                <CardField
-                  label="СМО снято МЭК"
-                  value={<Skeleton />}
-                  inline={true}
-                  spaceBetween={true}
-                />
-              </div>
-              <div className="cardBlockLineOneGrid">
-                <CardField
-                  label="СМО снято МЭЭ"
-                  value={<Skeleton />}
-                  inline={true}
-                  spaceBetween={true}
-                />
-              </div>
-              <div className="cardBlockLineOneGrid">
-                <CardField
-                  label="СМО снято ЭКМР"
-                  value={<Skeleton />}
-                  inline={true}
-                  spaceBetween={true}
-                />
-              </div>
-            </div>
-          </div>
-          <Divider />
-          <div className="cardLineGroup">
-            <div className="cardLine">
-              <div className="cardBlockLineOneGrid">
-                <CardField
-                  label="Имя файла"
-                  value={<Skeleton />}
-                  inline={true}
-                />
-              </div>
-              <div className="cardBlockLineOneGrid">
-                <CardField
-                  label="Дата выгрузки"
-                  value={<Skeleton />}
-                  inline={true}
-                />
-              </div>
-              <div className="cardBlockLineOneGrid">
-                <CardField
-                  label="UID счета"
-                  value={<Skeleton />}
-                  inline={true}
-                />
-              </div>
-            </div>
-          </div>
-        </>
-      ) : (
-        <>
-          <div className="cardLineGroup">
-            <div className="cardLine">
-              <div className="cardBlockLineOneGrid">
-                <CardField
-                  label="Предъявлено"
-                  value={formatCurrency(invoiceSummary.invoiceAmount)}
-                  inline={true}
-                  spaceBetween={true}
-                />
-              </div>
-            </div>
-            <div className="cardLine">
-              <div className="cardBlockLineOneGrid">
-                <CardField
-                  label="Принято ТФОМС"
-                  value={formatCurrency(invoiceSummary.approvedAmount)}
-                  inline={true}
-                  spaceBetween={true}
-                />
-              </div>
-              <div className="cardBlockLineOneGrid">
-                <CardField
-                  label="Принято СМО"
-                  value={formatCurrency(
-                    invoiceSummary.insuranceCompanyApprovedAmount,
-                  )}
-                  inline={true}
-                  spaceBetween={true}
-                />
-              </div>
-            </div>
-            <div className="cardLine">
-              <div className="cardBlockLineOneGrid">
-                <CardField
-                  label="ТФОМС снято МЭК"
-                  value={formatCurrency(
-                    invoiceSummary.medicalEconomicControlPenalty,
-                  )}
-                  inline={true}
-                  spaceBetween={true}
-                />
-              </div>
-              <div className="cardBlockLineOneGrid">
-                <CardField
-                  label="ТФОМС снято МЭЭ"
-                  value={formatCurrency(
-                    invoiceSummary.medicalEconomicExpertisePenalty,
-                  )}
-                  inline={true}
-                  spaceBetween={true}
-                />
-              </div>
-              <div className="cardBlockLineOneGrid">
-                <CardField
-                  label="ТФОМС снято ЭКМР"
-                  value={formatCurrency(
-                    invoiceSummary.medicalCareQualityExpertisePenalty,
-                  )}
-                  inline={true}
-                  spaceBetween={true}
-                />
-              </div>
-            </div>
-            <div className="cardLine">
-              <div className="cardBlockLineOneGrid">
-                <CardField
-                  label="СМО снято МЭК"
-                  value={formatCurrency(
-                    invoiceSummary.insuranceCompanyMedicalEconomicControlPenalty,
-                  )}
-                  inline={true}
-                  spaceBetween={true}
-                />
-              </div>
-              <div className="cardBlockLineOneGrid">
-                <CardField
-                  label="СМО снято МЭЭ"
-                  value={formatCurrency(
-                    invoiceSummary.insuranceCompanyMedicalEconomicExpertisePenalty,
-                  )}
-                  inline={true}
-                  spaceBetween={true}
-                />
-              </div>
-              <div className="cardBlockLineOneGrid">
-                <CardField
-                  label="СМО снято ЭКМР"
-                  value={formatCurrency(
-                    invoiceSummary.insuranceCompanyMedicalCareQualityExpertisePenalty,
-                  )}
-                  inline={true}
-                  spaceBetween={true}
-                />
-              </div>
-            </div>
-          </div>
-          <Divider />
-          <div className="cardLineGroup">
-            <div className="cardLine">
-              <div className="cardBlockLineOneGrid">
-                <CardField
-                  label="Имя файла"
-                  value={invoiceSummary.filename}
-                  inline={true}
-                />
-              </div>
-              <div className="cardBlockLineOneGrid">
-                <CardField
-                  label="Дата выгрузки"
-                  value={formatDate(invoiceSummary.invoiceUploadDate)}
-                  inline={true}
-                />
-              </div>
-              <div className="cardBlockLineOneGrid">
-                <CardField
-                  label="UID счета"
-                  value={invoiceSummary.invoiceUid}
-                  inline={true}
-                />
-              </div>
-            </div>
-          </div>
-        </>
-      )}
+            ))}
+          </dl>
+        </div>
+      ))}
     </div>
-  );
-};
+    <dl className={styles.metadata}>
+      <div><dt>Имя файла</dt><dd>{isPending ? <Skeleton /> : invoiceSummary?.filename}</dd></div>
+      <div><dt>Дата выгрузки</dt><dd>{isPending ? <Skeleton /> : formatDate(invoiceSummary!.invoiceUploadDate)}</dd></div>
+      <div><dt>UID счета</dt><dd>{isPending ? <Skeleton /> : invoiceSummary?.invoiceUid}</dd></div>
+    </dl>
+  </div>
+);

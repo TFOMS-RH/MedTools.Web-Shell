@@ -8,6 +8,46 @@ import {
 import { useMedViewWorkspaceStore } from "../../model/stores/useMedViewWorkspaceStore";
 import CategoryFallback from "./components/default/CategoryFallback/CategoryFallback";
 
+const PatientCategoryPreview = import.meta.env.DEV
+  ? lazy(() => import("./components/patient/MedViewPatientCategoryPreview"))
+  : null;
+
+const CaseDetailsCategoryPreview = import.meta.env.DEV
+  ? lazy(
+      () =>
+        import("./components/medicalCaseDetails/MedViewCaseDetailsCategoryPreview"),
+    )
+  : null;
+
+const PrescriptionsCategoryPreview = import.meta.env.DEV
+  ? lazy(
+      () =>
+        import("./components/prescriptions/MedViewPrescriptionsCategoryPreview"),
+    )
+  : null;
+
+const ProvidedServicesCategoryPreview = import.meta.env.DEV
+  ? lazy(
+      () =>
+        import("./components/providedServices/MedViewProvidedServicesCategoryPreview"),
+    )
+  : null;
+
+const DefectsCategoryPreview = import.meta.env.DEV
+  ? lazy(() => import("./components/defects/MedViewDefectsCategoryPreview"))
+  : null;
+
+const ClinicalGroupsCategoryPreview = import.meta.env.DEV
+  ? lazy(
+      () =>
+        import("./components/clinicalGroups/MedViewClinicalGroupsCategoryPreview"),
+    )
+  : null;
+
+const OncologyCategoryPreview = import.meta.env.DEV
+  ? lazy(() => import("./components/oncology/MedViewOncologyCategoryPreview"))
+  : null;
+
 const DefaultCategoryComponent = lazy(
   () =>
     import("../categories/components/default/DefaultCategory/DefaultCategory"),
@@ -57,13 +97,91 @@ const categoryMap = {
   export: DefaultCategoryComponent,
 } satisfies Record<MedViewCategoryId, LazyExoticComponent<ComponentType>>;
 
-export const MedViewCategoryRender = ({}) => {
-  const { targetCategory } = useMedViewWorkspaceStore();
+export const MedViewCategoryRender = () => {
+  const { targetCategory, selectedCompletedCaseUid, selectedMedicalCaseUid } =
+    useMedViewWorkspaceStore();
   const CategoryComponent = categoryMap[targetCategory];
+  const hasActiveTab =
+    targetCategory !== "default" && targetCategory !== "export";
+  const needsSelection =
+    selectedCompletedCaseUid === null ||
+    selectedMedicalCaseUid === null ||
+    !hasActiveTab;
+  const workspacePreview =
+    import.meta.env.DEV &&
+    new URLSearchParams(window.location.search).get("demoWorkspace") === "1";
+  const showPatientPreview =
+    PatientCategoryPreview &&
+    targetCategory === "patient" &&
+    (new URLSearchParams(window.location.search).get("demoPatient") === "1" ||
+      workspacePreview);
+  const showCaseDetailsPreview =
+    CaseDetailsCategoryPreview &&
+    targetCategory === "case-details" &&
+    (new URLSearchParams(window.location.search).get("demoCaseDetails") ===
+      "1" ||
+      workspacePreview);
+  const showPrescriptionsPreview =
+    PrescriptionsCategoryPreview &&
+    targetCategory === "prescriptions" &&
+    (new URLSearchParams(window.location.search).get("demoPrescriptions") ===
+      "1" ||
+      workspacePreview);
+  const showProvidedServicesPreview =
+    ProvidedServicesCategoryPreview &&
+    targetCategory === "provided-services" &&
+    (new URLSearchParams(window.location.search).get("demoProvidedServices") ===
+      "1" ||
+      workspacePreview);
+  const showDefectsPreview =
+    DefectsCategoryPreview &&
+    targetCategory === "defects" &&
+    (new URLSearchParams(window.location.search).get("demoDefects") === "1" ||
+      workspacePreview);
+  const showClinicalGroupsPreview =
+    ClinicalGroupsCategoryPreview &&
+    targetCategory === "clinical-groups" &&
+    (new URLSearchParams(window.location.search).get("demoClinicalGroups") ===
+      "1" ||
+      workspacePreview);
+  const showOncologyPreview =
+    OncologyCategoryPreview &&
+    targetCategory === "oncology" &&
+    (new URLSearchParams(window.location.search).get("demoOncology") === "1" ||
+      workspacePreview);
 
   return (
-    <Suspense fallback={<CategoryFallback />}>
-      <CategoryComponent />
-    </Suspense>
+    <div
+      id="medview-case-panel"
+      role={hasActiveTab ? "tabpanel" : "region"}
+      aria-labelledby={
+        hasActiveTab
+          ? `medview-case-tab-${targetCategory}`
+          : "medview-case-heading"
+      }
+      tabIndex={0}
+    >
+      <Suspense fallback={<CategoryFallback />}>
+        {showPatientPreview ? (
+          <PatientCategoryPreview />
+        ) : showCaseDetailsPreview ? (
+          <CaseDetailsCategoryPreview />
+        ) : showPrescriptionsPreview ? (
+          <PrescriptionsCategoryPreview />
+        ) : showProvidedServicesPreview ? (
+          <ProvidedServicesCategoryPreview />
+        ) : showDefectsPreview ? (
+          <DefectsCategoryPreview />
+        ) : showClinicalGroupsPreview ? (
+          <ClinicalGroupsCategoryPreview />
+        ) : showOncologyPreview ? (
+          <OncologyCategoryPreview />
+        ) : needsSelection ? (
+          <DefaultCategoryComponent />
+        ) : (
+          <CategoryComponent />
+        )}
+      </Suspense>
+    </div>
   );
 };

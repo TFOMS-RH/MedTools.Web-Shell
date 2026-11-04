@@ -1,6 +1,6 @@
 import type { MedicalCaseDetailsFiltersGroupDraft } from "../../../../workspace/model/types/FiltersDraft";
-import { CompletedCaseDetailsFiltersSubgroup } from "./CompletedCaseDetailsFiltersSubgroup/CompletedCaseDetailsFiltersSubgroup";
-import { MedicalCaseDetailsFiltersSubgroup } from "./MedicalCaseDetailsFiltersSubgroup/MedicalCaseDetailsFiltersSubgroup";
+import { CompletedCaseDetailsFiltersSubgroup } from "./CompletedCaseDetailsFiltersSubgroup";
+import { MedicalCaseDetailsFiltersSubgroup } from "./MedicalCaseDetailsFiltersSubgroup";
 import styles from "./styles.module.scss";
 
 interface MedicalCaseDetailsFiltersGroupProps {

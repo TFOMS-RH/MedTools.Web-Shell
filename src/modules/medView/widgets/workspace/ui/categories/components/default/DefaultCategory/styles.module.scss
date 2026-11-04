@@ -4,18 +4,21 @@
   justify-content: center;
   align-items: center;
 
-  padding: var(--space-10);
+  padding: var(--mt-space-8) var(--mt-space-3);
+  gap: var(--mt-space-2);
+  text-align: center;
 
   .title {
-    font-size: var(--fs-h3);
-    font-weight: 500;
-    user-select: none;
+    margin: 0;
+    color: var(--mt-text-primary);
+    font-size: var(--mt-font-body);
+    font-weight: 600;
   }
 
   .description {
-    font-size: var(--fs-body2);
+    margin: 0;
+    font-size: var(--mt-font-body);
     font-weight: 400;
-    color: var(--text-secondary);
-    user-select: none;
+    color: var(--mt-text-secondary);
   }
 }

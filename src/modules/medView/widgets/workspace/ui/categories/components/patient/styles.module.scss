@@ -1,17 +1,122 @@
-.patientCategoryRoot {
+﻿.patientCategoryRoot {
+  container: medview-patient / inline-size;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+}
+
+.patientContent {
   display: flex;
   flex-direction: column;
-  gap: var(--space-10);
+  min-width: 0;
+  gap: var(--mt-space-6);
+}
 
-  .categoryLine {
+.profile,
+.representative,
+.informationGroup,
+.insuranceGroup {
+  container: medview-patient-fields / inline-size;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: var(--mt-space-3);
+}
+
+.profileCaption {
+  color: var(--mt-text-secondary);
+  font-size: var(--mt-font-body);
+  font-weight: var(--fw-default);
+  line-height: 1.5;
+}
+
+.informationGroup,
+.insuranceGroup,
+.representative {
+  padding: var(--mt-space-5);
+  border-radius: var(--radius-xl);
+  background: color-mix(in srgb, var(--mt-canvas) 80%, var(--mt-surface));
+}
+
+.patientName {
+  margin: 0;
+  color: var(--mt-text-primary);
+  font-size: var(--fs-h2);
+  font-weight: var(--fw-bold);
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.representativeName {
+  margin: 0;
+  color: var(--mt-text-primary);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semibold);
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.identityAttributes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--mt-space-3) var(--mt-space-6);
+  width: min(100%, 28rem);
+}
+
+.relatedGroups {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-auto-rows: 1fr;
+  gap: var(--mt-space-6);
+  align-items: stretch;
+  min-width: 0;
+
+  > div {
     display: flex;
     flex-direction: column;
-    gap: var(--space-5);
+    min-width: 0;
 
-    .patientInsuranceGroup {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      column-gap: var(--space-5);
+    > .informationGroup {
+      flex: 1;
     }
+  }
+
+  > div:empty {
+    display: none;
+  }
+}
+
+.groupHeading {
+  color: var(--mt-text-primary);
+  font-size: var(--fs-h4);
+  font-weight: var(--fw-bold);
+  line-height: 1.5;
+}
+
+.fieldGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--mt-space-4) var(--mt-space-5);
+  min-width: 0;
+
+  > * {
+    min-width: 0;
+  }
+}
+
+.wideField {
+  grid-column: 1 / -1;
+  min-width: 0;
+}
+
+@container medview-patient (min-width: 56rem) {
+  .relatedGroups:not(.insuranceOnly) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@container medview-patient-fields (min-width: 30rem) {
+  .fieldGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }

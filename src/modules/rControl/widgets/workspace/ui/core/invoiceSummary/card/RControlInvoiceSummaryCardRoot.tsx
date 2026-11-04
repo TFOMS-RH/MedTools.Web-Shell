@@ -1,12 +1,13 @@
+import { useRControlWorkspacePanelStore } from "../../../../model/store/useRControlWorkspacePanelStore";
+import { useRControlWorkspaceStore } from "../../../../model/store/useRControlWorkspaceStore";
 import { resolveDataState } from "../../../../../../../../shared/helpers/resolveDataState";
 import { DataState } from "../../../../../../../../shared/ui/DataState/DataState";
-import { useRControlWorkspacePanelStore } from "../../../../model/store/useRControlWorkspacePanelStore";
 import { useInvoiceSummaryQuery } from "../../../../../../../../shared/model/queries/invoiceStructure/invoices/useInvoiceSummaryQuery";
-import { useRControlWorkspaceStore } from "../../../../model/store/useRControlWorkspaceStore";
 import { RControlInvoiceSummaryCardHeader } from "./RControlInvoiceSummaryCardHeader";
 import { RControlInvoiceSummaryCardBody } from "./RControlInvoiceSummaryCardBody";
+import styles from "./styles.module.scss";
 
-export const RControlInvoiceSummaryCardRoot = () => {
+export const RControlInvoiceSummaryCardRoot = ({ invoiceNumber }: { invoiceNumber?: string; }) => {
   const { targetDb } = useRControlWorkspacePanelStore();
   const { selectedInvoiceUid } = useRControlWorkspaceStore();
   const {
@@ -26,19 +27,12 @@ export const RControlInvoiceSummaryCardRoot = () => {
     isEmpty: invoiceSummary === null && isSuccess,
   });
 
+  if (selectedInvoiceUid === null) return null;
+
   return (
-    <article
-      className="cardRoot"
-      style={{ flexDirection: "column", alignSelf: "flex-start" }}
-    >
-      <RControlInvoiceSummaryCardHeader />
-      {dataState === "waiting" ? (
-        <DataState
-          title="Выберите счет"
-          description="После выбора счета появится детальная информация"
-          variant="waiting"
-        />
-      ) : dataState === "error" ? (
+    <section className={styles.summary} aria-labelledby="rcontrol-invoice-summary-title" aria-busy={isLoading}>
+      <RControlInvoiceSummaryCardHeader invoiceNumber={invoiceNumber} invoiceUid={selectedInvoiceUid} />
+      {dataState === "error" ? (
         <DataState
           title="Ошибка данных"
           description={error?.message ?? "Неизвестная ошибка"}
@@ -56,6 +50,6 @@ export const RControlInvoiceSummaryCardRoot = () => {
           isPending={isPending}
         />
       )}
-    </article>
+    </section>
   );
 };

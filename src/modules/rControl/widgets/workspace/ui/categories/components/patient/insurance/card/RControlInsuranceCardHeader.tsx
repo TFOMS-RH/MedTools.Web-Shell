@@ -1,7 +1,6 @@
 export const RControlInsuranceCardHeader = () => {
   return (
-    <header className="cardHeader">
-      <h2>СМО</h2>
-    </header>
+    <h3 id="rcontrol-patient-insurance" className={styles.groupHeading}>Страхование</h3>
   );
 };
+import styles from "../../styles.module.scss";

@@ -1,34 +1,38 @@
 import { useRControlWorkspaceStore } from "../../../../model/store/useRControlWorkspaceStore";
-import { CategoryLineHeader } from "../../../../../../../../shared/ui/CategoryLineHeader/CategoryLineHeader";
+import { lazy, Suspense } from "react";
 import { DataState } from "../../../../../../../../shared/ui/DataState/DataState";
 import { RControlMedicalCaseDetailsCardRoot } from "./medicalCaseDetails/card/RControlMedicalCaseDetailsCardRoot";
 import { CompletedCaseDetailsRoot } from "./completedCaseDetails/card/RControlCompletedCaseDetailsCardRoot";
 import styles from "./styles.module.scss";
 
+const CaseDetailsPreview = import.meta.env.DEV
+  ? lazy(() => import("./RControlCaseDetailsCategoryPreview"))
+  : null;
+
 const RControlMedicalCaseDetailsCategoryRoot = () => {
   const { selectedMedicalCaseUid } = useRControlWorkspaceStore();
+  const params = new URLSearchParams(window.location.search);
+  const showPreview =
+    CaseDetailsPreview &&
+    params.get("demoWorkspace") === "1" &&
+    params.get("demoCaseDetails") !== "live";
 
   return (
     <section className={styles.medicalCaseDetailsRoot}>
-      <div className={styles.categoryLine}>
-        <CategoryLineHeader
-          number={1}
-          title="Данные по медицинскому случаю"
-          description="Все, что относится к медицинскому случаю в рамках категории"
+      {selectedMedicalCaseUid === null ? (
+        <DataState
+          title="Выберите медицинский случай"
+          description="Нажмите на карточку медицинского случая для отображения данных о деталях законченного и медицинского случаев"
+          variant="waiting"
         />
-        {selectedMedicalCaseUid === null ? (
-          <DataState
-            title="Выберите медицинский случай"
-            description="Нажмите на карточку медицинского случая для отображения данных о деталях законченного и медицинского случаев"
-            variant="waiting"
-          />
-        ) : (
-          <div className={styles.medicalCaseDetailsGroup}>
-            <RControlMedicalCaseDetailsCardRoot />
-            <CompletedCaseDetailsRoot />
-          </div>
-        )}
-      </div>
+      ) : showPreview ? (
+        <Suspense fallback={null}><CaseDetailsPreview key={selectedMedicalCaseUid} /></Suspense>
+      ) : (
+        <>
+          <RControlMedicalCaseDetailsCardRoot />
+          <CompletedCaseDetailsRoot />
+        </>
+      )}
     </section>
   );
 };

@@ -1,7 +1,6 @@
 export const MedViewInsuranceCardHeader = () => {
   return (
-    <header className="cardHeader">
-      <h2>СМО</h2>
-    </header>
+    <h3 id="medview-patient-insurance" className={styles.groupHeading}>Страхование</h3>
   );
 };
+import styles from "../../styles.module.scss";

@@ -5,8 +5,12 @@ import { usePatientQuery } from "../../../../../../../../../../shared/model/quer
 import { useRControlWorkspaceStore } from "../../../../../../model/store/useRControlWorkspaceStore";
 import { RControlPatientCardBody } from "./RControlPatientCardBody";
 import { RControlPatientCardHeader } from "./RControlPatientCardHeader";
+import type { ReactNode } from "react";
+import type { PatientDto } from "../../../../../../../../../../shared/model/types/invoiceStructure/results/patient/GetPatientResult";
+import type { DataState as DataStateValue } from "../../../../../../../../../../shared/types/DataState";
+import styles from "../../styles.module.scss";
 
-export const RControlPatientCardRoot = () => {
+export const RControlPatientCardRoot = ({ insurance }: { insurance: ReactNode; }) => {
   const { targetDb } = useRControlWorkspacePanelStore();
   const { selectedMedicalCaseUid } = useRControlWorkspaceStore();
 
@@ -27,25 +31,36 @@ export const RControlPatientCardRoot = () => {
     isEmpty: patient === null && isSuccess,
   });
 
-  return (
-    <article className="cardRoot">
-      <RControlPatientCardHeader />
+  return <RControlPatientCardContent patient={patient} isPending={isPending}
+    dataState={dataState} error={error?.message} insurance={insurance} />;
+};
 
-      {dataState === "error" ? (
-        <DataState
-          title="Ошибка данных"
-          description={error?.message ?? "Неизвестная ошибка"}
-          variant="error"
-        />
-      ) : dataState === "empty" ? (
-        <DataState
-          title="Данных не найдено"
-          description="Медицинский случай не содержит информации о пациенте"
-          variant="empty"
-        />
-      ) : (
-        <RControlPatientCardBody patient={patient!} isPending={isPending} />
-      )}
-    </article>
+// Local presentation shared by the live category and its development scenarios.
+export const RControlPatientCardContent = ({ patient, isPending, dataState, error, insurance }: {
+  patient?: PatientDto | null;
+  isPending: boolean;
+  dataState: DataStateValue;
+  error?: string;
+  insurance: ReactNode;
+}) => {
+  const unavailable = dataState === "error" || dataState === "empty";
+  return (
+    <div className={styles.patientContent}>
+      {unavailable ? (
+        <section className={styles.informationGroup} aria-labelledby="rcontrol-patient-0">
+          <RControlPatientCardHeader />
+          <DataState title={dataState === "error" ? "Ошибка данных" : "Данных не найдено"}
+            description={dataState === "error" ? error ?? "Неизвестная ошибка" : "Медицинский случай не содержит информации о пациенте"}
+            variant={dataState === "error" ? "error" : "empty"} />
+        </section>
+      ) : <RControlPatientCardBody patient={patient!} isPending={isPending} />}
+      <div className={`${styles.relatedGroups} ${unavailable ? styles.insuranceOnly : ""}`}>
+        <div>
+          {!unavailable && <RControlPatientCardBody patient={patient!} isPending={isPending} section="document" />}
+        </div>
+        {insurance}
+      </div>
+      {!unavailable && <RControlPatientCardBody patient={patient!} isPending={isPending} section="representative" />}
+    </div>
   );
 };

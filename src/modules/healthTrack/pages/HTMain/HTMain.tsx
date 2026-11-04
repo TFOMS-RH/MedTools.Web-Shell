@@ -1,4 +1,5 @@
 import { useCallback, useState } from "react";
+import { PageContainer } from "../../../../components/layouts/PageContainer/PageContainer";
 
 import {
   HTTabCards,
@@ -53,9 +54,11 @@ export const HTMain = () => {
   };
 
   return (
-    <section className={styles.mainRoot}>
-      <HTTabCards activeTab={activeTab} onTabChange={handleTabChange} />
-      <section className={styles.tabContent}>{renderTabContent()}</section>
-    </section>
+    <PageContainer width="wide">
+      <section className={styles.mainRoot}>
+        <HTTabCards activeTab={activeTab} onTabChange={handleTabChange} />
+        <section className={styles.tabContent}>{renderTabContent()}</section>
+      </section>
+    </PageContainer>
   );
 };

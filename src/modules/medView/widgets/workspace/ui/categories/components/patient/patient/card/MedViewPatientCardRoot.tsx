@@ -1,3 +1,4 @@
+﻿import type { ReactNode } from "react";
 import { resolveDataState } from "../../../../../../../../../../shared/helpers/resolveDataState";
 import { DataState } from "../../../../../../../../../../shared/ui/DataState/DataState";
 import { usePatientQuery } from "../../../../../../../../../../shared/model/queries/invoiceStructure/patient/usePatientQuery";
@@ -5,8 +6,9 @@ import { useMedViewFiltersStore } from "../../../../../../../filters/model/store
 import { useMedViewWorkspaceStore } from "../../../../../../model/stores/useMedViewWorkspaceStore";
 import { MedViewPatientCardHeader } from "./MedViewPatientCardHeader";
 import { MedViewPatientCardBody } from "./MedViewPatientCardBody";
+import styles from "../../styles.module.scss";
 
-export const MedViewPatientCardRoot = () => {
+export const MedViewPatientCardRoot = ({ insurance }: { insurance: ReactNode }) => {
   const { targetDb } = useMedViewFiltersStore();
   const { selectedMedicalCaseUid } = useMedViewWorkspaceStore();
 
@@ -27,25 +29,35 @@ export const MedViewPatientCardRoot = () => {
     isEmpty: patient === null && isSuccess,
   });
 
-  return (
-    <article className="cardRoot">
-      <MedViewPatientCardHeader />
+  const hasPatientState = dataState === "error" || dataState === "empty";
 
-      {dataState === "error" ? (
-        <DataState
-          title="Ошибка данных"
-          description={error?.message ?? "Неизвестная ошибка"}
-          variant="error"
-        />
-      ) : dataState === "empty" ? (
-        <DataState
-          title="Данных не найдено"
-          description="Медицинский случай не содержит информации о пациенте"
-          variant="empty"
-        />
+  return (
+    <div className={styles.patientContent}>
+      {hasPatientState ? (
+        <section className={styles.informationGroup} aria-labelledby="medview-patient-0">
+          <MedViewPatientCardHeader />
+          <DataState
+            title={dataState === "error" ? "Ошибка данных" : "Данных не найдено"}
+            description={dataState === "error"
+              ? error?.message ?? "Неизвестная ошибка"
+              : "Медицинский случай не содержит информации о пациенте"}
+            variant={dataState === "error" ? "error" : "empty"}
+          />
+        </section>
       ) : (
         <MedViewPatientCardBody patient={patient!} isPending={isPending} />
       )}
-    </article>
+      <div className={`${styles.relatedGroups} ${hasPatientState ? styles.insuranceOnly : ""}`}>
+        <div>
+          {!hasPatientState && (
+            <MedViewPatientCardBody patient={patient!} isPending={isPending} section="document" />
+          )}
+        </div>
+        {insurance}
+      </div>
+      {!hasPatientState && (
+        <MedViewPatientCardBody patient={patient!} isPending={isPending} section="representative" />
+      )}
+    </div>
   );
 };

@@ -5,6 +5,7 @@ import { useMedViewFiltersStore } from "../../../../../../../filters/model/store
 import { MedViewInsuranceCardHeader } from "./MedViewInsuranceCardHeader";
 import { useMedViewWorkspaceStore } from "../../../../../../model/stores/useMedViewWorkspaceStore";
 import { MedViewInsuranceCardBody } from "./MedViewInsuranceCardBody";
+import styles from "../../styles.module.scss";
 
 export const MedViewInsuranceCardRoot = () => {
   const { targetDb } = useMedViewFiltersStore();
@@ -27,7 +28,7 @@ export const MedViewInsuranceCardRoot = () => {
   });
 
   return (
-    <article className="cardRoot">
+    <section className={styles.insuranceGroup} aria-labelledby="medview-patient-insurance">
       <MedViewInsuranceCardHeader />
       {dataState === "error" ? (
         <DataState
@@ -47,6 +48,6 @@ export const MedViewInsuranceCardRoot = () => {
           isPending={isPending}
         />
       )}
-    </article>
+    </section>
   );
 };

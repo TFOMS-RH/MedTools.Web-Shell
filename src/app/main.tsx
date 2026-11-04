@@ -1,47 +1,61 @@
 import { createRoot } from "react-dom/client";
+import { lazy, Suspense } from "react";
 import { Home } from "../components/pages/Home/Home";
 import { Login } from "../components/pages/Login/Login";
-import { BrowserRouter, Route, Routes } from "react-router";
-import { WithoutHeaderLayout } from "../components/layouts/WithoutHeaderLayout/WithoutHeaderLayout";
+import { BrowserRouter, Navigate, Outlet, Route, Routes } from "react-router";
+import { PlainLayout } from "../components/layouts/PlainLayout/PlainLayout";
 import { RControl } from "../modules/rControl/pages/RControl";
 import { MedView } from "../modules/medView/pages/MedView";
-import { AppLayout } from "../components/layouts/AppLayout/AppLayout";
+import { MainLayout } from "../components/layouts/MainLayout/MainLayout";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "../shared/api/client/queryClient";
 import { HTMain } from "../modules/healthTrack/pages/HTMain/HTMain";
 import { HTNotistackProvider } from "../modules/healthTrack/ui/HTNotistackProvider/HTNotistackProvider";
 import { AuthSession } from "../modules/auth/components/AuthSession";
-import { RequirePermission } from "../modules/auth/components/RequirePermission";
 import { AdminUsers } from "../modules/admin/pages/AdminUsers";
-import { adminPermissions } from "../modules/admin/model/permissions";
+import { AdminAccessCatalog } from "../modules/admin/pages/AdminAccessCatalog";
 
 import "./styles/global.scss";
+
+const AdminDemo = import.meta.env.DEV
+  ? lazy(() => import("../modules/admin/demo/AdminDemoRoute"))
+  : null;
 
 createRoot(document.getElementById("root")!).render(
   <QueryClientProvider client={queryClient}>
     <HTNotistackProvider>
       <BrowserRouter>
-        <AuthSession>
-          <Routes>
-            <Route element={<WithoutHeaderLayout />}>
+        <Routes>
+          {AdminDemo && (
+            <Route element={<MainLayout />}>
+              <Route path="/admin" element={<Suspense fallback={null}><AdminDemo /></Suspense>} />
+            </Route>
+          )}
+          <Route element={<AuthSession><Outlet /></AuthSession>}>
+            <Route element={<PlainLayout />}>
               <Route path="/login" element={<Login />} />
             </Route>
-            <Route element={<AppLayout />}>
+            <Route element={<MainLayout />}>
               <Route path="/" element={<Home />} />
               <Route path="/rcontrol" element={<RControl />} />
               <Route path="/med-view" element={<MedView />} />
               <Route path="/health-track" element={<HTMain />} />
+              {!AdminDemo && <Route path="/admin" element={<Navigate to="/admin/users" replace />} />}
               <Route
                 path="/admin/users"
-                element={
-                  <RequirePermission permission={adminPermissions.readUsers}>
-                    <AdminUsers />
-                  </RequirePermission>
-                }
+                element={<AdminUsers />}
+              />
+              <Route
+                path="/admin/roles"
+                element={<AdminAccessCatalog kind="role" />}
+              />
+              <Route
+                path="/admin/permissions"
+                element={<AdminAccessCatalog kind="permission" />}
               />
             </Route>
-          </Routes>
-        </AuthSession>
+          </Route>
+        </Routes>
       </BrowserRouter>
     </HTNotistackProvider>
   </QueryClientProvider>,

@@ -1,132 +1,81 @@
+import type { ReactNode } from "react";
 import type { MedicalSanctionDto } from "../../../../../../../../../../shared/model/types/invoiceStructure/results/defects/GetMedicalSanctionsResult";
-import { CardField } from "../../../../../../../../../../shared/ui/CardField/CardField";
 import { formatCurrency } from "../../../../../../../../../../shared/helpers/formatCurrency";
-import { formatNullableValue } from "../../../../../../../../../../shared/helpers/formatNullableValue";
-import { formatDate } from "../../../../../../../../../../shared/helpers/formatDate";
+import { displayValue, formatSanctionDate } from "../../presentation";
 import styles from "./styles.module.scss";
-import dayjs from "dayjs";
 
 interface MedViewMedicalSanctionCardsProps {
   medicalSanctions: MedicalSanctionDto[];
   isPending: boolean;
 }
 
+// Local shell keeps loaded records and skeleton columns aligned.
+export const MedViewMedicalSanctionsTable = ({
+  children,
+  isPending = false,
+}: { children: ReactNode; isPending?: boolean }) => (
+  <div
+    className={`mt-table-viewport ${styles.viewport}`}
+    role="region"
+    aria-label="Таблица санкций"
+    tabIndex={0}
+    aria-busy={isPending}
+  >
+    <table className={`mt-table ${styles.sanctionsTable}`} aria-labelledby="medview-sanctions-heading">
+      <colgroup>
+        <col />
+        <col className={styles.refusalColumn} />
+        <col className={styles.quantityColumn} />
+        <col className={styles.amountColumn} />
+        <col className={styles.actColumn} />
+      </colgroup>
+      <thead>
+        <tr>
+          <th scope="col">Тип санкции</th>
+          <th scope="col">Код отказа</th>
+          <th scope="col" className={styles.numeric}>Количество</th>
+          <th scope="col" className={styles.numeric}>Сумма</th>
+          <th scope="col">Акт экспертизы</th>
+        </tr>
+      </thead>
+      {children}
+    </table>
+  </div>
+);
+
 export const MedViewMedicalSanctionCards = ({
   medicalSanctions,
-}: MedViewMedicalSanctionCardsProps) => {
-  return (
-    <section className={styles.medicalSanctionsCards}>
-      {medicalSanctions.map((medicalSanction) => (
-        <div className="cardRoot" key={medicalSanction.medicalSanctionUid}>
-          <header className="cardHeader">
-            <h2>Санкции</h2>
-          </header>
-          <div className="cardContent">
-            <div className="cardLineGroup">
-              <div className="cardLine">
-                <div className="cardLineHeader">
-                  <h3>ОСНОВНОЕ</h3>
-                  <div className="cardBlockLineOneGrid">
-                    <CardField
-                      label="Тип санкции"
-                      value={medicalSanction.sanctionCode}
-                      inline={true}
-                    />
-                  </div>
-                  <div className="cardBlockLineTwoGrid">
-                    <CardField
-                      label="Сумма"
-                      value={formatCurrency(medicalSanction.sanctionAmount)}
-                      inline={true}
-                    />
-                    <CardField
-                      label="Количество"
-                      value={`${medicalSanction.unitsRemoved}`}
-                      inline={true}
-                    />
-                  </div>
-                  <div className="cardBlockLineOneGrid">
-                    <CardField
-                      label="Код отказа"
-                      value={medicalSanction.refusalReasonCode}
-                      inline={true}
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className="cardLine">
-                <div className="cardLineHeader">
-                  <h3>АКТ</h3>
-                </div>
-                <div className="cardBlockLineTwoGrid">
-                  <CardField
-                    label="Номер акта"
-                    value={medicalSanction.expertiseActNumber}
-                    inline={true}
-                  />
-                  <CardField
-                    label="Дата акта"
-                    value={dayjs(medicalSanction.expertiseActDate).format(
-                      "DD.MM.YYYY",
-                    )}
-                    inline={true}
-                  />
-                </div>
-              </div>
-              <div className="cardLine">
-                <div className="cardLineHeader">
-                  <h3>ВЫГРУЗКА</h3>
-                </div>
-                <div className="cardBlockLineTwoGrid">
-                  <CardField
-                    label="Месяц"
-                    value={formatNullableValue(medicalSanction.month)}
-                    inline={true}
-                  />
-                  <CardField
-                    label="Год"
-                    value={formatNullableValue(medicalSanction.year)}
-                    inline={true}
-                  />
-                </div>
-                <div className="cardBlockLineOneGrid">
-                  <CardField
-                    label="Дата загрузки"
-                    value={formatDate(medicalSanction.uploadDate)}
-                    inline={true}
-                  />
-                </div>
-                <div className="cardBlockLineOneGrid">
-                  <CardField
-                    label="Имя файла"
-                    value={medicalSanction.filename}
-                    inline={true}
-                  />
-                </div>
-              </div>
-              <div className="cardLine">
-                <div className="cardLineHeader">
-                  <h3>ДОПОЛНИТЕЛЬНО</h3>
-                </div>
-                <div className="cardBlockLineOneGrid">
-                  <CardField
-                    label="Код врача"
-                    value={formatNullableValue(medicalSanction.expertCode)}
-                    inline={true}
-                  />
-                </div>
-                <div className="cardBlockLineOneGrid">
-                  <CardField
-                    label="Комментарий"
-                    value={formatNullableValue(medicalSanction.comment)}
-                    inline={true}
-                  />
-                </div>
-              </div>
+}: MedViewMedicalSanctionCardsProps) => (
+  <MedViewMedicalSanctionsTable>
+    {medicalSanctions.map((sanction) => (
+      <tbody key={sanction.medicalSanctionUid}>
+        <tr className={`noneHover ${styles.mainRow}`}>
+          <td>{displayValue(sanction.sanctionCode)}</td>
+          <td>{displayValue(sanction.refusalReasonCode)}</td>
+          <td className={styles.numeric}>{displayValue(sanction.unitsRemoved)}</td>
+          <td className={styles.amount}>{formatCurrency(sanction.sanctionAmount)}</td>
+          <td>
+            <span className={styles.actNumber}>{displayValue(sanction.expertiseActNumber)}</span>
+            <span className={styles.actDate}>{formatSanctionDate(sanction.expertiseActDate)}</span>
+          </td>
+        </tr>
+        <tr className={`noneHover ${styles.detailsRow}`}>
+          <td colSpan={5}>
+            <div className={styles.detailsContent}>
+              <dl className={styles.detailsGrid}>
+                <div><dt>Год</dt><dd>{displayValue(sanction.year)}</dd></div>
+                <div><dt>Месяц</dt><dd>{displayValue(sanction.month)}</dd></div>
+                <div><dt>Дата загрузки</dt><dd>{formatSanctionDate(sanction.uploadDate)}</dd></div>
+                <div><dt>Код врача</dt><dd>{displayValue(sanction.expertCode)}</dd></div>
+              </dl>
+              <dl className={styles.textFields}>
+                <div><dt>Имя файла</dt><dd>{displayValue(sanction.filename)}</dd></div>
+                <div className={styles.comment}><dt>Комментарий</dt><dd>{displayValue(sanction.comment)}</dd></div>
+              </dl>
             </div>
-          </div>
-        </div>
-      ))}
-    </section>
-  );
-};
+          </td>
+        </tr>
+      </tbody>
+    ))}
+  </MedViewMedicalSanctionsTable>
+);

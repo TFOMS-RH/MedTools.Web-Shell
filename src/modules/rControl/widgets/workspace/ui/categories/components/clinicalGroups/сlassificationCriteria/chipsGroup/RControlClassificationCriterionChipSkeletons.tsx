@@ -1,18 +1,8 @@
-import { Chip, Skeleton } from "@mui/material";
+import { Skeleton } from "@mui/material";
 import styles from "./styles.module.scss";
 
-export const RControlClassificationCriterionChipSkeletons = () => {
-  return (
-    <div className={styles.classificationCriteriaChips}>
-      {Array.from({ length: 5 }).map((_, index) => (
-        <Chip
-          key={index}
-          size="medium"
-          variant="outlined"
-          color="default"
-          label={<Skeleton width={10} />}
-        />
-      ))}
-    </div>
-  );
-};
+export const RControlClassificationCriterionChipSkeletons = () => (
+  <ul className={styles.criteriaList} role="status" aria-label="Загрузка классификационных критериев">
+    {[75, 90, 60].map((width) => <li key={width} aria-hidden="true"><Skeleton width={`${width}%`} /></li>)}
+  </ul>
+);

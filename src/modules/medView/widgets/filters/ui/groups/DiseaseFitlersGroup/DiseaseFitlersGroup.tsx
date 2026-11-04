@@ -1,6 +1,6 @@
 import type { DiseaseFitlersGroupDraft } from "../../../../workspace/model/types/FiltersDraft";
-import { AdditionalDiseaseFiltersSubgroup } from "./AdditionalDiseaseFiltersSubgroup/AdditionalDiseaseFiltersSubgroup";
-import { BaseDiseaseFiltersSubgroup } from "./BaseDiseaseFiltersSubgroup/BaseDiseaseFiltersSubgroup";
+import { AdditionalDiseaseFiltersSubgroup } from "./AdditionalDiseaseFiltersSubgroup";
+import { BaseDiseaseFiltersSubgroup } from "./BaseDiseaseFiltersSubgroup";
 import styles from "./styles.module.scss";
 
 interface DiseaseFitlersGroupProps {

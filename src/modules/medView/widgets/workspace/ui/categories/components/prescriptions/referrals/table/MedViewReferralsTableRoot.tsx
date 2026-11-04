@@ -5,6 +5,7 @@ import { useMedViewFiltersStore } from "../../../../../../../filters/model/store
 import { useMedViewWorkspaceStore } from "../../../../../../model/stores/useMedViewWorkspaceStore";
 import { MedViewReferralsTableHeader } from "./MedViewReferralsTableHeader";
 import { MedViewReferralsTableBody } from "./MedViewReferralsTableBody";
+import styles from "../../styles.module.scss";
 
 export const MedViewReferralsTableRoot = () => {
   const { targetDb } = useMedViewFiltersStore();
@@ -27,7 +28,7 @@ export const MedViewReferralsTableRoot = () => {
   });
 
   return (
-    <section className="cardRoot">
+    <section className={styles.section} aria-labelledby="medview-referrals-heading">
       <MedViewReferralsTableHeader />
       {dataState === "error" ? (
         <DataState

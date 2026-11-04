@@ -1,7 +1,5 @@
-export const MedViewReferralsTableHeader = () => {
-  return (
-    <section className="cardHeader">
-      <h2>Направления</h2>
-    </section>
-  );
-};
+import styles from "../../styles.module.scss";
+
+export const MedViewReferralsTableHeader = () => (
+  <h3 id="medview-referrals-heading" className={styles.sectionHeading}>Направления</h3>
+);

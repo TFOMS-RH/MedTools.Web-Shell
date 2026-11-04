@@ -1,7 +1,5 @@
-export const RControlMedicalDevicesTableHeader = () => {
-  return (
-    <header className="cardHeader">
-      <h2>Медицинские изделия</h2>
-    </header>
-  );
-};
+import styles from "../../styles.module.scss";
+
+export const RControlMedicalDevicesTableHeader = () => (
+  <h3 id="rcontrol-devices-heading" className={styles.sectionHeading}>Медицинские изделия</h3>
+);

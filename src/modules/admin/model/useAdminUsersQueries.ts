@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { isAxiosError } from "axios";
 import { adminUsersService } from "../api/adminUsersService";
-import type { UpdateUserRequest } from "./types";
+import type { CreateUserRequest, UpdateUserRequest } from "./types";
 import { useAuthStore } from "../../auth/stores/authStore";
 
 export const adminUsersKeys = {
@@ -16,10 +16,44 @@ const retryQuery = (count: number, error: Error) =>
   count < 1 &&
   (!isAxiosError(error) || !error.response || error.response.status >= 500);
 
-export const useAdminUsersQuery = () =>
+export const useAdminOrganizationsQuery = (enabled: boolean) =>
+  useQuery({
+    queryKey: ["admin", "organizations"],
+    queryFn: ({ signal }) => adminUsersService.getOrganizations(signal),
+    enabled,
+    retry: retryQuery,
+  });
+
+export const useCreateAdminUserMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (request: CreateUserRequest) => adminUsersService.createUser(request),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: adminUsersKeys.list });
+    },
+    // Do not keep the submitted password in the mutation cache after unmount.
+    gcTime: 0,
+  });
+};
+
+export const useUpdateAdminUserStatusMutation = (id: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (isActive: boolean) => adminUsersService.updateUserStatus(id, isActive),
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: adminUsersKeys.list }),
+        queryClient.invalidateQueries({ queryKey: adminUsersKeys.detail(id) }),
+      ]);
+    },
+  });
+};
+
+export const useAdminUsersQuery = (enabled = true) =>
   useQuery({
     queryKey: adminUsersKeys.list,
     queryFn: ({ signal }) => adminUsersService.getUsers(signal),
+    enabled,
     retry: retryQuery,
   });
 

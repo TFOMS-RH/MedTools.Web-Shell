@@ -1,14 +1,14 @@
 import type { Dayjs } from "dayjs";
+import type { SanctionFiltersGroupDraft } from "../../../../workspace/model/types/FiltersDraft";
+import type { FilterOption } from "../../../../workspace/model/types/FilterOptions";
 import { MedViewDateInput } from "../../../../../../../shared/ui/medView/inputs/MedViewDateInput/MedViewDateInput";
 import { MedViewDefaultInput } from "../../../../../../../shared/ui/medView/inputs/MedViewDefaultInput/MedViewDefaultInput";
 import { MedViewMultipleSelectInput } from "../../../../../../../shared/ui/medView/inputs/MedViewMultipleSelectInput/MedViewMultipleSelectInput";
-import { useState } from "react";
 import { MedViewAutocompleteInput } from "../../../../../../../shared/ui/medView/inputs/MedViewAutocompleteInput/MedViewAutocompleteInput";
+import { useState } from "react";
+import { useFilterOptionsQuery } from "../../../../../../../shared/model/references/queries/useFilterOptionsQuery";
+import { MedicalReferenceType } from "../../../../../../../shared/model/references/types/MedicalReferenceType";
 import styles from "./styles.module.scss";
-import type { SanctionFiltersGroupDraft } from "../../../../workspace/model/types/FiltersDraft";
-import { useFilterOptionsQuery } from "../../../model/queries/useFilterOptionsQuery";
-import { useAutocompleteFilterOptionsQuery } from "../../../model/queries/useAutocompleteFilterOptionsQuery";
-import type { FilterOption } from "../../../../workspace/model/types/FilterOptions";
 
 interface SanctionFiltersGroupProps {
   sanctionFiltersGroupDraft: SanctionFiltersGroupDraft;
@@ -21,21 +21,19 @@ const SanctionFiltersGroup = ({
   sanctionFiltersGroupDraft,
   setSanctionFiltersGroupDraft,
 }: SanctionFiltersGroupProps) => {
-  const { data: controlTypeFilterOptions } = useFilterOptionsQuery(
-    "med-tools/med-view/filter-options/control-type-codes",
-    "control-type-code",
-  );
-
   const [
     inputRefusalReasonCodeFilterOptions,
     setInputRefusalReasonCodeFilterOptions,
   ] = useState("");
 
-  const { data: refusalReasonCodeFilterOptions, isPending } =
-    useAutocompleteFilterOptionsQuery(
-      "med-tools/med-view/filter-options/refusal-reason-codes",
-      inputRefusalReasonCodeFilterOptions,
-    );
+  const { data: refusalReasonCodes, isPending } = useFilterOptionsQuery(
+    MedicalReferenceType.RefusalReasonCodes,
+    inputRefusalReasonCodeFilterOptions,
+  );
+
+  const { data: controlTypes } = useFilterOptionsQuery(
+    MedicalReferenceType.ControlTypeCodes,
+  );
 
   return (
     <section className={styles.sanctionFiltersGroup}>
@@ -56,17 +54,12 @@ const SanctionFiltersGroup = ({
             <MedViewMultipleSelectInput
               label="Код вида контроля"
               values={sanctionFiltersGroupDraft.controlTypeCodes}
+              options={controlTypes ?? []}
               onChange={(newValue: string[]) =>
                 setSanctionFiltersGroupDraft({
                   ...sanctionFiltersGroupDraft,
                   controlTypeCodes: newValue,
                 })
-              }
-              options={
-                controlTypeFilterOptions?.map((option) => ({
-                  label: option.label,
-                  value: option.value,
-                })) ?? []
               }
             />
           </div>
@@ -102,7 +95,7 @@ const SanctionFiltersGroup = ({
             <MedViewAutocompleteInput
               label="Код причины отказа"
               values={sanctionFiltersGroupDraft.refusalReasons}
-              options={refusalReasonCodeFilterOptions ?? []}
+              options={refusalReasonCodes ?? []}
               inputValue={inputRefusalReasonCodeFilterOptions}
               onInputChange={setInputRefusalReasonCodeFilterOptions}
               onChange={(newValue: FilterOption[]) =>

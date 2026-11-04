@@ -1,0 +1,186 @@
+import type { PrescriptionFiltersSubgroupDraft } from "../../../../workspace/model/types/FiltersDraft";
+import type { FilterOption } from "../../../../workspace/model/types/FilterOptions";
+import type { Dayjs } from "dayjs";
+import { MedViewDateInput } from "../../../../../../../shared/ui/medView/inputs/MedViewDateInput/MedViewDateInput";
+import { MedViewMultipleSelectInput } from "../../../../../../../shared/ui/medView/inputs/MedViewMultipleSelectInput/MedViewMultipleSelectInput";
+import { MedViewAutocompleteInput } from "../../../../../../../shared/ui/medView/inputs/MedViewAutocompleteInput/MedViewAutocompleteInput";
+import { useFilterOptionsQuery } from "../../../../../../../shared/model/references/queries/useFilterOptionsQuery";
+import { MedicalReferenceType } from "../../../../../../../shared/model/references/types/MedicalReferenceType";
+import { useState } from "react";
+import styles from "./styles.module.scss";
+
+interface PrescriptionFiltersSubgroupProps {
+  prescriptionFiltersSubgroup: PrescriptionFiltersSubgroupDraft;
+  setPrescriptionFiltersSubgroup: (
+    prescriptionFiltersSubgroup: PrescriptionFiltersSubgroupDraft,
+  ) => void;
+}
+
+export const PrescriptionFiltersSubgroup = ({
+  prescriptionFiltersSubgroup,
+  setPrescriptionFiltersSubgroup,
+}: PrescriptionFiltersSubgroupProps) => {
+  const [inputServiceValue, setInputServiceValue] = useState("");
+
+  const { data: diagnosticMethods } = useFilterOptionsQuery(
+    MedicalReferenceType.DiagnosticMethods,
+  );
+
+  const { data: medicalCareTypes } = useFilterOptionsQuery(
+    MedicalReferenceType.MedicalCareTypes,
+  );
+
+  const { data: bedProfiles } = useFilterOptionsQuery(
+    MedicalReferenceType.BedProfiles,
+  );
+
+  const { data: medicalServices, isPending } = useFilterOptionsQuery(
+    MedicalReferenceType.MedicalServices,
+    inputServiceValue,
+  );
+
+  return (
+    <div className={styles.prescriptionSubgroup}>
+      <header className={styles.subgroupHeader}>
+        <h3>Назначения</h3>
+      </header>
+      <div className={styles.groupLineGrid}>
+        <div className={styles.span4}>
+          <MedViewDateInput
+            label="Дата направления"
+            value={prescriptionFiltersSubgroup.referralDate}
+            handleDateInputChange={(newValue: Dayjs | null) =>
+              setPrescriptionFiltersSubgroup({
+                ...prescriptionFiltersSubgroup,
+                referralDate: newValue,
+              })
+            }
+          />
+        </div>
+        <div className={styles.span8}>
+          <MedViewMultipleSelectInput
+            label="МО направления"
+            values={prescriptionFiltersSubgroup.referredToMedicalOrganizations}
+            onChange={(newValue: string[]) =>
+              setPrescriptionFiltersSubgroup({
+                ...prescriptionFiltersSubgroup,
+                referredToMedicalOrganizations: newValue,
+              })
+            }
+            options={[]}
+          />
+        </div>
+      </div>
+
+      <div className={styles.groupLineGrid}>
+        <div className={styles.span12}>
+          <MedViewMultipleSelectInput
+            label="Вид назначения"
+            values={prescriptionFiltersSubgroup.prescriptionTypes}
+            onChange={(newValue: string[]) =>
+              setPrescriptionFiltersSubgroup({
+                ...prescriptionFiltersSubgroup,
+                prescriptionTypes: newValue,
+              })
+            }
+            options={[
+              {
+                label:
+                  "Направлен на консультацию в медицинскую организацию по месту прикрепления",
+                value: "1",
+              },
+              {
+                label:
+                  "Направлен на консультацию в иную медицинскую организацию",
+                value: "2",
+              },
+              {
+                label: "Направлен на обследование",
+                value: "3",
+              },
+              {
+                label: "Направлен в дневной стационар",
+                value: "4",
+              },
+              {
+                label: "Направлен на госпитализацию",
+                value: "5",
+              },
+              {
+                label: "Направлен в реабилитационное отделение",
+                value: "6",
+              },
+            ]}
+          />
+        </div>
+      </div>
+
+      <div className={styles.groupLineGrid}>
+        <div className={styles.span12}>
+          <MedViewMultipleSelectInput
+            label="Метод  диагностического исследования"
+            values={prescriptionFiltersSubgroup.diagnosticMethods}
+            options={diagnosticMethods ?? []}
+            onChange={(newValue: string[]) =>
+              setPrescriptionFiltersSubgroup({
+                ...prescriptionFiltersSubgroup,
+                diagnosticMethods: newValue,
+              })
+            }
+          />
+        </div>
+      </div>
+
+      <div className={styles.groupLineGrid}>
+        <div className={styles.span12}>
+          <MedViewMultipleSelectInput
+            label="Профиль медицинской помощи"
+            values={prescriptionFiltersSubgroup.medicalCareProfiles}
+            options={medicalCareTypes ?? []}
+            onChange={(newValue: string[]) =>
+              setPrescriptionFiltersSubgroup({
+                ...prescriptionFiltersSubgroup,
+                medicalCareProfiles: newValue,
+              })
+            }
+          />
+        </div>
+      </div>
+
+      <div className={styles.groupLineGrid}>
+        <div className={styles.span12}>
+          <MedViewMultipleSelectInput
+            label="Профиль койки"
+            values={prescriptionFiltersSubgroup.bedProfiles}
+            options={bedProfiles ?? []}
+            onChange={(newValue: string[]) =>
+              setPrescriptionFiltersSubgroup({
+                ...prescriptionFiltersSubgroup,
+                bedProfiles: newValue,
+              })
+            }
+          />
+        </div>
+      </div>
+
+      <div className={styles.groupLineGrid}>
+        <div className={styles.span12}>
+          <MedViewAutocompleteInput
+            label="Услуги, указанные в направлении"
+            values={prescriptionFiltersSubgroup.services}
+            options={medicalServices ?? []}
+            inputValue={inputServiceValue}
+            onInputChange={setInputServiceValue}
+            onChange={(newValue: FilterOption[]) =>
+              setPrescriptionFiltersSubgroup({
+                ...prescriptionFiltersSubgroup,
+                services: newValue,
+              })
+            }
+            loading={isPending}
+          />
+        </div>
+      </div>
+    </div>
+  );
+};
