@@ -1,40 +1,15 @@
-// ==========================================
-// modules/healthTrack/ui/HTDocumentDetailsDrawer/HTDocumentDetailsDrawer.tsx
-// ==========================================
-import { useEffect, useState } from "react";
-import {
-  CircularProgress,
-  Divider,
-  Drawer,
-  IconButton,
-  Tab,
-  Tabs,
-} from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
-import CheckCircleOutlineOutlinedIcon from "@mui/icons-material/CheckCircleOutlineOutlined";
-import DownloadIcon from "@mui/icons-material/Download";
-
-import { AppButton } from "../../../../components/ui/AppButton/AppButton";
+import { useEffect, useId, useState } from "react";
+import { Button, CircularProgress, Drawer, IconButton, Tab, Tabs } from "@mui/material";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import FactCheckOutlinedIcon from "@mui/icons-material/FactCheckOutlined";
+import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
+import { documentButtonSx } from "../../features/documents/controlsSx";
 import { HTDocumentStatusBadge } from "../HTDocumentStatusBadge/HTDocumentStatusBadge";
-import { HTDocumentTypeBadge } from "../HTDocumentTypeBadge/HTDocumentTypeBadge";
 import { HTAuditTimeline } from "../HTAuditTimeline/HTAuditTimeline";
-
-import {
-  useDocumentAuditQuery,
-  useDocumentDetailsQuery,
-} from "../../hooks/useDocumentsQueries";
-
-import {
-  canCheckDocument,
-  canDownloadResponse,
-  type HTDocumentListItem,
-} from "../../types/htDocuments";
-
+import { useDocumentAuditQuery, useDocumentDetailsQuery } from "../../hooks/useDocumentsQueries";
+import { canCheckDocument, canDownloadResponse, type HTDocumentListItem } from "../../types/htDocuments";
 import styles from "./styles.module.scss";
 
-// ==========================================
-// Пропсы.
-// ==========================================
 interface HTDocumentDetailsDrawerProps {
   documentId: number | null;
   onClose: () => void;
@@ -43,9 +18,6 @@ interface HTDocumentDetailsDrawerProps {
   actionInProgress?: boolean;
 }
 
-// ==========================================
-// Форматирование.
-// ==========================================
 const formatDateTime = (iso: string | null): string => {
   if (!iso) return "—";
   const d = new Date(iso);
@@ -61,299 +33,102 @@ const formatNumber = (n: number | null | undefined): string => {
   return n.toLocaleString("ru-RU");
 };
 
-/**
- * Drawer с деталями документа и историей действий.
- */
-export const HTDocumentDetailsDrawer = ({
-  documentId,
-  onClose,
-  onCheck,
-  onDownloadResponse,
+const displayText = (value: string | null | undefined) => value?.trim() ? value : "—";
+
+export const HTDocumentDetailsDrawer = ({ documentId, onClose, onCheck, onDownloadResponse,
   actionInProgress = false,
 }: HTDocumentDetailsDrawerProps) => {
-  // ==========================================
-  // Вкладки.
-  // ==========================================
+  const id = useId();
   const [activeTab, setActiveTab] = useState<"details" | "history">("details");
+  useEffect(() => { setActiveTab("details"); }, [documentId]);
 
-  // Сброс вкладки при смене документа.
-  useEffect(() => {
-    setActiveTab("details");
-  }, [documentId]);
-
-  // ==========================================
-  // Запросы.
-  // ==========================================
-  const {
-    data: doc,
-    isLoading,
-    isError,
-  } = useDocumentDetailsQuery(documentId);
-
-  const {
-    data: auditItems,
-    isLoading: isAuditLoading,
-    isError: isAuditError,
-  } = useDocumentAuditQuery(documentId);
-
-  const open = documentId !== null;
-
-  // ==========================================
-  // Действия.
-  // ==========================================
+  const { data: doc, isLoading, isError } = useDocumentDetailsQuery(documentId);
+  const { data: auditItems, isLoading: isAuditLoading, isError: isAuditError } = useDocumentAuditQuery(documentId);
   const isCheckable = doc ? canCheckDocument(doc) : false;
   const isDownloadable = doc ? canDownloadResponse(doc) : false;
 
   return (
-    <Drawer
-      anchor="right"
-      open={open}
-      onClose={onClose}
-      slotProps={{
-        paper: {
-          sx: {
-            width: { xs: "100%", sm: "32rem", md: "36rem" },
-            maxWidth: "100%",
-            borderLeft: "1px solid var(--border-default)",
-            background: "var(--card-background)",
-          },
-        },
-      }}
-    >
-      {/* ============================== */}
-      {/* Header */}
-      {/* ============================== */}
+    <Drawer anchor="right" open={documentId !== null} onClose={onClose}
+      slotProps={{ paper: { className: styles.paper, role: "dialog", "aria-modal": true,
+        "aria-labelledby": id + "-title",
+        sx: { width: { xs: "100%", sm: "36rem", md: "40rem" }, maxWidth: "100%",
+          borderRadius: { xs: 0, sm: "var(--mt-radius-card) 0 0 var(--mt-radius-card)" },
+          background: "var(--mt-surface)", border: 0, boxShadow: "none", overflow: "hidden" },
+      } }}>
       <header className={styles.header}>
-        <div className={styles.headerText}>
-          <h3 className={styles.title}>Документ</h3>
-          {doc && (
-            <p className={styles.fileName} title={doc.fileName}>
-              {doc.fileName}
-            </p>
-          )}
-        </div>
-
-        <IconButton
-          onClick={onClose}
-          size="small"
-          sx={{
-            color: "var(--text-secondary)",
-            "&:hover": { background: "var(--gray-100)" },
-          }}
-        >
-          <CloseIcon sx={{ fontSize: 20 }} />
+        <p>Сведения о документе</p>
+        <IconButton className={styles.closeButton} onClick={onClose} aria-label="Закрыть документ" size="small">
+          <CloseRoundedIcon fontSize="small" />
         </IconButton>
       </header>
 
-      {/* ============================== */}
-      {/* Вкладки */}
-      {/* ============================== */}
-      {doc && !isLoading && !isError && (
-        <Tabs
-          value={activeTab}
-          onChange={(_, value) => setActiveTab(value)}
-          sx={{
-            minHeight: 40,
-            borderBottom: "1px solid var(--border-default)",
-            px: "var(--space-8)",
-            "& .MuiTab-root": {
-              textTransform: "none",
-              fontFamily: "var(--inter)",
-              fontSize: "var(--fs-body2)",
-              fontWeight: "var(--fw-semibold)",
-              color: "var(--text-secondary)",
-              minHeight: 40,
-              "&.Mui-selected": {
-                color: "var(--text-default)",
-              },
-            },
-            "& .MuiTabs-indicator": {
-              backgroundColor: "var(--text-default)",
-            },
-          }}
-        >
-          <Tab label="Детали" value="details" />
-          <Tab
-            label={
-              auditItems && auditItems.length > 0
-                ? `История (${auditItems.length})`
-                : "История"
-            }
-            value="history"
-          />
-        </Tabs>
-      )}
+      <div className={styles.scrollArea}>
+        <div className={styles.identity}>
+          <h2 id={id + "-title"} className={styles.fileName}>{doc?.fileName || "Документ"}</h2>
+          {doc && !isLoading && !isError && <div className={styles.metadata}>
+            <span className={styles.fileType}>Тип документа: <strong>{doc.fileType}</strong></span>
+            <HTDocumentStatusBadge status={doc.status} />
+          </div>}
+        </div>
 
-      <Divider />
+        {doc && !isLoading && !isError && <Tabs className={styles.tabs} value={activeTab}
+          onChange={(_, value) => setActiveTab(value)} aria-label="Разделы документа">
+          <Tab label="Детали" value="details" id={id + "-tab-details"} aria-controls={id + "-panel-details"} />
+          <Tab label={auditItems && auditItems.length > 0 ? "История (" + auditItems.length + ")" : "История"}
+            value="history" id={id + "-tab-history"} aria-controls={id + "-panel-history"} />
+        </Tabs>}
 
-      {/* ============================== */}
-      {/* Контент */}
-      {/* ============================== */}
-      <section className={styles.content}>
-        {isLoading && (
-          <div className={styles.loadingBlock}>
-            <CircularProgress size={32} sx={{ color: "var(--gray-1000)" }} />
-            <span>Загрузка…</span>
-          </div>
-        )}
-
-        {isError && !isLoading && (
-          <div className={styles.errorBlock}>
-            Не удалось загрузить детали документа
-          </div>
-        )}
-
-        {doc && !isLoading && !isError && (
-          <>
-            {/* --- Вкладка "Детали" --- */}
-            {activeTab === "details" && (
-              <>
-                <div className={styles.badgesRow}>
-                  <HTDocumentTypeBadge fileType={doc.fileType} />
-                  <HTDocumentStatusBadge status={doc.status} />
+        <div className={styles.content}>
+          {isLoading && <div className={styles.loadingBlock} role="status">
+            <CircularProgress size={24} sx={{ color: "var(--mt-healthtrack-accent)" }} />Загрузка…
+          </div>}
+          {isError && !isLoading && <p className={styles.errorBlock} role="alert">Не удалось загрузить детали документа</p>}
+          {doc && !isLoading && !isError && <section className={styles.tabPanel} role="tabpanel"
+            id={id + "-panel-" + activeTab} aria-labelledby={id + "-tab-" + activeTab}>
+            {activeTab === "details" ? <>
+              <section className={styles.panel}>
+                <h3>Документ</h3>
+                <dl className={styles.fields}>
+                  <div><dt>Период</dt><dd>{displayText(doc.period)}</dd></div>
+                  <div><dt>Код МО</dt><dd>{displayText(doc.hospitalCode)}</dd></div>
+                  <div><dt>Регион</dt><dd>{displayText(doc.regionCode)}</dd></div>
+                  <div><dt>Дата загрузки</dt><dd>{formatDateTime(doc.uploadDate)}</dd></div>
+                  <div className={styles.fullWidth}><dt>Загрузил</dt><dd>{displayText(doc.uploadedBy)}</dd></div>
+                </dl>
+              </section>
+              <section className={styles.panel}>
+                <h3>Проверка</h3>
+                <dl className={styles.fields}>
+                  <div className={styles.fullWidth}><dt>Проверил</dt><dd>{displayText(doc.checkedBy)}</dd></div>
+                  <div><dt>Дата проверки</dt><dd>{formatDateTime(doc.checkedAt)}</dd></div>
+                  <div><dt>Попыток проверки</dt><dd>{doc.checkAttempts}</dd></div>
+                  <div><dt>Валиден</dt><dd className={doc.isValid ? styles.validYes : styles.validNo}>{doc.isValid ? "Да" : "Нет"}</dd></div>
+                </dl>
+              </section>
+              <section className={styles.panel}>
+                <div className={styles.records}>
+                  <h3>Записи</h3>
+                  <dl><div><dt>Всего</dt><dd>{formatNumber(doc.recordsCount)}</dd></div></dl>
                 </div>
+              </section>
+              {doc.validationErrors && <section className={styles.panel}>
+                <h3>Ошибки валидации</h3>
+                <pre className={styles.validationErrors}>{doc.validationErrors}</pre>
+              </section>}
+            </> : <HTAuditTimeline items={auditItems ?? []} isLoading={isAuditLoading} isError={isAuditError} />}
+          </section>}
+        </div>
+      </div>
 
-                <div className={styles.section}>
-                  <h4 className={styles.sectionTitle}>Информация</h4>
-
-                  <dl className={styles.dl}>
-                    <div className={styles.dlRow}>
-                      <dt>Период</dt>
-                      <dd>{doc.period}</dd>
-                    </div>
-
-                    <div className={styles.dlRow}>
-                      <dt>Код МО</dt>
-                      <dd>{doc.hospitalCode ?? "—"}</dd>
-                    </div>
-
-                    <div className={styles.dlRow}>
-                      <dt>Регион</dt>
-                      <dd>{doc.regionCode ?? "—"}</dd>
-                    </div>
-
-                    <div className={styles.dlRow}>
-                      <dt>Загрузил</dt>
-                      <dd>{doc.uploadedBy ?? "—"}</dd>
-                    </div>
-
-                    <div className={styles.dlRow}>
-                      <dt>Дата загрузки</dt>
-                      <dd>{formatDateTime(doc.uploadDate)}</dd>
-                    </div>
-
-                    <div className={styles.dlRow}>
-                      <dt>Проверил</dt>
-                      <dd>{doc.checkedBy ?? "—"}</dd>
-                    </div>
-
-                    <div className={styles.dlRow}>
-                      <dt>Дата проверки</dt>
-                      <dd>{formatDateTime(doc.checkedAt)}</dd>
-                    </div>
-
-                    <div className={styles.dlRow}>
-                      <dt>Попыток проверки</dt>
-                      <dd>{doc.checkAttempts}</dd>
-                    </div>
-
-                    <div className={styles.dlRow}>
-                      <dt>Валиден</dt>
-                      <dd>
-                        {doc.isValid ? (
-                          <span className={styles.validYes}>Да</span>
-                        ) : (
-                          <span className={styles.validNo}>Нет</span>
-                        )}
-                      </dd>
-                    </div>
-                  </dl>
-                </div>
-
-                <div className={styles.section}>
-                  <h4 className={styles.sectionTitle}>Записи</h4>
-
-                  <div className={styles.statsGrid}>
-                    <div className={styles.statCard}>
-                      <span className={styles.statLabel}>Всего</span>
-                      <span className={styles.statValue}>
-                        {formatNumber(doc.recordsCount)}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                {doc.validationErrors && (
-                  <div className={styles.section}>
-                    <h4 className={styles.sectionTitle}>Ошибки валидации</h4>
-                    <pre className={styles.validationErrors}>
-                      {doc.validationErrors}
-                    </pre>
-                  </div>
-                )}
-              </>
-            )}
-
-            {/* --- Вкладка "История" --- */}
-            {activeTab === "history" && (
-              <HTAuditTimeline
-                items={auditItems ?? []}
-                isLoading={isAuditLoading}
-                isError={isAuditError}
-              />
-            )}
-          </>
-        )}
-      </section>
-
-      {/* ============================== */}
-      {/* Действия (только на вкладке "Детали") */}
-      {/* ============================== */}
-      {doc &&
-        !isLoading &&
-        !isError &&
-        activeTab === "details" && (
-          <footer className={styles.footer}>
-            {isCheckable && (
-              <AppButton
-                variant="primary"
-                size="md"
-                onClick={() => onCheck(doc.id)}
-                disabled={actionInProgress}
-                toExpand
-              >
-                <CheckCircleOutlineOutlinedIcon
-                  sx={{ fontSize: 18, color: "var(--white)" }}
-                />
-                Проверить
-              </AppButton>
-            )}
-
-            {isDownloadable && (
-              <AppButton
-                variant={isCheckable ? "secondary" : "primary"}
-                size="md"
-                onClick={() => onDownloadResponse(doc)}
-                disabled={actionInProgress}
-                toExpand
-              >
-                <DownloadIcon
-                  sx={{
-                    fontSize: 18,
-                    color: isCheckable ? "inherit" : "var(--white)",
-                  }}
-                />
-                Скачать ответ
-              </AppButton>
-            )}
-
-            {!isCheckable && !isDownloadable && (
-              <p className={styles.noActions}>
-                Действия недоступны для документов в этом статусе
-              </p>
-            )}
-          </footer>
-        )}
+      {doc && !isLoading && !isError && activeTab === "details" && <footer className={styles.footer}>
+        {isCheckable && <Button sx={documentButtonSx} variant="contained" size="small" fullWidth
+          startIcon={<FactCheckOutlinedIcon fontSize="small" />} onClick={() => onCheck(doc.id)}
+          disabled={actionInProgress} loading={actionInProgress}>Проверить</Button>}
+        {isDownloadable && <Button sx={documentButtonSx} variant={isCheckable ? "outlined" : "contained"}
+          size="small" fullWidth startIcon={<DownloadRoundedIcon fontSize="small" />}
+          onClick={() => onDownloadResponse(doc)} disabled={actionInProgress}>Скачать ответ</Button>}
+        {!isCheckable && !isDownloadable && <p className={styles.noActions}>Действия недоступны для документов в этом статусе</p>}
+      </footer>}
     </Drawer>
   );
 };

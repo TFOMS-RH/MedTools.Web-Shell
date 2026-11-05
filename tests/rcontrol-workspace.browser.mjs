@@ -945,10 +945,28 @@ try {
   await tabTo('rcMeds()[1].querySelector("button")');
   await press(" ");
   check("medical Space selects second card once",await evaluate('medicalActions===3&&rcStore.getState().selectedMedicalCaseUid===1112'));
-  check("medical cards keep white surfaces and selected accent",await evaluate(`rcMeds().every(e=>getComputedStyle(e).backgroundColor==='rgb(255, 255, 255)')&&getComputedStyle(rcMeds()[1]).borderColor==='rgb(36, 135, 109)'`));
+  await send('Input.dispatchMouseEvent',{type:'mouseMoved',x:5,y:5});await pause();
+  check("medical cards use borderless neutral and green surfaces",await evaluate(`(()=>{
+    const cards=rcMeds(),normal=getComputedStyle(cards[0]),selected=getComputedStyle(cards[1]),marker=getComputedStyle(cards[1],'::before');
+    return normal.backgroundColor==='rgb(245, 245, 247)'&&selected.backgroundColor==='rgb(240, 248, 244)'
+      &&cards.every(e=>getComputedStyle(e).borderTopWidth==='0px'&&getComputedStyle(e).boxShadow==='none'&&getComputedStyle(e).overflow==='hidden')
+      &&getComputedStyle(cards[0],'::before').content==='none'&&marker.width==='4px'&&marker.backgroundColor==='rgb(36, 135, 109)'
+      &&Math.abs(parseFloat(marker.height)-cards[1].clientHeight)<1;
+  })()`));
+  const hoverMedical = async index => {
+    const point=await evaluate(`(()=>{const e=rcMeds()[${index}];e.scrollIntoView({block:'center'});const r=e.getBoundingClientRect();return {x:r.left+r.width/2,y:r.top+20};})()`);
+    await send('Input.dispatchMouseEvent',{type:'mouseMoved',...point});await pause();
+  };
+  await hoverMedical(0);
+  check('ordinary medical hover uses neutral surface',await evaluate("getComputedStyle(rcMeds()[0]).backgroundColor==='rgb(239, 239, 241)'"));
+  await hoverMedical(1);
+  check('selected medical hover preserves pastel green',await evaluate("getComputedStyle(rcMeds()[1]).backgroundColor==='rgb(240, 248, 244)'"));
+  await evaluate(`window.medicalGeometry=()=>rcMeds().map(e=>{const r=e.getBoundingClientRect();return {width:r.width,height:r.height,zones:[...e.children].map(c=>{const b=c.getBoundingClientRect();return [b.left-r.left,b.top-r.top,b.width,b.height]})};});window.medicalGeometryBefore=JSON.stringify(medicalGeometry());`);
   await tabTo('rcMeds()[0].querySelector("button")');
   await press("Enter");
   check("medical Enter selects first card once",await evaluate('medicalActions===4&&rcStore.getState().selectedMedicalCaseUid===1111'));
+  check('selection does not shift medical content',await evaluate('JSON.stringify(medicalGeometry())===medicalGeometryBefore'));
+  check('keyboard outline stays inside clipped medical card',await evaluate(`(()=>{const e=document.activeElement,r=e.getBoundingClientRect(),c=e.closest('article').getBoundingClientRect(),s=getComputedStyle(e),o=parseFloat(s.outlineWidth)+parseFloat(s.outlineOffset);return e.matches(':focus-visible')&&r.left-o>=c.left&&r.right+o<=c.right&&r.top-o>=c.top&&r.bottom+o<=c.bottom;})()`));
   await tabTo('document.getElementById("rcontrol-case-tab-patient")');
   await press("Enter");
   await until('rcStore.getState().targetCategory==="patient"');

@@ -1,4 +1,5 @@
-import { useCallback, useState } from "react";
+import { lazy, Suspense, useCallback, useState } from "react";
+import { useSearchParams } from "react-router";
 import { PageContainer } from "../../../../components/layouts/PageContainer/PageContainer";
 
 import {
@@ -13,7 +14,18 @@ import { HTStatisticsTab } from "../../features/statistics/HTStatisticsTab";
 
 import styles from "./styles.module.scss";
 
+const DocumentsDemo = import.meta.env.DEV
+  ? lazy(() => import("../../demo/HealthTrackDocumentsDemoRoute"))
+  : null;
+
 export const HTMain = () => {
+  const [params] = useSearchParams();
+  return DocumentsDemo && params.get("demoWorkspace") === "1"
+    ? <Suspense fallback={<p role="status">Загрузка превью…</p>}><DocumentsDemo /></Suspense>
+    : <HTLiveMain />;
+};
+
+const HTLiveMain = () => {
   const [activeTab, setActiveTab] = useState<HTTabKey>("documents");
   const [pendingDocumentId, setPendingDocumentId] = useState<number | null>(
     null,

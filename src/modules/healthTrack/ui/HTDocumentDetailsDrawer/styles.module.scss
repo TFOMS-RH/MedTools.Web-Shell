@@ -1,263 +1,123 @@
-// ==========================================
-// modules/healthTrack/ui/HTDocumentDetailsDrawer/styles.module.scss
-// ==========================================
-
-// ==========================================
-// Header.
-// ==========================================
+.paper {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  color: var(--mt-text-primary);
+  font-family: var(--mt-font-family);
+  font-size: var(--mt-font-body);
+}
 .header {
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--space-5);
-
-  padding: var(--space-7) var(--space-8);
-
-  box-sizing: border-box;
-}
-
-.headerText {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  flex: 1;
-  min-width: 0;
-}
-
-.title {
-  font-size: var(--fs-h4);
-  font-weight: var(--fw-semibold);
-  color: var(--text-default);
-}
-
-.fileName {
-  font-size: var(--fs-body2);
-  color: var(--text-secondary);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-// ==========================================
-// Контент.
-// ==========================================
-.content {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-8);
-
-  flex: 1;
-  overflow-y: auto;
-
-  padding: var(--space-8);
-
-  box-sizing: border-box;
-}
-
-// ==========================================
-// Загрузка / ошибка.
-// ==========================================
-.loadingBlock {
-  display: flex;
-  flex-direction: column;
+  flex-shrink: 0;
   align-items: center;
-  justify-content: center;
-  gap: var(--space-5);
-
-  padding: var(--space-10) 0;
-
-  font-size: var(--fs-body2);
-  color: var(--text-secondary);
+  justify-content: space-between;
+  gap: var(--mt-space-3);
+  padding: var(--mt-space-4) var(--mt-space-6) var(--mt-space-2);
+  > p { margin: 0; color: var(--mt-text-secondary); }
 }
-
-.errorBlock {
-  padding: var(--space-5) var(--space-6);
-  border: 1px solid #f0c0c0;
-  border-radius: var(--radius-l);
-  background: var(--red-opacity);
-
-  font-size: var(--fs-body2);
-  color: #b91c1c;
-  text-align: center;
+.closeButton.closeButton {
+  width: 36px;
+  height: 36px;
+  color: var(--mt-text-secondary);
+  &:hover { background: var(--mt-surface-subtle); }
+  &:global(.Mui-focusVisible) { outline: 2px solid var(--mt-healthtrack-accent); outline-offset: -2px; }
 }
-
-// ==========================================
-// Бейджи.
-// ==========================================
-.badgesRow {
+.scrollArea {
+  container: ht-document-drawer / inline-size;
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+.identity { padding: var(--mt-space-2) var(--mt-space-6) var(--mt-space-4); }
+.fileName {
+  margin: 0;
+  color: var(--mt-text-primary);
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-semibold);
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+.metadata { display: flex; flex-wrap: wrap; align-items: center; gap: var(--mt-space-3); margin-top: var(--mt-space-3); }
+.fileType { color: var(--mt-text-secondary); strong { color: var(--mt-text-primary); font-weight: var(--fw-semibold); } }
+.tabs {
+  padding-inline: var(--mt-space-6);
+  min-height: 44px;
+  :global(.MuiTab-root) {
+    min-height: 44px;
+    min-width: auto;
+    padding: var(--mt-space-3) var(--mt-space-4);
+    border-radius: var(--radius-l);
+    font-family: var(--mt-font-family);
+    font-size: var(--mt-font-body);
+    font-weight: var(--fw-semibold);
+    text-transform: none;
+    color: var(--mt-text-secondary);
+    &:hover { background: var(--mt-canvas); }
+    &:global(.Mui-selected) { color: #a26620; }
+    &:global(.Mui-focusVisible) { outline: 2px solid var(--mt-healthtrack-accent); outline-offset: -3px; }
+  }
+  :global(.MuiTabs-indicator) { height: 2px; background: var(--mt-healthtrack-accent); }
+}
+.content { padding: var(--mt-space-4) var(--mt-space-6) var(--mt-space-6); }
+.tabPanel { display: flex; flex-direction: column; min-width: 0; gap: var(--mt-space-4); }
+.panel {
+  min-width: 0;
+  padding: var(--mt-space-4);
+  border-radius: var(--mt-radius-inner);
+  background: var(--mt-canvas);
+  > h3 { margin: 0 0 var(--mt-space-3); font-size: var(--mt-font-body); font-weight: var(--fw-bold); }
+}
+.fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--mt-space-3) var(--mt-space-5);
+  margin: 0;
+  > div { min-width: 0; }
+}
+.fields dt, .records dt { color: var(--mt-text-secondary); font-size: var(--fs-caption); line-height: 1.5; }
+.fields dd { margin: var(--mt-space-1) 0 0; line-height: 1.5; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+.fullWidth { grid-column: 1 / -1; }
+.validYes { color: #1a7f37; }
+.validNo { color: #b91c1c; }
+.records {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-3);
-}
-
-// ==========================================
-// Секция.
-// ==========================================
-.section {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-}
-
-.sectionTitle {
-  font-size: var(--fs-body2);
-  font-weight: var(--fw-semibold);
-  color: var(--text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-}
-
-// ==========================================
-// Definition List (Информация).
-// ==========================================
-.dl {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-
-  margin: 0;
-  padding: 0;
-}
-
-.dlRow {
-  display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
-  gap: var(--space-5);
-
-  padding: var(--space-3) 0;
-
-  border-bottom: 1px solid var(--border-default);
-
-  dt {
-    font-size: var(--fs-body2);
-    color: var(--text-secondary);
-    flex-shrink: 0;
-  }
-
-  dd {
-    margin: 0;
-    font-size: var(--fs-body2);
-    color: var(--text-default);
-    font-weight: var(--fw-semibold);
-    text-align: right;
-    word-break: break-word;
-    min-width: 0;
-  }
+  gap: var(--mt-space-3);
+  h3 { margin: 0; font-size: var(--mt-font-body); font-weight: var(--fw-bold); }
+  dl { margin: 0; }
+  dl > div { display: flex; align-items: baseline; gap: var(--mt-space-3); }
+  dd { margin: 0; color: var(--mt-text-primary); font-size: var(--fs-h3); font-weight: var(--fw-semibold); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
 }
-
-.dlRow:last-child {
-  border-bottom: none;
-}
-
-.validYes {
-  color: #1a7f37;
-}
-
-.validNo {
-  color: #b91c1c;
-}
-
-// ==========================================
-// Записи.
-// ==========================================
-.statsGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
-  gap: var(--space-5);
-
-  box-sizing: border-box;
-}
-
-.statCard {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-
-  padding: var(--space-5);
-
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-l);
-  background: var(--gray-50);
-
-  box-sizing: border-box;
-}
-
-.statLabel {
-  font-size: var(--fs-caption);
-  font-weight: var(--fw-semibold);
-  color: var(--text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-}
-
-.statValue {
-  font-size: var(--fs-h3);
-  font-weight: var(--fw-bold);
-  color: var(--text-default);
-  font-variant-numeric: tabular-nums;
-}
-
-// ==========================================
-// Ошибки валидации.
-// ==========================================
 .validationErrors {
   margin: 0;
-  padding: var(--space-5);
-
-  border: 1px solid #f0c0c0;
-  border-radius: var(--radius-l);
-  background: var(--red-opacity);
-
-  font-family: "Consolas", "Monaco", "Menlo", monospace;
-  font-size: var(--fs-caption);
   color: #b91c1c;
+  font-family: Consolas, Monaco, monospace;
+  font-size: var(--mt-font-body);
   line-height: 1.5;
   white-space: pre-wrap;
-  word-break: break-word;
-
-  box-sizing: border-box;
-  max-height: 20rem;
-  overflow-y: auto;
+  overflow-wrap: anywhere;
 }
-
-// ==========================================
-// Footer с действиями.
-// ==========================================
+.loadingBlock { display: flex; align-items: center; gap: var(--mt-space-3); padding: var(--mt-space-5) 0; color: var(--mt-text-secondary); }
+.errorBlock { margin: 0; padding: var(--mt-space-4); border-radius: var(--mt-radius-inner); background: var(--red-opacity); color: #b91c1c; line-height: 1.5; overflow-wrap: anywhere; }
 .footer {
   display: flex;
+  flex-shrink: 0;
   flex-direction: column;
-  gap: var(--space-3);
-
-  padding: var(--space-6) var(--space-8);
-
-  border-top: 1px solid var(--border-default);
-  background: var(--card-background);
-
-  box-sizing: border-box;
+  gap: var(--mt-space-2);
+  padding: var(--mt-space-4) var(--mt-space-6);
+  background: var(--mt-surface);
 }
-
-.noActions {
-  font-size: var(--fs-body2);
-  color: var(--text-secondary);
-  text-align: center;
-  margin: 0;
+.noActions { margin: 0; color: var(--mt-text-secondary); text-align: center; line-height: 1.5; }
+@container ht-document-drawer (max-width: 24rem) {
+  .identity { padding-inline: var(--mt-space-4); }
+  .tabs { padding-inline: var(--mt-space-4); }
+  .content { padding-inline: var(--mt-space-4); }
+  .fields { grid-template-columns: minmax(0, 1fr); }
 }
-
-// ==========================================
-// Вкладки — на мобильных уменьшаем паддинги.
-// ==========================================
-@media (max-width: 600px) {
-  .header {
-    padding: var(--space-5) var(--space-6);
-  }
-
-  .content {
-    padding: var(--space-6);
-    gap: var(--space-6);
-  }
-
-  .footer {
-    padding: var(--space-5) var(--space-6);
-  }
+@media (max-width: 40rem) {
+  .header, .footer { padding-inline: var(--mt-space-4); }
 }

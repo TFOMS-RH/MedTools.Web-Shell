@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { Button, Tab, Tabs, TextField } from "@mui/material";
+import { documentButtonSx, documentInputSx } from "../controlsSx";
+import { useId, useState } from "react";
 import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
-import LayersOutlinedIcon from "@mui/icons-material/LayersOutlined";
 
 import { useHTNotify } from "../../../hooks/useHTNotify";
 import { downloadBlob } from "../../../utils/downloadBlob";
@@ -8,15 +9,31 @@ import { useAuthStore } from "../../../../auth/stores/authStore";
 
 import styles from "./styles.module.scss";
 
+type ExportFormat = "gst" | "gpt" | "gf" | "pf" | "dspn-smo" | "prof-smo";
+
 export const HTDocumentsAggregation = () => {
+  const id = useId();
+  const [selectedFormat, setSelectedFormat] = useState<ExportFormat>("gst");
   const notify = useHTNotify();
-  
+
   //const organizationType = useAuthStore((state) => state.organizationType);
   const organizationCode = useAuthStore((state) => state.organizationCode);
-  
+
   const isAdmin = organizationCode === "19000";
   const isSmo = organizationCode === "19001" || organizationCode === "19006";
   const isMo = !isAdmin && !isSmo; // Если не админ и не СМО, значит это МО
+  const formats: { value: ExportFormat; label: string; visible: boolean }[] = [
+    { value: "gst", label: "GST", visible: isAdmin },
+    { value: "gpt", label: "GPT", visible: isAdmin },
+    { value: "gf", label: "GF", visible: !isSmo },
+    { value: "pf", label: "PF", visible: !isSmo },
+    { value: "dspn-smo", label: "DSPN → СМО", visible: !isMo },
+    { value: "prof-smo", label: "PROF → СМО", visible: !isMo },
+  ];
+  const availableFormats = formats.filter((format) => format.visible);
+  const activeFormat = availableFormats.some((format) => format.value === selectedFormat)
+    ? selectedFormat : availableFormats[0]?.value;
+
 
   // ==========================================
   // Состояния для GST / GPT / GF / PF
@@ -146,7 +163,7 @@ export const HTDocumentsAggregation = () => {
     setLoadingKey("dspn-smo");
     try {
       const params = new URLSearchParams({ period: dspnPeriod.trim() });
-      
+
       if (isAdmin && smoCodeForDspn.trim()) {
         params.set("smoCode", smoCodeForDspn.trim());
       }
@@ -184,7 +201,7 @@ export const HTDocumentsAggregation = () => {
     setLoadingKey("prof-smo");
     try {
       const params = new URLSearchParams({ period: profPeriod.trim() });
-      
+
       if (isAdmin && smoCodeForProf.trim()) {
         params.set("smoCode", smoCodeForProf.trim());
       }
@@ -207,256 +224,257 @@ export const HTDocumentsAggregation = () => {
   };
 
   return (
-    <section className={styles.aggregationRoot}>
+    <section className={styles.aggregationRoot} aria-labelledby="ht-export-heading">
       {/* Заголовок */}
       <header className={styles.header}>
-        <div className={styles.headerTitle}>
-          <LayersOutlinedIcon sx={{ fontSize: 22, color: "var(--text-default)" }} />
-          <h3 className={styles.title}>Агрегация данных</h3>
-        </div>
-        <p className={styles.subtitle}>Формирование сводных файлов для ГИС ОМС</p>
+        <h2 id="ht-export-heading" className={styles.title}>Экспорт</h2>
       </header>
 
 
-      {/* Верхняя строка — агрегация */}
+      <Tabs className={styles.formatTabs} value={activeFormat ?? false}
+        onChange={(_, value: ExportFormat) => setSelectedFormat(value)}
+        variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile aria-label="Формат выгрузки">
+        {availableFormats.map((format) => <Tab key={format.value} value={format.value} label={format.label}
+          id={id + "-tab-" + format.value} aria-controls={id + "-panel-" + format.value} />)}
+      </Tabs>
       <div className={styles.gridRow}>
-        {isAdmin && (
-          <div className={styles.formCard}>         
+        {isAdmin && activeFormat === "gst" && (
+          <div className={styles.formCard} role="tabpanel" id={id + "-panel-gst"} aria-labelledby={id + "-tab-gst"}>
             <h4 className={styles.formTitle}>GST (GSM→GST):</h4>
-            
+
             <div className={styles.inlineField}>
-              <input
+              <label className={styles.field}><span>Период</span><TextField variant="filled" hiddenLabel size="small" fullWidth sx={documentInputSx} slotProps={{ input: { disableUnderline: true } }}
                 className={styles.compactInput}
                 type="text"
                 placeholder="Все периоды"
                 value={gstPeriod}
                 onChange={(e) => setGstPeriod(e.currentTarget.value)}
-              />
+              /></label>
             </div>
-            
+
             <div className={styles.inlineField}>
-              <input
+              <label className={styles.field}><span>Код МО</span><TextField variant="filled" hiddenLabel size="small" fullWidth sx={documentInputSx} slotProps={{ input: { disableUnderline: true } }}
                 className={styles.compactInput}
                 type="text"
                 placeholder="Все МО"
                 value={gstMoCode}
                 onChange={(e) => setGstMoCode(e.currentTarget.value)}
-              />
-              <button
+              /></label>
+              <Button sx={documentButtonSx} variant="contained" size="small" startIcon={<CloudDownloadIcon sx={{ fontSize: 16 }} />}
                 type="button"
-                className={styles.exportBtn}
+
                 onClick={handleExportGst}
+                loading={loadingKey === "gst"}
                 disabled={!gstPeriod || loadingKey === "gst"}
               >
-                <CloudDownloadIcon sx={{ fontSize: 16 }} />
-                {loadingKey === "gst" ? "…" : "Выгрузить"}
-              </button>
+                Выгрузить
+              </Button>
             </div>
         </div>
         )}
 
-        {isAdmin && (
-          <div className={styles.formCard}>
+        {isAdmin && activeFormat === "gpt" && (
+          <div className={styles.formCard} role="tabpanel" id={id + "-panel-gpt"} aria-labelledby={id + "-tab-gpt"}>
             <h4 className={styles.formTitle}>GPT (GPM→GPT):</h4>
             <div className={styles.inlineField}>
-              <input
+              <label className={styles.field}><span>Период</span><TextField variant="filled" hiddenLabel size="small" fullWidth sx={documentInputSx} slotProps={{ input: { disableUnderline: true } }}
                 className={styles.compactInput}
                 type="text"
                 placeholder="Все периоды"
                 value={gptPeriod}
                 onChange={(e) => setGptPeriod(e.currentTarget.value)}
-              />
+              /></label>
             </div>
             <div className={styles.inlineField}>
-              <input
+              <label className={styles.field}><span>Код МО</span><TextField variant="filled" hiddenLabel size="small" fullWidth sx={documentInputSx} slotProps={{ input: { disableUnderline: true } }}
                 className={styles.compactInput}
                 type="text"
                 placeholder="Все МО"
                 value={gptMoCode}
                 onChange={(e) => setGptMoCode(e.currentTarget.value)}
-              />
-              <button
+              /></label>
+              <Button sx={documentButtonSx} variant="contained" size="small" startIcon={<CloudDownloadIcon sx={{ fontSize: 16 }} />}
                 type="button"
-                className={styles.exportBtn}
+
                 onClick={handleExportGpt}
+                loading={loadingKey === "gpt"}
                 disabled={!gptPeriod || loadingKey === "gpt"}
               >
-                <CloudDownloadIcon sx={{ fontSize: 16 }} />
-                {loadingKey === "gpt" ? "…" : "Выгрузить"}
-              </button>
+                Выгрузить
+              </Button>
             </div>
           </div>
         )}
 
-        {!isSmo && (
-          <div className={styles.formCard}>
+        {!isSmo && activeFormat === "gf" && (
+          <div className={styles.formCard} role="tabpanel" id={id + "-panel-gf"} aria-labelledby={id + "-tab-gf"}>
             <h4 className={styles.formTitle}>GF:</h4>
             <div className={styles.inlineField}>
-              <input
+              <label className={styles.field}><span>Период</span><TextField variant="filled" hiddenLabel size="small" fullWidth sx={documentInputSx} slotProps={{ input: { disableUnderline: true } }}
                 className={styles.compactInput}
                 type="text"
                 placeholder="Все периоды"
                 value={gfPeriod}
                 onChange={(e) => setGfPeriod(e.currentTarget.value)}
-              />
+              /></label>
             </div>
             <div className={styles.inlineField}>
-              <input
+              <label className={styles.field}><span>Код МО</span><TextField variant="filled" hiddenLabel size="small" fullWidth sx={documentInputSx} slotProps={{ input: { disableUnderline: true } }}
                 className={styles.compactInput}
                 type="text"
                 placeholder="Все МО"
                 value={gfMoCode}
                 onChange={(e) => setGfMoCode(e.currentTarget.value)}
-              />
-              <input
+              /></label>
+              <label className={styles.field}><span>Номер файла</span><TextField variant="filled" hiddenLabel size="small" fullWidth sx={documentInputSx} slotProps={{ input: { disableUnderline: true } }}
                 className={`${styles.compactInput} ${styles.fileNumber}`}
                 type="text"
                 placeholder="Пакет"
                 value={gfFileNumber}
                 onChange={(e) => setGfFileNumber(e.currentTarget.value)}
-              />
-              <button
+              /></label>
+              <Button sx={documentButtonSx} variant="contained" size="small" startIcon={<CloudDownloadIcon sx={{ fontSize: 16 }} />}
                 type="button"
-                className={styles.exportBtn}
+
                 onClick={handleExportGf}
+                loading={loadingKey === "gf"}
                 disabled={!gfPeriod || loadingKey === "gf"}
               >
-                <CloudDownloadIcon sx={{ fontSize: 16 }} />
-                {loadingKey === "gf" ? "…" : "Выгрузить"}
-              </button>
+                Выгрузить
+              </Button>
             </div>
           </div>
         )}
 
-        {!isSmo && (
-          <div className={styles.formCard}>
+        {!isSmo && activeFormat === "pf" && (
+          <div className={styles.formCard} role="tabpanel" id={id + "-panel-pf"} aria-labelledby={id + "-tab-pf"}>
             <h4 className={styles.formTitle}>PF:</h4>
             <div className={styles.inlineField}>
-              <input
+              <label className={styles.field}><span>Период</span><TextField variant="filled" hiddenLabel size="small" fullWidth sx={documentInputSx} slotProps={{ input: { disableUnderline: true } }}
                 className={styles.compactInput}
                 type="text"
                 placeholder="Все периоды"
                 value={pfPeriod}
                 onChange={(e) => setPfPeriod(e.currentTarget.value)}
-              />
+              /></label>
             </div>
             <div className={styles.inlineField}>
-              <input
+              <label className={styles.field}><span>Код МО</span><TextField variant="filled" hiddenLabel size="small" fullWidth sx={documentInputSx} slotProps={{ input: { disableUnderline: true } }}
                 className={styles.compactInput}
                 type="text"
                 placeholder="Все МО"
                 value={pfMoCode}
                 onChange={(e) => setPfMoCode(e.currentTarget.value)}
-              />
-              <button
+              /></label>
+              <Button sx={documentButtonSx} variant="contained" size="small" startIcon={<CloudDownloadIcon sx={{ fontSize: 16 }} />}
                 type="button"
-                className={styles.exportBtn}
+
                 onClick={handleExportPf}
+                loading={loadingKey === "pf"}
                 disabled={!pfPeriod || loadingKey === "pf"}
               >
-                <CloudDownloadIcon sx={{ fontSize: 16 }} />
-                {loadingKey === "pf" ? "…" : "Выгрузить"}
-              </button>
+                Выгрузить
+              </Button>
             </div>
           </div>
         )}
       </div>
-        
+
 
       {/* ============================== */}
       {/* Нижняя строка — DSPN/PROF для СМО */}
       {/* ============================== */}
       <div className={styles.gridRow}>
         {/* DSPN → СМО */}
-        {!isMo && (
-          <div className={styles.formCard}>
+        {!isMo && activeFormat === "dspn-smo" && (
+          <div className={styles.formCard} role="tabpanel" id={id + "-panel-dspn-smo"} aria-labelledby={id + "-tab-dspn-smo"}>
             <h4 className={styles.formTitle}>DSPN → СМО:</h4>
-            
+
             <div className={styles.inlineField}>
-              <input
+              <label className={styles.field}><span>Период</span><TextField variant="filled" hiddenLabel size="small" fullWidth sx={documentInputSx} slotProps={{ input: { disableUnderline: true } }}
                 className={styles.compactInput}
                 type="text"
                 placeholder="Период (ГГГГ-ММ)"
                 value={dspnPeriod}
                 onChange={(e) => setDspnPeriod(e.currentTarget.value)}
                 disabled={loadingKey === "dspn-smo"}
-              />
+              /></label>
             </div>
 
             {isAdmin && (
               <div className={styles.inlineField}>
-                <input
+                <label className={styles.field}><span>Код СМО</span><TextField variant="filled" hiddenLabel size="small" fullWidth sx={documentInputSx} slotProps={{ input: { disableUnderline: true } }}
                   className={styles.compactInput}
                   type="text"
                   placeholder="Код СМО (например, 19001)"
                   value={smoCodeForDspn}
                   onChange={(e) => setSmoCodeForDspn(e.currentTarget.value)}
                   disabled={loadingKey === "dspn-smo"}
-                />
+                /></label>
               </div>
             )}
 
             <div className={styles.inlineField}>
-              <button
+              <Button sx={documentButtonSx} variant="contained" size="small" startIcon={<CloudDownloadIcon sx={{ fontSize: 16 }} />}
                 type="button"
-                className={styles.exportBtn}
+
                 onClick={handleExportDspnToSmo}
+                loading={loadingKey === "dspn-smo"}
                 disabled={
-                  !dspnPeriod.trim() || 
-                  loadingKey === "dspn-smo" || 
+                  !dspnPeriod.trim() ||
+                  loadingKey === "dspn-smo" ||
                   (isAdmin && !smoCodeForDspn.trim())
                 }
               >
-                <CloudDownloadIcon sx={{ fontSize: 16 }} />
-                {loadingKey === "dspn-smo" ? "…" : "Выгрузить для СМО"}
-              </button>
+                Выгрузить
+              </Button>
             </div>
           </div>
         )}
 
         {/* PROF → СМО */}
-        {!isMo && (
-          <div className={styles.formCard}>
+        {!isMo && activeFormat === "prof-smo" && (
+          <div className={styles.formCard} role="tabpanel" id={id + "-panel-prof-smo"} aria-labelledby={id + "-tab-prof-smo"}>
             <h4 className={styles.formTitle}>PROF → СМО:</h4>
-            
+
             <div className={styles.inlineField}>
-              <input
+              <label className={styles.field}><span>Период</span><TextField variant="filled" hiddenLabel size="small" fullWidth sx={documentInputSx} slotProps={{ input: { disableUnderline: true } }}
                 className={styles.compactInput}
                 type="text"
                 placeholder="Период (ГГГГ-ММ)"
                 value={profPeriod}
                 onChange={(e) => setProfPeriod(e.currentTarget.value)}
                 disabled={loadingKey === "prof-smo"}
-              />
+              /></label>
             </div>
 
             {isAdmin && (
               <div className={styles.inlineField}>
-                <input
+                <label className={styles.field}><span>Код СМО</span><TextField variant="filled" hiddenLabel size="small" fullWidth sx={documentInputSx} slotProps={{ input: { disableUnderline: true } }}
                   className={styles.compactInput}
                   type="text"
                   placeholder="Код СМО (например, 19001)"
                   value={smoCodeForProf}
                   onChange={(e) => setSmoCodeForProf(e.currentTarget.value)}
                   disabled={loadingKey === "prof-smo"}
-                />
+                /></label>
               </div>
             )}
 
             <div className={styles.inlineField}>
-              <button
+              <Button sx={documentButtonSx} variant="contained" size="small" startIcon={<CloudDownloadIcon sx={{ fontSize: 16 }} />}
                 type="button"
-                className={styles.exportBtn}
+
                 onClick={handleExportProfToSmo}
+                loading={loadingKey === "prof-smo"}
                 disabled={
-                  !profPeriod.trim() || 
-                  loadingKey === "prof-smo" || 
+                  !profPeriod.trim() ||
+                  loadingKey === "prof-smo" ||
                   (isAdmin && !smoCodeForProf.trim())
                 }
               >
-                <CloudDownloadIcon sx={{ fontSize: 16 }} />
-                {loadingKey === "prof-smo" ? "…" : "Выгрузить для СМО"}
-              </button>
+                Выгрузить
+              </Button>
             </div>
           </div>
         )}

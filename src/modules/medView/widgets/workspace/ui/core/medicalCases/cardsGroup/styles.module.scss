@@ -70,6 +70,7 @@
 }
 
 .card {
+  position: relative;
   display: grid;
   grid-template-columns: minmax(13rem, 1fr) minmax(0, 2.1fr) minmax(
       18rem,
@@ -80,23 +81,34 @@
   gap: var(--mt-space-6);
   box-sizing: border-box;
   padding: var(--mt-space-5);
-  border: 1px solid var(--border-default);
-  border-radius: var(--mt-radius-card);
-  background: var(--mt-surface);
+  border: 0;
+  border-radius: var(--mt-radius-inner);
+  overflow: hidden;
+  background: var(--mt-canvas);
   color: var(--mt-text-primary);
   font-size: var(--mt-font-body);
   line-height: 1.5;
   cursor: pointer;
 
   &:hover {
-    border-color: var(--border-hover);
+    background: var(--mt-surface-subtle);
   }
 
   &.selected {
-    border-color: var(--mt-medview-accent);
+    background: color-mix(in srgb, var(--mt-medview-accent) 6%, var(--mt-surface));
+
+    &::before {
+      position: absolute;
+      inset-block: 0;
+      inset-inline-start: 0;
+      width: 4px;
+      background: var(--mt-medview-accent);
+      content: "";
+      pointer-events: none;
+    }
 
     &:hover {
-      border-color: var(--mt-medview-accent);
+      background: color-mix(in srgb, var(--mt-medview-accent) 6%, var(--mt-surface));
     }
   }
 
@@ -269,7 +281,7 @@
   cursor: default;
 
   &:hover {
-    border-color: var(--border-default);
+    background: var(--mt-canvas);
   }
 }
 

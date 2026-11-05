@@ -39,8 +39,7 @@ const formatDateTime = (iso: string): string => {
 /**
  * Таймлайн действий по документу.
  *
- * Показывает список событий в обратном хронологическом порядке
- * (самые свежие — сверху).
+ * Порядок событий сохраняется таким, каким его возвращает API.
  */
 export const HTAuditTimeline = ({
   items,
@@ -52,7 +51,7 @@ export const HTAuditTimeline = ({
   // ==========================================
   if (isLoading) {
     return (
-      <div className={styles.message}>
+      <div className={styles.message} role="status">
         <span>Загрузка истории…</span>
       </div>
     );
@@ -63,7 +62,7 @@ export const HTAuditTimeline = ({
   // ==========================================
   if (isError) {
     return (
-      <div className={styles.errorMessage}>
+      <div className={styles.errorMessage} role="alert">
         Не удалось загрузить историю документа
       </div>
     );
@@ -87,7 +86,7 @@ export const HTAuditTimeline = ({
   // Таймлайн.
   // ==========================================
   return (
-    <div className={styles.timeline}>
+    <ol className={styles.timeline} aria-label="История действий по документу">
       {items.map((item) => {
         const actionLabel =
           HT_AUDIT_ACTION_LABELS[item.actionType] ?? item.actionType;
@@ -99,9 +98,9 @@ export const HTAuditTimeline = ({
         const isError = item.result === "ERROR";
 
         return (
-          <div key={item.id} className={styles.event}>
+          <li key={item.id} className={styles.event}>
             {/* Точка / линия слева */}
-            <div className={styles.marker}>
+            <div className={styles.marker} aria-hidden="true">
               <div
                 className={`${styles.dot} ${
                   isError ? styles.dotError : ""
@@ -123,9 +122,9 @@ export const HTAuditTimeline = ({
                   {actionLabel}
                 </span>
 
-                <span className={styles.date}>
+                <time className={styles.date} dateTime={item.createdAt}>
                   {formatDateTime(item.createdAt)}
-                </span>
+                </time>
               </div>
 
               <div className={styles.userBlock}>
@@ -145,9 +144,9 @@ export const HTAuditTimeline = ({
                 <p className={styles.errorText}>{item.errorMessage}</p>
               )}
             </div>
-          </div>
+          </li>
         );
       })}
-    </div>
+    </ol>
   );
 };
