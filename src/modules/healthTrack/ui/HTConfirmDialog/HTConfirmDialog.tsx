@@ -12,7 +12,8 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 
-import { AppButton } from "../../../../components/ui/AppButton/AppButton";
+import Button from "@mui/material/Button";
+import { documentButtonSx } from "../../features/documents/controlsSx";
 
 import styles from "./styles.module.scss";
 
@@ -38,7 +39,7 @@ interface HTConfirmDialogProps {
   /**
    * Тип действия — влияет на цвет кнопки подтверждения.
    *  - "danger"  — красная (для удаления).
-   *  - "primary" — чёрная (обычное подтверждение).
+   *  - "primary" — брендовая (обычное подтверждение).
    */
   variant?: "danger" | "primary";
 
@@ -168,14 +169,14 @@ export const HTConfirmDialog = ({
           padding: "var(--space-4) var(--space-8) var(--space-7)",
         }}
       >
-        <AppButton
-          variant="secondary"
-          size="md"
+        <Button sx={documentButtonSx}
+          variant="outlined"
+          size="small"
           onClick={onCancel}
           disabled={loading}
         >
           {cancelLabel}
-        </AppButton>
+        </Button>
 
         <button
           type="button"

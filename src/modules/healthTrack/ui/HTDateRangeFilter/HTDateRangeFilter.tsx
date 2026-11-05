@@ -5,7 +5,8 @@ import { useState } from "react";
 import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 
-import { AppButton } from "../../../../components/ui/AppButton/AppButton";
+import Button from "@mui/material/Button";
+import { documentButtonSx } from "../../features/documents/controlsSx";
 
 import styles from "./styles.module.scss";
 
@@ -137,25 +138,25 @@ export const HTDateRangeFilter = ({
       </div>
 
       <div className={styles.actionsBlock}>
-        <AppButton
-          variant="primary"
-          size="md"
+        <Button sx={documentButtonSx}
+          variant="contained"
+          size="small"
           type="submit"
           disabled={disabled}
         >
           Применить
-        </AppButton>
+        </Button>
 
-        <AppButton
-          variant="secondary"
-          size="md"
+        <Button sx={documentButtonSx}
+          variant="outlined"
+          size="small"
           type="button"
           onClick={handleReset}
           disabled={disabled}
         >
           <RestartAltIcon sx={{ fontSize: 18 }} />
           Сбросить
-        </AppButton>
+        </Button>
       </div>
 
       {localError && (

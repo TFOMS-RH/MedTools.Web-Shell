@@ -35,7 +35,7 @@ const TILES: KpiTile[] = [
     key: "patientsTotal",
     label: "Всего пациентов",
     icon: <PeopleAltOutlinedIcon sx={{ fontSize: 22 }} />,
-    accent: "#1a4fbf",
+    accent: "var(--mt-healthtrack-accent)",
   },
   {
     key: "patientsActive",
@@ -53,7 +53,7 @@ const TILES: KpiTile[] = [
     key: "documentsTotal",
     label: "Всего документов",
     icon: <DescriptionOutlinedIcon sx={{ fontSize: 22 }} />,
-    accent: "#6633cc",
+    accent: "var(--mt-healthtrack-accent)",
   },
   {
     key: "documentsReady",
@@ -65,7 +65,7 @@ const TILES: KpiTile[] = [
     key: "recordsTotal",
     label: "Всего записей",
     icon: <StorageOutlinedIcon sx={{ fontSize: 22 }} />,
-    accent: "#b91c1c",
+    accent: "var(--mt-healthtrack-accent)",
   },
 ];
 
@@ -85,7 +85,7 @@ export const HTStatisticsKpi = ({ kpi }: HTStatisticsKpiProps) => {
               className={styles.tileIcon}
               style={{
                 color: tile.accent,
-                backgroundColor: `${tile.accent}11`,
+                backgroundColor: `color-mix(in srgb, ${tile.accent} 7%, transparent)`,
               }}
             >
               {tile.icon}

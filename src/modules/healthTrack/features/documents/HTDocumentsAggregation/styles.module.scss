@@ -21,7 +21,7 @@
     text-transform: none;
     white-space: nowrap;
     &:hover { background: var(--mt-canvas); }
-    &:global(.Mui-selected) { color: #a26620; }
+    &:global(.Mui-selected) { color: color-mix(in srgb, var(--mt-healthtrack-accent) 70%, var(--mt-text-primary)); }
     &:global(.Mui-focusVisible) { outline: 2px solid var(--mt-healthtrack-accent); outline-offset: -3px; }
   }
   :global(.MuiTabs-indicator) { height: 2px; background: var(--mt-healthtrack-accent); }

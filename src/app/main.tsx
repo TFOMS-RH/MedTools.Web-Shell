@@ -28,10 +28,23 @@ createRoot(document.getElementById("root")!).render(
         <Routes>
           {AdminDemo && (
             <Route element={<MainLayout />}>
-              <Route path="/admin" element={<Suspense fallback={null}><AdminDemo /></Suspense>} />
+              <Route
+                path="/admin"
+                element={
+                  <Suspense fallback={null}>
+                    <AdminDemo />
+                  </Suspense>
+                }
+              />
             </Route>
           )}
-          <Route element={<AuthSession><Outlet /></AuthSession>}>
+          <Route
+            element={
+              <AuthSession>
+                <Outlet />
+              </AuthSession>
+            }
+          >
             <Route element={<PlainLayout />}>
               <Route path="/login" element={<Login />} />
             </Route>
@@ -40,11 +53,13 @@ createRoot(document.getElementById("root")!).render(
               <Route path="/rcontrol" element={<RControl />} />
               <Route path="/med-view" element={<MedView />} />
               <Route path="/health-track" element={<HTMain />} />
-              {!AdminDemo && <Route path="/admin" element={<Navigate to="/admin/users" replace />} />}
-              <Route
-                path="/admin/users"
-                element={<AdminUsers />}
-              />
+              {!AdminDemo && (
+                <Route
+                  path="/admin"
+                  element={<Navigate to="/admin/users" replace />}
+                />
+              )}
+              <Route path="/admin/users" element={<AdminUsers />} />
               <Route
                 path="/admin/roles"
                 element={<AdminAccessCatalog kind="role" />}

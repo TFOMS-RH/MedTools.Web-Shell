@@ -1,233 +1,81 @@
-// ==========================================
-// modules/healthTrack/features/registerDn/HTRegisterDnTable/styles.module.scss
-// ==========================================
-
 .tableRoot {
+  --mt-table-accent: var(--mt-healthtrack-accent);
   display: flex;
   flex-direction: column;
-  gap: var(--space-5);
-
-  padding: var(--space-8) var(--space-10);
-
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-xl);
-  background: var(--card-background);
-
-  box-sizing: border-box;
-  width: 100%;
+  gap: var(--mt-space-3);
+  min-width: 0;
 }
-
-// ==========================================
-// Верхняя инфо-строка.
-// ==========================================
-.topBar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  box-sizing: border-box;
-  width: 100%;
-
-  .totalLabel {
-    font-size: var(--fs-body2);
-    color: var(--text-secondary);
-
-    strong {
-      color: var(--text-default);
-      font-weight: var(--fw-bold);
-    }
-  }
-}
-
-// ==========================================
-// Обёртка таблицы для скролла на узких экранах.
-// ==========================================
-.tableWrapper {
-  overflow-x: auto;
-
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-l);
-
-  box-sizing: border-box;
-  width: 100%;
-}
-
-// ==========================================
-// Сама таблица.
-// ==========================================
+.tableWrapper { min-width: 0; max-width: 100%; }
 .table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: var(--fs-body2);
-
-  thead {
-    background: var(--gray-50);
-
-    th {
-      text-align: left;
-      padding: var(--space-4) var(--space-5);
-
-      font-size: var(--fs-body2);
-      font-weight: var(--fw-semibold);
-      color: var(--text-secondary);
-      white-space: nowrap;
-
-      border-bottom: 1px solid var(--border-default);
-    }
-  }
-
-  tbody {
-    tr {
-      transition: background-color 0.1s ease;
-
-      &:hover {
-        background: var(--gray-50);
-      }
-
-      &:not(:last-child) {
-        border-bottom: 1px solid var(--border-default);
-      }
-    }
-
-    td {
-      padding: var(--space-4) var(--space-5);
-
-      color: var(--text-default);
-      white-space: nowrap;
-
-      vertical-align: middle;
-    }
-  }
+  min-width: 600px;
+  > :is(thead, tbody) > tr > :is(th, td) { font-variant-numeric: tabular-nums; }
+  > :is(thead, tbody) > tr > :is(th, td):not(:nth-child(2)) { white-space: nowrap; }
+  > :is(thead, tbody) > tr > :is(th, td):nth-child(2) { min-width: 12rem; width: 50%; white-space: normal; }
+  > tbody > tr > td.emptyCell { text-align: center; white-space: normal; }
 }
-
-// ==========================================
-// Кликабельная строка.
-// ==========================================
-.clickableRow {
-  cursor: pointer;
-
-  transition: background-color 0.1s ease;
-}
-
-.clickableRow:hover {
-  background: var(--gray-100) !important;
-}
-
-// ==========================================
-// ЕНП в строке — моноширинный текст.
-// ==========================================
-.enpText {
-  font-family: "Consolas", "Monaco", monospace;
-  font-size: var(--fs-body2);
+.enpText { font-family: Consolas, Monaco, monospace; }
+.patientName {
+  display: block;
+  max-width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-l);
+  background: transparent;
+  color: var(--mt-text-primary);
+  font: inherit;
   font-weight: var(--fw-semibold);
-  color: var(--text-default);
+  line-height: inherit;
+  text-align: left;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+  &:hover:not(:disabled) { text-decoration: underline; }
+  &:focus-visible { outline: 2px solid var(--mt-healthtrack-accent); outline-offset: 3px; }
+  &:disabled { cursor: wait; }
 }
-
-// ==========================================
-// Пустая ячейка.
-// ==========================================
-.emptyCell {
-  text-align: center !important;
-  padding: 0 !important;
-  color: var(--text-secondary);
+.emptyState { display: flex; flex-direction: column; align-items: center; gap: var(--mt-space-3); padding: var(--mt-space-6) 0;
+  h3, p { margin: 0; }
+  h3 { font-size: var(--fs-h4); font-weight: var(--fw-semibold); }
+  p { color: var(--mt-text-secondary); }
 }
-
-// ==========================================
-// Пагинация.
-// ==========================================
-.paginationRow {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-5);
-
-  box-sizing: border-box;
-  width: 100%;
-
-  @media (max-width: 700px) {
-    flex-direction: column;
-    align-items: stretch;
-  }
+.paginationRow { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--mt-space-3); }
+.pageSizeBlock { display: flex; align-items: center; gap: var(--mt-space-2); color: var(--mt-text-secondary); }
+.pageSizeSelect {
+  min-height: 36px;
+  padding: var(--mt-space-2) var(--mt-space-3);
+  border: 0;
+  border-radius: var(--radius-l);
+  background: var(--mt-canvas);
+  color: var(--mt-text-primary);
+  font: inherit;
+  &:focus-visible { outline: 2px solid var(--mt-healthtrack-accent); outline-offset: 2px; }
+  &:disabled { opacity: .5; cursor: wait; }
 }
-
-.pageSizeBlock {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-
-  font-size: var(--fs-body2);
-  color: var(--text-secondary);
-
-  .pageSizeSelect {
-    padding: var(--space-2) var(--space-4);
-
-    border: 1px solid var(--border-default);
-    border-radius: var(--radius-l);
-    background: var(--card-background);
-
-    font-family: var(--inter);
-    font-size: var(--fs-body2);
-
-    cursor: pointer;
-
-    &:focus {
-      outline: none;
-      border-color: var(--border-focus);
-    }
-  }
-}
-
 .pageNumbers {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: var(--space-2);
+  gap: var(--mt-space-1);
+  :global(.MuiIconButton-root) { width: 36px; height: 36px; color: var(--mt-text-secondary);
+    &:global(.Mui-disabled) { opacity: .5; }
+    &:focus-visible { outline: 2px solid var(--mt-healthtrack-accent); outline-offset: -2px; }
+  }
 }
-
 .pageButton {
-  all: unset;
-  box-sizing: border-box;
-
   display: inline-flex;
-  align-items: center;
   justify-content: center;
-
-  min-width: 2rem;
-  height: 2rem;
-  padding: 0 var(--space-3);
-
+  align-items: center;
+  min-width: 36px;
+  height: 36px;
+  padding: 0 var(--mt-space-2);
+  border: 0;
   border-radius: var(--radius-l);
-
-  font-family: var(--inter);
-  font-size: var(--fs-body2);
-  font-weight: var(--fw-semibold);
-  color: var(--text-default);
-
+  background: transparent;
+  color: var(--mt-text-primary);
+  font: inherit;
   cursor: pointer;
-  user-select: none;
-
-  transition: background 0.1s ease;
-
-  &:hover {
-    background: var(--gray-100);
-  }
-
-  &:disabled {
-    color: var(--text-secondary);
-    cursor: not-allowed;
-  }
+  &:hover:not(:disabled) { background: var(--mt-canvas); }
+  &:focus-visible { outline: 2px solid var(--mt-healthtrack-accent); outline-offset: -2px; }
+  &:disabled { opacity: .5; cursor: wait; }
 }
-
-.pageButtonActive {
-  background: var(--text-default);
-  color: var(--white);
-
-  &:hover {
-    background: var(--gray-1400);
-  }
-}
-
-.ellipsis {
-  padding: 0 var(--space-2);
-  color: var(--text-secondary);
-  user-select: none;
-}
+.pageButtonActive { background: var(--mt-healthtrack-cover); font-weight: var(--fw-semibold); &:hover:not(:disabled) { background: var(--mt-healthtrack-cover); } }
+.ellipsis { color: var(--mt-text-secondary); }

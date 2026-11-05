@@ -13,7 +13,6 @@ import {
 } from "recharts";
 
 import {
-  HT_CHART_COLORS,
   formatStatNumber,
   type HTStatisticsByPeriod as HTStatisticsByPeriodData,
 } from "../../../../types/htStatistics";
@@ -119,12 +118,12 @@ export const HTStatisticsByPeriod = ({
                 <linearGradient id="htPeriodGradient" x1="0" y1="0" x2="0" y2="1">
                   <stop
                     offset="5%"
-                    stopColor={HT_CHART_COLORS.blue}
+                    stopColor={"var(--mt-healthtrack-accent)"}
                     stopOpacity={0.25}
                   />
                   <stop
                     offset="95%"
-                    stopColor={HT_CHART_COLORS.blue}
+                    stopColor={"var(--mt-healthtrack-accent)"}
                     stopOpacity={0}
                   />
                 </linearGradient>
@@ -157,17 +156,17 @@ export const HTStatisticsByPeriod = ({
               <Area
                 type="monotone"
                 dataKey="count"
-                stroke={HT_CHART_COLORS.blue}
+                stroke={"var(--mt-healthtrack-accent)"}
                 strokeWidth={2}
                 fill="url(#htPeriodGradient)"
                 dot={{
                   r: 3,
-                  fill: HT_CHART_COLORS.blue,
+                  fill: "var(--mt-healthtrack-accent)",
                   strokeWidth: 0,
                 }}
                 activeDot={{
                   r: 5,
-                  fill: HT_CHART_COLORS.blue,
+                  fill: "var(--mt-healthtrack-accent)",
                   stroke: "var(--card-background)",
                   strokeWidth: 2,
                 }}

@@ -95,7 +95,7 @@ try {
   await until("document.getElementById('ht-documents-heading')");
   for(const width of [360,768,1024,1920,2560]){
     await send('Emulation.setDeviceMetricsOverride',{width,height:width===2560?1440:1080,deviceScaleFactor:1,mobile:false});await pause(250);
-    const geometry=await evaluate("(()=>{const a=nav().getBoundingClientRect(),b=document.querySelector('[aria-labelledby=ht-documents-heading]').getBoundingClientRect(),c=document.getElementById('ht-export-heading').closest('section').parentElement.getBoundingClientRect();return{overflow:document.documentElement.scrollWidth>innerWidth,aligned:Math.abs(a.left-b.left)<1&&Math.abs(a.right-b.right)<1&&Math.abs(a.left-c.left)<1,compact:a.height<=80,white:getComputedStyle(nav()).backgroundColor==='rgb(255, 255, 255)',singleRow:new Set(tabs().map(e=>Math.round(e.getBoundingClientRect().top))).size===1,active:getComputedStyle(tabs()[0]).backgroundColor==='rgb(255, 240, 220)'};})()");
+    const geometry=await evaluate("(()=>{const a=nav().getBoundingClientRect(),b=document.querySelector('[aria-labelledby=ht-documents-heading]').getBoundingClientRect(),c=document.getElementById('ht-export-heading').closest('section').parentElement.getBoundingClientRect();return{overflow:document.documentElement.scrollWidth>innerWidth,aligned:Math.abs(a.left-b.left)<1&&Math.abs(a.right-b.right)<1&&Math.abs(a.left-c.left)<1,compact:a.height<=80,white:getComputedStyle(nav()).backgroundColor==='rgb(255, 255, 255)',singleRow:new Set(tabs().map(e=>Math.round(e.getBoundingClientRect().top))).size===1,active:getComputedStyle(tabs()[0]).backgroundColor==='rgb(228, 245, 244)'};})()");
     check('compact aligned navigation at '+width,!geometry.overflow&&geometry.aligned&&geometry.compact&&geometry.white&&geometry.singleRow&&geometry.active);
     for(const [index,expected]of [[1,'Импорт файла'],[2,'Регистр ДН'],[3,'Статистика'],[0,'Экспорт']]){
       await evaluate('tabs()['+index+'].click()');await until('panel().textContent.includes('+JSON.stringify(expected)+')');
@@ -104,7 +104,12 @@ try {
     await evaluate('window.scrollTo(0,0)');await screenshot('healthtrack-navigation-'+width);
   }
   check('existing GET hooks used, no mutations',calls.every(c=>c.method==='GET')&&['/api/health-track/documents','/api/health-track/register-dn','/api/health-track/statistics/overview'].every(path=>calls.some(c=>c.path===path)));
+  check('primary actions use token-derived teal with readable white text',await evaluate("(()=>{const button=document.querySelector('[aria-labelledby=ht-export-heading] .MuiButton-contained'),s=getComputedStyle(button);return s.color==='rgb(255, 255, 255)'&&s.backgroundColor.includes('color(srgb')&&s.backgroundColor!=='rgb(162, 102, 32)';})()"));
   await evaluate("auth.setState({permissions:[]})");await until("panel().textContent.includes('У вас нет доступа к разделу')");check('permission changes remain reflected',true);
   check('no unexpected API requests',unexpected.length===0);check('no runtime errors',errors.length===0);
+  await send('Page.navigate',{url:'http://127.0.0.1:5208/'});
+  await until("document.querySelector('a[href=\"/health-track\"]')");
+  check('home HealthTrack card uses brand tokens',await evaluate("(()=>{const card=document.querySelector('a[href=\"/health-track\"]');return card.style.getPropertyValue('--module-accent')==='var(--mt-healthtrack-accent)'&&card.style.getPropertyValue('--module-cover')==='var(--mt-healthtrack-cover)'&&getComputedStyle(card.firstElementChild).backgroundColor==='rgb(228, 245, 244)';})()"));
+  await screenshot('healthtrack-home-brand');
   console.log('HEALTHTRACK NAVIGATION CHECKS COMPLETE');
 }finally{ws?.close();chrome.kill();await server.close();}

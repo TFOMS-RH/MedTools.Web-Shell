@@ -20,11 +20,11 @@ export const documentButtonSx = {
   color: "var(--mt-text-primary)",
   "&:hover": { backgroundColor: "var(--mt-surface-subtle)", borderColor: "var(--border-hover)", boxShadow: "none" },
   "&.MuiButton-contained": {
-    // White / #a26620 = 4.71:1; the original brand token remains unchanged.
-    backgroundColor: "#a26620",
+    // A slightly darker token-based shade keeps white button text above 4.5:1.
+    backgroundColor: "color-mix(in srgb, var(--mt-healthtrack-accent) 90%, var(--mt-text-primary))",
     color: "var(--mt-surface)",
     border: 0,
-    "&:hover": { backgroundColor: "color-mix(in srgb, #a26620 90%, var(--mt-text-primary))" },
+    "&:hover": { backgroundColor: "color-mix(in srgb, var(--mt-healthtrack-accent) 80%, var(--mt-text-primary))" },
   },
   "&.Mui-focusVisible": { outline: "2px solid var(--mt-healthtrack-accent)", outlineOffset: 2 },
   "&.Mui-disabled": {

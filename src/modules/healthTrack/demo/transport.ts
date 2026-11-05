@@ -1,3 +1,4 @@
+import type { HTRegisterDnItem, HTRegisterDnDetails, HTRegisterDnQueryParams } from "../types/htRegisterDn";
 import { AxiosError, type AxiosAdapter } from "axios";
 import {
   canCheckDocument,
@@ -34,6 +35,58 @@ const makeDocuments = (count: number): HTDocumentDetails[] => {
   });
 };
 
+// Synthetic registry records for the isolated development preview only.
+const registerPatients: HTRegisterDnItem[] = Array.from({ length: 103 }, (_, index) => ({
+  enp: String(9900000000000000n + BigInt(index)),
+  fullName: index === 0
+    ? "Демонстрационный пациент с намеренно длинным именем для проверки переноса текста без потери данных"
+    : "Демонстрационный пациент " + String(index + 1).padStart(3, "0"),
+  fam: "Демонстрационный", im: "Пациент " + (index + 1), ot: null,
+  birthDate: index % 5 === 0 ? null : "1980-01-15", gender: index % 2 === 0 ? "1" : "2",
+  episodesCount: 0, sources: "GF", lastDnInDate: null,
+}));
+
+registerPatients[0].fam = "Демонстрационный пациент с намеренно длинной составной фамилией для проверки переноса";
+registerPatients[0].im = "ТестовоеИмя";
+registerPatients[0].ot = "ДемонстрационноеОтчество";
+registerPatients[0].fullName = [registerPatients[0].fam, registerPatients[0].im, registerPatients[0].ot].join(" ");
+
+const makeRegisterDetails = (patient: HTRegisterDnItem): HTRegisterDnDetails => {
+  const populated = patient === registerPatients[0];
+  return {
+    enp: patient.enp, fam: patient.fam, im: patient.im, ot: patient.ot,
+    birthDate: patient.birthDate, gender: patient.gender,
+    snils: populated ? "000-000-000 00 (демо)" : null,
+    smo: populated ? "Демонстрационная страховая организация с длинным названием для проверки переноса" : null,
+    spolis: populated ? "ДЕМО" : null, npolis: populated ? "0000000000000000" : null,
+    vpolis: null, adres: populated ? "Демонстрационный адрес, тестовый населённый пункт, улица проверки длинных значений" : null,
+    tel: null, sources: populated ? "DSPN,GF" : patient.sources,
+    episodes: populated ? [0, 1, 2].map(index => ({
+      dspnRecordId: 9000 + index, nZap: index + 1, diagCode: index === 2 ? null : "I10",
+      diagName: index === 0 ? "Демонстрационная длинная медицинская формулировка для проверки чтения диагноза целиком без обрезания текста. Вымышленные данные, не медицинское заключение." : null,
+      diagDate: index === 2 ? null : "2026-09-01", dateDnIn: "2026-09-02",
+      dateDnOut: index === 1 ? "2026-10-01" : null, statusDnIn: index === 0 ? 2 : 1,
+      reasonDnOut: null, reasonDnIn: null, dnPrvs: null, moP: index === 2 ? null : "990001",
+      iddokt: null, period: "2026-09", sourceDocumentId: null,
+      sourceFileName: index === 2 ? null : "DEMO_DSPN_очень_длинное_имя_источника_для_проверки_переноса_без_обрезания.xml",
+      sourceFileType: "DSPN",
+      plan: index === 0 ? { mcodPlan: "990001", moPodrId: "Демонстрационное подразделение с длинным наименованием",
+        medAreaCode: "ДЕМО-УЧАСТОК-01", moAssign: null, dsCode: "I10",
+        planDateStart: "2026-10-01", planDateEnd: "2026-10-31" } : index === 2
+        ? { mcodPlan: null, moPodrId: null, medAreaCode: null, moAssign: null, dsCode: null, planDateStart: null, planDateEnd: null } : null,
+      inf: index === 0 ? { infType: 1, sposobInf: 2, dataInf: "2026-09-15", infUpdated: true }
+        : index === 2 ? { infType: null, sposobInf: null, dataInf: null, infUpdated: false } : null,
+    })) : [],
+    gfRecords: populated ? [0, 1].map(index => ({
+      gfRecordId: 9500 + index, attachMcode: index === 0 ? "990001" : null,
+      attachDate: index === 0 ? "2026-09-01" : null, groupRhCode: index === 0 ? 1 : null,
+      groupRhDs: index === 0 ? "I10" : null, groupRhProfile: index === 0 ? "ДЕМО-ПРОФИЛЬ" : null,
+      groupRhName: index === 0 ? "Демонстрационное длинное наименование группы для проверки читаемости сведений ГИС ОМС" : null,
+      sourceDocumentId: null, sourceFileName: "DEMO_GF_990001_202609.xml",
+    })) : [],
+  };
+};
+
 /** Local Axios adapter, installed only inside the development iframe. Never forwards HTTP. */
 export function createDocumentsDemoTransport() {
   let documents = makeDocuments(100);
@@ -54,11 +107,26 @@ export function createDocumentsDemoTransport() {
     };
     if (!path.startsWith("/health-track/")) return fail("Запрос недоступен в превью", 404);
     const isExport = path.startsWith("/health-track/export/");
-    await new Promise((resolve) => window.setTimeout(resolve, mode === "loading" && !isExport && method === "get" ? 3000 : 300));
+    await new Promise((resolve) => window.setTimeout(resolve, mode === "loading" && !isExport && method === "get" ? 3000 : path.startsWith("/health-track/import/") ? 1500 : 300));
     if (config.signal?.aborted) throw new AxiosError("Превью: запрос отменён", "ERR_CANCELED", config);
     if (isExport || method !== "get") {
       if (operationError) return fail("Демонстрационная ошибка операции");
-    } else if (mode === "error") return fail("Демонстрационная ошибка загрузки документов");
+    } else if (mode === "error") return fail(path.startsWith("/health-track/register-dn")
+      ? "Демонстрационная ошибка загрузки регистра ДН"
+      : "Демонстрационная ошибка загрузки документов");
+
+    if (/^\/health-track\/import\/(gst|gpt|gsm|gpm|gf|pf|dspn|prof)$/.test(path) && method === "post") {
+      const form = config.data as FormData;
+      const file = form.get("file") as File;
+      const document = { ...makeDocuments(1)[0],
+        id: Math.max(0, ...documents.map(item => item.id)) + 1,
+        fileName: file.name, period: String(form.get("period")),
+        fileType: path.split("/").pop()!.toUpperCase() as HTDocumentFileType,
+        recordsCount: 0, status: "Uploaded" as const };
+      documents = [document, ...documents];
+      return response({ documentId: document.id, recordsCount: 0, updatedCount: 0,
+        warnings: ["Демонстрационный импорт: файл не обрабатывался, медицинские записи не создавались."] });
+    }
 
     if (isExport && method === "get") {
       // A valid, empty ZIP archive with a comment marking it as a preview artifact.
@@ -89,9 +157,27 @@ export function createDocumentsDemoTransport() {
 
     // Empty local datasets let the real navigation show the other existing sections.
     if (path === "/health-track/register-dn" && method === "get") {
-      const { page = 1, pageSize = 50 } = config.params ?? {};
-      return response({ items: [], totalCount: 0, page, pageSize, totalPages: 1, hasPrevious: false, hasNext: false });
+      const params = (config.params ?? {}) as HTRegisterDnQueryParams;
+      const search = params.searchQuery?.toLocaleLowerCase() ?? "";
+      const items = mode === "empty" ? [] : registerPatients.filter((patient, index) =>
+        (!search || (patient.enp + " " + patient.fullName).toLocaleLowerCase().includes(search)) &&
+        (!params.hospitalCode || params.hospitalCode === "990001") &&
+        (!params.diagCode) &&
+        (!params.period || params.period === "2026-09") &&
+        (!params.status || params.status === (index % 2 === 0 ? "active" : "closed")));
+      const page = Number(params.page ?? 1), pageSize = Number(params.pageSize ?? 50);
+      const totalPages = Math.max(1, Math.ceil(items.length / pageSize));
+      return response({ items: items.slice((page - 1) * pageSize, page * pageSize),
+        totalCount: items.length, page, pageSize, totalPages, hasPrevious: page > 1, hasNext: page < totalPages });
     }
+
+    if (path.startsWith("/health-track/register-dn/") && method === "get") {
+      const patient = registerPatients.find(item => item.enp === path.split("/").pop());
+      if (!patient) return fail("Демонстрационный пациент не найден", 404);
+      const details = makeRegisterDetails(patient);
+      return response(details);
+    }
+
     if (path === "/health-track/statistics/overview" && method === "get") {
       return response({ kpi: { patientsTotal: 0, patientsActive: 0, patientsClosed: 0,
         documentsTotal: 0, documentsReady: 0, recordsTotal: 0 },

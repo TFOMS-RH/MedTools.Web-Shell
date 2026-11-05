@@ -14,7 +14,6 @@ import {
 } from "recharts";
 
 import {
-  HT_CHART_COLORS,
   formatStatNumber,
   type HTStatisticsTopDiagnosis,
 } from "../../../../types/htStatistics";
@@ -165,7 +164,7 @@ export const HTStatisticsTopDiagnoses = ({
                 style={{ cursor: onDiagClick ? "pointer" : "default" }}
               >
                 {chartData.map((_, index) => (
-                  <Cell key={`cell-${index}`} fill={HT_CHART_COLORS.violet} />
+                  <Cell key={`cell-${index}`} fill={"var(--mt-healthtrack-accent)"} />
                 ))}
               </Bar>
             </BarChart>

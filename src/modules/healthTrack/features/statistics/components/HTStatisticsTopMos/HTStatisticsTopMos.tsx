@@ -14,7 +14,6 @@ import {
 } from "recharts";
 
 import {
-  HT_CHART_COLORS,
   formatStatNumber,
   type HTStatisticsTopMo,
 } from "../../../../types/htStatistics";
@@ -137,7 +136,7 @@ export const HTStatisticsTopMos = ({
                 style={{ cursor: onMoClick ? "pointer" : "default" }}
               >
                 {data.map((_, index) => (
-                  <Cell key={`cell-${index}`} fill={HT_CHART_COLORS.blue} />
+                  <Cell key={`cell-${index}`} fill={"var(--mt-healthtrack-accent)"} />
                 ))}
               </Bar>
             </BarChart>

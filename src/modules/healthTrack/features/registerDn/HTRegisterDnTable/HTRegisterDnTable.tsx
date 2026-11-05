@@ -1,12 +1,11 @@
 // ==========================================
 // modules/healthTrack/features/registerDn/HTRegisterDnTable/HTRegisterDnTable.tsx
 // ==========================================
-import { IconButton } from "@mui/material";
+import { Button, IconButton, Skeleton } from "@mui/material";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 
-import { HTEmptyState } from "../../../ui/HTEmptyState/HTEmptyState";
-import { HTTableSkeleton } from "../../../ui/HTTableSkeleton/HTTableSkeleton";
+import { documentButtonSx } from "../../documents/controlsSx";
 
 import {
   formatGender,
@@ -20,7 +19,6 @@ import styles from "./styles.module.scss";
 // ==========================================
 interface HTRegisterDnTableProps {
   items: HTRegisterDnItem[];
-  totalCount: number;
   page: number;
   pageSize: number;
   totalPages: number;
@@ -29,6 +27,8 @@ interface HTRegisterDnTableProps {
   onPageSizeChange: (size: number) => void;
   onResetFilters?: () => void;
   isLoading: boolean;
+  isFetching: boolean;
+  hasAppliedFilters: boolean;
 }
 
 // ==========================================
@@ -47,7 +47,6 @@ const formatDate = (iso: string | null): string => {
  */
 export const HTRegisterDnTable = ({
   items,
-  totalCount,
   page,
   pageSize,
   totalPages,
@@ -56,12 +55,9 @@ export const HTRegisterDnTable = ({
   onPageSizeChange,
   onResetFilters,
   isLoading,
+  isFetching,
+  hasAppliedFilters,
 }: HTRegisterDnTableProps) => {
-  // Пока грузится и списка нет — скелетон.
-  if (isLoading && items.length === 0) {
-    return <HTTableSkeleton rows={Math.min(pageSize, 10)} />;
-  }
-
   const getPageNumbers = (): (number | "ellipsis")[] => {
     if (totalPages <= 7) {
       return Array.from({ length: totalPages }, (_, i) => i + 1);
@@ -77,57 +73,57 @@ export const HTRegisterDnTable = ({
   };
 
   return (
-    <div className={styles.tableRoot}>
-      {/* Инфо-строка */}
-      <div className={styles.topBar}>
-        <span className={styles.totalLabel}>
-          Найдено пациентов:{" "}
-          <strong>{totalCount.toLocaleString("ru-RU")}</strong>
-        </span>
-      </div>
-
+    <div className={styles.tableRoot} aria-busy={isFetching}>
       {/* Таблица */}
-      <div className={styles.tableWrapper}>
-        <table className={styles.table}>
+      <div className={"mt-table-viewport mt-table-viewport--scrollable " + styles.tableWrapper}
+        role="region" aria-label="Пациенты регистра ДН, прокручиваемая таблица" tabIndex={0}>
+        <table className={"mt-table " + styles.table} aria-label="Пациенты регистра ДН">
           <thead>
             <tr>
-              <th>ЕНП</th>
-              <th>ФИО</th>
-              <th>Дата рождения</th>
-              <th>Пол</th>
+              <th scope="col">ЕНП</th>
+              <th scope="col">ФИО</th>
+              <th scope="col">Дата рождения</th>
+              <th scope="col">Пол</th>
             </tr>
           </thead>
           <tbody>
-            {items.length === 0 ? (
-              <tr>
+            {isLoading ? (
+              Array.from({ length: Math.min(pageSize, 10) }, (_, index) => (
+                <tr key={index} className="noneHover">
+                  {["enp", "name", "birthDate", "gender"].map(column => (
+                    <td key={column}><Skeleton variant="text" width="80%" /></td>
+                  ))}
+                </tr>
+              ))
+            ) : items.length === 0 ? (
+              <tr className="noneHover">
                 <td colSpan={4} className={styles.emptyCell}>
-                  <HTEmptyState
-                    compact
-                    title="Пациенты не найдены"
-                    description="Попробуйте изменить фильтры или сбросить их."
-                    action={
-                      onResetFilters
-                        ? {
-                            label: "Сбросить фильтры",
-                            onClick: onResetFilters,
-                          }
-                        : undefined
-                    }
-                  />
+                  <div className={styles.emptyState}>
+                    <h3>{hasAppliedFilters ? "Пациенты не найдены" : "Регистр ДН пуст"}</h3>
+                    <p>{hasAppliedFilters ? "Попробуйте изменить фильтры или сбросить их." : "В регистре пока нет пациентов."}</p>
+                    {hasAppliedFilters && onResetFilters && (
+                      <Button sx={documentButtonSx} variant="outlined" size="small"
+                        disabled={isFetching} onClick={onResetFilters}>Сбросить фильтры</Button>
+                    )}
+                  </div>
                 </td>
               </tr>
             ) : (
               items.map((item) => (
                 <tr
                   key={item.enp}
-                  className={styles.clickableRow}
-                  onClick={() => onOpenDetails(item)}
+                  className={isFetching ? "" : "mt-table__row--interactive"}
+                  onClick={() => { if (!isFetching) onOpenDetails(item); }}
                   title="Открыть карточку пациента"
                 >
                   <td>
                     <span className={styles.enpText}>{item.enp}</span>
                   </td>
-                  <td>{item.fullName || "—"}</td>
+                  <td><button type="button" className={styles.patientName} disabled={isFetching}
+                    onClick={(event) => { event.stopPropagation(); onOpenDetails(item); }}
+                    aria-label={"Открыть карточку пациента: " + (item.fullName || item.enp)}>
+                    {item.fullName || "—"}
+                  </button></td>
                   <td>{formatDate(item.birthDate)}</td>
                   <td>{formatGender(item.gender)}</td>
                 </tr>
@@ -143,9 +139,10 @@ export const HTRegisterDnTable = ({
           <span>Показывать по:</span>
           <select
             className={styles.pageSizeSelect}
+            aria-label="Количество пациентов на странице"
             value={pageSize}
             onChange={(e) => onPageSizeChange(Number(e.currentTarget.value))}
-            disabled={isLoading}
+            disabled={isFetching}
           >
             {[25, 50, 100, 200].map((n) => (
               <option key={n} value={n}>
@@ -159,7 +156,8 @@ export const HTRegisterDnTable = ({
           <IconButton
             size="small"
             onClick={() => onPageChange(page - 1)}
-            disabled={page <= 1 || isLoading}
+            aria-label="Предыдущая страница"
+            disabled={page <= 1 || isFetching}
           >
             <ChevronLeftIcon fontSize="small" />
           </IconButton>
@@ -172,12 +170,14 @@ export const HTRegisterDnTable = ({
             ) : (
               <button
                 key={num}
+                aria-label={"Страница " + num}
+                aria-current={num === page ? "page" : undefined}
                 type="button"
                 className={`${styles.pageButton} ${
                   num === page ? styles.pageButtonActive : ""
                 }`}
                 onClick={() => onPageChange(num)}
-                disabled={isLoading}
+                disabled={isFetching}
               >
                 {num}
               </button>
@@ -187,7 +187,8 @@ export const HTRegisterDnTable = ({
           <IconButton
             size="small"
             onClick={() => onPageChange(page + 1)}
-            disabled={page >= totalPages || isLoading}
+            aria-label="Следующая страница"
+            disabled={page >= totalPages || isFetching}
           >
             <ChevronRightIcon fontSize="small" />
           </IconButton>

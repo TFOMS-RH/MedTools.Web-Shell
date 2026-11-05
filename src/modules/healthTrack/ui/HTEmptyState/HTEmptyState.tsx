@@ -4,7 +4,8 @@
 import type { ReactNode } from "react";
 import InboxOutlinedIcon from "@mui/icons-material/InboxOutlined";
 
-import { AppButton } from "../../../../components/ui/AppButton/AppButton";
+import Button from "@mui/material/Button";
+import { documentButtonSx } from "../../features/documents/controlsSx";
 
 import styles from "./styles.module.scss";
 
@@ -64,13 +65,13 @@ export const HTEmptyState = ({
 
       {action && (
         <div className={styles.actionWrapper}>
-          <AppButton
-            variant={action.variant ?? "secondary"}
-            size="md"
+          <Button sx={documentButtonSx}
+            variant={action.variant === "primary" ? "contained" : "outlined"}
+            size="small"
             onClick={action.onClick}
           >
             {action.label}
-          </AppButton>
+          </Button>
         </div>
       )}
     </div>

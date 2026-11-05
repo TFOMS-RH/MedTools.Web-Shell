@@ -2,7 +2,8 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import LinearProgress from "@mui/material/LinearProgress";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 
-import { AppButton } from "../../../../../components/ui/AppButton/AppButton";
+import Button from "@mui/material/Button";
+import { documentButtonSx } from "../../documents/controlsSx";
 import { AppInput } from "../../../../../components/ui/AppInput/AppInput";
 
 import { HTFileDropzone } from "../../../ui/HTFileDropzone/HTFileDropzone";
@@ -134,7 +135,7 @@ export const HTImportForm = ({ onGoToDocument }: HTImportFormProps) => {
   return (
     <section className={styles.formRoot}>
       <header className={styles.header}>
-        <h3 className={styles.title}>Импорт файла</h3>
+        <h2 className={styles.title}>Импорт файла</h2>
         <p className={styles.subtitle}>
           Загрузите XML или ZIP-архив от МО, СМО или ТФОМС. Тип файла,
           период и код МО определяются автоматически по имени файла.
@@ -149,7 +150,7 @@ export const HTImportForm = ({ onGoToDocument }: HTImportFormProps) => {
       />
 
       {file && parseResult && !parseResult.isValid && (
-        <div className={styles.parseError}>
+        <div className={styles.parseError} role="alert">
           <span>⚠</span>
           <span>{parseResult.errorMessage}</span>
         </div>
@@ -200,21 +201,22 @@ export const HTImportForm = ({ onGoToDocument }: HTImportFormProps) => {
       )}
 
       {isUploading && (
-        <div className={styles.progressBlock}>
+        <div className={styles.progressBlock} role="status" aria-live="polite">
           <LinearProgress
-            variant="determinate"
+            variant={progress > 0 && progress < 100 ? "determinate" : "indeterminate"}
+            aria-label="Загрузка файла"
             value={progress}
             sx={{
               height: 6,
               borderRadius: "var(--radius-l)",
               backgroundColor: "var(--gray-200)",
               "& .MuiLinearProgress-bar": {
-                backgroundColor: "var(--text-default)",
+                backgroundColor: "var(--mt-healthtrack-accent)",
               },
             }}
           />
           <span className={styles.progressLabel}>
-            {progress < 100
+            {progress === 0 ? "Загрузка файла…" : progress < 100
               ? `Загрузка… ${progress}%`
               : "Обработка на сервере…"}
           </span>
@@ -223,15 +225,16 @@ export const HTImportForm = ({ onGoToDocument }: HTImportFormProps) => {
 
       {file && parseResult?.isValid && !result && (
         <div className={styles.actions}>
-          <AppButton
-            variant="primary"
-            size="md"
+          <Button
+            sx={documentButtonSx}
+            variant="contained"
+            size="small"
+            startIcon={<CloudUploadIcon sx={{ fontSize: 18 }} />}
             onClick={handleSubmit}
             disabled={!canSubmit || isUploading}
           >
-            <CloudUploadIcon sx={{ fontSize: 18, color: "var(--white)" }} />
             Загрузить
-          </AppButton>
+          </Button>
         </div>
       )}
 

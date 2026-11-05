@@ -1,29 +1,25 @@
-// ==========================================
-// modules/healthTrack/features/registerDn/styles.module.scss
-// ==========================================
-
 .tabRoot {
+  container: ht-register / inline-size;
   display: flex;
   flex-direction: column;
-  gap: var(--space-8);
-
+  gap: var(--mt-space-4);
   box-sizing: border-box;
+  min-width: 0;
   width: 100%;
+  padding: var(--mt-space-6);
+  border-radius: var(--mt-radius-card);
+  background: var(--mt-surface);
+  color: var(--mt-text-primary);
+  font-size: var(--mt-font-body);
 }
-
-.header {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-
-  .title {
-    font-size: var(--fs-h3);
-    font-weight: var(--fw-semibold);
-    color: var(--text-default);
-  }
-
-  .subtitle {
-    font-size: var(--fs-body2);
-    color: var(--text-secondary);
-  }
+.header { display: flex; flex-direction: column; gap: var(--mt-space-2); }
+.headingRow { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: var(--mt-space-2) var(--mt-space-4); }
+.title { margin: 0; font-size: var(--mt-font-title); font-weight: var(--fw-semibold); line-height: 1.25; }
+.subtitle, .count { margin: 0; color: var(--mt-text-secondary); line-height: 1.5; }
+.count strong { color: var(--mt-text-primary); font-variant-numeric: tabular-nums; }
+.requestStatus { margin: 0; color: var(--mt-text-secondary); line-height: 1.5; &:empty { display: none; } }
+.errorState { display: flex; flex-direction: column; align-items: flex-start; gap: var(--mt-space-3); padding: var(--mt-space-5) 0; overflow-wrap: anywhere;
+  h3, p { margin: 0; }
+  h3 { font-size: var(--fs-h4); font-weight: var(--fw-semibold); }
+  p { color: var(--text-error); }
 }

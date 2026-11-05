@@ -7,7 +7,8 @@ import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import RefreshIcon from "@mui/icons-material/Refresh";
 
-import { AppButton } from "../../../../components/ui/AppButton/AppButton";
+import Button from "@mui/material/Button";
+import { documentButtonSx } from "../../features/documents/controlsSx";
 
 import type { HTImportDisplayResult } from "../../types/htImport";
 import { HT_FILE_TYPE_LABELS } from "../../types/htDocuments";
@@ -49,7 +50,7 @@ export const HTImportResultCard = ({
     .join(" ");
 
   return (
-    <section className={rootClassName}>
+    <section className={rootClassName} role={result.status === "error" ? "alert" : "status"}>
       {/* ============================== */}
       {/* Заголовок с иконкой */}
       {/* ============================== */}
@@ -134,20 +135,20 @@ export const HTImportResultCard = ({
           {/* Действия */}
           <div className={styles.actions}>
             {result.documentId !== undefined && (
-              <AppButton
-                variant="primary"
-                size="md"
+              <Button
+                sx={documentButtonSx} variant="contained"
+                size="small"
                 onClick={() => onGoToDocument(result.documentId!)}
               >
                 Перейти к документу
                 <ChevronRightIcon sx={{ fontSize: 18, color: "var(--white)" }} />
-              </AppButton>
+              </Button>
             )}
 
-            <AppButton variant="secondary" size="md" onClick={onRetry}>
+            <Button sx={documentButtonSx} variant="outlined" size="small" onClick={onRetry}>
               <RefreshIcon sx={{ fontSize: 18 }} />
               Загрузить ещё
-            </AppButton>
+            </Button>
           </div>
         </>
       )}
@@ -164,10 +165,10 @@ export const HTImportResultCard = ({
           </div>
 
           <div className={styles.actions}>
-            <AppButton variant="primary" size="md" onClick={onRetry}>
+            <Button sx={documentButtonSx} variant="contained" size="small" onClick={onRetry}>
               <RefreshIcon sx={{ fontSize: 18, color: "var(--white)" }} />
               Попробовать снова
-            </AppButton>
+            </Button>
           </div>
         </>
       )}
