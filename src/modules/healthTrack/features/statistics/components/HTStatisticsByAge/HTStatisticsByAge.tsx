@@ -16,7 +16,7 @@ import {
   type HTStatisticsByAgeGroup,
 } from "../../../../types/htStatistics";
 
-import styles from "./styles.module.scss";
+import styles from "../../styles.module.scss";
 
 // ==========================================
 // Пропсы.
@@ -37,6 +37,8 @@ const FALLBACK_COLORS = [
   "#b91c1c",
   "#6633cc",
 ];
+
+const formatAgeLabel = (group: string) => /^\d+([-–]\d+|\+)$/.test(group) ? group + " лет" : group;
 
 const getGroupColor = (group: string, index: number): string => {
   return HT_AGE_GROUP_COLORS[group] ?? FALLBACK_COLORS[index % FALLBACK_COLORS.length];
@@ -61,7 +63,7 @@ const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
 
   return (
     <div className={styles.tooltip}>
-      <div className={styles.tooltipTitle}>{item.group} лет</div>
+      <div className={styles.tooltipTitle}>{formatAgeLabel(item.group)}</div>
       <div className={styles.tooltipValue}>
         Пациентов: <strong>{formatStatNumber(item.count)}</strong>
       </div>
@@ -99,7 +101,7 @@ export const HTStatisticsByAge = ({
   const isEmpty = total === 0;
 
   return (
-    <div className={styles.card}>
+    <div className={styles.card} role="region" aria-label="По возрасту">
       <header className={styles.cardHeader}>
         <h3 className={styles.cardTitle}>По возрасту</h3>
         <p className={styles.cardSubtitle}>Распределение пациентов</p>
@@ -108,7 +110,9 @@ export const HTStatisticsByAge = ({
       {isLoading && <div className={styles.message}>Загрузка…</div>}
 
       {!isLoading && isEmpty && (
-        <div className={styles.message}>Нет данных за выбранный период</div>
+        <div className={styles.message}>{data.length === 0
+          ? "Нет данных за выбранный период"
+          : "Во всех полученных возрастных группах — 0 пациентов."}</div>
       )}
 
       {!isLoading && !isEmpty && (
@@ -116,10 +120,11 @@ export const HTStatisticsByAge = ({
           {/* ============================== */}
           {/* Donut */}
           {/* ============================== */}
-          <div className={styles.chartWrapper}>
+          <div className={styles.ageChartWrapper}>
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
+                isAnimationActive={false}
                   data={chartData}
                   dataKey="count"
                   nameKey="group"
@@ -177,7 +182,7 @@ export const HTStatisticsByAge = ({
                   style={{ backgroundColor: entry.color }}
                 />
                 <span className={styles.legendLabel}>
-                  {entry.group} лет
+                  {formatAgeLabel(entry.group)}
                 </span>
                 <span className={styles.legendValue}>
                   {formatStatNumber(entry.count)}

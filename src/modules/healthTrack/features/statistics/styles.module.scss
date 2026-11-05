@@ -1,64 +1,43 @@
-// ==========================================
-// modules/healthTrack/features/statistics/styles.module.scss
-// ==========================================
-
 .tabRoot {
+  container: ht-statistics / inline-size;
   display: flex;
   flex-direction: column;
-  gap: var(--space-8);
-
-  box-sizing: border-box;
+  gap: var(--mt-space-5);
+  min-width: 0;
   width: 100%;
+  color: var(--mt-text-primary);
+  font-size: var(--mt-font-body);
 }
+.surface, .card { box-sizing: border-box; min-width: 0; padding: var(--mt-space-6); border-radius: var(--mt-radius-card); background: var(--mt-surface); }
+.surface { display: flex; flex-direction: column; gap: var(--mt-space-4); }
+.header, .cardHeader { display: flex; flex-direction: column; gap: var(--mt-space-2); }
+.title { margin: 0; font-size: var(--mt-font-title); font-weight: var(--fw-semibold); line-height: 1.25; }
+.subtitle, .range, .cardSubtitle { margin: 0; color: var(--mt-text-secondary); line-height: 1.5; }
+.requestStatus { display: flex; align-items: center; gap: var(--mt-space-3); color: var(--mt-text-secondary); line-height: 1.5; &:empty { display: none; } }
+.errorState { display: flex; flex-direction: column; align-items: flex-start; gap: var(--mt-space-3); overflow-wrap: anywhere; h3, p { margin: 0; } h3 { font-size: var(--fs-h4); } p { color: var(--text-error); } }
+.chartsGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: var(--mt-space-5); }
+.card { container: ht-stat-chart / inline-size; display: flex; flex-direction: column; gap: var(--mt-space-4); }
+.cardTitle { margin: 0; font-size: var(--fs-h4); font-weight: var(--fw-semibold); line-height: 1.4; }
+.chartWrapper { width: 100%; min-width: 0; height: 288px; }
+.message { margin: 0; padding: var(--mt-space-4) 0; color: var(--mt-text-secondary); line-height: 1.5; }
+.tooltip { display: flex; flex-direction: column; gap: var(--mt-space-2); padding: var(--mt-space-3); border-radius: var(--mt-radius-control); background: var(--mt-surface-subtle); color: var(--mt-text-primary); max-width: min(24rem, calc(100vw - 32px)); overflow-wrap: anywhere; line-height: 1.5; }
+.tooltipTitle { font-weight: var(--fw-semibold); }
+.tooltipValue, .tooltipPercent { color: var(--mt-text-secondary); strong { color: var(--mt-text-primary); } }
+.dataDetails { min-width: 0; summary { width: fit-content; border-radius: var(--radius-l); color: var(--mt-text-secondary); cursor: pointer; line-height: 1.5; &:hover { color: var(--mt-text-primary); } &:focus-visible { outline: 2px solid var(--mt-healthtrack-accent); outline-offset: 3px; } } }
+.tableViewport { &:focus-visible { outline: 2px solid var(--mt-healthtrack-accent); outline-offset: 2px; } margin-top: var(--mt-space-3); max-width: 100%; overflow-x: auto; }
+.dataTable { > :is(thead, tbody) > tr > :is(th, td) { overflow-wrap: anywhere; } > :is(thead, tbody) > tr > :is(th, td):last-child { text-align: right; font-variant-numeric: tabular-nums; } }
+.chartRow { display: grid; grid-template-columns: minmax(0, 1fr); align-items: center; gap: var(--mt-space-4); }
+.ageChartWrapper { position: relative; width: 100%; height: 256px; min-width: 0; }
+.centerLabel { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: var(--mt-space-1); pointer-events: none; }
+.centerValue { font-size: var(--mt-font-title); font-weight: var(--fw-semibold); font-variant-numeric: tabular-nums; }
+.centerCaption { font-size: var(--fs-caption); color: var(--mt-text-secondary); }
+.legend { display: flex; flex-direction: column; gap: var(--mt-space-2); list-style: none; margin: 0; padding: 0; min-width: 0; }
+.legendItem { display: grid; grid-template-columns: 12px minmax(0, 1fr) auto auto; align-items: center; gap: var(--mt-space-2); padding: var(--mt-space-1) 0; }
+.legendDot { width: 12px; height: 12px; border-radius: 50%; }
+.legendLabel { overflow-wrap: anywhere; }
+.legendValue, .legendPercent { font-variant-numeric: tabular-nums; }
+.legendPercent { color: var(--mt-text-secondary); }
+@container ht-statistics (max-width: 65rem) { .chartsGrid { grid-template-columns: minmax(0, 1fr); } }
+@container ht-stat-chart (min-width: 36rem) { .chartRow { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
 
-// ==========================================
-// Заголовок.
-// ==========================================
-.header {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-
-.title {
-  font-size: var(--fs-h3);
-  font-weight: var(--fw-semibold);
-  color: var(--text-default);
-  margin: 0;
-}
-
-.subtitle {
-  font-size: var(--fs-body2);
-  color: var(--text-secondary);
-  margin: 0;
-}
-
-// ==========================================
-// Загрузка (первый раз).
-// ==========================================
-.loadingBlock {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  padding: var(--space-10) 0;
-
-  font-size: var(--fs-body2);
-  color: var(--text-secondary);
-}
-
-// ==========================================
-// Ряд графиков (2 колонки).
-// ==========================================
-.chartsRow {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-6);
-
-  box-sizing: border-box;
-  width: 100%;
-
-  @media (max-width: 1100px) {
-    grid-template-columns: 1fr;
-  }
-}
+.diagnosesData { min-width: 32rem; > :is(thead, tbody) > tr > :is(th, td):nth-child(2) { min-width: 16rem; width: 70%; } }

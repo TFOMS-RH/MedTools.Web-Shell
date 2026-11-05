@@ -30,7 +30,7 @@ if (import.meta.env.DEV && window.parent !== window) {
     const [operationError, setOperationError] = useState(false);
     return <><PageContainer width="wide">
       <aside className={styles.controls} aria-label="Настройки превью">
-        <p>Превью HealthTrack. Данные вымышлены, операции выполняются в памяти. Выгрузки — пустые демонстрационные ZIP-архивы.</p>
+        <p>Превью HealthTrack. Данные вымышлены, операции выполняются в памяти. Выгрузки — пустые демонстрационные ZIP-архивы. Статистика — синтетический помесячный набор за 2025-11 — 2026-10; нулевой месяц — 2026-04. Фильтрация относится только к этому тестовому набору.</p>
         <label>Состояние списка<select value={mode} onChange={(event) => {
           const next = event.target.value as DemoMode;
           setMode(next); transport.setMode(next); void client.resetQueries();

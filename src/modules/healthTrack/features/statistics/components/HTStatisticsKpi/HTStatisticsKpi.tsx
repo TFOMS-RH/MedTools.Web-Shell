@@ -57,7 +57,7 @@ const TILES: KpiTile[] = [
   },
   {
     key: "documentsReady",
-    label: "Готово",
+    label: "Готово документов",
     icon: <TaskAltOutlinedIcon sx={{ fontSize: 22 }} />,
     accent: "#1a7f37",
   },
@@ -75,7 +75,9 @@ const TILES: KpiTile[] = [
  */
 export const HTStatisticsKpi = ({ kpi }: HTStatisticsKpiProps) => {
   return (
-    <div className={styles.kpiRoot}>
+    <section className={styles.surface} aria-labelledby="ht-statistics-kpi">
+      <h3 id="ht-statistics-kpi">Общая статистика</h3>
+      <div className={styles.kpiRoot}>
       {TILES.map((tile) => {
         const value = kpi[tile.key];
 
@@ -100,6 +102,7 @@ export const HTStatisticsKpi = ({ kpi }: HTStatisticsKpiProps) => {
           </div>
         );
       })}
-    </div>
+      </div>
+    </section>
   );
 };

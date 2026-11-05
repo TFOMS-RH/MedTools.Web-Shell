@@ -2,6 +2,9 @@
 // modules/healthTrack/features/statistics/HTStatisticsTab.tsx
 // ==========================================
 import { useCallback, useMemo, useState } from "react";
+import { Button, CircularProgress } from "@mui/material";
+import { documentButtonSx } from "../documents/controlsSx";
+import { getApiError } from "../../../../shared/helpers/getApiError";
 
 import {
   HTDateRangeFilter,
@@ -60,7 +63,10 @@ export const HTStatisticsTab = () => {
   // ==========================================
   // Запрос.
   // ==========================================
-  const { data, isLoading } = useStatisticsOverviewQuery(queryParams);
+  const { data, isLoading, isFetching, isPlaceholderData, isError, error, refetch } =
+    useStatisticsOverviewQuery(queryParams);
+  const displayedData = !isPlaceholderData && !isError ? data : undefined;
+  const requestError = isError ? getApiError(error, "Не удалось загрузить статистику.") : null;
 
   // ==========================================
   // Обработчики.
@@ -78,59 +84,43 @@ export const HTStatisticsTab = () => {
   // Рендер.
   // ==========================================
   return (
-    <section className={styles.tabRoot}>
-      {/* ============================== */}
-      {/* Заголовок */}
-      {/* ============================== */}
-      <header className={styles.header}>
-        <h2 className={styles.title}>Статистика</h2>
-        <p className={styles.subtitle}>
-          Аналитика по регистру ДН и загруженным документам
-        </p>
-      </header>
+    <section className={styles.tabRoot} aria-busy={isFetching}>
+      <section className={styles.surface} aria-labelledby="ht-statistics-heading">
+        <header className={styles.header}>
+          <h2 id="ht-statistics-heading" className={styles.title}>Статистика</h2>
+          <p className={styles.subtitle}>Аналитика по регистру ДН и загруженным документам</p>
+        </header>
+        <HTDateRangeFilter value={filter} onChange={setFilter} onSubmit={handleApplyFilter}
+          onReset={handleResetFilter} disabled={isFetching} />
+        {displayedData && <p className={styles.range} data-statistics-range>
+          {displayedData.periodFrom && displayedData.periodTo
+            ? "Период данных: " + displayedData.periodFrom + " — " + displayedData.periodTo
+            : displayedData.periodFrom ? "Период данных: с " + displayedData.periodFrom
+            : displayedData.periodTo ? "Период данных: по " + displayedData.periodTo
+            : "Диапазон данных не указан сервером."}
+        </p>}
+        <div className={styles.requestStatus} role="status">
+          {isFetching && <><CircularProgress size={18} sx={{ color: "var(--mt-healthtrack-accent)" }} />
+            {isLoading ? "Загрузка статистики…" : isPlaceholderData
+              ? "Загрузка статистики за выбранный период…" : "Обновление статистики…"}
+          </>}
+        </div>
+        {requestError && <div className={styles.errorState} role="alert">
+          <h3>Не удалось загрузить статистику</h3><p>{requestError.message}</p>
+          <Button sx={documentButtonSx} variant="outlined" size="small" disabled={isFetching}
+            onClick={() => void refetch()}>Повторить</Button>
+        </div>}
+      </section>
 
-      {/* ============================== */}
-      {/* Фильтр по периоду */}
-      {/* ============================== */}
-      <HTDateRangeFilter
-        value={filter}
-        onChange={setFilter}
-        onSubmit={handleApplyFilter}
-        onReset={handleResetFilter}
-        disabled={isLoading}
-      />
-
-      {/* ============================== */}
-      {/* Загрузка / данные */}
-      {/* ============================== */}
-      {isLoading && !data && (
-        <div className={styles.loadingBlock}>Загрузка статистики…</div>
-      )}
-
-      {data && (
-        <>
-          {/* KPI */}
-          <HTStatisticsKpi kpi={data.kpi} />
-
-          {/* Ряд 1: Топ МО + Топ диагнозов */}
-          <div className={styles.chartsRow}>
-            <HTStatisticsTopMos data={data.topMos} isLoading={isLoading} />
-            <HTStatisticsTopDiagnoses
-              data={data.topDiagnoses}
-              isLoading={isLoading}
-            />
-          </div>
-
-          {/* Ряд 2: Динамика + По возрасту */}
-          <div className={styles.chartsRow}>
-            <HTStatisticsByPeriod data={data.byPeriod} isLoading={isLoading} />
-            <HTStatisticsByAge
-              data={data.byAgeGroup}
-              isLoading={isLoading}
-            />
-          </div>
-        </>
-      )}
+      {displayedData && <>
+        <HTStatisticsKpi kpi={displayedData.kpi} />
+        <div className={styles.chartsGrid}>
+          <HTStatisticsTopMos data={displayedData.topMos} />
+          <HTStatisticsTopDiagnoses data={displayedData.topDiagnoses} />
+          <HTStatisticsByPeriod data={displayedData.byPeriod} />
+          <HTStatisticsByAge data={displayedData.byAgeGroup} />
+        </div>
+      </>}
     </section>
   );
 };

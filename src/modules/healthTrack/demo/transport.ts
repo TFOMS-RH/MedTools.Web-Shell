@@ -1,3 +1,4 @@
+import type { HTStatisticsOverview, HTStatisticsQueryParams } from "../types/htStatistics";
 import type { HTRegisterDnItem, HTRegisterDnDetails, HTRegisterDnQueryParams } from "../types/htRegisterDn";
 import { AxiosError, type AxiosAdapter } from "axios";
 import {
@@ -87,6 +88,33 @@ const makeRegisterDetails = (patient: HTRegisterDnItem): HTRegisterDnDetails => 
   };
 };
 
+// Demonstration-only disjoint monthly cohorts. These totals define the fixture,
+// not the aggregation rules of the production statistics API.
+const makeStatistics = (params: HTStatisticsQueryParams, empty: boolean): HTStatisticsOverview => {
+  const months = Array.from({ length: 12 }, (_, index) => ({
+    period: new Date(Date.UTC(2025, 10 + index)).toISOString().slice(0, 7),
+    base: index === 5 ? 0 : index + 1,
+  })).filter(item => (!params.periodFrom || item.period >= params.periodFrom) &&
+    (!params.periodTo || item.period <= params.periodTo));
+  const scale = empty ? 0 : months.reduce((sum, item) => sum + item.base, 0);
+  const codes = ["I10", "E11", "J45", "I25", "E78", "J44", "K29", "M54", "N18", "G40"];
+  return {
+    kpi: { patientsTotal: scale * 30, patientsActive: scale * 20, patientsClosed: scale * 10,
+      documentsTotal: scale * 4, documentsReady: scale * 3, recordsTotal: scale * 80 },
+    topMos: empty || !months.length ? [] : [6, 5, 4, 4, 3, 3, 2, 2, 1, 0].map((weight, index) =>
+      ({ moCode: String(990001 + index), count: weight * scale })),
+    topDiagnoses: empty || !months.length ? [] : [8, 5, 4, 3, 3, 2, 2, 2, 1, 0].map((weight, index) =>
+      ({ diagCode: codes[index], diagName: index === 9 ? null : index === 0
+        ? "Демонстрационная длинная расшифровка диагноза для проверки полного чтения медицинского названия в графике и текстовой таблице"
+        : "Демонстрационное название диагноза " + (index + 1), count: weight * scale })),
+    byPeriod: empty ? [] : months.map(item => ({ period: item.period, count: item.base * 30 })),
+    byAgeGroup: empty || !months.length ? [] : ["До 18", "18-30", "31-45", "46-60", "61-75", "76+", "Неизвестно"].map((group, index) =>
+      ({ group, count: [0, 3, 6, 9, 8, 2, 2][index] * scale })),
+    periodFrom: months[0]?.period ?? params.periodFrom ?? null,
+    periodTo: months.at(-1)?.period ?? params.periodTo ?? null,
+  };
+};
+
 /** Local Axios adapter, installed only inside the development iframe. Never forwards HTTP. */
 export function createDocumentsDemoTransport() {
   let documents = makeDocuments(100);
@@ -113,6 +141,7 @@ export function createDocumentsDemoTransport() {
       if (operationError) return fail("Демонстрационная ошибка операции");
     } else if (mode === "error") return fail(path.startsWith("/health-track/register-dn")
       ? "Демонстрационная ошибка загрузки регистра ДН"
+      : path.startsWith("/health-track/statistics/") ? "Демонстрационная ошибка загрузки статистики"
       : "Демонстрационная ошибка загрузки документов");
 
     if (/^\/health-track\/import\/(gst|gpt|gsm|gpm|gf|pf|dspn|prof)$/.test(path) && method === "post") {
@@ -179,9 +208,7 @@ export function createDocumentsDemoTransport() {
     }
 
     if (path === "/health-track/statistics/overview" && method === "get") {
-      return response({ kpi: { patientsTotal: 0, patientsActive: 0, patientsClosed: 0,
-        documentsTotal: 0, documentsReady: 0, recordsTotal: 0 },
-        topMos: [], topDiagnoses: [], byPeriod: [], byAgeGroup: [], periodFrom: null, periodTo: null });
+      return response(makeStatistics((config.params ?? {}) as HTStatisticsQueryParams, mode === "empty"));
     }
 
     const addHistory = (id: number, actionType: string, detail: string) => {

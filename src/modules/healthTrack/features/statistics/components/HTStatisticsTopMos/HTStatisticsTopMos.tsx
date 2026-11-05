@@ -18,7 +18,7 @@ import {
   type HTStatisticsTopMo,
 } from "../../../../types/htStatistics";
 
-import styles from "./styles.module.scss";
+import styles from "../../styles.module.scss";
 
 // ==========================================
 // Пропсы.
@@ -74,7 +74,7 @@ export const HTStatisticsTopMos = ({
   const isEmpty = useMemo(() => data.length === 0, [data]);
 
   return (
-    <div className={styles.card}>
+    <div className={styles.card} role="region" aria-label="Топ-10 МО">
       <header className={styles.cardHeader}>
         <h3 className={styles.cardTitle}>Топ-10 МО</h3>
         <p className={styles.cardSubtitle}>По количеству пациентов</p>
@@ -87,12 +87,12 @@ export const HTStatisticsTopMos = ({
       )}
 
       {!isLoading && !isEmpty && (
-        <div className={styles.chartWrapper}>
+        <div className={styles.chartWrapper} style={{ height: Math.max(144, data.length * 36 + 52) }}>
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
               data={data}
               layout="vertical"
-              margin={{ top: 5, right: 20, left: 40, bottom: 5 }}
+              margin={{ top: 5, right: 24, left: 0, bottom: 5 }}
             >
               <CartesianGrid
                 strokeDasharray="3 3"
@@ -103,7 +103,7 @@ export const HTStatisticsTopMos = ({
               <XAxis
                 type="number"
                 stroke="var(--text-secondary)"
-                fontSize={12}
+                fontSize={14}
                 tickFormatter={(v: number) => formatStatNumber(v)}
               />
 
@@ -112,7 +112,8 @@ export const HTStatisticsTopMos = ({
                 dataKey="moCode"
                 stroke="var(--text-secondary)"
                 fontSize={12}
-                width={70}
+                width={84}
+                interval={0}
               />
 
               <Tooltip
@@ -121,6 +122,7 @@ export const HTStatisticsTopMos = ({
               />
 
               <Bar
+                isAnimationActive={false}
                 dataKey="count"
                 radius={[0, 4, 4, 0]}
                 onClick={(entry) => {
@@ -143,6 +145,17 @@ export const HTStatisticsTopMos = ({
           </ResponsiveContainer>
         </div>
       )}
+      {!isLoading && !isEmpty && <details className={styles.dataDetails}>
+        <summary>Данные графика — все значения</summary>
+        <div className={styles.tableViewport} tabIndex={0}>
+          <table className={"mt-table " + styles.dataTable} aria-label="Топ-10 МО: данные">
+            <thead><tr><th scope="col">Код МО</th><th scope="col">Пациентов</th></tr></thead>
+            <tbody>{data.map((item, index) => <tr key={item.moCode + "-" + index}>
+              <td>{item.moCode}</td><td>{formatStatNumber(item.count)}</td>
+            </tr>)}</tbody>
+          </table>
+        </div>
+      </details>}
     </div>
   );
 };
