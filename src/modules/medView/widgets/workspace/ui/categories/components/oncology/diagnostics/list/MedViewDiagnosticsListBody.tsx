@@ -1,7 +1,7 @@
+import { formatDate } from "../../../../../../../../../../shared/helpers/formatDate";
 import type { DiagnosticListItemDto } from "../../../../../../../../../../shared/model/types/invoiceStructure/results/oncology/GetDiagnosticsResult";
 import { TableSkeleton } from "../../../../../../../../../../shared/ui/TableSkeleton/TableSkeleton";
-import { formatOncologyDate } from "../../formatOncologyDate";
-import { displayValue } from "../../presentation";
+import { formatCodeNamePair } from "../../presentation";
 import styles from "../../styles.module.scss";
 
 export const MedViewDiagnosticsListBody = ({
@@ -42,16 +42,31 @@ export const MedViewDiagnosticsListBody = ({
         ) : (
           diagnosticRecords.map((record) => (
             <tr key={record.diagnosticsUid}>
-              <td>{formatOncologyDate(record.specimenCollectionDate)}</td>
-              <td>{displayValue(record.diagnosticType)}</td>
-              <td>{displayValue(record.diagnosticCode)}</td>
-              <td>{displayValue(record.diagnosticResultCode)}</td>
+              <td>{formatDate(record.specimenCollectionDate)}</td>
+              <td>
+                {formatCodeNamePair(
+                  record.diagnosticTypeCode,
+                  record.diagnosticTypeName,
+                )}
+              </td>
+              <td>
+                {formatCodeNamePair(
+                  record.diagnosticCode,
+                  record.diagnosticName,
+                )}
+              </td>
+              <td>
+                {formatCodeNamePair(
+                  record.diagnosticResultCode,
+                  record.diagnosticResultName,
+                )}
+              </td>
               <td>
                 {record.isResultReceived === null
                   ? "—"
                   : record.isResultReceived
-                    ? "Положительный"
-                    : "Отрицательный"}
+                    ? "Получен"
+                    : "Не получен"}
               </td>
             </tr>
           ))

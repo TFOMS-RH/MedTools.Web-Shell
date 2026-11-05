@@ -1,4 +1,4 @@
-import { lazy, Suspense, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import { useMedViewWorkspaceStore } from "../../model/stores/useMedViewWorkspaceStore";
 import { useMedViewFiltersStore } from "../../../filters/model/stores/useMedViewFiltersStore";
 import { useCompletedCasesQuery } from "../../model/queries/useCompletedCasesQuery";
@@ -7,48 +7,7 @@ import { MedViewCompletedCasesTableRoot } from "./completedCases/table/MedViewCo
 import { MedViewMedicalCaseCardsGroupRoot } from "./medicalCases/cardsGroup/MedViewMedicalCaseCardsGroupRoot";
 import styles from "./styles.module.scss";
 
-const WorkspacePreview = import.meta.env.DEV
-  ? lazy(() => import("./MedViewWorkspacePreview"))
-  : null;
-const categoryDemoParams = [
-  "demoPatient",
-  "demoCaseDetails",
-  "demoOncology",
-  "demoPrescriptions",
-  "demoClinicalGroups",
-  "demoProvidedServices",
-  "demoDefects",
-];
-
 export const MedViewWorkspace = ({ children }: { children: ReactNode }) => {
-  const params = new URLSearchParams(window.location.search);
-  if (WorkspacePreview && params.get("demoWorkspace") === "1") {
-    return (
-      <Suspense fallback={null}>
-        <WorkspacePreview>{children}</WorkspacePreview>
-      </Suspense>
-    );
-  }
-  // Standalone development fixtures remain reachable without inventing parent selections.
-  if (
-    import.meta.env.DEV &&
-    categoryDemoParams.some((key) => params.get(key) === "1")
-  ) {
-    return <section className={styles.workspaceRoot}>{children}</section>;
-  }
-  if (
-    import.meta.env.DEV &&
-    (params.get("demoTable") === "1" || params.get("demoCases") === "1")
-  ) {
-    return (
-      <section className={styles.workspaceRoot}>
-        {params.get("demoTable") === "1" && <MedViewCompletedCasesTableRoot />}
-        {params.get("demoCases") === "1" && (
-          <MedViewMedicalCaseCardsGroupRoot />
-        )}
-      </section>
-    );
-  }
   return <MedViewLiveWorkspace>{children}</MedViewLiveWorkspace>;
 };
 
@@ -61,7 +20,6 @@ interface WorkspaceViewProps {
   children: ReactNode;
 }
 
-// One presentation flow for live queries and offline development fixtures.
 export const MedViewWorkspaceView = ({
   hasSearch,
   hasCompleted,
@@ -100,7 +58,7 @@ const MedViewLiveWorkspace = ({ children }: { children: ReactNode }) => {
     completedCasePaginationState,
     targetDb,
   );
-  // Membership comes from the current query key; cached data remains valid on refetch/error.
+  
   const completedCaseUid =
     hasSearch &&
     result?.completedCases.some(

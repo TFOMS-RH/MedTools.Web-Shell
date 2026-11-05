@@ -27,7 +27,10 @@ export const MedViewMedicalDevicesTableRoot = () => {
   });
 
   return (
-    <section className={styles.section} aria-labelledby="medview-devices-heading">
+    <section
+      className={styles.section}
+      aria-labelledby="medview-devices-heading"
+    >
       <MedViewMedicalDevicesTableHeader />
       {dataState === "error" ? (
         <DataState

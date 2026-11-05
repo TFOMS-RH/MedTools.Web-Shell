@@ -6,22 +6,33 @@ import { MedViewProvidedServiceCardsGroupRoot } from "./providedServices/cardsGr
 import styles from "./styles.module.scss";
 
 const MedViewProvidedServicesCategoryRoot = () => {
-  const { selectedProvidedServiceUid, selectedMedicalCaseUid } = useMedViewWorkspaceStore();
+  const { selectedProvidedServiceUid, selectedMedicalCaseUid } =
+    useMedViewWorkspaceStore();
 
   return (
     <section className={styles.providedServicesRoot}>
-      <section className={styles.section} aria-labelledby="medview-services-heading">
-        <h3 id="medview-services-heading" className={styles.sectionHeading}>Оказанные услуги</h3>
+      <section
+        className={styles.section}
+        aria-labelledby="medview-services-heading"
+      >
+        <h3 id="medview-services-heading" className={styles.sectionHeading}>
+          Оказанные услуги
+        </h3>
         {selectedMedicalCaseUid === null ? (
           <DataState
             title="Выберите медицинский случай"
             description="Выберите медицинский случай для отображения данных об оказанных услугах"
             variant="waiting"
           />
-        ) : <MedViewProvidedServiceCardsGroupRoot />}
+        ) : (
+          <MedViewProvidedServiceCardsGroupRoot />
+        )}
       </section>
       {selectedProvidedServiceUid === null ? (
-        <section className={styles.section} aria-labelledby="medview-devices-heading">
+        <section
+          className={styles.section}
+          aria-labelledby="medview-devices-heading"
+        >
           <MedViewMedicalDevicesTableHeader />
           <DataState
             title="Выберите оказанную услугу"
@@ -29,7 +40,9 @@ const MedViewProvidedServicesCategoryRoot = () => {
             variant="waiting"
           />
         </section>
-      ) : <MedViewMedicalDevicesTableRoot />}
+      ) : (
+        <MedViewMedicalDevicesTableRoot />
+      )}
     </section>
   );
 };

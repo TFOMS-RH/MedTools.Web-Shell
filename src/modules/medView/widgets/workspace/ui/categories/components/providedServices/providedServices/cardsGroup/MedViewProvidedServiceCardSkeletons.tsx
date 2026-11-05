@@ -8,14 +8,19 @@ export const MedViewProvidedServiceCardSkeletons = () => (
       <tbody key={index} aria-hidden="true">
         <tr className={`noneHover ${styles.mainRow}`}>
           {Array.from({ length: 5 }, (_, column) => (
-            <td key={column}><Skeleton /></td>
+            <td key={column}>
+              <Skeleton />
+            </td>
           ))}
         </tr>
         <tr className={`noneHover ${styles.detailsRow}`}>
           <td colSpan={5}>
             <div className={styles.detailsGrid}>
               {Array.from({ length: 6 }, (_, field) => (
-                <div key={field} className={field === 5 ? styles.comment : undefined}>
+                <div
+                  key={field}
+                  className={field === 5 ? styles.comment : undefined}
+                >
                   <Skeleton width="9rem" />
                   <Skeleton />
                 </div>

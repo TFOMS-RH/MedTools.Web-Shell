@@ -31,77 +31,6 @@ export const RControlCompletedCaseDetailsCardBody = ({
   return (
     <div className={styles.groups} aria-busy={isPending}>
       <section
-        className={`${styles.informationGroup} ${styles.wideGroup}`}
-        aria-labelledby="rcontrol-completed-organizations"
-      >
-        <h4
-          id="rcontrol-completed-organizations"
-          className={styles.groupHeading}
-        >
-          ЛПУ и направление
-        </h4>
-        <div className={styles.organizationGrid}>
-          <CardField
-            label="Наименование ЛПУ"
-            value={
-              isPending ? (
-                <Skeleton />
-              ) : (
-                <>
-                  <span className={styles.referenceName}>
-                    {organizationName?.trim()
-                      ? organizationName
-                      : organizationCode?.trim()
-                        ? organizationCode
-                        : "—"}
-                  </span>
-                  {organizationName?.trim() && organizationCode?.trim() ? (
-                    <span className={styles.referenceCode}>
-                      Код ЛПУ: {organizationCode}
-                    </span>
-                  ) : null}
-                </>
-              )
-            }
-          />
-          <div className={styles.referral}>
-            <CardField
-              label="Наименование направившей МО"
-              value={
-                isPending ? (
-                  <Skeleton />
-                ) : (
-                  <>
-                    <span className={styles.referenceName}>
-                      {referringName?.trim()
-                        ? referringName
-                        : referringCode?.trim()
-                          ? referringCode
-                          : "—"}
-                    </span>
-                    {referringName?.trim() && referringCode?.trim() ? (
-                      <span className={styles.referenceCode}>
-                        Код направившей МО: {referringCode}
-                      </span>
-                    ) : null}
-                  </>
-                )
-              }
-            />
-            <CardField
-              label="Дата направления"
-              value={
-                isPending ? (
-                  <Skeleton />
-                ) : (
-                  formatDate(completedCaseDetails.referralDate)
-                )
-              }
-            />
-          </div>
-        </div>
-      </section>
-      <section
         className={styles.informationGroup}
         aria-labelledby="rcontrol-completed-care"
       >
@@ -197,6 +126,77 @@ export const RControlCompletedCaseDetailsCardBody = ({
               )
             }
           />
+        </div>
+      </section>
+      <section
+        className={`${styles.informationGroup} ${styles.wideGroup}`}
+        aria-labelledby="rcontrol-completed-organizations"
+      >
+        <h4
+          id="rcontrol-completed-organizations"
+          className={styles.groupHeading}
+        >
+          ЛПУ и направление
+        </h4>
+        <div className={styles.organizationGrid}>
+          <CardField
+            label="Наименование ЛПУ"
+            value={
+              isPending ? (
+                <Skeleton />
+              ) : (
+                <>
+                  <span className={styles.referenceName}>
+                    {organizationName?.trim()
+                      ? organizationName
+                      : organizationCode?.trim()
+                        ? organizationCode
+                        : "—"}
+                  </span>
+                  {organizationName?.trim() && organizationCode?.trim() ? (
+                    <span className={styles.referenceCode}>
+                      Код ЛПУ: {organizationCode}
+                    </span>
+                  ) : null}
+                </>
+              )
+            }
+          />
+          <div className={styles.referral}>
+            <CardField
+              label="Наименование направившей МО"
+              value={
+                isPending ? (
+                  <Skeleton />
+                ) : (
+                  <>
+                    <span className={styles.referenceName}>
+                      {referringName?.trim()
+                        ? referringName
+                        : referringCode?.trim()
+                          ? referringCode
+                          : "—"}
+                    </span>
+                    {referringName?.trim() && referringCode?.trim() ? (
+                      <span className={styles.referenceCode}>
+                        Код направившей МО: {referringCode}
+                      </span>
+                    ) : null}
+                  </>
+                )
+              }
+            />
+            <CardField
+              label="Дата направления"
+              value={
+                isPending ? (
+                  <Skeleton />
+                ) : (
+                  formatDate(completedCaseDetails.referralDate)
+                )
+              }
+            />
+          </div>
         </div>
       </section>
       <section

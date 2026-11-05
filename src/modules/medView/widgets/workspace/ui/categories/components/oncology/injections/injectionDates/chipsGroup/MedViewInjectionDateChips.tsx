@@ -1,5 +1,5 @@
 import type { InjectionDateDto } from "../../../../../../../../../../../shared/model/types/invoiceStructure/results/oncology/GetInjectionDatesResult";
-import { formatOncologyDate } from "../../../formatOncologyDate";
+import { formatDate } from "../../../../../../../../../../../shared/helpers/formatDate";
 import styles from "../../../styles.module.scss";
 
 export const MedViewInjectionDateChips = ({
@@ -10,7 +10,7 @@ export const MedViewInjectionDateChips = ({
   <ul className={styles.dates}>
     {injectionDates.map((record) => (
       <li key={record.injectionDateUid}>
-        {formatOncologyDate(record.administrationDate)}
+        {formatDate(record.administrationDate)}
       </li>
     ))}
   </ul>

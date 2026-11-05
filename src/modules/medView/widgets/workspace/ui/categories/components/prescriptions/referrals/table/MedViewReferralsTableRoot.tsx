@@ -28,7 +28,10 @@ export const MedViewReferralsTableRoot = () => {
   });
 
   return (
-    <section className={styles.section} aria-labelledby="medview-referrals-heading">
+    <section
+      className={styles.section}
+      aria-labelledby="medview-referrals-heading"
+    >
       <MedViewReferralsTableHeader />
       {dataState === "error" ? (
         <DataState

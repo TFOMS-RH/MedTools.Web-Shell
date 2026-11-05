@@ -11,7 +11,11 @@ import styles from "./styles.module.scss";
 const MedViewClinicalGroupsCategoryRoot = () => {
   const { targetDb } = useMedViewFiltersStore();
   const { selectedMedicalCaseUid } = useMedViewWorkspaceStore();
-  const { data: clinicalGroup, isError, isSuccess } = useClinicalGroupQuery(selectedMedicalCaseUid, targetDb);
+  const {
+    data: clinicalGroup,
+    isError,
+    isSuccess,
+  } = useClinicalGroupQuery(selectedMedicalCaseUid, targetDb);
   const clinicalGroupUid = clinicalGroup?.clinicalGroupUid ?? null;
 
   return (
@@ -28,12 +32,24 @@ const MedViewClinicalGroupsCategoryRoot = () => {
             <MedViewClinicalGroupCardRoot />
             <MedViewHighTechMedicalCareCardRoot />
           </div>
-          <section className={styles.relatedSection} aria-labelledby="medview-csg-related-heading">
-            <h3 id="medview-csg-related-heading" className={styles.sectionHeading}>Связанные сведения КСГ</h3>
+          <section
+            className={styles.relatedSection}
+            aria-labelledby="medview-csg-related-heading"
+          >
+            <h3
+              id="medview-csg-related-heading"
+              className={styles.sectionHeading}
+            >
+              Связанные сведения КСГ
+            </h3>
             {clinicalGroupUid !== null ? (
               <div className={styles.relatedGrid}>
-                <MedViewClassificationCriterionChipsGroupRoot clinicalGroupUid={clinicalGroupUid} />
-                <MedViewTreatmentCoefficientsListRoot clinicalGroupUid={clinicalGroupUid} />
+                <MedViewClassificationCriterionChipsGroupRoot
+                  clinicalGroupUid={clinicalGroupUid}
+                />
+                <MedViewTreatmentCoefficientsListRoot
+                  clinicalGroupUid={clinicalGroupUid}
+                />
               </div>
             ) : isError ? (
               <DataState

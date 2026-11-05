@@ -1,5 +1,9 @@
 import type { PrescriptionDto } from "../../../../../../../../../../shared/model/types/invoiceStructure/results/prescriptions/GetPrescriptionsResult";
-import { displayValue, formatReferralDate, renderReference } from "../../presentation";
+import {
+  displayValue,
+  formatReferralDate,
+  renderReference,
+} from "../../presentation";
 import { MedViewPrescriptionCardSkeletons } from "./MedViewPrescriptionCardSkeletons";
 import styles from "./styles.module.scss";
 
@@ -18,19 +22,29 @@ export const MedViewPrescriptionCards = ({
     <div className={styles.prescriptionsCards}>
       {prescriptions.map((prescription) => (
         <article className={styles.panel} key={prescription.perscriptionUid}>
-          <h4 className={styles.panelHeading}>Назначение №{prescription.sequenceNumber}</h4>
+          <h4 className={styles.panelHeading}>
+            Назначение №{prescription.sequenceNumber}
+          </h4>
           <div className={styles.groups}>
             <div className={styles.mainGroup}>
               <dl className={styles.fields}>
                 <div className={styles.wideField}>
                   <dt>Вид назначения</dt>
                   <dd className={styles.primaryValue}>
-                    {renderReference(prescription.prescriptionType, prescription.prescriptionTypeCode)}
+                    {renderReference(
+                      prescription.prescriptionType,
+                      prescription.prescriptionTypeCode,
+                    )}
                   </dd>
                 </div>
                 <div>
                   <dt>Метод диагностического лечения</dt>
-                  <dd>{renderReference(prescription.diagnosticMethod, prescription.diagnosticMethodCode)}</dd>
+                  <dd>
+                    {renderReference(
+                      prescription.diagnosticMethod,
+                      prescription.diagnosticMethodCode,
+                    )}
+                  </dd>
                 </div>
                 <div>
                   <dt>Медицинская услуга в направлении</dt>

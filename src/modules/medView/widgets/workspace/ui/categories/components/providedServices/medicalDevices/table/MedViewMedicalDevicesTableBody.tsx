@@ -19,7 +19,10 @@ export const MedViewMedicalDevicesTableBody = ({
     tabIndex={0}
     aria-busy={isPending}
   >
-    <table className={`mt-table ${styles.devicesTable}`} aria-labelledby="medview-devices-heading">
+    <table
+      className={`mt-table ${styles.devicesTable}`}
+      aria-labelledby="medview-devices-heading"
+    >
       <colgroup>
         <col className={styles.dateColumn} />
         <col className={styles.codeColumn} />
@@ -33,13 +36,19 @@ export const MedViewMedicalDevicesTableBody = ({
         </tr>
       </thead>
       <tbody>
-        {isPending ? <TableSkeleton columns={3} rows={5} /> : medicalDevices.map((device) => (
-          <tr key={device.medicalDeviceUid}>
-            <td className={styles.dateValue}>{formatServiceDate(device.implantationDate)}</td>
-            <td>{displayValue(device.medicalDeviceTypeCode)}</td>
-            <td>{displayValue(device.serialNumber)}</td>
-          </tr>
-        ))}
+        {isPending ? (
+          <TableSkeleton columns={3} rows={5} />
+        ) : (
+          medicalDevices.map((device) => (
+            <tr key={device.medicalDeviceUid}>
+              <td className={styles.dateValue}>
+                {formatServiceDate(device.implantationDate)}
+              </td>
+              <td>{displayValue(device.medicalDeviceTypeCode)}</td>
+              <td>{displayValue(device.serialNumber)}</td>
+            </tr>
+          ))
+        )}
       </tbody>
     </table>
   </div>
