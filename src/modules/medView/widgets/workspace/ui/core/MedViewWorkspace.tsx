@@ -38,9 +38,16 @@ export const MedViewWorkspaceView = ({
         <p>Укажите параметры поиска, чтобы найти законченные случаи.</p>
       </section>
     ) : (
-      results
+      <section className={styles.casesWorkspace} aria-label="Законченные и медицинские случаи">
+        {results}
+        {hasCompleted && (
+          <section className={styles.medicalCasesArea} aria-labelledby="medview-medical-heading">
+            <h3 id="medview-medical-heading">Медицинские случаи</h3>
+            {cards}
+          </section>
+        )}
+      </section>
     )}
-    {hasSearch && hasCompleted && cards}
     {hasSearch && hasCompleted && hasMedical && children}
   </section>
 );

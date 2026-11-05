@@ -4,6 +4,8 @@ import axios from "axios";
 import apiClient from "../../../../../../shared/api/client/apiClient";
 import { useRControlWorkspaceStore } from "../../model/store/useRControlWorkspaceStore";
 import { useRControlWorkspacePanelStore } from "../../model/store/useRControlWorkspacePanelStore";
+import { PageContainer } from "../../../../../../components/layouts/PageContainer/PageContainer";
+import styles from "./styles.module.scss";
 
 /** Development-only transport fixtures; the actual hooks, controls and selection rules run unchanged. */
 export default function RControlWorkspaceDemoProvider({
@@ -20,6 +22,10 @@ export default function RControlWorkspaceDemoProvider({
       }),
   );
   const [ready, setReady] = useState(false);
+  const [medicalCount, setMedicalCount] = useState(() => {
+    const count = Number(new URLSearchParams(window.location.search).get("demoMedicalCount") ?? 2);
+    return [1, 2, 8].includes(count) ? count : 2;
+  });
   useEffect(() => {
     const originalAdapter = apiClient.defaults.adapter;
     const forward = axios.getAdapter(originalAdapter);
@@ -104,7 +110,8 @@ export default function RControlWorkspaceDemoProvider({
             patientLastName: "Демонстрационный",
             patientFirstName: `Пациент ${index}`,
             patientMiddleName: "",
-            medicalCareConditions: 0,
+            medicalCareConditionsCode: 0,
+            medicalCareConditionsName: "Демонстрационные условия",
             insurancePolicySeries: null,
             insurancePolicyNumber: "0000000000000000",
             amountBilled: 1234.56,
@@ -115,15 +122,22 @@ export default function RControlWorkspaceDemoProvider({
       } else if (/\/completed-cases\/\d+\/medical-cases$/.test(path)) {
         kind = "Medical";
         const parent = Number(path.split("/").at(-2));
+        const requestedCount = Number(flags.get("demoMedicalCount") ?? 2);
+        const count = [1, 2, 8].includes(requestedCount) ? requestedCount : 2;
         value = {
-          medicalCases: [1, 2].map((index) => ({
+          medicalCases: Array.from({ length: count }, (_, i) => i + 1).map((index) => ({
             medicalCaseUid: parent * 10 + index,
-            medicalProfile: null,
+            medicalProfileCode: index,
+            medicalProfileName: "Демонстрационный профиль медицинской помощи",
             isPediatric: false,
-            physicianSpecialty: 0,
+            physicianSpecialtyCode: index,
+            physicianSpecialtyName: "Демонстрационная специальность врача",
             treatmentStartDate: "2026-01-01",
             treatmentEndDate: "2026-01-03",
-            primaryDiagnosis: "",
+            primaryDiagnosisCode: `DEMO-${index}`,
+            primaryDiagnosisName: index === 2
+              ? "Демонстрационная расшифровка для проверки переноса длинного текста в центральной области медицинской карточки"
+              : "Демонстрационная расшифровка для проверки интерфейса",
             paidUnits: index,
             unitRate: null,
             amountBilled: 1234.56,
@@ -196,6 +210,26 @@ export default function RControlWorkspaceDemoProvider({
     };
   }, [client]);
   return ready ? (
-    <QueryClientProvider client={client}>{children}</QueryClientProvider>
+    <QueryClientProvider client={client}>
+      <PageContainer width="wide">
+        <aside className={styles.previewControls} aria-label="Настройки демонстрации RControl">
+          <span>Демонстрационные данные</span>
+          <label>
+            Медицинских карточек
+            <select value={medicalCount} onChange={(event) => {
+              const count = Number(event.target.value);
+              const url = new URL(window.location.href);
+              url.searchParams.set("demoMedicalCount", String(count));
+              window.history.replaceState(window.history.state, "", url);
+              setMedicalCount(count);
+              void client.invalidateQueries({ queryKey: ["r-control", "medical-cases"] });
+            }}>
+              {[1, 2, 8].map(count => <option key={count} value={count}>{count}</option>)}
+            </select>
+          </label>
+        </aside>
+      </PageContainer>
+      {children}
+    </QueryClientProvider>
   ) : null;
 }

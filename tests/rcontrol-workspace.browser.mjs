@@ -163,7 +163,8 @@ try {
     patientLastName: "Тестовый",
     patientFirstName: "Пациент",
     patientMiddleName: "",
-    medicalCareConditions: 0,
+    medicalCareConditionsCode: 0,
+    medicalCareConditionsName: "Демонстрационные условия",
     insurancePolicySeries: null,
     insurancePolicyNumber: "0000000000000000",
     amountBilled: 1234.56,
@@ -172,12 +173,15 @@ try {
   });
   const medical = (uid) => ({
     medicalCaseUid: uid,
-    medicalProfile: null,
+    medicalProfileCode: 1,
+    medicalProfileName: "Демонстрационный профиль",
     isPediatric: false,
-    physicianSpecialty: 0,
+    physicianSpecialtyCode: 1,
+    physicianSpecialtyName: "Демонстрационная специальность",
     treatmentStartDate: "2026-01-01",
     treatmentEndDate: "2026-01-03",
-    primaryDiagnosis: "ТЕСТ-МЕД-" + uid,
+    primaryDiagnosisCode: "ТЕСТ-МЕД-" + uid,
+    primaryDiagnosisName: "Демонстрационная расшифровка для проверки длинного медицинского текста",
     paidUnits: 1,
     unitRate: null,
     amountBilled: 1234.56,
@@ -901,7 +905,7 @@ try {
   await mouse('rcInv().querySelector("tbody tr td:nth-child(2)")');
   await until('rcComp()?.querySelectorAll("tbody button").length===2');
   check("demo native mouse invoice row selects once",await evaluate("invoiceActions===1&&rcStore.getState().selectedInvoiceUid===11"));
-  check("demo state C shows completed cases as a separate sibling section",await evaluate(`(()=>{const accounts=document.querySelector('[aria-labelledby=rcontrol-accounts-title]'),completed=rcComp();return ${summary}?.closest('[aria-labelledby=rcontrol-accounts-title]')===accounts&&!accounts.contains(completed)&&accounts.nextElementSibling===completed&&getComputedStyle(completed).backgroundColor==='rgb(255, 255, 255)'&&rcMeds().length===0&&!document.querySelector('[class*=categoriesPanelRoot_]');})()`));
+  check("demo state C shows a cases workspace separate from accounts",await evaluate(`(()=>{const accounts=document.querySelector('[aria-labelledby=rcontrol-accounts-title]'),completed=rcComp(),surface=document.querySelector('[aria-label="Законченные и медицинские случаи"]');return ${summary}?.closest('[aria-labelledby=rcontrol-accounts-title]')===accounts&&!accounts.contains(completed)&&accounts.nextElementSibling===surface&&surface.contains(completed)&&getComputedStyle(surface).backgroundColor==='rgb(255, 255, 255)'&&rcMeds().length===0&&!document.querySelector('[class*=categoriesPanelRoot_]');})()`));
   await screenshot("rcontrol-workspace-invoice-selected",'[aria-labelledby=rcontrol-accounts-title]');
   await mouse('rcComp().querySelector("tbody button")');
   await until("rcStore.getState().selectedMedicalCaseUid===1111");
@@ -1007,9 +1011,40 @@ try {
   await demoMode("Medical","ready");
   await invalidate("medical-cases");
   await until("rcMeds().length===2&&rcStore.getState().selectedMedicalCaseUid!==null");
-  for(const width of [360,768,1024,1440,1920]) {
+  for(const count of [1,2,8]) {
+    await evaluate(`(()=>{const e=document.querySelector('[aria-label="Настройки демонстрации RControl"] select');e.value='${count}';e.dispatchEvent(new Event('change',{bubbles:true}));})()`);
+    await until(`rcMeds().length===${count}&&rcStore.getState().selectedMedicalCaseUid!==null`);
+    check('preview '+count+' cards shares surface outside table viewport',await evaluate(`(()=>{
+      const surface=document.querySelector('[aria-label="Законченные и медицинские случаи"]'),viewport=surface.querySelector('.mt-table-viewport'),cards=rcMeds();
+      return surface.contains(rcComp())&&cards.every(e=>surface.contains(e)&&!viewport.contains(e))
+        &&!surface.contains(document.getElementById('rcontrol-case-heading'))
+        &&getComputedStyle(surface).backgroundColor==='rgb(255, 255, 255)'
+        &&surface.querySelector('#rcontrol-medical-heading').textContent==='Медицинские случаи'
+        &&Math.abs(viewport.getBoundingClientRect().left-cards[0].getBoundingClientRect().left)<1
+        &&cards.every((e,i)=>i===0||e.getBoundingClientRect().top>=cards[i-1].getBoundingClientRect().bottom);
+    })()`));
+    if(count===8) {
+      await mouse('rcMeds()[7].querySelector("button")');
+      check('eighth medical card can be selected',await evaluate('rcMeds()[7].querySelector("button").getAttribute("aria-pressed")==="true"'));
+      for(const width of [360,768,1920,2560]) {
+        await send('Emulation.setDeviceMetricsOverride',{width,height:width===2560?1440:1080,deviceScaleFactor:1,mobile:false});await pause();
+        check('eight cards stack without page overflow or nested scrolling at '+width,await evaluate(`(()=>{
+          const cards=rcMeds(),area=document.querySelector('[aria-labelledby=rcontrol-medical-heading]');
+          return document.documentElement.scrollWidth<=document.documentElement.clientWidth
+            &&getComputedStyle(area).overflowY==='visible'
+            &&cards.every((e,i)=>e.scrollWidth<=e.clientWidth+1&&(i===0||e.getBoundingClientRect().top>=cards[i-1].getBoundingClientRect().bottom));
+        })()`));
+      }
+      await send('Emulation.setDeviceMetricsOverride',{width:1440,height:1000,deviceScaleFactor:1,mobile:false});await pause();
+    }
+    await screenshot('rcontrol-cases-preview-'+count,'[aria-label="Законченные и медицинские случаи"]');
+  }
+  await evaluate(`(()=>{const e=document.querySelector('[aria-label="Настройки демонстрации RControl"] select');e.value='2';e.dispatchEvent(new Event('change',{bubbles:true}));})()`);
+  await until('rcMeds().length===2');
+  check('reducing preview count restores a valid medical selection',await evaluate('rcMeds()[0].querySelector("button").getAttribute("aria-pressed")==="true"'));
+  for(const width of [360,768,1024,1440,1920,2560]) {
     await evaluate('document.fonts.ready.then(()=>true)');
-    await send("Emulation.setDeviceMetricsOverride",{width,height:1000,deviceScaleFactor:1,mobile:false});
+    await send("Emulation.setDeviceMetricsOverride",{width,height:width===2560?1440:width===1920?1080:1000,deviceScaleFactor:1,mobile:false});
     await pause();
     const geometry=await evaluate(`({viewport:innerWidth,page:document.documentElement.scrollWidth,body:document.body.scrollWidth,overflow:[...document.querySelectorAll('body *')].filter(e=>e.getBoundingClientRect().right>innerWidth+1).slice(0,8).map(e=>({tag:e.tagName,cls:e.className,right:e.getBoundingClientRect().right}))})`);
     console.log("DEMO GEOMETRY "+JSON.stringify(geometry));

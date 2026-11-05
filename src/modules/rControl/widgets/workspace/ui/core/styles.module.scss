@@ -34,3 +34,53 @@
     border-radius: var(--radius-l);
   }
 }
+
+.casesWorkspace {
+  container: rcontrol-cases-workspace / inline-size;
+  min-width: 0;
+  border-radius: var(--mt-radius-card);
+  background: var(--mt-surface);
+}
+
+.medicalCasesArea {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: var(--mt-space-3);
+  padding: 0 var(--mt-space-6) var(--mt-space-6);
+
+  > h3 {
+    margin: 0;
+    color: var(--mt-text-primary);
+    font-size: var(--fs-h4);
+    font-weight: var(--fw-semibold);
+    line-height: 1.5;
+  }
+}
+
+@container rcontrol-cases-workspace (max-width: 48rem) {
+  .medicalCasesArea { padding-inline: var(--mt-space-4); padding-bottom: var(--mt-space-4); }
+}
+
+.previewControls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--mt-space-3);
+  margin-bottom: var(--mt-space-4);
+  color: var(--mt-text-secondary);
+  font-size: var(--mt-font-body);
+
+  label { display: flex; flex-wrap: wrap; align-items: center; gap: var(--mt-space-2); }
+  select {
+    min-height: var(--mt-space-10);
+    max-width: 100%;
+    padding: var(--mt-space-2) var(--mt-space-3);
+    border: 0;
+    border-radius: var(--mt-radius-control);
+    background: var(--mt-surface);
+    color: var(--mt-text-primary);
+    font: inherit;
+    &:focus-visible { outline: 2px solid var(--mt-rcontrol-accent); outline-offset: 2px; }
+  }
+}

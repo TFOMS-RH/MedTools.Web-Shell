@@ -1,5 +1,6 @@
 // Run from the repository root: node tests/medview-progressive-workspace.browser.mjs
 // Requires Chrome (override CHROME_PATH if needed). All API responses are intercepted test fixtures.
+// --live-only verifies the current production UI without the legacy standalone demo routes.
 import { spawn } from "node:child_process";
 import { mkdtemp } from "node:fs/promises";
 import { tmpdir } from "node:os";
@@ -122,7 +123,8 @@ try {
       patientLastName: "ТЕСТ-ПАЦИЕНТ-" + (i + 1),
       patientFirstName: "Тест",
       patientMiddleName: "",
-      medicalCareConditions: 1,
+      medicalCareConditionsCode: 1,
+      medicalCareConditionsName: "Демонстрационные условия",
       insurancePolicySeries: null,
       insurancePolicyNumber: "0000000000000000",
       amountBilled: 12345.67,
@@ -132,12 +134,15 @@ try {
   const medical = (parent) =>
     Array.from({ length: medicalCount }, (_, i) => ({
       medicalCaseUid: parent * 100 + i + 1,
-      medicalProfile: null,
+      medicalProfileCode: 1,
+      medicalProfileName: "Демонстрационный профиль",
       isPediatric: false,
-      physicianSpecialty: 0,
+      physicianSpecialtyCode: 1,
+      physicianSpecialtyName: "Демонстрационная специальность",
       treatmentStartDate: "2026-01-01",
       treatmentEndDate: "2026-01-03",
-      primaryDiagnosis: "ТЕСТ-МЕД-" + (parent * 100 + i + 1),
+      primaryDiagnosisCode: "ТЕСТ-МЕД-" + (parent * 100 + i + 1),
+      primaryDiagnosisName: "Демонстрационная расшифровка для проверки длинного медицинского текста",
       paidUnits: 1,
       unitRate: null,
       amountBilled: 12345.67,
@@ -314,6 +319,13 @@ try {
     'document.getElementById("medview-case-panel")?.textContent.includes("Выберите раздел")',
   );
   await screenshot("04-medical-case-selected");
+  check("results and medical cards share one surface, details stay separate", await evaluate(`(()=>{
+    const surface=wsArea().querySelector('[aria-label="Законченные и медицинские случаи"]');
+    const viewport=surface.querySelector('.mt-table-viewport');
+    return surface.contains(wsCards())&&!viewport.contains(wsCards())&&!surface.contains(wsDetails())
+      &&getComputedStyle(surface).backgroundColor==='rgb(255, 255, 255)'
+      &&surface.querySelector('#medview-medical-heading').textContent==='Медицинские случаи';
+  })()`));
   for (const h of held.splice(0)) await h.finish();
   await pause();
   check(
@@ -474,10 +486,10 @@ try {
   );
   await evaluate("wsRows()[0].click()");
   await until("wsCards()&&wsDetails()");
-  for (const width of [320, 360, 600, 768, 1000, 1440, 1920]) {
+  for (const width of [320, 360, 600, 768, 1000, 1440, 1920, 2560]) {
     await send("Emulation.setDeviceMetricsOverride", {
       width,
-      height: 1200,
+      height: width === 2560 ? 1440 : width === 1920 ? 1080 : 1200,
       deviceScaleFactor: 1,
       mobile: false,
     });
@@ -504,6 +516,9 @@ try {
     );
   }
   await evaluate('wsArea().style.width=""');
+  if (process.argv.includes("--live-only")) {
+    console.log("LIVE PROGRESSIVE WORKSPACE CHECKS COMPLETE (legacy demo routes not exercised)");
+  } else {
   // Real page reload resets the in-memory stores; only SPA return preserves them.
   await send("Page.navigate", {
     url: "http://127.0.0.1:5189/med-view?demoWorkspace=1",
@@ -603,6 +618,7 @@ try {
   check("standalone medical cards fixture", true);
 
   console.log("PROGRESSIVE WORKSPACE CHECKS COMPLETE");
+  }
 } finally {
   ws?.close();
   chrome.kill();
