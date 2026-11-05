@@ -1,120 +1,45 @@
-// ==========================================
-// modules/healthTrack/components/HTTabCards/styles.module.scss
-// ==========================================
-
 .tabsRoot {
-  display: grid;
-
-  // 5 колонок по умолчанию — все табы в ряд.
-  // auto-fit + minmax сделают магию: если места мало, колонки схлопнутся
-  // и карточки перенесутся на следующую строку автоматически.
-  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
-  gap: var(--space-5);
-}
-
-// ==========================================
-// Карточка одного таба.
-// button, поэтому обнуляем дефолтные стили браузера.
-// ==========================================
-.tabCard {
-  // Сброс дефолтов кнопки
-  all: unset;
   box-sizing: border-box;
+  min-width: 0;
+  width: 100%;
+  padding: var(--mt-space-2);
+  border-radius: var(--mt-radius-card);
+  background: var(--mt-surface);
 
-  // Раскладка: иконка сверху, текст снизу
-  display: flex;
-  flex-direction: column;
+  :global(.MuiTabs-list) { gap: var(--mt-space-1); }
+  :global(.MuiTab-root) {
+    flex: 1 0 auto;
+    min-width: auto;
+    max-width: none;
+    min-height: 44px;
+    padding: var(--mt-space-3) var(--mt-space-4);
+    border-radius: var(--mt-radius-control);
+    background: transparent;
+    color: var(--mt-text-secondary);
+    font-family: var(--mt-font-family);
+    font-size: var(--mt-font-body);
+    font-weight: var(--fw-semibold);
+    line-height: 1.4;
+    text-transform: none;
+    white-space: nowrap;
 
-  gap: var(--space-4);
-  padding: var(--space-8);
-
-  // Оформление карточки
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-xl);
-  background: var(--card-background);
-
-  cursor: pointer;
-  user-select: none;
-
-  // Плавные переходы на hover / active
-  transition:
-    border-color 0.15s ease,
-    box-shadow 0.15s ease,
-    background 0.15s ease;
-
-  // --- Иконка ---
-  .tabIcon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    width: 3rem;
-    height: 3rem;
-
+    &:hover { background: var(--mt-canvas); color: var(--mt-text-primary); }
+    &:global(.Mui-selected) {
+      background: var(--mt-healthtrack-cover);
+      color: color-mix(in srgb, var(--mt-healthtrack-accent) 70%, var(--mt-text-primary));
+      &:hover { background: var(--mt-healthtrack-cover); }
+    }
+    &:global(.Mui-focusVisible) {
+      outline: 2px solid color-mix(in srgb, var(--mt-healthtrack-accent) 70%, var(--mt-text-primary));
+      outline-offset: -3px;
+    }
+  }
+  :global(.MuiTabs-indicator) { display: none; }
+  :global(.MuiTabScrollButton-root) {
+    width: 32px;
     border-radius: var(--radius-l);
-    background: var(--gray-100);
-    color: var(--text-default);
-
-    transition: background 0.15s ease;
-  }
-
-  // --- Текстовый блок ---
-  .tabText {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-2);
-
-    h3 {
-      font-size: var(--fs-h4);
-      font-weight: var(--fw-semibold);
-      color: var(--text-default);
-      line-height: 1.25;
-    }
-
-    p {
-      font-size: var(--fs-body2);
-      color: var(--text-secondary);
-      line-height: 1.35;
-    }
-  }
-
-  // --- Hover ---
-  &:hover {
-    border-color: var(--border-hover);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-
-    .tabIcon {
-      background: var(--gray-200);
-    }
-  }
-
-  // --- Focus для клавиатуры ---
-  &:focus-visible {
-    outline: none;
-    border-color: var(--border-focus);
-    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.08);
-  }
-}
-
-// ==========================================
-// Модификатор активного таба.
-// Используется как `${styles.tabCard} ${styles.active}`.
-// ==========================================
-.active {
-  border-color: var(--text-default);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
-
-  .tabIcon {
-    background: var(--text-default);
-    color: var(--white);
-  }
-
-  &:hover {
-    border-color: var(--text-default);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-
-    .tabIcon {
-      background: var(--text-default);
-    }
+    color: var(--mt-text-secondary);
+    &:hover { background: var(--mt-canvas); }
+    &:focus-visible { outline: 2px solid var(--mt-healthtrack-accent); outline-offset: -3px; }
   }
 }

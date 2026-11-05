@@ -1,4 +1,5 @@
-import type { ReactNode } from "react";
+import { Tab, Tabs } from "@mui/material";
+import type { ReactElement } from "react";
 
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import UploadFileOutlinedIcon from "@mui/icons-material/UploadFileOutlined";
@@ -12,34 +13,29 @@ export type HTTabKey = "documents" | "import" | "registerDn" | "statistics";
 interface HTTabDefinition {
   key: HTTabKey;
   title: string;
-  description: string;
-  icon: ReactNode;
+  icon: ReactElement;
 }
 
 const TABS: HTTabDefinition[] = [
   {
     key: "documents",
     title: "Документы и экспорт",
-    description: "Просмотр, проверка и выгрузка файлов",
-    icon: <DescriptionOutlinedIcon sx={{ fontSize: 28 }} />,
+    icon: <DescriptionOutlinedIcon sx={{ fontSize: 20 }} />,
   },
   {
     key: "import",
     title: "Импорт",
-    description: "Загрузка XML/ZIP файлов от МО и СМО",
-    icon: <UploadFileOutlinedIcon sx={{ fontSize: 28 }} />,
+    icon: <UploadFileOutlinedIcon sx={{ fontSize: 20 }} />,
   },
   {
     key: "registerDn",
     title: "Регистр ДН",
-    description: "Реестр граждан на диспансерном наблюдении",
-    icon: <AssignmentOutlinedIcon sx={{ fontSize: 28 }} />,
+    icon: <AssignmentOutlinedIcon sx={{ fontSize: 20 }} />,
   },
   {
     key: "statistics",
     title: "Статистика",
-    description: "Аналитика и отчёты по загруженным данным",
-    icon: <BarChartOutlinedIcon sx={{ fontSize: 28 }} />,
+    icon: <BarChartOutlinedIcon sx={{ fontSize: 20 }} />,
   },
 ];
 
@@ -49,28 +45,13 @@ interface HTTabCardsProps {
 }
 
 
-export const HTTabCards = ({ activeTab, onTabChange }: HTTabCardsProps) => {
-  return (
-    <div className={styles.tabsRoot}>
-      {TABS.map((tab) => {
-        const isActive = tab.key === activeTab;
-
-        return (
-          <button
-            key={tab.key}
-            type="button"
-            className={`${styles.tabCard} ${isActive ? styles.active : ""}`}
-            onClick={() => onTabChange(tab.key)}
-          >
-            <div className={styles.tabIcon}>{tab.icon}</div>
-
-            <div className={styles.tabText}>
-              <h3>{tab.title}</h3>
-              <p>{tab.description}</p>
-            </div>
-          </button>
-        );
-      })}
-    </div>
-  );
-};
+export const HTTabCards = ({ activeTab, onTabChange }: HTTabCardsProps) => (
+  <Tabs className={styles.tabsRoot} value={activeTab}
+    onChange={(_, key: HTTabKey) => onTabChange(key)}
+    variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile
+    aria-label="Разделы HealthTrack">
+    {TABS.map((tab) => <Tab key={tab.key} value={tab.key} label={tab.title}
+      icon={tab.icon} iconPosition="start" disableRipple
+      id={"ht-section-tab-" + tab.key} aria-controls="ht-section-panel" />)}
+  </Tabs>
+);

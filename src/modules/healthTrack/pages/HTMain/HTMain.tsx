@@ -69,7 +69,8 @@ const HTLiveMain = () => {
     <PageContainer width="wide">
       <section className={styles.mainRoot}>
         <HTTabCards activeTab={activeTab} onTabChange={handleTabChange} />
-        <section className={styles.tabContent}>{renderTabContent()}</section>
+        <section id="ht-section-panel" role="tabpanel" aria-labelledby={"ht-section-tab-" + activeTab}
+          className={styles.tabContent}>{renderTabContent()}</section>
       </section>
     </PageContainer>
   );

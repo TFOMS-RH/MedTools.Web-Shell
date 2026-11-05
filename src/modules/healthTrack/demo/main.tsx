@@ -4,7 +4,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { PageContainer } from "../../../components/layouts/PageContainer/PageContainer";
 import { useAuthStore } from "../../auth/stores/authStore";
 import apiClient from "../../../shared/api/client/apiClient";
-import { HTDocumentsTab } from "../features/documents/HTDocumentsTab";
+import { MemoryRouter } from "react-router";
+import { HTMain } from "../pages/HTMain/HTMain";
 import { HTNotistackProvider } from "../ui/HTNotistackProvider/HTNotistackProvider";
 import { createDocumentsDemoTransport, type DemoMode } from "./transport";
 import "../../../app/styles/global.scss";
@@ -27,7 +28,7 @@ if (import.meta.env.DEV && window.parent !== window) {
     const [count, setCount] = useState(100);
     const [organization, setOrganization] = useState("19000");
     const [operationError, setOperationError] = useState(false);
-    return <PageContainer width="wide">
+    return <><PageContainer width="wide">
       <aside className={styles.controls} aria-label="Настройки превью">
         <p>Превью HealthTrack. Данные вымышлены, операции выполняются в памяти. Выгрузки — пустые демонстрационные ZIP-архивы.</p>
         <label>Состояние списка<select value={mode} onChange={(event) => {
@@ -49,8 +50,7 @@ if (import.meta.env.DEV && window.parent !== window) {
           setOperationError(event.target.checked); transport.setOperationError(event.target.checked);
         }} />Ошибки операций</label>
       </aside>
-      <HTDocumentsTab />
-    </PageContainer>;
+    </PageContainer><MemoryRouter initialEntries={["/health-track"]}><HTMain /></MemoryRouter></>;
   }
 
   createRoot(document.getElementById("root")!).render(

@@ -165,8 +165,8 @@ try {
   await evaluate("[...document.querySelectorAll('[role=dialog] button')].find(e=>e.textContent==='Удалить').click()");
   await until("!document.querySelector('[role=dialog]')");
   check('deletion retains confirmation and endpoint',calls.some(c=>c.path==='/api/health-track/documents/7'&&c.method==='DELETE'));
-  check('all six export formats and one active form',await evaluate("document.querySelectorAll('[aria-label=\"Формат выгрузки\"] [role=tab]').length===6&&document.querySelectorAll('[role=tabpanel]').length===1&&document.querySelectorAll('[role=tabpanel] button').length===1"));
-  await evaluate("window.exportTab=label=>[...document.querySelectorAll('[aria-label=\"Формат выгрузки\"] [role=tab]')].find(e=>e.textContent===label);window.exportPanel=()=>document.querySelector('[role=tabpanel]');");
+  check('all six export formats and one active form',await evaluate("document.querySelectorAll('[aria-label=\"Формат выгрузки\"] [role=tab]').length===6&&document.querySelectorAll('[aria-labelledby=ht-export-heading] [role=tabpanel]').length===1&&document.querySelectorAll('[aria-labelledby=ht-export-heading] [role=tabpanel] button').length===1"));
+  await evaluate("window.exportTab=label=>[...document.querySelectorAll('[aria-label=\"Формат выгрузки\"] [role=tab]')].find(e=>e.textContent===label);window.exportPanel=()=>document.querySelector('[aria-labelledby=ht-export-heading] [role=tabpanel]');");
   await evaluate("setInput(exportPanel().querySelector('input'),'2026-09');exportTab('GPT').click()");await pause();
   await evaluate("exportTab('GST').click()");await pause();
   check('drafts survive format switch without exports',await evaluate("exportPanel().querySelector('input').value==='2026-09'")&&!calls.some(c=>c.path.includes('/export/')&&!c.path.endsWith('/response')));

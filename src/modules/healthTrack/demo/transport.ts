@@ -87,6 +87,17 @@ export function createDocumentsDemoTransport() {
         page, pageSize, totalPages, hasPrevious: page > 1, hasNext: page < totalPages });
     }
 
+    // Empty local datasets let the real navigation show the other existing sections.
+    if (path === "/health-track/register-dn" && method === "get") {
+      const { page = 1, pageSize = 50 } = config.params ?? {};
+      return response({ items: [], totalCount: 0, page, pageSize, totalPages: 1, hasPrevious: false, hasNext: false });
+    }
+    if (path === "/health-track/statistics/overview" && method === "get") {
+      return response({ kpi: { patientsTotal: 0, patientsActive: 0, patientsClosed: 0,
+        documentsTotal: 0, documentsReady: 0, recordsTotal: 0 },
+        topMos: [], topDiagnoses: [], byPeriod: [], byAgeGroup: [], periodFrom: null, periodTo: null });
+    }
+
     const addHistory = (id: number, actionType: string, detail: string) => {
       const event: HTDocumentAuditItem = {
         id: ++eventId, createdAt: new Date().toISOString(), userName: "demo.operator@example.invalid",
