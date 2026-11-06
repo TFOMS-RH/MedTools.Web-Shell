@@ -32,7 +32,10 @@ export const MedViewTreatmentCoefficientsListRoot = ({
   });
 
   return (
-    <section className={styles.panel} aria-labelledby="medview-csg-coefficients-heading">
+    <section
+      className={styles.panel}
+      aria-labelledby="medview-csg-coefficients-heading"
+    >
       <MedViewTreatmentCoefficientsListHeader />
       {dataState === "error" ? (
         <DataState

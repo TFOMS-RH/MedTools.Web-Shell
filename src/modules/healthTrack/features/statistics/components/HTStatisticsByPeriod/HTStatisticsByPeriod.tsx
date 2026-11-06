@@ -13,12 +13,11 @@ import {
 } from "recharts";
 
 import {
-  HT_CHART_COLORS,
   formatStatNumber,
   type HTStatisticsByPeriod as HTStatisticsByPeriodData,
 } from "../../../../types/htStatistics";
 
-import styles from "./styles.module.scss";
+import styles from "../../styles.module.scss";
 
 // ==========================================
 // Пропсы.
@@ -93,11 +92,11 @@ export const HTStatisticsByPeriod = ({
   const isEmpty = chartData.length === 0;
 
   return (
-    <div className={styles.card}>
+    <div className={styles.card} role="region" aria-label="Динамика по периодам">
       <header className={styles.cardHeader}>
         <h3 className={styles.cardTitle}>Динамика по периодам</h3>
         <p className={styles.cardSubtitle}>
-          Постановки на ДН по месяцам (последние 12)
+          Постановки на ДН по месяцам
         </p>
       </header>
 
@@ -119,12 +118,12 @@ export const HTStatisticsByPeriod = ({
                 <linearGradient id="htPeriodGradient" x1="0" y1="0" x2="0" y2="1">
                   <stop
                     offset="5%"
-                    stopColor={HT_CHART_COLORS.blue}
+                    stopColor={"var(--mt-healthtrack-accent)"}
                     stopOpacity={0.25}
                   />
                   <stop
                     offset="95%"
-                    stopColor={HT_CHART_COLORS.blue}
+                    stopColor={"var(--mt-healthtrack-accent)"}
                     stopOpacity={0}
                   />
                 </linearGradient>
@@ -138,13 +137,13 @@ export const HTStatisticsByPeriod = ({
               <XAxis
                 dataKey="label"
                 stroke="var(--text-secondary)"
-                fontSize={12}
+                fontSize={14}
                 tickLine={false}
               />
 
               <YAxis
                 stroke="var(--text-secondary)"
-                fontSize={12}
+                fontSize={14}
                 tickFormatter={(v: number) => formatStatNumber(v)}
                 tickLine={false}
               />
@@ -155,19 +154,20 @@ export const HTStatisticsByPeriod = ({
               />
 
               <Area
+                isAnimationActive={false}
                 type="monotone"
                 dataKey="count"
-                stroke={HT_CHART_COLORS.blue}
+                stroke={"var(--mt-healthtrack-accent)"}
                 strokeWidth={2}
                 fill="url(#htPeriodGradient)"
                 dot={{
                   r: 3,
-                  fill: HT_CHART_COLORS.blue,
+                  fill: "var(--mt-healthtrack-accent)",
                   strokeWidth: 0,
                 }}
                 activeDot={{
                   r: 5,
-                  fill: HT_CHART_COLORS.blue,
+                  fill: "var(--mt-healthtrack-accent)",
                   stroke: "var(--card-background)",
                   strokeWidth: 2,
                 }}
@@ -176,6 +176,17 @@ export const HTStatisticsByPeriod = ({
           </ResponsiveContainer>
         </div>
       )}
+      {!isLoading && !isEmpty && <details className={styles.dataDetails}>
+        <summary>Данные графика — все периоды</summary>
+        <div className={styles.tableViewport} tabIndex={0}>
+          <table className={"mt-table " + styles.dataTable} aria-label="Динамика: данные">
+            <thead><tr><th scope="col">Период</th><th scope="col">Пациентов</th></tr></thead>
+            <tbody>{data.map((item, index) => <tr key={item.period + "-" + index}>
+              <td>{item.period}</td><td>{formatStatNumber(item.count)}</td>
+            </tr>)}</tbody>
+          </table>
+        </div>
+      </details>}
     </div>
   );
 };

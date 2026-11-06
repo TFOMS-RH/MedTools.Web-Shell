@@ -48,7 +48,6 @@ const MedViewOncologyRoot = () => {
       />
     );
 
-  // Presentation-only observers reuse the existing keyed requests and validated IDs.
   const { targetDb } = useMedViewFiltersStore();
   const { data: services } = useOncologyServicesQuery(
     oncologyCaseUid,

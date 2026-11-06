@@ -21,3 +21,26 @@ export const codeDescription = (
     displayValue(code)
   );
 };
+
+export const formatCodeNamePair = (
+  codeValue: string | number | null | undefined,
+  nameValue: string | null | undefined,
+): string => {
+  if (
+    codeValue === null ||
+    codeValue === undefined ||
+    String(codeValue).trim() === ""
+  ) {
+    return "—";
+  }
+
+  if (
+    nameValue === null ||
+    nameValue === undefined ||
+    String(nameValue).trim() === ""
+  ) {
+    return `${codeValue} : —`;
+  }
+
+  return `${codeValue} : ${nameValue}`;
+};

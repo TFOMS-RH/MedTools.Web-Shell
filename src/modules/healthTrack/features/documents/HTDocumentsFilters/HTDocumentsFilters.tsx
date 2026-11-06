@@ -1,10 +1,11 @@
+import { Button, TextField } from "@mui/material";
 // ==========================================
 // modules/healthTrack/features/documents/HTDocumentsFilters/HTDocumentsFilters.tsx
 // ==========================================
 import SearchIcon from "@mui/icons-material/Search";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 
-import { AppButton } from "../../../../../components/ui/AppButton/AppButton";
+import { documentButtonSx, documentInputSx } from "../controlsSx";
 
 import {
   HT_FILE_TYPE_LABELS,
@@ -36,6 +37,7 @@ interface HTDocumentsFiltersProps {
   onReset: () => void;
   availablePeriods: string[];
   disabled?: boolean;
+  hasUnappliedFilters: boolean;
 }
 
 // ==========================================
@@ -59,7 +61,7 @@ const STATUS_OPTIONS = [
 
 /**
  * Панель фильтров раздела «Документы».
- * Компактные inline-поля с placeholder вместо label.
+ * Компактные MUI-поля с постоянными подписями.
  */
 export const HTDocumentsFilters = ({
   value,
@@ -68,6 +70,7 @@ export const HTDocumentsFilters = ({
   onReset,
   availablePeriods,
   disabled = false,
+  hasUnappliedFilters,
 }: HTDocumentsFiltersProps) => {
   const update = <K extends keyof HTDocumentsFiltersValue>(
     field: K,
@@ -81,96 +84,51 @@ export const HTDocumentsFilters = ({
     ...availablePeriods.map((p) => ({ label: p, value: p })),
   ];
 
+  const inputProps = { input: { disableUnderline: true }, inputLabel: { shrink: true } };
+  const selectProps = { ...inputProps, select: { native: true } };
+
   return (
-    <form
-      className={styles.filtersRoot}
-      onSubmit={(e) => {
-        e.preventDefault();
-        onSubmit();
-      }}
-    >
-      {/* Поиск */}
-      <input
-        className={`${styles.filterField} ${styles.searchField}`}
-        type="text"
-        placeholder="Поиск: имя файла, код МО…"
-        value={value.searchQuery}
-        onChange={(e) => update("searchQuery", e.currentTarget.value)}
-        disabled={disabled}
-      />
-
-      {/* Тип файла */}
-      <select
-        className={styles.filterField}
-        value={value.fileType}
-        onChange={(e) =>
-          update("fileType", e.currentTarget.value as HTDocumentFileType | "")
-        }
-        disabled={disabled}
-      >
-        {FILE_TYPE_OPTIONS.map((opt) => (
-          <option key={opt.value} value={opt.value}>
-            {opt.label}
-          </option>
-        ))}
-      </select>
-
-      {/* Код МО */}
-      <input
-        className={styles.filterField}
-        type="text"
-        placeholder="Код МО (например, 190006)"
-        value={value.hospitalCode}
-        onChange={(e) => update("hospitalCode", e.currentTarget.value)}
-        disabled={disabled}
-      />
-
-      {/* Период */}
-      <select
-        className={styles.filterField}
-        value={value.period}
-        onChange={(e) => update("period", e.currentTarget.value)}
-        disabled={disabled}
-      >
-        {periodOptions.map((opt) => (
-          <option key={opt.value} value={opt.value}>
-            {opt.label}
-          </option>
-        ))}
-      </select>
-
-      {/* Статус */}
-      <select
-        className={styles.filterField}
-        value={value.status}
-        onChange={(e) =>
-          update("status", e.currentTarget.value as HTDocumentStatus | "")
-        }
-        disabled={disabled}
-      >
-        {STATUS_OPTIONS.map((opt) => (
-          <option key={opt.value} value={opt.value}>
-            {opt.label}
-          </option>
-        ))}
-      </select>
-
-      {/* Кнопки */}
-      <AppButton variant="primary" size="md" type="submit" disabled={disabled}>
-        <SearchIcon sx={{ fontSize: 18, color: "var(--white)" }} />
-        Найти
-      </AppButton>
-
-      <AppButton
-        variant="secondary"
-        size="md"
-        type="button"
-        onClick={onReset}
-        disabled={disabled}
-      >
-        <RestartAltIcon sx={{ fontSize: 18 }} />
-        Сбросить
-      </AppButton>
+    <form className={styles.filtersRoot} aria-label="Фильтры документов" onSubmit={(event) => {
+      event.preventDefault(); onSubmit();
+    }}>
+      <div className={styles.fields}>
+        <div className={styles.field + " " + styles.searchField}>
+<TextField id="ht-document-search" label="Поиск" sx={documentInputSx} variant="filled" fullWidth size="small"
+            slotProps={inputProps} placeholder="Имя файла, код МО…" value={value.searchQuery}
+            onChange={(e) => update("searchQuery", e.target.value)} disabled={disabled} />
+        </div>
+        <div className={styles.field}>
+<TextField id="ht-document-type" label="Тип файла" sx={documentInputSx} select variant="filled" fullWidth size="small"
+            slotProps={selectProps} value={value.fileType} disabled={disabled}
+            onChange={(e) => update("fileType", e.target.value as HTDocumentFileType | "")}>
+            {FILE_TYPE_OPTIONS.map((opt) => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+          </TextField>
+        </div>
+        <div className={styles.field}>
+<TextField id="ht-document-mo" label="Код МО" sx={documentInputSx} variant="filled" fullWidth size="small"
+            slotProps={inputProps} placeholder="Например, 190006" value={value.hospitalCode}
+            onChange={(e) => update("hospitalCode", e.target.value)} disabled={disabled} />
+        </div>
+        <div className={styles.field}>
+<TextField id="ht-document-period" label="Период" sx={documentInputSx} select variant="filled" fullWidth size="small"
+            slotProps={selectProps} value={value.period} disabled={disabled}
+            onChange={(e) => update("period", e.target.value)}>
+            {periodOptions.map((opt) => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+          </TextField>
+        </div>
+        <div className={styles.field}>
+<TextField id="ht-document-status" label="Статус" sx={documentInputSx} select variant="filled" fullWidth size="small"
+            slotProps={selectProps} value={value.status} disabled={disabled}
+            onChange={(e) => update("status", e.target.value as HTDocumentStatus | "")}>
+            {STATUS_OPTIONS.map((opt) => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+          </TextField>
+        </div>
+        <div className={styles.actions}>
+          <Button sx={documentButtonSx} variant="text" type="button" onClick={onReset} disabled={disabled} startIcon={<RestartAltIcon fontSize="small" />}>Сбросить</Button>
+          <Button sx={documentButtonSx} variant="contained" type="submit" disabled={disabled} startIcon={<SearchIcon fontSize="small" />}>Найти</Button>
+        </div>
+      </div>
+      {hasUnappliedFilters && <p className={styles.pending} role="status">Есть неприменённые изменения</p>}
     </form>
   );
 };

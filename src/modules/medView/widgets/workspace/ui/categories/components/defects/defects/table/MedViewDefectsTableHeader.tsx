@@ -26,7 +26,12 @@ export const MedViewDefectsTableHeader = ({
 }: MedViewDefectsTableHeaderProps) => {
   return (
     <header className={styles.defectsHeader}>
-      <h3 id="medview-defects-heading" className={categoryStyles.sectionHeading}>Дефекты</h3>
+      <h3
+        id="medview-defects-heading"
+        className={categoryStyles.sectionHeading}
+      >
+        Дефекты
+      </h3>
       <div className={styles.pagination}>
         <AppTablePagination
           onPageChange={onPageChange}

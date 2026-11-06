@@ -28,7 +28,10 @@ export const MedViewInsuranceCardRoot = () => {
   });
 
   return (
-    <section className={styles.insuranceGroup} aria-labelledby="medview-patient-insurance">
+    <section
+      className={styles.insuranceGroup}
+      aria-labelledby="medview-patient-insurance"
+    >
       <MedViewInsuranceCardHeader />
       {dataState === "error" ? (
         <DataState

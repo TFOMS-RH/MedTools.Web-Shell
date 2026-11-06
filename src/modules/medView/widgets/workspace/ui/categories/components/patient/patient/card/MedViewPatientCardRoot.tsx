@@ -8,7 +8,11 @@ import { MedViewPatientCardHeader } from "./MedViewPatientCardHeader";
 import { MedViewPatientCardBody } from "./MedViewPatientCardBody";
 import styles from "../../styles.module.scss";
 
-export const MedViewPatientCardRoot = ({ insurance }: { insurance: ReactNode }) => {
+export const MedViewPatientCardRoot = ({
+  insurance,
+}: {
+  insurance: ReactNode;
+}) => {
   const { targetDb } = useMedViewFiltersStore();
   const { selectedMedicalCaseUid } = useMedViewWorkspaceStore();
 
@@ -34,29 +38,46 @@ export const MedViewPatientCardRoot = ({ insurance }: { insurance: ReactNode }) 
   return (
     <div className={styles.patientContent}>
       {hasPatientState ? (
-        <section className={styles.informationGroup} aria-labelledby="medview-patient-0">
+        <section
+          className={styles.informationGroup}
+          aria-labelledby="medview-patient-0"
+        >
           <MedViewPatientCardHeader />
           <DataState
-            title={dataState === "error" ? "Ошибка данных" : "Данных не найдено"}
-            description={dataState === "error"
-              ? error?.message ?? "Неизвестная ошибка"
-              : "Медицинский случай не содержит информации о пациенте"}
+            title={
+              dataState === "error" ? "Ошибка данных" : "Данных не найдено"
+            }
+            description={
+              dataState === "error"
+                ? (error?.message ?? "Неизвестная ошибка")
+                : "Медицинский случай не содержит информации о пациенте"
+            }
             variant={dataState === "error" ? "error" : "empty"}
           />
         </section>
       ) : (
         <MedViewPatientCardBody patient={patient!} isPending={isPending} />
       )}
-      <div className={`${styles.relatedGroups} ${hasPatientState ? styles.insuranceOnly : ""}`}>
+      <div
+        className={`${styles.relatedGroups} ${hasPatientState ? styles.insuranceOnly : ""}`}
+      >
         <div>
           {!hasPatientState && (
-            <MedViewPatientCardBody patient={patient!} isPending={isPending} section="document" />
+            <MedViewPatientCardBody
+              patient={patient!}
+              isPending={isPending}
+              section="document"
+            />
           )}
         </div>
         {insurance}
       </div>
       {!hasPatientState && (
-        <MedViewPatientCardBody patient={patient!} isPending={isPending} section="representative" />
+        <MedViewPatientCardBody
+          patient={patient!}
+          isPending={isPending}
+          section="representative"
+        />
       )}
     </div>
   );

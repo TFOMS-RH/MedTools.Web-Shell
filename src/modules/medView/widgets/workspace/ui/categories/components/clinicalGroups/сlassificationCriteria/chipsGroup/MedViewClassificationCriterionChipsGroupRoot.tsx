@@ -32,7 +32,10 @@ export const MedViewClassificationCriterionChipsGroupRoot = ({
   });
 
   return (
-    <section className={styles.panel} aria-labelledby="medview-csg-criteria-heading">
+    <section
+      className={styles.panel}
+      aria-labelledby="medview-csg-criteria-heading"
+    >
       <MedViewClassificationCriterionChipsGroupHeader />
       {dataState === "error" ? (
         <DataState

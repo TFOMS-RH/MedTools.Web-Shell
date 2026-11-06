@@ -37,17 +37,47 @@ export const MedViewCompletedCasesTableBody = ({
         </colgroup>
         <thead>
           <tr>
-            <th scope="col" title="Номер позиции">№ поз.</th>
-            <th scope="col" title="Номер записи">№ зап.</th>
-            <th scope="col" title="Фамилия пациента">Фамилия</th>
-            <th scope="col" title="Имя пациента">Имя</th>
-            <th scope="col" title="Отчество пациента">Отчество</th>
-            <th scope="col" title="Условия оказания медицинской помощи">Усл. ок.</th>
-            <th scope="col" title="Серия полиса">С. полиса</th>
-            <th scope="col" title="Номер полиса">Н. полиса</th>
-            <th scope="col" title="Предъявлено к оплате" className={styles.amount}>Предъявлено</th>
-            <th scope="col" title="Принято к оплате" className={styles.amount}>Принято</th>
-            <th scope="col" title="Принято страховой медицинской организацией" className={styles.amount}>Принято СМО</th>
+            <th scope="col" title="Номер позиции">
+              № поз.
+            </th>
+            <th scope="col" title="Номер записи">
+              № зап.
+            </th>
+            <th scope="col" title="Фамилия пациента">
+              Фамилия
+            </th>
+            <th scope="col" title="Имя пациента">
+              Имя
+            </th>
+            <th scope="col" title="Отчество пациента">
+              Отчество
+            </th>
+            <th scope="col" title="Условия оказания медицинской помощи">
+              Усл. ок.
+            </th>
+            <th scope="col" title="Серия полиса">
+              С. полиса
+            </th>
+            <th scope="col" title="Номер полиса">
+              Н. полиса
+            </th>
+            <th
+              scope="col"
+              title="Предъявлено к оплате"
+              className={styles.amount}
+            >
+              Предъявлено
+            </th>
+            <th scope="col" title="Принято к оплате" className={styles.amount}>
+              Принято
+            </th>
+            <th
+              scope="col"
+              title="Принято страховой медицинской организацией"
+              className={styles.amount}
+            >
+              Принято СМО
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -66,25 +96,35 @@ export const MedViewCompletedCasesTableBody = ({
                 }
                 key={completedCase.completedCaseUid}
               >
-                <td className={styles.identifier}>{completedCase.entryPositionNumber}</td>
-                <td className={styles.identifier}>{completedCase.entryNumber}</td>
-                <td className={styles.personName}>{completedCase.patientLastName}</td>
-                <td className={styles.personName}>{completedCase.patientFirstName}</td>
-                <td className={styles.personName}>{completedCase.patientMiddleName}</td>
-                <td className={styles.identifier}>{completedCase.medicalCareConditions}</td>
+                <td className={styles.identifier}>
+                  {completedCase.entryPositionNumber}
+                </td>
+                <td className={styles.identifier}>
+                  {completedCase.entryNumber}
+                </td>
+                <td className={styles.personName}>
+                  {completedCase.patientLastName}
+                </td>
+                <td className={styles.personName}>
+                  {completedCase.patientFirstName}
+                </td>
+                <td className={styles.personName}>
+                  {completedCase.patientMiddleName}
+                </td>
+                <td
+                  className={styles.identifier}
+                >{`${completedCase.medicalCareConditionsCode} : ${completedCase.medicalCareConditionsName}`}</td>
                 <td className={styles.identifier}>
                   {formatNullableValue(completedCase.insurancePolicySeries)}
                 </td>
-                <td className={styles.identifier}>{completedCase.insurancePolicyNumber}</td>
-                <td className={styles.amount}>
-
-                  {formatCurrency(completedCase.amountBilled)}
-
+                <td className={styles.identifier}>
+                  {completedCase.insurancePolicyNumber}
                 </td>
                 <td className={styles.amount}>
-
+                  {formatCurrency(completedCase.amountBilled)}
+                </td>
+                <td className={styles.amount}>
                   {formatCurrency(completedCase.approvedAmount)}
-
                 </td>
                 <td className={styles.amount}>
                   {formatCurrency(completedCase.insuranceCompanyApprovedAmount)}

@@ -1,4 +1,3 @@
-import { lazy, Suspense } from "react";
 import { DataState } from "../../../../../../../../shared/ui/DataState/DataState";
 import { useRControlWorkspacePanelStore } from "../../../../model/store/useRControlWorkspacePanelStore";
 import { useClinicalGroupQuery } from "../../../../../../../../shared/model/queries/invoiceStructure/clinicalGroups/useClinicalGroupQuery";
@@ -12,7 +11,11 @@ import styles from "./styles.module.scss";
 const ClinicalGroupsLive = () => {
   const { targetDb } = useRControlWorkspacePanelStore();
   const { selectedMedicalCaseUid } = useRControlWorkspaceStore();
-  const { data: clinicalGroup, isError, isSuccess } = useClinicalGroupQuery(selectedMedicalCaseUid, targetDb);
+  const {
+    data: clinicalGroup,
+    isError,
+    isSuccess,
+  } = useClinicalGroupQuery(selectedMedicalCaseUid, targetDb);
   const clinicalGroupUid = clinicalGroup?.clinicalGroupUid ?? null;
 
   return (
@@ -29,12 +32,24 @@ const ClinicalGroupsLive = () => {
             <RControlClinicalGroupCardRoot />
             <RControlHighTechMedicalCareCardRoot />
           </div>
-          <section className={styles.relatedSection} aria-labelledby="rcontrol-csg-related-heading">
-            <h3 id="rcontrol-csg-related-heading" className={styles.sectionHeading}>Связанные сведения КСГ</h3>
+          <section
+            className={styles.relatedSection}
+            aria-labelledby="rcontrol-csg-related-heading"
+          >
+            <h3
+              id="rcontrol-csg-related-heading"
+              className={styles.sectionHeading}
+            >
+              Связанные сведения КСГ
+            </h3>
             {clinicalGroupUid !== null ? (
               <div className={styles.relatedGrid}>
-                <RControlClassificationCriterionChipsGroupRoot clinicalGroupUid={clinicalGroupUid} />
-                <RControlTreatmentCoefficientsListRoot clinicalGroupUid={clinicalGroupUid} />
+                <RControlClassificationCriterionChipsGroupRoot
+                  clinicalGroupUid={clinicalGroupUid}
+                />
+                <RControlTreatmentCoefficientsListRoot
+                  clinicalGroupUid={clinicalGroupUid}
+                />
               </div>
             ) : isError ? (
               <DataState
@@ -62,24 +77,7 @@ const ClinicalGroupsLive = () => {
   );
 };
 
-const ClinicalGroupsPreview = import.meta.env.DEV
-  ? lazy(() => import("./RControlClinicalGroupsCategoryPreview"))
-  : null;
-
 const ClinicalGroupsCategoryRoot = () => {
-  const { selectedMedicalCaseUid } = useRControlWorkspaceStore();
-  const params = new URLSearchParams(window.location.search);
-  if (
-    ClinicalGroupsPreview &&
-    params.get("demoWorkspace") === "1" &&
-    params.get("demoClinicalGroups") !== "live"
-  ) {
-    return (
-      <Suspense fallback={null}>
-        <ClinicalGroupsPreview key={selectedMedicalCaseUid} />
-      </Suspense>
-    );
-  }
   return <ClinicalGroupsLive />;
 };
 

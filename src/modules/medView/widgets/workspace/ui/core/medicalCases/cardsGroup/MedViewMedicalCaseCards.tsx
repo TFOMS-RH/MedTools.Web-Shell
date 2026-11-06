@@ -21,7 +21,10 @@ export const MedViewMedicalCaseCards = ({
   selectMedicalCase,
 }: MedViewMedicalCaseCardsProps) => {
   return (
-    <section className={styles.medicalCasesCards} aria-label="Медицинские случаи">
+    <section
+      className={styles.medicalCasesCards}
+      aria-label="Медицинские случаи"
+    >
       <ul className={styles.list}>
         {medicalCases.map((medicalCase, index) => (
           <li key={medicalCase.medicalCaseUid}>
@@ -65,30 +68,40 @@ export const MedViewMedicalCaseCards = ({
                 </dl>
               </div>
 
-              <section className={styles.medicalInfo} aria-label="Медицинская информация">
+              <section
+                className={styles.medicalInfo}
+                aria-label="Медицинская информация"
+              >
                 <div className={styles.diagnosis}>
                   <h4 className={styles.diagnosisLabel}>Основной диагноз</h4>
                   <p className={styles.diagnosisCode}>
-                    {medicalCase.primaryDiagnosis || "—"}
+                    {`${medicalCase.primaryDiagnosisCode} — ${medicalCase.primaryDiagnosisName} `}
                   </p>
                 </div>
                 <dl className={styles.medicalDetails}>
                   <div>
                     <dt>Профиль медицинской помощи</dt>
                     <dd>
-                      <span>{formatNullableValue(medicalCase.medicalProfile)}</span>
+                      <span>
+                        {`${medicalCase.medicalProfileCode} : ${medicalCase.medicalProfileName}`}
+                      </span>
                     </dd>
                   </div>
                   <div>
                     <dt>Специальность врача</dt>
                     <dd>
-                      <span>{formatNullableValue(medicalCase.physicianSpecialty)}</span>
+                      <span>
+                        {`${medicalCase.physicianSpecialtyCode} : ${medicalCase.physicianSpecialtyName}`}
+                      </span>
                     </dd>
                   </div>
                 </dl>
               </section>
 
-              <dl className={styles.finances} aria-label="Финансовые показатели">
+              <dl
+                className={styles.finances}
+                aria-label="Финансовые показатели"
+              >
                 <div>
                   <dt>Тариф</dt>
                   <dd>{formatCurrency(medicalCase.unitRate)}</dd>

@@ -60,7 +60,10 @@ export const MedViewDefectsTableRoot = () => {
   });
 
   return (
-    <section className={styles.section} aria-labelledby="medview-defects-heading">
+    <section
+      className={styles.section}
+      aria-labelledby="medview-defects-heading"
+    >
       <MedViewDefectsTableHeader
         page={defectsTablePagination.page}
         pageSize={defectsTablePagination.pageSize}

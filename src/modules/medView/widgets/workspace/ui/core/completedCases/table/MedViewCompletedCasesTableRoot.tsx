@@ -7,24 +7,8 @@ import { resolveDataState } from "../../../../../../../../shared/helpers/resolve
 import { MedViewCompletedCasesTableHeader } from "./MedViewCompletedCasesTableHeader";
 import { Divider } from "../../../../../../../../components/ui/Divider/Divider";
 import { DataState } from "../../../../../../../../shared/ui/DataState/DataState";
-import { lazy, Suspense } from "react";
-
-const MedViewCompletedCasesTablePreview = import.meta.env.DEV
-  ? lazy(() => import("./MedViewCompletedCasesTablePreview"))
-  : null;
 
 export const MedViewCompletedCasesTableRoot = () => {
-  if (
-    MedViewCompletedCasesTablePreview &&
-    new URLSearchParams(window.location.search).get("demoTable") === "1"
-  ) {
-    return (
-      <Suspense fallback={null}>
-        <MedViewCompletedCasesTablePreview />
-      </Suspense>
-    );
-  }
-
   return <MedViewCompletedCasesTable />;
 };
 

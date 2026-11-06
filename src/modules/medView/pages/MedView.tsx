@@ -13,7 +13,6 @@ export const MedView = () => {
         <MedViewFiltersRoot />
         <Divider />
         <MedViewWorkspace>
-          <Divider />
           <section
             className={styles.caseDetailsSection}
             aria-labelledby="medview-case-heading"

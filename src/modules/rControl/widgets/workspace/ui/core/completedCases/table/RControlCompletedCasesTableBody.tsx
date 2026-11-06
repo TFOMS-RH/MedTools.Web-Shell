@@ -136,7 +136,9 @@ export const RControlCompletedCasesTableBody = ({
                   <td className={tableStyles.personName}>
                     {completedCase.patientMiddleName}
                   </td>
-                  <td>{`${completedCase.medicalCareConditionsCode} : ${completedCase.medicalCareConditionsName}`}</td>
+                  <td
+                    className={tableStyles.identifier}
+                  >{`${completedCase.medicalCareConditionsCode} : ${completedCase.medicalCareConditionsName}`}</td>
                   <td className={tableStyles.identifier}>
                     {formatNullableValue(completedCase.insurancePolicySeries)}
                   </td>

@@ -2,10 +2,16 @@ import { Skeleton } from "@mui/material";
 import styles from "./styles.module.scss";
 
 export const MedViewPrescriptionCardSkeletons = () => (
-  <div className={styles.prescriptionsCards} role="status" aria-label="Загрузка назначений">
+  <div
+    className={styles.prescriptionsCards}
+    role="status"
+    aria-label="Загрузка назначений"
+  >
     {Array.from({ length: 2 }, (_, index) => (
       <div className={styles.panel} key={index} aria-hidden="true">
-        <div className={styles.panelHeading}><Skeleton width="12rem" /></div>
+        <div className={styles.panelHeading}>
+          <Skeleton width="12rem" />
+        </div>
         <div className={styles.groups}>
           <div className={styles.mainGroup}>
             <div className={styles.fields}>
@@ -15,7 +21,10 @@ export const MedViewPrescriptionCardSkeletons = () => (
                 <Skeleton width="5rem" />
               </div>
               {Array.from({ length: 2 }, (_, field) => (
-                <div key={field}><Skeleton width="70%" /><Skeleton /></div>
+                <div key={field}>
+                  <Skeleton width="70%" />
+                  <Skeleton />
+                </div>
               ))}
             </div>
           </div>
@@ -24,7 +33,10 @@ export const MedViewPrescriptionCardSkeletons = () => (
               <Skeleton width="7rem" height={24} />
               <div className={styles.fields}>
                 {Array.from({ length: 2 }, (_, field) => (
-                  <div key={field}><Skeleton width="70%" /><Skeleton /></div>
+                  <div key={field}>
+                    <Skeleton width="70%" />
+                    <Skeleton />
+                  </div>
                 ))}
               </div>
             </div>

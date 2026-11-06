@@ -1,5 +1,5 @@
 import styles from "../../../styles.module.scss";
-import { formatOncologyDate } from "../../../formatOncologyDate";
+import { formatDate } from "../../../../../../../../../../../shared/helpers/formatDate";
 import type { InjectionDto } from "../../../../../../../../../../../shared/model/types/invoiceStructure/results/oncology/GetInjectionsResult";
 import { TableSkeleton } from "../../../../../../../../../../../shared/ui/TableSkeleton/TableSkeleton";
 import { formatNullableValue } from "../../../../../../../../../../../shared/helpers/formatNullableValue";
@@ -52,7 +52,7 @@ export const MedViewInjectionsTableBody = ({
           ) : (
             injections.map((injection) => (
               <tr key={injection.injectionUid} className="noneHover">
-                <td>{formatOncologyDate(injection.administrationDate)}</td>
+                <td>{formatDate(injection.administrationDate)}</td>
                 <td className={styles.numeric}>
                   {formatNullableValue(injection.administeredQuantity)}
                 </td>

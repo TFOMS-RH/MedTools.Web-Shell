@@ -5,7 +5,6 @@ import { useMedicationsQuery } from "../../../../../../../../shared/model/querie
 import { displayValue } from "./presentation";
 import { DataState } from "../../../../../../../../shared/ui/DataState/DataState";
 import { useOncologyCaseQuery } from "../../../../../../../../shared/model/queries/invoiceStructure/oncology/useOncologyCaseQuery";
-import { lazy, Suspense } from "react";
 import { useRControlWorkspaceStore } from "../../../../model/store/useRControlWorkspaceStore";
 import { RControlDiagnosticsListRoot } from "./diagnostics/list/RControlDiagnosticsListRoot";
 import { RControlContraindicationsListRoot } from "./contraindications/list/RControlContraindicationsListRoot";
@@ -26,19 +25,25 @@ const RControlOncologyLive = () => {
   } = useRControlWorkspaceStore();
   const { targetDb } = useRControlWorkspacePanelStore();
   const oncologyCase = useOncologyCaseQuery(selectedMedicalCaseUid, targetDb);
-  const oncologyCaseUid = selectedMedicalCaseUid !== null && targetDb !== null
-    ? oncologyCase.data?.oncologyCaseUid ?? null
-    : null;
-  const { data: services } = useOncologyServicesQuery(oncologyCaseUid, targetDb);
-  const service = services?.find(
-    item => item.oncologyServiceUid === selectedOncologyServiceUid,
+  const oncologyCaseUid =
+    selectedMedicalCaseUid !== null && targetDb !== null
+      ? (oncologyCase.data?.oncologyCaseUid ?? null)
+      : null;
+  const { data: services } = useOncologyServicesQuery(
+    oncologyCaseUid,
+    targetDb,
   );
-  const serviceUid = oncologyCaseUid !== null ? service?.oncologyServiceUid ?? null : null;
+  const service = services?.find(
+    (item) => item.oncologyServiceUid === selectedOncologyServiceUid,
+  );
+  const serviceUid =
+    oncologyCaseUid !== null ? (service?.oncologyServiceUid ?? null) : null;
   const { data: medications } = useMedicationsQuery(serviceUid, targetDb);
   const medication = medications?.find(
-    item => item.medicamentUid === selectedMedicationUid,
+    (item) => item.medicamentUid === selectedMedicationUid,
   );
-  const medicationUid = serviceUid !== null ? medication?.medicamentUid ?? null : null;
+  const medicationUid =
+    serviceUid !== null ? (medication?.medicamentUid ?? null) : null;
   const dependencyState =
     selectedMedicalCaseUid === null ? (
       <DataState
@@ -114,7 +119,9 @@ const RControlOncologyLive = () => {
         oncologyCaseUid === null ? (
           unavailable("Противопоказания")
         ) : (
-          <RControlContraindicationsListRoot oncologyCaseUid={oncologyCaseUid} />
+          <RControlContraindicationsListRoot
+            oncologyCaseUid={oncologyCaseUid}
+          />
         )
       }
       services={
@@ -173,24 +180,7 @@ const RControlOncologyLive = () => {
   );
 };
 
-const OncologyPreview = import.meta.env.DEV
-  ? lazy(() => import("./RControlOncologyCategoryPreview"))
-  : null;
-
 const RControlOncologyCategoryRoot = () => {
-  const { selectedMedicalCaseUid } = useRControlWorkspaceStore();
-  const params = new URLSearchParams(window.location.search);
-  if (
-    OncologyPreview &&
-    params.get("demoWorkspace") === "1" &&
-    params.get("demoOncology") !== "live"
-  ) {
-    return (
-      <Suspense fallback={null}>
-        <OncologyPreview key={selectedMedicalCaseUid} />
-      </Suspense>
-    );
-  }
   return <RControlOncologyLive />;
 };
 

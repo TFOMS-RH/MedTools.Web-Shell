@@ -1,284 +1,80 @@
-// ==========================================
-// modules/healthTrack/features/registerDn/HTRegisterDnDrawer/styles.module.scss
-// ==========================================
-
-// ==========================================
-// Header.
-// ==========================================
+.paper {
+  color: var(--mt-text-primary);
+  font-family: var(--mt-font-family);
+  font-size: var(--mt-font-body);
+}
 .header {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: var(--space-5);
-
-  padding: var(--space-7) var(--space-8);
-
-  box-sizing: border-box;
+  flex-shrink: 0;
+  gap: var(--mt-space-4);
+  padding: var(--mt-space-6);
 }
-
-.headerText {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  flex: 1;
-  min-width: 0;
+.headerText { display: flex; flex-direction: column; gap: var(--mt-space-2); min-width: 0; flex: 1; }
+.caption, .enp { margin: 0; color: var(--mt-text-secondary); line-height: 1.5; overflow-wrap: anywhere; }
+.caption { font-size: var(--fs-caption); }
+.enp { font-variant-numeric: tabular-nums; }
+.title { margin: 0; font-size: var(--mt-font-title); font-weight: var(--fw-semibold); line-height: 1.3; overflow-wrap: anywhere; }
+.closeButton:global(.MuiIconButton-root) {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  color: var(--mt-text-secondary);
+  &:hover { background: var(--mt-canvas); color: var(--mt-text-primary); }
+  &:focus-visible { outline: 2px solid var(--mt-healthtrack-accent); outline-offset: -2px; }
 }
-
-.title {
-  font-size: var(--fs-h4);
-  font-weight: var(--fw-semibold);
-  color: var(--text-default);
-  margin: 0;
-}
-
-.fileName {
-  font-size: var(--fs-body2);
-  color: var(--text-secondary);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  margin: 0;
-}
-
-// ==========================================
-// Контент.
-// ==========================================
 .content {
+  container: ht-patient / inline-size;
   display: flex;
   flex-direction: column;
-  gap: var(--space-8);
-
+  gap: var(--mt-space-6);
   flex: 1;
+  min-height: 0;
   overflow-y: auto;
-
-  padding: var(--space-8);
-
-  box-sizing: border-box;
+  padding: 0 var(--mt-space-6) var(--mt-space-6);
+  scrollbar-color: auto;
 }
-
-// ==========================================
-// Загрузка / ошибка.
-// ==========================================
-.loadingBlock {
+.sourcesRow { color: var(--mt-text-secondary); line-height: 1.5; overflow-wrap: anywhere; }
+.section { display: flex; flex-direction: column; gap: var(--mt-space-3); min-width: 0; }
+.patientPanel, .episode, .gfCard {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-5);
-
-  padding: var(--space-10) 0;
-
-  font-size: var(--fs-body2);
-  color: var(--text-secondary);
+  gap: var(--mt-space-4);
+  min-width: 0;
+  padding: var(--mt-space-4);
+  border-radius: var(--mt-radius-inner);
+  background: var(--mt-canvas);
 }
-
-.errorBlock {
-  padding: var(--space-5) var(--space-6);
-
-  border: 1px solid #f0c0c0;
-  border-radius: var(--radius-l);
-  background: var(--red-opacity);
-
-  font-size: var(--fs-body2);
-  color: #b91c1c;
-  text-align: center;
+.sectionTitle { margin: 0; font-size: var(--fs-h4); font-weight: var(--fw-semibold); line-height: 1.4; }
+.dl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: var(--mt-space-3) var(--mt-space-5); margin: 0; padding: 0; }
+.dlRow { min-width: 0;
+  dt { font-size: var(--fs-caption); color: var(--mt-text-secondary); line-height: 1.5; }
+  dd { margin: var(--mt-space-1) 0 0; font-weight: var(--fw-semibold); line-height: 1.5; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
 }
-
-// ==========================================
-// Источники данных.
-// ==========================================
-.sourcesRow {
-  display: flex;
-  gap: var(--space-3);
-  flex-wrap: wrap;
+.episodeHeader { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--mt-space-2); }
+.episodeNZap { color: var(--mt-text-secondary); font-variant-numeric: tabular-nums; }
+.episodeState { padding: var(--mt-space-1) var(--mt-space-3); border-radius: var(--mt-radius-pill); font-weight: var(--fw-semibold); line-height: 1.5; }
+.episodeStateActive { background: var(--mt-healthtrack-cover); color: color-mix(in srgb, var(--mt-healthtrack-accent) 70%, var(--mt-text-primary)); }
+.episodeStateClosed { background: var(--mt-surface-subtle); color: var(--mt-text-secondary); }
+.episodeDiag { font-size: var(--fs-body1); line-height: 1.5; overflow-wrap: anywhere; }
+.relatedGroups { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: var(--mt-space-4); }
+.subsection { display: flex; flex-direction: column; gap: var(--mt-space-3); min-width: 0;
+  .dl { grid-template-columns: minmax(0, 1fr); }
 }
-
-.sourcesBadge {
-  display: inline-flex;
-  align-items: center;
-
-  padding: var(--space-2) var(--space-5);
-
-  border-radius: var(--radius-l);
-  background: var(--blue-opacity);
-  color: #1a4fbf;
-
-  font-size: var(--fs-caption);
-  font-weight: var(--fw-semibold);
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
+.subsectionTitle { margin: 0; font-size: var(--mt-font-body); font-weight: var(--fw-semibold); line-height: 1.5; }
+.sourceLine { color: var(--mt-text-secondary); font-size: var(--fs-caption); line-height: 1.5; overflow-wrap: anywhere; }
+.emptyText { margin: 0; color: var(--mt-text-secondary); line-height: 1.5; }
+.loadingBlock { display: flex; align-items: center; gap: var(--mt-space-3); padding-block: var(--mt-space-5); color: var(--mt-text-secondary); }
+.errorBlock { display: flex; flex-direction: column; align-items: flex-start; gap: var(--mt-space-3); overflow-wrap: anywhere;
+  h3, p { margin: 0; }
+  h3 { font-size: var(--fs-h4); }
+  p { color: var(--text-error); line-height: 1.5; }
 }
-
-// ==========================================
-// Секция.
-// ==========================================
-.section {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
+@container ht-patient (max-width: 30rem) {
+  .dl, .relatedGroups { grid-template-columns: minmax(0, 1fr); }
 }
-
-.sectionTitle {
-  font-size: var(--fs-body2);
-  font-weight: var(--fw-semibold);
-  color: var(--text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-  margin: 0;
-}
-
-// ==========================================
-// Definition List.
-// ==========================================
-.dl {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-
-  margin: 0;
-  padding: 0;
-}
-
-.dlRow {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: var(--space-5);
-
-  padding: var(--space-3) 0;
-
-  border-bottom: 1px solid var(--border-default);
-
-  dt {
-    font-size: var(--fs-body2);
-    color: var(--text-secondary);
-    flex-shrink: 0;
-  }
-
-  dd {
-    margin: 0;
-    font-size: var(--fs-body2);
-    color: var(--text-default);
-    font-weight: var(--fw-semibold);
-    text-align: right;
-    word-break: break-word;
-    min-width: 0;
-  }
-}
-
-.dlRow:last-child {
-  border-bottom: none;
-}
-
-// ==========================================
-// Эпизод ДН.
-// ==========================================
-.episode {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-
-  padding: var(--space-5);
-
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-l);
-  background: var(--gray-50);
-
-  box-sizing: border-box;
-}
-
-.episodeHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-3);
-}
-
-.episodeNZap {
-  font-family: "Consolas", "Monaco", monospace;
-  font-size: var(--fs-body2);
-  font-weight: var(--fw-semibold);
-  color: var(--text-default);
-}
-
-.episodeState {
-  display: inline-flex;
-  align-items: center;
-
-  padding: var(--space-1) var(--space-3);
-  border-radius: var(--radius-l);
-
-  font-size: var(--fs-caption);
-  font-weight: var(--fw-semibold);
-}
-
-.episodeStateActive {
-  background: #e6f7ec;
-  color: #1a7f37;
-}
-
-.episodeStateClosed {
-  background: var(--gray-200);
-  color: var(--gray-900);
-}
-
-.episodeDiag {
-  font-size: var(--fs-body1);
-  color: var(--text-default);
-  line-height: 1.4;
-
-  padding-bottom: var(--space-3);
-  border-bottom: 1px solid var(--border-default);
-}
-
-// ==========================================
-// Подсекции PLAN / INF.
-// ==========================================
-.subsection {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-
-  padding: var(--space-4);
-
-  background: var(--card-background);
-  border-radius: var(--radius-l);
-}
-
-.subsectionTitle {
-  font-size: var(--fs-caption);
-  font-weight: var(--fw-semibold);
-  color: var(--text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-  margin: 0;
-}
-
-// ==========================================
-// Источник (внизу эпизода).
-// ==========================================
-.sourceLine {
-  font-size: var(--fs-caption);
-  color: var(--text-secondary);
-  font-style: italic;
-
-  padding-top: var(--space-3);
-  border-top: 1px dashed var(--border-default);
-}
-
-// ==========================================
-// Карточка GF.
-// ==========================================
-.gfCard {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-
-  padding: var(--space-5);
-
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-l);
-  background: var(--gray-50);
-
-  box-sizing: border-box;
+@media (max-width: 40rem) {
+  .header { padding: var(--mt-space-4); }
+  .content { padding: 0 var(--mt-space-4) var(--mt-space-4); gap: var(--mt-space-4); }
 }

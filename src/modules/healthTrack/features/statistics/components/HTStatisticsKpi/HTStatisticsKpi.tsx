@@ -35,7 +35,7 @@ const TILES: KpiTile[] = [
     key: "patientsTotal",
     label: "Всего пациентов",
     icon: <PeopleAltOutlinedIcon sx={{ fontSize: 22 }} />,
-    accent: "#1a4fbf",
+    accent: "var(--mt-healthtrack-accent)",
   },
   {
     key: "patientsActive",
@@ -53,11 +53,11 @@ const TILES: KpiTile[] = [
     key: "documentsTotal",
     label: "Всего документов",
     icon: <DescriptionOutlinedIcon sx={{ fontSize: 22 }} />,
-    accent: "#6633cc",
+    accent: "var(--mt-healthtrack-accent)",
   },
   {
     key: "documentsReady",
-    label: "Готово",
+    label: "Готово документов",
     icon: <TaskAltOutlinedIcon sx={{ fontSize: 22 }} />,
     accent: "#1a7f37",
   },
@@ -65,7 +65,7 @@ const TILES: KpiTile[] = [
     key: "recordsTotal",
     label: "Всего записей",
     icon: <StorageOutlinedIcon sx={{ fontSize: 22 }} />,
-    accent: "#b91c1c",
+    accent: "var(--mt-healthtrack-accent)",
   },
 ];
 
@@ -75,7 +75,9 @@ const TILES: KpiTile[] = [
  */
 export const HTStatisticsKpi = ({ kpi }: HTStatisticsKpiProps) => {
   return (
-    <div className={styles.kpiRoot}>
+    <section className={styles.surface} aria-labelledby="ht-statistics-kpi">
+      <h3 id="ht-statistics-kpi">Общая статистика</h3>
+      <div className={styles.kpiRoot}>
       {TILES.map((tile) => {
         const value = kpi[tile.key];
 
@@ -85,7 +87,7 @@ export const HTStatisticsKpi = ({ kpi }: HTStatisticsKpiProps) => {
               className={styles.tileIcon}
               style={{
                 color: tile.accent,
-                backgroundColor: `${tile.accent}11`,
+                backgroundColor: `color-mix(in srgb, ${tile.accent} 7%, transparent)`,
               }}
             >
               {tile.icon}
@@ -100,6 +102,7 @@ export const HTStatisticsKpi = ({ kpi }: HTStatisticsKpiProps) => {
           </div>
         );
       })}
-    </div>
+      </div>
+    </section>
   );
 };

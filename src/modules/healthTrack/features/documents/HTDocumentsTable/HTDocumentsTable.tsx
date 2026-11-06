@@ -1,15 +1,13 @@
 // ==========================================
 // modules/healthTrack/features/documents/HTDocumentsTable/HTDocumentsTable.tsx
 // ==========================================
-import { Checkbox, IconButton, Tooltip } from "@mui/material";
-import CheckCircleOutlineOutlinedIcon from "@mui/icons-material/CheckCircleOutlineOutlined";
-import DownloadIcon from "@mui/icons-material/Download";
+import { IconButton, Skeleton, Tooltip } from "@mui/material";
+import FactCheckOutlinedIcon from "@mui/icons-material/FactCheckOutlined";
+import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutlined";
+import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 import { HTDocumentStatusBadge } from "../../../ui/HTDocumentStatusBadge/HTDocumentStatusBadge";
-import { HTDocumentTypeBadge } from "../../../ui/HTDocumentTypeBadge/HTDocumentTypeBadge";
-import { HTTableSkeleton } from "../../../ui/HTTableSkeleton/HTTableSkeleton";
 import { HTEmptyState } from "../../../ui/HTEmptyState/HTEmptyState";
 import {
   canCheckDocument,
@@ -26,9 +24,6 @@ interface HTDocumentsTableProps {
   /** Строки таблицы. */
   items: HTDocumentListItem[];
 
-  /** Общее количество записей (из pagedResult.totalCount). */
-  totalCount: number;
-
   /** Текущая страница (1-based). */
   page: number;
 
@@ -37,15 +32,6 @@ interface HTDocumentsTableProps {
 
   /** Общее количество страниц. */
   totalPages: number;
-
-  /** Множество выбранных ID. */
-  selectedIds: Set<number>;
-
-  /** Колбэк: переключить выбор строки. */
-  onToggleRow: (id: number) => void;
-
-  /** Колбэк: выбрать / снять все видимые. */
-  onToggleAll: (checked: boolean) => void;
 
   /** Колбэк: изменить страницу. */
   onPageChange: (page: number) => void;
@@ -76,6 +62,8 @@ interface HTDocumentsTableProps {
 
   /** Загрузка? */
   isLoading: boolean;
+  isError: boolean;
+  isRefreshing: boolean;
 }
 
 // ==========================================
@@ -103,19 +91,14 @@ const formatNumber = (n: number | null): string => {
  * Таблица документов.
  *
  * Особенности:
- *  - Чекбоксы только на строках, доступных к проверке.
  *  - Действия — иконки с тултипами в последней колонке.
  *  - Пагинация снизу.
  */
 export const HTDocumentsTable = ({
   items,
-  totalCount,
   page,
   pageSize,
   totalPages,
-  selectedIds,
-  onToggleRow,
-  onToggleAll,
   onPageChange,
   onPageSizeChange,
   onCheckOne,
@@ -125,20 +108,9 @@ export const HTDocumentsTable = ({
   canDelete, 
   onResetFilters,   // ← добавить
   isLoading,
+  isError,
+  isRefreshing,
 }: HTDocumentsTableProps) => {
-  // ==========================================
-  // Определяем, все ли доступные строки выбраны.
-  // "Доступные" = у которых можно проверить (has checkbox).
-  // ==========================================
-  const checkableItems = items.filter(canCheckDocument);
-  const allCheckableSelected =
-    checkableItems.length > 0 &&
-    checkableItems.every((item) => selectedIds.has(item.id));
-
-  const someCheckableSelected = checkableItems.some((item) =>
-    selectedIds.has(item.id),
-  );
-
   // ==========================================
   // Пагинация — набор номеров страниц для отображения.
   // Показываем: первая, последняя, текущая ± 1, "…" между ними.
@@ -167,41 +139,15 @@ export const HTDocumentsTable = ({
   // Пока данные грузятся и список пуст — показываем скелетон.
   // Если список уже есть (например, при пагинации) — рендерим таблицу.
   // ==========================================
-  if (isLoading && items.length === 0) {
-    return <HTTableSkeleton rows={Math.min(pageSize, 10)} />;
-  }
-
   return (
-    <div className={styles.tableRoot}>
-      {/* ============================== */}
-      {/* Инфо-строка над таблицей */}
-      {/* ============================== */}
-      <div className={styles.topBar}>
-        <span className={styles.totalLabel}>
-          Найдено записей: <strong>{totalCount}</strong>
-        </span>
-      </div>
-
+    <div className={styles.tableRoot} aria-busy={isLoading || isRefreshing}>
       {/* ============================== */}
       {/* Таблица */}
       {/* ============================== */}
-      <div className={styles.tableWrapper}>
-        <table className={styles.table}>
+      <div className={"mt-table-viewport mt-table-viewport--scrollable " + styles.tableWrapper} tabIndex={0} role="region" aria-label="Таблица документов">
+        <table className={"mt-table " + styles.table} aria-label="Документы HealthTrack">
           <thead>
             <tr>
-              <th
-                className={styles.checkboxCell}
-                onClick={(e) => e.stopPropagation()}
-              >
-                <Checkbox
-                  size="small"
-                  checked={allCheckableSelected}
-                  indeterminate={someCheckableSelected && !allCheckableSelected}
-                  onChange={(e) => onToggleAll(e.currentTarget.checked)}
-                  disabled={checkableItems.length === 0 || isLoading}
-                  sx={{ padding: 0 }}
-                />
-              </th>
               <th className={styles.numberCell}>№</th>
               <th>Дата загрузки</th>
               <th>Имя файла</th>
@@ -214,15 +160,23 @@ export const HTDocumentsTable = ({
             </tr>
           </thead>
           <tbody>
-            {items.length === 0 ? (
+            {isLoading && items.length === 0 ? (
+              Array.from({ length: Math.min(pageSize, 10) }, (_, row) => (
+                <tr key={row} className="noneHover" aria-hidden="true">
+                  {Array.from({ length: 9 }, (_, column) => (
+                    <td key={column}><Skeleton animation="wave" width={column === 2 ? "85%" : "65%"} /></td>
+                  ))}
+                </tr>
+              ))
+            ) : items.length === 0 ? (
                 <tr>
-                  <td colSpan={10} className={styles.emptyCell}>
+                  <td colSpan={9} className={styles.emptyCell}>
                     <HTEmptyState
                       compact
-                      title="Документы не найдены"
-                      description="Попробуйте изменить фильтры или сбросить их."
+                      title={isError ? "Не удалось загрузить документы" : "Документы не найдены"}
+                      description={isError ? "Повторите запрос кнопкой «Обновить»." : "Попробуйте изменить фильтры или сбросить их."}
                       action={
-                        onResetFilters
+                        !isError && onResetFilters
                           ? {
                               label: "Сбросить фильтры",
                               onClick: onResetFilters,
@@ -235,33 +189,15 @@ export const HTDocumentsTable = ({
               ) : (
               items.map((doc, index) => {
                 const isCheckable = canCheckDocument(doc);
-                const isSelected = selectedIds.has(doc.id);
                 const canDownload = canDownloadResponse(doc);
 
                 return (
                   <tr
                     key={doc.id}
-                    className={`${isSelected ? styles.selectedRow : ""} ${styles.clickableRow}`}
+                    className="mt-table__row--interactive"
                     onClick={() => onOpenDetails(doc)}
                     title="Открыть детали документа"
                   >
-                    {/* Чекбокс */}
-                    <td
-                      className={styles.checkboxCell}
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      {isCheckable ? (
-                        <Checkbox
-                          size="small"
-                          checked={isSelected}
-                          onChange={() => onToggleRow(doc.id)}
-                          sx={{ padding: 0 }}
-                        />
-                      ) : (
-                        <span className={styles.noCheckbox} />
-                      )}
-                    </td>
-
                     {/* № */}
                     <td className={styles.numberCell}>
                       {(page - 1) * pageSize + index + 1}
@@ -272,12 +208,12 @@ export const HTDocumentsTable = ({
 
                     {/* Имя файла */}
                     <td>
-                      <span className={styles.fileName}>{doc.fileName}</span>
+                      <button type="button" className={styles.fileName} onClick={(event) => { event.stopPropagation(); onOpenDetails(doc); }} aria-label={`Открыть документ ${doc.fileName}`}>{doc.fileName}</button>
                     </td>
 
                     {/* Тип */}
                     <td>
-                      <HTDocumentTypeBadge fileType={doc.fileType} />
+                      {doc.fileType}
                     </td>
 
                     {/* Код МО */}
@@ -306,14 +242,11 @@ export const HTDocumentsTable = ({
                           <Tooltip title="Проверить документ">
                             <IconButton
                               size="small"
+                              aria-label="Проверить документ"
                               onClick={() => onCheckOne(doc.id)}
                               disabled={isLoading}
-                              sx={{
-                                color: "var(--text-secondary)",
-                                "&:hover": { color: "#1a7f37" },
-                              }}
                             >
-                              <CheckCircleOutlineOutlinedIcon fontSize="small" />
+                              <FactCheckOutlinedIcon fontSize="small" />
                             </IconButton>
                           </Tooltip>
                         )}
@@ -322,14 +255,11 @@ export const HTDocumentsTable = ({
                           <Tooltip title="Скачать ответный файл">
                             <IconButton
                               size="small"
+                              aria-label="Скачать ответный файл"
                               onClick={() => onDownloadResponse(doc)}
                               disabled={isLoading}
-                              sx={{
-                                color: "var(--text-secondary)",
-                                "&:hover": { color: "#1a4fbf" },
-                              }}
                             >
-                              <DownloadIcon fontSize="small" />
+                              <DownloadRoundedIcon fontSize="small" />
                             </IconButton>
                           </Tooltip>
                         )}
@@ -339,14 +269,12 @@ export const HTDocumentsTable = ({
                           <Tooltip title="Удалить документ">
                             <IconButton
                               size="small"
+                              className={styles.deleteAction}
+                              aria-label="Удалить документ"
                               onClick={() => onDelete(doc)}
                               disabled={isLoading}
-                              sx={{
-                                color: "var(--text-secondary)",
-                                "&:hover": { color: "#b91c1c" },
-                              }}
                             >
-                              <DeleteOutlineIcon fontSize="small" />
+                              <DeleteOutlineRoundedIcon fontSize="small" />
                             </IconButton>
                           </Tooltip>
                         )}
@@ -374,6 +302,7 @@ export const HTDocumentsTable = ({
         <div className={styles.pageSizeBlock}>
           <span>Показывать по:</span>
           <select
+            aria-label="Документов на странице"
             className={styles.pageSizeSelect}
             value={pageSize}
             onChange={(e) => onPageSizeChange(Number(e.currentTarget.value))}
@@ -390,6 +319,7 @@ export const HTDocumentsTable = ({
         <div className={styles.pageNumbers}>
           <IconButton
             size="small"
+            aria-label="Предыдущая страница"
             onClick={() => onPageChange(page - 1)}
             disabled={page <= 1 || isLoading}
           >
@@ -408,6 +338,8 @@ export const HTDocumentsTable = ({
                 className={`${styles.pageButton} ${
                   num === page ? styles.pageButtonActive : ""
                 }`}
+                aria-label={`Страница ${num}`}
+                aria-current={num === page ? "page" : undefined}
                 onClick={() => onPageChange(num)}
                 disabled={isLoading}
               >
@@ -418,6 +350,7 @@ export const HTDocumentsTable = ({
 
           <IconButton
             size="small"
+            aria-label="Следующая страница"
             onClick={() => onPageChange(page + 1)}
             disabled={page >= totalPages || isLoading}
           >

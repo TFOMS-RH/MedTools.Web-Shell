@@ -1,9 +1,29 @@
-// ==========================================
-// modules/healthTrack/features/documents/styles.module.scss
-// ==========================================
-
 .tabRoot {
   display: flex;
   flex-direction: column;
-  gap: var(--space-8);
+  min-width: 0;
+  gap: var(--mt-space-5);
+  background: var(--mt-canvas);
+  color: var(--mt-text-primary);
+  font-size: var(--mt-font-body);
+
+  button { font-family: inherit; font-size: inherit; }
+  button:focus-visible { outline: 2px solid var(--mt-healthtrack-accent); outline-offset: 2px; }
+  button:disabled { cursor: not-allowed; opacity: .5; }
+}
+.surface {
+  container: ht-documents / inline-size;
+  box-sizing: border-box;
+  min-width: 0;
+  padding: var(--mt-space-6);
+  border-radius: var(--mt-radius-card);
+  background: var(--mt-surface);
+}
+.registry { display: flex; flex-direction: column; gap: var(--mt-space-4); min-width: 0; }
+.requestStatus {
+  min-height: 1.5em;
+  color: var(--mt-text-secondary);
+  line-height: 1.5;
+  &:empty { display: none; }
+  &[role="alert"] { color: var(--text-error); }
 }

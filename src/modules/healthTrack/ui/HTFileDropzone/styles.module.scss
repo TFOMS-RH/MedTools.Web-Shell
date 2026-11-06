@@ -1,146 +1,72 @@
-// ==========================================
-// modules/healthTrack/ui/HTFileDropzone/styles.module.scss
-// ==========================================
-
 .dropzone {
+  position: relative;
+  min-width: 0;
+  border-radius: var(--mt-radius-inner);
+  background: var(--mt-surface-subtle);
+  transition: background var(--mt-duration-fast) ease;
+  &:hover:not(.disabled) { background: var(--mt-surface-hover); }
+  &.dragOver:not(.disabled) {
+    background: var(--mt-healthtrack-cover);
+    color: color-mix(in srgb, var(--mt-healthtrack-accent) 70%, var(--mt-text-primary));
+  }
+}
+.chooseFile {
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-
+  box-sizing: border-box;
   width: 100%;
-  min-height: 12rem;
-  box-sizing: border-box;   // ← ДОБАВИТЬ
-
-  padding: var(--space-8);
-  border: 2px dashed var(--border-default);
-  border-radius: var(--radius-l);
-  background: var(--gray-50);
-
+  min-width: 0;
+  min-height: 180px;
+  padding: var(--mt-space-6);
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  color: var(--mt-text-primary);
+  font: inherit;
+  text-align: left;
   cursor: pointer;
-  user-select: none;
-
-  transition:
-    border-color 0.15s ease,
-    background 0.15s ease;
+  &:focus-visible {
+    outline: 2px solid color-mix(in srgb, var(--mt-healthtrack-accent) 70%, var(--mt-text-primary));
+    outline-offset: 3px;
+  }
+  &:disabled { cursor: wait; }
 }
-
-// ==========================================
-// Hover (мышь).
-// ==========================================
-.dropzone:hover:not(.disabled) {
-  border-color: var(--border-hover);
-  background: var(--gray-100);
+.hasFile .chooseFile {
+  min-height: 88px;
+  padding-right: calc(var(--mt-space-6) + 44px);
 }
-
-// ==========================================
-// Focus (клавиатура).
-// ==========================================
-.dropzone:focus-visible {
-  outline: none;
-  border-color: var(--border-focus);
-  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.06);
-}
-
-// ==========================================
-// Drag&drop активен.
-// ==========================================
-.dragOver {
-  border-color: var(--text-default);
-  background: var(--gray-100);
-}
-
-// ==========================================
-// Файл выбран.
-// ==========================================
-.hasFile {
-  border-style: solid;
-  border-color: var(--border-default);
-  background: var(--card-background);
-  padding: var(--space-5) var(--space-7);
-}
-
-// ==========================================
-// Заблокировано.
-// ==========================================
-.disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  pointer-events: none;
-}
-
-// ==========================================
-// Пустое состояние (приглашение).
-// ==========================================
+.disabled { cursor: wait; }
 .prompt {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--space-3);
+  gap: var(--mt-space-2);
   text-align: center;
-
-  .promptIcon {
-    color: var(--text-secondary);
-    margin-bottom: var(--space-2);
-  }
-
-  .promptTitle {
-    font-size: var(--fs-body1);
-    font-weight: var(--fw-semibold);
-    color: var(--text-default);
-  }
-
-  .promptHint {
-    font-size: var(--fs-body2);
-    color: var(--text-secondary);
-  }
 }
-
-// ==========================================
-// Состояние "файл выбран".
-// ==========================================
-.fileChosen {
-  display: flex;
-  align-items: center;
-  gap: var(--space-5);
-
-  width: 100%;
-}
-
-.fileIcon {
+.promptIcon, .fileIcon {
   display: flex;
   align-items: center;
   justify-content: center;
-
-  width: 3rem;
-  height: 3rem;
-
-  border-radius: var(--radius-l);
-  background: var(--gray-100);
-  color: var(--text-default);
-
   flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--mt-radius-control);
+  background: var(--mt-healthtrack-cover);
+  color: color-mix(in srgb, var(--mt-healthtrack-accent) 70%, var(--mt-text-primary));
 }
-
-.fileInfo {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-
-  flex: 1;
-  min-width: 0;
-
-  .fileName {
-    font-size: var(--fs-body1);
-    font-weight: var(--fw-semibold);
-    color: var(--text-default);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .fileSize {
-    font-size: var(--fs-caption);
-    color: var(--text-secondary);
-  }
+.promptTitle { font-size: var(--mt-font-body); font-weight: var(--fw-semibold); line-height: 1.5; }
+.promptHint, .fileSize { font-size: var(--mt-font-body); color: var(--mt-text-secondary); line-height: 1.5; }
+.fileChosen { display: flex; align-items: center; gap: var(--mt-space-3); width: 100%; min-width: 0; }
+.fileInfo { display: flex; flex-direction: column; gap: var(--mt-space-1); min-width: 0; }
+.fileName { font-weight: var(--fw-semibold); overflow-wrap: anywhere; line-height: 1.5; }
+.removeFile:global(.MuiIconButton-root) {
+  position: absolute;
+  top: 50%;
+  right: var(--mt-space-3);
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  color: var(--mt-text-secondary);
+  &:focus-visible { outline: 2px solid var(--mt-healthtrack-accent); }
 }

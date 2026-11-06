@@ -1,131 +1,22 @@
-// ==========================================
-// modules/healthTrack/features/documents/HTDocumentsFilters/styles.module.scss
-// ==========================================
-
 .filtersRoot {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  flex-wrap: wrap;
-
-  gap: var(--space-3);
-
-  padding: var(--space-5) var(--space-6);
-
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-xl);
-  background: var(--card-background);
-
-  box-sizing: border-box;
-  width: 100%;
-}
-
-// ==========================================
-// Единый стиль для всех полей (input + select).
-// Высота — компактная, 2.25rem.
-// ==========================================
-.filterField {
-  box-sizing: border-box;
-
-  height: 2.25rem;
   min-width: 0;
-
-  padding: 0 var(--space-5);
-
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-l);
-  background: var(--gray-50);
-
-  font-family: var(--inter);
-  font-size: var(--fs-body2);
-  color: var(--text-default);
-  font-weight: var(--fw-default);
-
-  transition:
-    border-color 0.15s ease,
-    background 0.15s ease;
+  padding: var(--mt-space-4);
+  border-radius: var(--mt-radius-inner);
+  background: var(--mt-canvas);
 }
-
-// Placeholder — серым.
-.filterField::placeholder {
-  color: var(--text-secondary);
-  font-weight: var(--fw-default);
+.fields {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) repeat(2, minmax(0, 1fr));
+  align-items: end;
+  gap: var(--mt-space-3);
 }
-
-// Hover — чуть темнее рамка.
-.filterField:hover:not(:disabled) {
-  border-color: var(--border-hover);
-  background: var(--card-background);
+.field { min-width: 0; }
+.actions { display: flex; justify-content: flex-end; align-items: center; flex-wrap: wrap; gap: var(--mt-space-2); min-height: 48px; }
+.pending { margin: var(--mt-space-2) 0 0; font-size: var(--fs-caption); color: var(--mt-text-secondary); }
+@container ht-documents (max-width: 46rem) {
+  .fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .searchField { grid-column: 1 / -1; }
 }
-
-// Focus — акцентная рамка.
-.filterField:focus {
-  outline: none;
-  border-color: var(--border-focus);
-  background: var(--card-background);
-}
-
-// Disabled — приглушаем.
-.filterField:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-// Select — убираем браузерную стрелку и рисуем свою.
-select.filterField {
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-
-  // Стрелка — SVG в фоне.
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path fill='none' stroke='%23a3a3a3' stroke-width='1.5' stroke-linecap='round' d='M1 1l5 5 5-5'/></svg>");
-  background-repeat: no-repeat;
-  background-position: right 0.75rem center;
-  background-size: 0.75rem;
-
-  padding-right: 2rem;
-
-  cursor: pointer;
-}
-
-// ==========================================
-// Поиск — шире остальных.
-// ==========================================
-.searchField {
-  flex: 2 1 16rem;   // растёт в 2 раза быстрее, минимум 16rem
-}
-
-// Все остальные поля — flex 1, минимум 8rem.
-.filtersRoot > .filterField:not(.searchField) {
-  flex: 1 1 8rem;
-}
-
-// ==========================================
-// Кнопки — по контенту, не растягиваются.
-// ==========================================
-.filtersRoot > button {
-  flex: 0 0 auto;
-}
-
-// ==========================================
-// Адаптив — на мобильных поля во всю ширину.
-// ==========================================
-@media (max-width: 900px) {
-  .searchField {
-    flex: 1 1 100%;
-  }
-
-  .filtersRoot > .filterField:not(.searchField) {
-    flex: 1 1 calc(50% - var(--space-3));
-  }
-}
-
-@media (max-width: 600px) {
-  .filtersRoot > .filterField:not(.searchField) {
-    flex: 1 1 100%;
-  }
-
-  .filtersRoot > button {
-    flex: 1 1 100%;
-  }
+@container ht-documents (max-width: 28rem) {
+  .fields { grid-template-columns: minmax(0, 1fr); }
 }

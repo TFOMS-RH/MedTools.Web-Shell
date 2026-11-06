@@ -1,81 +1,9 @@
-// ==========================================
-// modules/healthTrack/features/statistics/components/HTStatisticsKpi/styles.module.scss
-// ==========================================
-
-.kpiRoot {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
-  gap: var(--space-5);
-
-  box-sizing: border-box;
-  width: 100%;
-}
-
-// ==========================================
-// Плитка.
-// ==========================================
-.tile {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: var(--space-5);
-
-  padding: var(--space-6) var(--space-7);
-
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-xl);
-  background: var(--card-background);
-
-  box-sizing: border-box;
-
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
-}
-
-.tile:hover {
-  border-color: var(--border-hover);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-}
-
-// ==========================================
-// Иконка.
-// ==========================================
-.tileIcon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  width: 2.75rem;
-  height: 2.75rem;
-
-  border-radius: var(--radius-l);
-
-  flex-shrink: 0;
-}
-
-// ==========================================
-// Тело плитки.
-// ==========================================
-.tileBody {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-
-  min-width: 0;
-}
-
-.tileValue {
-  font-size: var(--fs-h2);
-  font-weight: var(--fw-bold);
-  color: var(--text-default);
-  line-height: 1.1;
-
-  font-variant-numeric: tabular-nums;
-}
-
-.tileLabel {
-  font-size: var(--fs-body2);
-  color: var(--text-secondary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+.surface { min-width: 0; padding: var(--mt-space-6); border-radius: var(--mt-radius-card); background: var(--mt-surface); h3 { margin: 0 0 var(--mt-space-5); font-size: var(--fs-h4); font-weight: var(--fw-semibold); } }
+.kpiRoot { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: var(--mt-space-5); }
+.tile { display: flex; flex-direction: column; align-items: flex-start; gap: var(--mt-space-3); min-width: 0; }
+.tileIcon { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: var(--mt-radius-control); }
+.tileBody { display: flex; flex-direction: column; gap: var(--mt-space-2); min-width: 0; }
+.tileValue { font-size: var(--mt-font-title); font-weight: var(--fw-semibold); font-variant-numeric: tabular-nums; line-height: 1.2; overflow-wrap: anywhere; }
+.tileLabel { color: var(--mt-text-secondary); line-height: 1.5; }
+@container ht-statistics (max-width: 65rem) { .kpiRoot { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@container ht-statistics (max-width: 32rem) { .kpiRoot { grid-template-columns: repeat(2, minmax(0, 1fr)); } }

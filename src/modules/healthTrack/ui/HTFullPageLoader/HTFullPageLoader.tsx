@@ -30,7 +30,7 @@ export const HTFullPageLoader = ({
         sx={{
           // Используем CSS-переменные дизайн-системы Никитки,
           // чтобы вписаться в общую палитру.
-          color: "var(--gray-1000)",
+          color: "var(--mt-healthtrack-accent)",
         }}
       />
       <p className={styles.text}>{text}</p>

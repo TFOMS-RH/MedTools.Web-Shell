@@ -14,8 +14,17 @@ export const MedViewDefectsTableBody = ({
   pageSize,
   isPending,
 }: MedViewDefectsTableBodyProps) => (
-  <div className="mt-table-viewport" role="region" aria-label="Таблица дефектов" tabIndex={0} aria-busy={isPending}>
-    <table className={`mt-table ${styles.defectsTable}`} aria-labelledby="medview-defects-heading">
+  <div
+    className="mt-table-viewport"
+    role="region"
+    aria-label="Таблица дефектов"
+    tabIndex={0}
+    aria-busy={isPending}
+  >
+    <table
+      className={`mt-table ${styles.defectsTable}`}
+      aria-labelledby="medview-defects-heading"
+    >
       <colgroup>
         <col className={styles.codeColumn} />
         <col />
@@ -27,12 +36,16 @@ export const MedViewDefectsTableBody = ({
         </tr>
       </thead>
       <tbody>
-        {isPending ? <TableSkeleton columns={2} rows={pageSize} /> : defects.map((defect) => (
-          <tr key={defect.defectUid} className="noneHover">
-            <td>{displayValue(defect.code)}</td>
-            <td className={styles.comment}>{displayValue(defect.comment)}</td>
-          </tr>
-        ))}
+        {isPending ? (
+          <TableSkeleton columns={2} rows={pageSize} />
+        ) : (
+          defects.map((defect) => (
+            <tr key={defect.defectUid} className="noneHover">
+              <td>{displayValue(defect.code)}</td>
+              <td className={styles.comment}>{displayValue(defect.comment)}</td>
+            </tr>
+          ))
+        )}
       </tbody>
     </table>
   </div>

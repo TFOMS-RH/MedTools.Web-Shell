@@ -20,8 +20,8 @@ const modules = [
   {
     ...projects.HealthTrack,
     navigatePath: "/health-track",
-    accentColor: "#CA7C20",
-    coverBackground: "#FFF0DC",
+    accentColor: "var(--mt-healthtrack-accent)",
+    coverBackground: "var(--mt-healthtrack-cover)",
   },
 ];
 

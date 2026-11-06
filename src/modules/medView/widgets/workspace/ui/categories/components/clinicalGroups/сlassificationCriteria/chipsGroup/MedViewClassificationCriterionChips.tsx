@@ -11,7 +11,9 @@ export const MedViewClassificationCriterionChips = ({
 }: ClassificationCriteriaBodyProps) => (
   <ul className={styles.criteriaList}>
     {classificationCriteria.map((criterion) => (
-      <li key={criterion.classificationCriterionUid}>{displayValue(criterion.classificationCriterion)}</li>
+      <li key={criterion.classificationCriterionUid}>
+        {displayValue(criterion.classificationCriterion)}
+      </li>
     ))}
   </ul>
 );

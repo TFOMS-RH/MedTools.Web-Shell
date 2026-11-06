@@ -1,5 +1,6 @@
 // Run from the repository root: node tests/medview-progressive-workspace.browser.mjs
 // Requires Chrome (override CHROME_PATH if needed). All API responses are intercepted test fixtures.
+// --live-only verifies the current production UI without the legacy standalone demo routes.
 import { spawn } from "node:child_process";
 import { mkdtemp } from "node:fs/promises";
 import { tmpdir } from "node:os";
@@ -122,7 +123,8 @@ try {
       patientLastName: "ТЕСТ-ПАЦИЕНТ-" + (i + 1),
       patientFirstName: "Тест",
       patientMiddleName: "",
-      medicalCareConditions: 1,
+      medicalCareConditionsCode: 1,
+      medicalCareConditionsName: "Демонстрационные условия",
       insurancePolicySeries: null,
       insurancePolicyNumber: "0000000000000000",
       amountBilled: 12345.67,
@@ -132,12 +134,15 @@ try {
   const medical = (parent) =>
     Array.from({ length: medicalCount }, (_, i) => ({
       medicalCaseUid: parent * 100 + i + 1,
-      medicalProfile: null,
+      medicalProfileCode: 1,
+      medicalProfileName: "Демонстрационный профиль",
       isPediatric: false,
-      physicianSpecialty: 0,
+      physicianSpecialtyCode: 1,
+      physicianSpecialtyName: "Демонстрационная специальность",
       treatmentStartDate: "2026-01-01",
       treatmentEndDate: "2026-01-03",
-      primaryDiagnosis: "ТЕСТ-МЕД-" + (parent * 100 + i + 1),
+      primaryDiagnosisCode: "ТЕСТ-МЕД-" + (parent * 100 + i + 1),
+      primaryDiagnosisName: "Демонстрационная расшифровка для проверки длинного медицинского текста",
       paidUnits: 1,
       unitRate: null,
       amountBilled: 12345.67,
@@ -314,6 +319,31 @@ try {
     'document.getElementById("medview-case-panel")?.textContent.includes("Выберите раздел")',
   );
   await screenshot("04-medical-case-selected");
+  check("results and medical cards share one surface, details stay separate", await evaluate(`(()=>{
+    const surface=wsArea().querySelector('[aria-label="Законченные и медицинские случаи"]');
+    const viewport=surface.querySelector('.mt-table-viewport');
+    return surface.contains(wsCards())&&!viewport.contains(wsCards())&&!surface.contains(wsDetails())
+      &&getComputedStyle(surface).backgroundColor==='rgb(255, 255, 255)'
+      &&surface.querySelector('#medview-medical-heading').textContent==='Медицинские случаи';
+  })()`));
+  await send('Input.dispatchMouseEvent',{type:'mouseMoved',x:5,y:5});await pause();
+  check('medical cards use borderless neutral and pastel purple surfaces',await evaluate(`(()=>{
+    const cards=[...wsCards().querySelectorAll('article')],marker=getComputedStyle(cards[0],'::before');
+    return cards.every(e=>getComputedStyle(e).borderTopWidth==='0px'&&getComputedStyle(e).boxShadow==='none'&&getComputedStyle(e).overflow==='hidden')
+      &&getComputedStyle(cards[1]).backgroundColor==='rgb(245, 245, 247)'&&getComputedStyle(cards[0]).backgroundColor!==getComputedStyle(cards[1]).backgroundColor
+      &&marker.width==='4px'&&marker.backgroundColor==='rgb(118, 84, 184)'&&Math.abs(parseFloat(marker.height)-cards[0].clientHeight)<1
+      &&getComputedStyle(cards[1],'::before').content==='none';
+  })()`));
+  const hoverMedical=async index=>{
+    const point=await evaluate(`(()=>{const e=wsCards().querySelectorAll('article')[${index}];e.scrollIntoView({block:'center'});const r=e.getBoundingClientRect();return {x:r.left+r.width/2,y:r.top+20};})()`);
+    await send('Input.dispatchMouseEvent',{type:'mouseMoved',...point});await pause();
+  };
+  await evaluate('window.medicalSelectedBackground=getComputedStyle(wsCards().querySelector("article")).backgroundColor');
+  await hoverMedical(1);
+  check('ordinary medical hover uses neutral surface',await evaluate('getComputedStyle(wsCards().querySelectorAll("article")[1]).backgroundColor==="rgb(239, 239, 241)"'));
+  await hoverMedical(0);
+  check('selected medical hover preserves pastel purple',await evaluate('getComputedStyle(wsCards().querySelector("article")).backgroundColor===medicalSelectedBackground'));
+  await evaluate(`window.medicalGeometry=()=>[...wsCards().querySelectorAll('article')].map(e=>{const r=e.getBoundingClientRect();return {width:r.width,height:r.height,zones:[...e.children].map(c=>{const b=c.getBoundingClientRect();return [b.left-r.left,b.top-r.top,b.width,b.height]})};});window.medicalGeometryBefore=JSON.stringify(medicalGeometry());`);
   for (const h of held.splice(0)) await h.finish();
   await pause();
   check(
@@ -322,6 +352,8 @@ try {
       'wsStore.getState().selectedMedicalCaseUid===201&&!wsCards().textContent.includes("ТЕСТ-МЕД-101")',
     ),
   );
+  // Isolate card geometry from the page scrollbar that may appear while details load.
+  await evaluate('document.fonts.ready.then(()=>{wsCards().style.width="1200px";window.medicalGeometryBefore=JSON.stringify(medicalGeometry());})');
   await evaluate('wsCards().querySelectorAll("button")[1].click()');
   await pause();
   check(
@@ -330,6 +362,15 @@ try {
       "wsStore.getState().selectedMedicalCaseUid===202&&Boolean(wsDetails())&&wsRows().length===2",
     ),
   );
+  const medicalAfter=await evaluate('medicalGeometry()');
+  const medicalBefore=JSON.parse(await evaluate('medicalGeometryBefore'));
+  const coordinates=cards=>cards.flatMap(c=>[c.width,c.height,...c.zones.flat()]);
+  if(!coordinates(medicalAfter).every((v,i)=>Math.abs(v-coordinates(medicalBefore)[i])<0.5))console.log('Medical geometry',medicalBefore,medicalAfter);
+  check('selection does not shift medical content',coordinates(medicalAfter).every((v,i)=>Math.abs(v-coordinates(medicalBefore)[i])<0.5));
+  await evaluate('wsCards().style.width=""');
+  await evaluate(`(()=>{const target=wsCards().querySelectorAll('button')[1],all=[...document.querySelectorAll('button,input,a[href],[tabindex]')].filter(e=>e.tabIndex>=0&&!e.disabled&&e.getClientRects().length);all[all.indexOf(target)-1].focus();})()`);
+  for(const type of ['keyDown','keyUp'])await send('Input.dispatchKeyEvent',{type,key:'Tab',code:'Tab',windowsVirtualKeyCode:9});
+  check('purple keyboard outline remains visible inside clipping',await evaluate(`(()=>{const e=document.activeElement,r=e.getBoundingClientRect(),card=e.closest('article');if(!card)return false;const c=card.getBoundingClientRect(),s=getComputedStyle(e),o=parseFloat(s.outlineWidth)+parseFloat(s.outlineOffset);return e.matches(':focus-visible')&&s.outlineColor==='rgb(118, 84, 184)'&&s.outlineStyle==='solid'&&r.left-o>=c.left&&r.right+o<=c.right&&r.top-o>=c.top&&r.bottom+o<=c.bottom;})()`));
   // Refresh retains current selections and visible descendants.
   for (const kind of ["results", "medical"]) {
     if (kind === "results") resultMode = "loading";
@@ -474,10 +515,10 @@ try {
   );
   await evaluate("wsRows()[0].click()");
   await until("wsCards()&&wsDetails()");
-  for (const width of [320, 360, 600, 768, 1000, 1440, 1920]) {
+  for (const width of [320, 360, 600, 768, 1000, 1440, 1920, 2560]) {
     await send("Emulation.setDeviceMetricsOverride", {
       width,
-      height: 1200,
+      height: width === 2560 ? 1440 : width === 1920 ? 1080 : 1200,
       deviceScaleFactor: 1,
       mobile: false,
     });
@@ -504,6 +545,9 @@ try {
     );
   }
   await evaluate('wsArea().style.width=""');
+  if (process.argv.includes("--live-only")) {
+    console.log("LIVE PROGRESSIVE WORKSPACE CHECKS COMPLETE (legacy demo routes not exercised)");
+  } else {
   // Real page reload resets the in-memory stores; only SPA return preserves them.
   await send("Page.navigate", {
     url: "http://127.0.0.1:5189/med-view?demoWorkspace=1",
@@ -603,6 +647,7 @@ try {
   check("standalone medical cards fixture", true);
 
   console.log("PROGRESSIVE WORKSPACE CHECKS COMPLETE");
+  }
 } finally {
   ws?.close();
   chrome.kill();

@@ -27,7 +27,10 @@ export const RControlMedicalCaseDetailsCardRoot = () => {
   });
 
   return (
-    <section className={styles.caseSection} aria-labelledby="rcontrol-medical-details-heading">
+    <section
+      className={styles.caseSection}
+      aria-labelledby="rcontrol-medical-details-heading"
+    >
       <RControlMedicalCaseDetailsCardHeader />
       {dataState === "error" ? (
         <DataState

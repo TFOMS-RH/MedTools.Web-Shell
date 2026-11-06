@@ -1,11 +1,12 @@
 // ==========================================
 // modules/healthTrack/ui/HTDateRangeFilter/HTDateRangeFilter.tsx
 // ==========================================
-import { useState } from "react";
-import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
+import { useId, useState } from "react";
+import TextField from "@mui/material/TextField";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 
-import { AppButton } from "../../../../components/ui/AppButton/AppButton";
+import Button from "@mui/material/Button";
+import { documentButtonSx, documentInputSx } from "../../features/documents/controlsSx";
 
 import styles from "./styles.module.scss";
 
@@ -47,8 +48,8 @@ interface HTDateRangeFilterProps {
 // Валидация периода "ГГГГ-ММ".
 // ==========================================
 const isValidPeriod = (value: string): boolean => {
-  if (!value) return true; // пустое — валидно
-  return /^\d{4}-\d{2}$/.test(value.trim());
+  if (!value.trim()) return true; // пустое — валидно
+  return /^\d{4}-(0[1-9]|1[0-2])$/.test(value.trim());
 };
 
 /**
@@ -65,6 +66,7 @@ export const HTDateRangeFilter = ({
   disabled = false,
   label = "Период",
 }: HTDateRangeFilterProps) => {
+  const id = useId();
   const [localError, setLocalError] = useState<string | null>(null);
 
   const update = (field: keyof HTDateRangeValue, next: string) => {
@@ -72,25 +74,24 @@ export const HTDateRangeFilter = ({
   };
 
   const handleSubmit = () => {
-    if (!isValidPeriod(value.periodFrom)) {
-      setLocalError("Формат «от»: ГГГГ-ММ (например, 2026-01)");
+    const from = value.periodFrom.trim(), to = value.periodTo.trim();
+    if (!isValidPeriod(from)) {
+      setLocalError("Укажите «От» в формате ГГГГ-ММ, месяц от 01 до 12.");
       return;
     }
-    if (!isValidPeriod(value.periodTo)) {
-      setLocalError("Формат «до»: ГГГГ-ММ (например, 2026-12)");
+    if (!isValidPeriod(to)) {
+      setLocalError("Укажите «До» в формате ГГГГ-ММ, месяц от 01 до 12.");
       return;
     }
     if (
-      value.periodFrom &&
-      value.periodTo &&
-      value.periodFrom > value.periodTo
+      from && to && from > to
     ) {
       setLocalError("«От» не может быть позже «до»");
       return;
     }
 
     setLocalError(null);
-    onSubmit(value);
+    onSubmit({ periodFrom: from, periodTo: to });
   };
 
   const handleReset = () => {
@@ -99,68 +100,29 @@ export const HTDateRangeFilter = ({
     onReset();
   };
 
+  const inputProps = { input: { disableUnderline: true }, inputLabel: { shrink: true },
+    htmlInput: { "aria-describedby": localError ? id + "-error" : undefined } };
   return (
-    <form
-      className={styles.filterRoot}
-      onSubmit={(e) => {
-        e.preventDefault();
-        handleSubmit();
-      }}
-    >
-      <div className={styles.labelBlock}>
-        <CalendarMonthOutlinedIcon
-          sx={{ fontSize: 18, color: "var(--text-secondary)" }}
-        />
-        <span className={styles.label}>{label}</span>
+    <form className={styles.filterRoot} aria-label="Период статистики"
+      onSubmit={(event) => { event.preventDefault(); handleSubmit(); }}>
+      <p className={styles.label}>{label}</p>
+      <div className={styles.fields}>
+        <TextField id={id + "-from"} label="От" placeholder="2026-01" sx={documentInputSx}
+          variant="filled" fullWidth size="small" slotProps={inputProps}
+          value={value.periodFrom} onChange={(e) => update("periodFrom", e.target.value)}
+          disabled={disabled} error={Boolean(localError)} />
+        <TextField id={id + "-to"} label="До" placeholder="2026-12" sx={documentInputSx}
+          variant="filled" fullWidth size="small" slotProps={inputProps}
+          value={value.periodTo} onChange={(e) => update("periodTo", e.target.value)}
+          disabled={disabled} error={Boolean(localError)} />
+        <div className={styles.actionsBlock}>
+          <Button sx={documentButtonSx} variant="text" size="small" type="button"
+            onClick={handleReset} disabled={disabled} startIcon={<RestartAltIcon fontSize="small" />}>Сбросить</Button>
+          <Button sx={documentButtonSx} variant="contained" size="small" type="submit"
+            disabled={disabled}>Применить</Button>
+        </div>
       </div>
-
-      <div className={styles.inputsBlock}>
-        <input
-          className={styles.periodInput}
-          type="text"
-          placeholder="от: 2026-01"
-          value={value.periodFrom}
-          onChange={(e) => update("periodFrom", e.currentTarget.value)}
-          disabled={disabled}
-        />
-
-        <span className={styles.dash}>—</span>
-
-        <input
-          className={styles.periodInput}
-          type="text"
-          placeholder="до: 2026-12"
-          value={value.periodTo}
-          onChange={(e) => update("periodTo", e.currentTarget.value)}
-          disabled={disabled}
-        />
-      </div>
-
-      <div className={styles.actionsBlock}>
-        <AppButton
-          variant="primary"
-          size="md"
-          type="submit"
-          disabled={disabled}
-        >
-          Применить
-        </AppButton>
-
-        <AppButton
-          variant="secondary"
-          size="md"
-          type="button"
-          onClick={handleReset}
-          disabled={disabled}
-        >
-          <RestartAltIcon sx={{ fontSize: 18 }} />
-          Сбросить
-        </AppButton>
-      </div>
-
-      {localError && (
-        <div className={styles.errorBlock}>{localError}</div>
-      )}
+      {localError && <p id={id + "-error"} className={styles.errorBlock} role="alert">{localError}</p>}
     </form>
   );
 };

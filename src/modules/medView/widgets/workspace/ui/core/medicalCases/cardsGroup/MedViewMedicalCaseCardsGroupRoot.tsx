@@ -5,24 +5,9 @@ import { useMedicalCasesListItemsQuery } from "../../../../../../../../shared/mo
 import { MedViewMedicalCaseCardSkeletons } from "./MedViewMedicalCaseCardSkeletons";
 import { MedViewMedicalCaseCards } from "./MedViewMedicalCaseCards";
 import { DataState } from "../../../../../../../../shared/ui/DataState/DataState";
-import { lazy, Suspense, useEffect } from "react";
-
-const MedViewMedicalCaseCardsPreview = import.meta.env.DEV
-  ? lazy(() => import("./MedViewMedicalCaseCardsPreview"))
-  : null;
+import { useEffect } from "react";
 
 export const MedViewMedicalCaseCardsGroupRoot = () => {
-  if (
-    MedViewMedicalCaseCardsPreview &&
-    new URLSearchParams(window.location.search).get("demoCases") === "1"
-  ) {
-    return (
-      <Suspense fallback={<MedViewMedicalCaseCardSkeletons />}>
-        <MedViewMedicalCaseCardsPreview />
-      </Suspense>
-    );
-  }
-
   return <MedViewMedicalCaseCardsGroup />;
 };
 

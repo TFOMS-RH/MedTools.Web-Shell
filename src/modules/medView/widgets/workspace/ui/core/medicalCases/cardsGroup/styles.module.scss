@@ -19,7 +19,9 @@
   color: var(--mt-text-secondary);
   font-size: var(--mt-font-body);
 
-  p { margin: 0; }
+  p {
+    margin: 0;
+  }
 
   label {
     display: inline-flex;
@@ -38,7 +40,9 @@
     font: inherit;
   }
 
-  input { accent-color: var(--mt-medview-accent); }
+  input {
+    accent-color: var(--mt-medview-accent);
+  }
 
   :is(select, input):focus-visible {
     outline: 2px solid var(--mt-medview-accent);
@@ -60,34 +64,57 @@
   padding: 0;
   list-style: none;
 
-  > li { min-width: 0; }
+  > li {
+    min-width: 0;
+  }
 }
 
 .card {
+  position: relative;
   display: grid;
-  grid-template-columns: minmax(13rem, 1fr) minmax(0, 2.1fr) minmax(18rem, 1.3fr);
+  grid-template-columns: minmax(13rem, 1fr) minmax(0, 2.1fr) minmax(
+      18rem,
+      1.3fr
+    );
   align-items: start;
   min-width: 0;
   gap: var(--mt-space-6);
   box-sizing: border-box;
   padding: var(--mt-space-5);
-  border: 1px solid var(--border-default);
-  border-radius: var(--mt-radius-card);
-  background: var(--mt-surface);
+  border: 0;
+  border-radius: var(--mt-radius-inner);
+  overflow: hidden;
+  background: var(--mt-canvas);
   color: var(--mt-text-primary);
   font-size: var(--mt-font-body);
   line-height: 1.5;
   cursor: pointer;
 
-  &:hover { border-color: var(--border-hover); }
-
-  &.selected {
-    border-color: var(--mt-medview-accent);
-
-    &:hover { border-color: var(--mt-medview-accent); }
+  &:hover {
+    background: var(--mt-surface-subtle);
   }
 
-  > * { min-width: 0; }
+  &.selected {
+    background: color-mix(in srgb, var(--mt-medview-accent) 6%, var(--mt-surface));
+
+    &::before {
+      position: absolute;
+      inset-block: 0;
+      inset-inline-start: 0;
+      width: 4px;
+      background: var(--mt-medview-accent);
+      content: "";
+      pointer-events: none;
+    }
+
+    &:hover {
+      background: color-mix(in srgb, var(--mt-medview-accent) 6%, var(--mt-surface));
+    }
+  }
+
+  > * {
+    min-width: 0;
+  }
 }
 
 .identity,
@@ -130,7 +157,9 @@
   gap: 0 var(--mt-space-2);
   margin: 0;
 
-  > span { overflow-wrap: anywhere; }
+  > span {
+    overflow-wrap: anywhere;
+  }
 }
 
 .periodLabel,
@@ -167,9 +196,13 @@
   padding-top: var(--mt-space-1);
 }
 
-.zoneLabel { margin: 0; }
+.zoneLabel {
+  margin: 0;
+}
 
-.medicalInfo { gap: var(--mt-space-3); }
+.medicalInfo {
+  gap: var(--mt-space-3);
+}
 
 .diagnosisLabel {
   margin: 0;
@@ -197,9 +230,13 @@
   gap: var(--mt-space-3) var(--mt-space-5);
   margin: 0;
 
-  > div { min-width: 0; }
+  > div {
+    min-width: 0;
+  }
 
-  dt { overflow-wrap: anywhere; }
+  dt {
+    overflow-wrap: anywhere;
+  }
 
   dd {
     display: flex;
@@ -208,7 +245,9 @@
     margin: var(--mt-space-1) 0 0;
     overflow-wrap: anywhere;
 
-    > p { margin: 0; }
+    > p {
+      margin: 0;
+    }
   }
 }
 
@@ -241,7 +280,9 @@
 .skeletonCard {
   cursor: default;
 
-  &:hover { border-color: var(--border-default); }
+  &:hover {
+    background: var(--mt-canvas);
+  }
 }
 
 @container medview-cases (max-width: 64rem) {
@@ -265,9 +306,15 @@
     padding: var(--mt-space-4);
   }
 
-  .diagnosis { padding-top: 0; }
+  .diagnosis {
+    padding-top: 0;
+  }
 
-  .medicalDetails { grid-template-columns: minmax(0, 1fr); }
+  .medicalDetails {
+    grid-template-columns: minmax(0, 1fr);
+  }
 
-  .finances { grid-template-columns: minmax(0, 1fr); }
+  .finances {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }

@@ -2,7 +2,8 @@
 // modules/healthTrack/pages/HTNotFound/HTNotFound.tsx
 // ==========================================
 import { useNavigate } from "react-router";
-import { AppButton } from "../../../../components/ui/AppButton/AppButton";
+import Button from "@mui/material/Button";
+import { documentButtonSx } from "../../features/documents/controlsSx";
 import styles from "./styles.module.scss";
 
 /**
@@ -27,13 +28,13 @@ export const HTNotFound = () => {
         главную.
       </p>
 
-      <AppButton
-        variant="secondary"
-        size="md"
+      <Button sx={documentButtonSx}
+        variant="outlined"
+        size="small"
         onClick={() => navigate("/health-track")}
       >
         На главную
-      </AppButton>
+      </Button>
     </section>
   );
 };

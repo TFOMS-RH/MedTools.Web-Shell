@@ -1,181 +1,20 @@
-// ==========================================
-// modules/healthTrack/ui/HTAuditTimeline/styles.module.scss
-// ==========================================
-
-// ==========================================
-// Таймлайн.
-// ==========================================
-.timeline {
-  display: flex;
-  flex-direction: column;
-
-  padding: var(--space-3) 0;
-}
-
-// ==========================================
-// Событие.
-// ==========================================
-.event {
-  display: flex;
-  gap: var(--space-5);
-
-  position: relative;
-}
-
-// ==========================================
-// Marker (точка + линия).
-// ==========================================
-.marker {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  width: 1rem;
-  flex-shrink: 0;
-
-  padding-top: 0.5rem;
-}
-
-.dot {
-  width: 0.75rem;
-  height: 0.75rem;
-
-  border-radius: 50%;
-  background: var(--text-default);
-
-  z-index: 1;
-}
-
-.dotError {
-  background: #b91c1c;
-}
-
-.line {
-  flex: 1;
-  width: 2px;
-  background: var(--border-default);
-
-  margin-top: 0.25rem;
-}
-
-// Последнее событие — без линии.
-.event:last-child .line {
-  display: none;
-}
-
-// ==========================================
-// Контент события.
-// ==========================================
-.eventContent {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-
-  flex: 1;
-  min-width: 0;
-
-  padding-bottom: var(--space-8);
-}
-
-.eventHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-4);
-
-  flex-wrap: wrap;
-}
-
-.actionBadge {
-  display: inline-flex;
-  align-items: center;
-
-  padding: var(--space-1) var(--space-3);
-
-  border-radius: var(--radius-l);
-
-  font-size: var(--fs-caption);
-  font-weight: var(--fw-semibold);
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-}
-
-.date {
-  font-size: var(--fs-caption);
-  color: var(--text-secondary);
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
-
-.userBlock {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  flex-wrap: wrap;
-}
-
-.userName {
-  font-size: var(--fs-body2);
-  font-weight: var(--fw-semibold);
-  color: var(--text-default);
-  word-break: break-all;
-}
-
-.userRole {
-  font-size: var(--fs-caption);
-  color: var(--text-secondary);
-  background: var(--gray-100);
-  padding: var(--space-1) var(--space-3);
-  border-radius: var(--radius-l);
-}
-
-.detail {
-  font-size: var(--fs-body2);
-  color: var(--text-secondary);
-  line-height: 1.4;
-  margin: 0;
-}
-
-.errorText {
-  font-size: var(--fs-body2);
-  color: #b91c1c;
-  line-height: 1.4;
-  margin: 0;
-
-  padding: var(--space-3) var(--space-4);
-  border-radius: var(--radius-l);
-  background: var(--red-opacity);
-}
-
-// ==========================================
-// Сообщения (загрузка / пусто / ошибка).
-// ==========================================
-.message {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-2);
-
-  padding: var(--space-8) var(--space-5);
-
-  font-size: var(--fs-body2);
-  color: var(--text-secondary);
-  text-align: center;
-}
-
-.messageHint {
-  font-size: var(--fs-caption);
-  color: var(--text-secondary);
-  opacity: 0.7;
-}
-
-.errorMessage {
-  padding: var(--space-5) var(--space-6);
-  border: 1px solid #f0c0c0;
-  border-radius: var(--radius-l);
-  background: var(--red-opacity);
-
-  font-size: var(--fs-body2);
-  color: #b91c1c;
-  text-align: center;
-}
+.timeline { display: flex; flex-direction: column; margin: 0; padding: 0; list-style: none; }
+.event { display: flex; min-width: 0; gap: var(--mt-space-3); }
+.marker { display: flex; flex-direction: column; align-items: center; width: 12px; flex-shrink: 0; padding-top: 8px; }
+.dot { width: 8px; height: 8px; flex-shrink: 0; border-radius: 50%; background: var(--mt-text-tertiary); }
+.dotError { background: #b91c1c; }
+.line { flex: 1; width: 1px; background: var(--mt-surface-subtle); margin-block: var(--mt-space-1); }
+.event:last-child .line { display: none; }
+.eventContent { display: flex; flex: 1; flex-direction: column; min-width: 0; gap: var(--mt-space-2); padding-bottom: var(--mt-space-6); }
+.event:last-child .eventContent { padding-bottom: 0; }
+.eventHeader { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--mt-space-2) var(--mt-space-3); }
+.actionBadge { display: inline-flex; max-width: 100%; padding: var(--mt-space-1) var(--mt-space-2); border-radius: var(--radius-l); font-size: var(--fs-caption); font-weight: var(--fw-semibold); line-height: 1.5; overflow-wrap: anywhere; }
+.date { font-size: var(--fs-caption); line-height: 1.5; color: var(--mt-text-secondary); font-variant-numeric: tabular-nums; }
+.userBlock { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--mt-space-2); min-width: 0; }
+.userName { font-size: var(--mt-font-body); color: var(--mt-text-primary); font-weight: var(--fw-semibold); line-height: 1.5; overflow-wrap: anywhere; }
+.userRole { color: var(--mt-text-secondary); font-size: var(--fs-caption); overflow-wrap: anywhere; }
+.detail { margin: 0; color: var(--mt-text-secondary); font-size: var(--mt-font-body); line-height: 1.5; white-space: pre-wrap; overflow-wrap: anywhere; }
+.errorText { margin: 0; color: #b91c1c; font-size: var(--mt-font-body); line-height: 1.5; white-space: pre-wrap; overflow-wrap: anywhere; }
+.message { display: flex; flex-direction: column; gap: var(--mt-space-2); padding: var(--mt-space-4); border-radius: var(--mt-radius-inner); background: var(--mt-canvas); color: var(--mt-text-secondary); font-size: var(--mt-font-body); line-height: 1.5; }
+.messageHint { font-size: var(--fs-caption); }
+.errorMessage { padding: var(--mt-space-4); border-radius: var(--mt-radius-inner); background: var(--red-opacity); color: #b91c1c; font-size: var(--mt-font-body); line-height: 1.5; }

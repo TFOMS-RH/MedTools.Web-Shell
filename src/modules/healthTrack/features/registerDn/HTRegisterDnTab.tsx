@@ -2,6 +2,9 @@
 // modules/healthTrack/features/registerDn/HTRegisterDnTab.tsx
 // ==========================================
 import { useCallback, useMemo, useState } from "react";
+import { Button } from "@mui/material";
+import { getApiError } from "../../../../shared/helpers/getApiError";
+import { documentButtonSx } from "../documents/controlsSx";
 
 import { useRegisterDnQuery } from "../../hooks/useRegisterDnQueries";
 
@@ -68,7 +71,11 @@ export const HTRegisterDnTab = () => {
   // ==========================================
   // Запрос.
   // ==========================================
-  const { data, isLoading } = useRegisterDnQuery(queryParams);
+  const { data, isLoading, isFetching, isPlaceholderData, isError, error, refetch } =
+    useRegisterDnQuery(queryParams);
+  const requestError = isError ? getApiError(error, "Не удалось загрузить регистр ДН.") : null;
+  const hasAppliedFilters = Boolean(queryParams.searchQuery || queryParams.hospitalCode ||
+    queryParams.diagCode || queryParams.period || queryParams.status);
 
   const items = data?.items ?? [];
   const totalCount = data?.totalCount ?? 0;
@@ -115,7 +122,12 @@ export const HTRegisterDnTab = () => {
   return (
     <section className={styles.tabRoot}>
       <header className={styles.header}>
-        <h2 className={styles.title}>Регистр ДН</h2>
+        <div className={styles.headingRow}>
+          <h2 className={styles.title}>Регистр ДН</h2>
+          <span className={styles.count}>Найдено пациентов: <strong>
+            {data && !isPlaceholderData && !isError ? totalCount.toLocaleString("ru-RU") : "—"}
+          </strong></span>
+        </div>
         <p className={styles.subtitle}>
           Сводный реестр граждан на диспансерном наблюдении
         </p>
@@ -126,12 +138,22 @@ export const HTRegisterDnTab = () => {
         onChange={setFilters}
         onSubmit={handleApplyFilters}
         onReset={handleResetFilters}
-        disabled={isLoading}
+        disabled={isFetching}
       />
 
-      <HTRegisterDnTable
+      <p className={styles.requestStatus} role="status">
+        {isFetching ? isLoading ? "Загрузка пациентов…" : "Обновление результатов…" : ""}
+      </p>
+
+      {requestError ? (
+        <div className={styles.errorState} role="alert">
+          <h3>{requestError.status === 403 ? "Нет доступа к регистру ДН" : "Не удалось загрузить регистр ДН"}</h3>
+          <p>{requestError.message}</p>
+          <Button sx={documentButtonSx} variant="outlined" size="small"
+            onClick={() => void refetch()} disabled={isFetching}>Повторить</Button>
+        </div>
+      ) : <HTRegisterDnTable
         items={items}
-        totalCount={totalCount}
         page={page}
         pageSize={pageSize}
         totalPages={totalPages}
@@ -139,8 +161,10 @@ export const HTRegisterDnTab = () => {
         onPageChange={handlePageChange}
         onPageSizeChange={handlePageSizeChange}
         onResetFilters={handleResetFilters}
-        isLoading={isLoading}
-      />
+        isLoading={isLoading || isPlaceholderData}
+        isFetching={isFetching}
+        hasAppliedFilters={hasAppliedFilters}
+      />}
 
       <HTRegisterDnDrawer enp={openEnp} onClose={handleCloseDetails} />
     </section>

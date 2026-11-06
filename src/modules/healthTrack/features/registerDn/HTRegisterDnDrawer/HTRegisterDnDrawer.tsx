@@ -1,9 +1,10 @@
+import { useId } from "react";
 // ==========================================
 // modules/healthTrack/features/registerDn/HTRegisterDnDrawer/HTRegisterDnDrawer.tsx
 // ==========================================
 import {
   CircularProgress,
-  Divider,
+  Button,
   Drawer,
   IconButton,
 } from "@mui/material";
@@ -20,6 +21,8 @@ import {
   HT_SOURCES_LABELS,
 } from "../../../types/htRegisterDn";
 
+import { documentButtonSx } from "../../documents/controlsSx";
+import { getApiError } from "../../../../../shared/helpers/getApiError";
 import styles from "./styles.module.scss";
 
 // ==========================================
@@ -52,10 +55,12 @@ export const HTRegisterDnDrawer = ({
   enp,
   onClose,
 }: HTRegisterDnDrawerProps) => {
-  const { data: patient, isLoading, isError } =
+  const id = useId();
+  const { data: patient, isLoading, isFetching, isError, isSuccess, error, refetch } =
     useRegisterDnDetailsQuery(enp);
 
   const open = enp !== null;
+  const requestError = isError ? getApiError(error, "Не удалось загрузить карточку пациента") : null;
 
   return (
     <Drawer
@@ -64,11 +69,13 @@ export const HTRegisterDnDrawer = ({
       onClose={onClose}
       slotProps={{
         paper: {
+          className: styles.paper, role: "dialog", "aria-modal": true, "aria-labelledby": id + "-title",
           sx: {
-            width: { xs: "100%", sm: "36rem", md: "42rem" },
+            width: { xs: "100%", sm: "36rem", md: "46rem" },
             maxWidth: "100%",
-            borderLeft: "1px solid var(--border-default)",
-            background: "var(--card-background)",
+            borderRadius: { xs: 0, sm: "var(--mt-radius-card) 0 0 var(--mt-radius-card)" },
+            border: 0, boxShadow: "none", overflow: "hidden",
+            background: "var(--mt-surface)",
           },
         },
       }}
@@ -76,63 +83,61 @@ export const HTRegisterDnDrawer = ({
       {/* Header */}
       <header className={styles.header}>
         <div className={styles.headerText}>
-          <h3 className={styles.title}>Карточка пациента</h3>
-          {patient && (
-            <p className={styles.fileName}>
-              {buildFullName(patient.fam, patient.im, patient.ot)}
-            </p>
-          )}
+          <p className={styles.caption}>Карточка пациента</p>
+          <h2 id={id + "-title"} className={styles.title}>
+            {patient && !isError ? buildFullName(patient.fam, patient.im, patient.ot) : "Пациент"}
+          </h2>
+          <p className={styles.enp}>ЕНП: {patient && !isError ? patient.enp : enp}</p>
         </div>
 
         <IconButton
           onClick={onClose}
           size="small"
-          sx={{ color: "var(--text-secondary)" }}
+          aria-label="Закрыть карточку пациента"
+          className={styles.closeButton}
         >
           <CloseIcon sx={{ fontSize: 20 }} />
         </IconButton>
       </header>
 
-      <Divider />
-
       {/* Content */}
-      <section className={styles.content}>
+      <section className={styles.content} aria-busy={isFetching}>
         {isLoading && (
-          <div className={styles.loadingBlock}>
-            <CircularProgress size={32} sx={{ color: "var(--gray-1000)" }} />
+          <div className={styles.loadingBlock} role="status">
+            <CircularProgress size={24} sx={{ color: "var(--mt-healthtrack-accent)" }} />
             <span>Загрузка…</span>
           </div>
         )}
 
-        {isError && !isLoading && (
-          <div className={styles.errorBlock}>
-            Не удалось загрузить карточку пациента
+        {requestError && !isLoading && (
+          <div className={styles.errorBlock} role="alert">
+            <h3>{requestError.status === 404 ? "Пациент не найден" : requestError.status === 403
+              ? "Нет доступа к карточке пациента" : "Не удалось загрузить карточку пациента"}</h3>
+            <p>{requestError.message}</p>
+            <Button sx={documentButtonSx} variant="outlined" size="small"
+              disabled={isFetching} onClick={() => void refetch()}>Повторить</Button>
           </div>
+        )}
+        {isSuccess && !patient && (
+          <p className={styles.emptyText} role="status">Сведения о пациенте отсутствуют.</p>
+        )}
+        {patient && !isLoading && !isError && isFetching && (
+          <p className={styles.emptyText} role="status">Обновление сведений…</p>
         )}
 
         {patient && !isLoading && !isError && (
           <>
             {/* Источники */}
             <div className={styles.sourcesRow}>
-              <span className={styles.sourcesBadge}>
+              <span>Источники: {" "}
                 {HT_SOURCES_LABELS[patient.sources] ?? patient.sources}
               </span>
             </div>
 
             {/* Паспорт */}
-            <div className={styles.section}>
-              <h4 className={styles.sectionTitle}>Пациент</h4>
+            <div className={styles.patientPanel}>
+              <h3 className={styles.sectionTitle}>Пациент</h3>
               <dl className={styles.dl}>
-                <div className={styles.dlRow}>
-                  <dt>ЕНП</dt>
-                  <dd>{patient.enp}</dd>
-                </div>
-                <div className={styles.dlRow}>
-                  <dt>ФИО</dt>
-                  <dd>
-                    {buildFullName(patient.fam, patient.im, patient.ot)}
-                  </dd>
-                </div>
                 <div className={styles.dlRow}>
                   <dt>Дата рождения</dt>
                   <dd>{formatDate(patient.birthDate)}</dd>
@@ -181,11 +186,12 @@ export const HTRegisterDnDrawer = ({
             </div>
 
             {/* Эпизоды ДН */}
-            {patient.episodes.length > 0 && (
+            {(
               <div className={styles.section}>
-                <h4 className={styles.sectionTitle}>
+                <h3 className={styles.sectionTitle}>
                   Эпизоды ДН ({patient.episodes.length})
-                </h4>
+                </h3>
+                {patient.episodes.length === 0 && <p className={styles.emptyText}>Эпизоды ДН отсутствуют.</p>}
 
                 {patient.episodes.map((ep) => {
                   const dnState = getDnState(ep);
@@ -252,7 +258,10 @@ export const HTRegisterDnDrawer = ({
                       </dl>
 
                       {/* PLAN */}
-                      {ep.plan && (
+                      <div className={styles.relatedGroups}>
+                      {ep.plan && Object.values({ mcodPlan: ep.plan.mcodPlan, moPodrId: ep.plan.moPodrId,
+                        medAreaCode: ep.plan.medAreaCode, dsCode: ep.plan.dsCode,
+                        planDateStart: ep.plan.planDateStart, planDateEnd: ep.plan.planDateEnd }).some(Boolean) ? (
                         <div className={styles.subsection}>
                           <h5 className={styles.subsectionTitle}>PLAN</h5>
                           <dl className={styles.dl}>
@@ -294,10 +303,16 @@ export const HTRegisterDnDrawer = ({
                             )}
                           </dl>
                         </div>
+                      ) : (
+                        <div className={styles.subsection}>
+                          <h5 className={styles.subsectionTitle}>PLAN</h5>
+                          <p className={styles.emptyText}>Сведения PLAN отсутствуют.</p>
+                        </div>
                       )}
 
+
                       {/* INF */}
-                      {ep.inf && (
+                      {ep.inf && (ep.inf.infType !== null || ep.inf.sposobInf !== null || ep.inf.dataInf || ep.inf.infUpdated) ? (
                         <div className={styles.subsection}>
                           <h5 className={styles.subsectionTitle}>
                             Информирование
@@ -329,7 +344,14 @@ export const HTRegisterDnDrawer = ({
                             )}
                           </dl>
                         </div>
+                      ) : (
+                        <div className={styles.subsection}>
+                          <h5 className={styles.subsectionTitle}>Информирование</h5>
+                          <p className={styles.emptyText}>Сведения об информировании отсутствуют.</p>
+                        </div>
                       )}
+                      </div>
+
 
                       {/* Источник */}
                       {ep.sourceFileName && (
@@ -345,11 +367,12 @@ export const HTRegisterDnDrawer = ({
             )}
 
             {/* Данные ГИС ОМС (GF) */}
-            {patient.gfRecords.length > 0 && (
+            {(
               <div className={styles.section}>
-                <h4 className={styles.sectionTitle}>
+                <h3 className={styles.sectionTitle}>
                   Данные ГИС ОМС ({patient.gfRecords.length})
-                </h4>
+                </h3>
+                {patient.gfRecords.length === 0 && <p className={styles.emptyText}>Записи GF отсутствуют.</p>}
 
                 {patient.gfRecords.map((gf) => (
                   <div key={gf.gfRecordId} className={styles.gfCard}>

@@ -2,7 +2,7 @@ import type { ConsultationDto } from "../../../../../../../../../../shared/model
 import { Skeleton } from "@mui/material";
 import styles from "../../styles.module.scss";
 import { codeDescription } from "../../presentation";
-import { formatOncologyDate } from "../../formatOncologyDate";
+import { formatDate } from "../../../../../../../../../../shared/helpers/formatDate";
 
 export const MedViewConsultationsListBody = ({
   consultations,
@@ -22,7 +22,7 @@ export const MedViewConsultationsListBody = ({
       : consultations.map((record) => (
           <li className={styles.record} key={record.consultationUid}>
             <span className={styles.recordDate}>
-              {formatOncologyDate(record.consultationDate)}
+              {formatDate(record.consultationDate)}
             </span>
             <p className={styles.recordText}>
               {codeDescription(

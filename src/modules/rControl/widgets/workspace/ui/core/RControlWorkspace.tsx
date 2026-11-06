@@ -25,8 +25,17 @@ export const RControlWorkspace = () => {
           </p>
         )}
       </section>
-      {selectedInvoiceUid !== null && <RControlCompletedCasesTableRoot />}
-      {selectedCompletedCaseUid !== null && <RControlMedicalCaseCardsGroupRoot />}
+      {selectedInvoiceUid !== null && (
+        <section className={styles.casesWorkspace} aria-label="Законченные и медицинские случаи">
+          <RControlCompletedCasesTableRoot />
+          {selectedCompletedCaseUid !== null && (
+            <section className={styles.medicalCasesArea} aria-labelledby="rcontrol-medical-heading">
+              <h3 id="rcontrol-medical-heading">Медицинские случаи</h3>
+              <RControlMedicalCaseCardsGroupRoot />
+            </section>
+          )}
+        </section>
+      )}
     </>
   );
 };

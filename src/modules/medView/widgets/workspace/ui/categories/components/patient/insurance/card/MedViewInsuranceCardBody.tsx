@@ -18,12 +18,24 @@ export const MedViewInsuranceCardBody = ({
     <div className={styles.fieldGrid} aria-busy={isPending}>
       <CardField
         label="Реестровый номер СМО"
-        value={isPending ? <Skeleton /> : formatNullableValue(insurance.insuranceCompanyCode)}
+        value={
+          isPending ? (
+            <Skeleton />
+          ) : (
+            formatNullableValue(insurance.insuranceCompanyCode)
+          )
+        }
       />
       <div className={styles.wideField}>
         <CardField
           label="Наименование СМО"
-          value={isPending ? <Skeleton /> : formatNullableValue(insurance.insuranceCompanyName)}
+          value={
+            isPending ? (
+              <Skeleton />
+            ) : (
+              formatNullableValue(insurance.insuranceCompanyName)
+            )
+          }
         />
       </div>
       <CardField
@@ -36,20 +48,44 @@ export const MedViewInsuranceCardBody = ({
       />
       <CardField
         label="Номер полиса (старый)"
-        value={isPending ? <Skeleton /> : formatNullableValue(insurance.insurancePolicyUnifiedNumber)}
+        value={
+          isPending ? (
+            <Skeleton />
+          ) : (
+            formatNullableValue(insurance.insurancePolicyUnifiedNumber)
+          )
+        }
       />
       <CardField
         label="Номер полиса (новый)"
-        value={isPending ? <Skeleton /> : formatNullableValue(insurance.insurancePolicyNumber)}
+        value={
+          isPending ? (
+            <Skeleton />
+          ) : (
+            formatNullableValue(insurance.insurancePolicyNumber)
+          )
+        }
       />
       <CardField
         label="Серия полиса"
-        value={isPending ? <Skeleton /> : formatNullableValue(insurance.insurancePolicySeries)}
+        value={
+          isPending ? (
+            <Skeleton />
+          ) : (
+            formatNullableValue(insurance.insurancePolicySeries)
+          )
+        }
       />
       <div className={styles.wideField}>
         <CardField
           label="Тип полиса"
-          value={isPending ? <Skeleton /> : `${insurance.insurancePolicyTypeCode} : ${insurance.insurancePolicyTypeName}`}
+          value={
+            isPending ? (
+              <Skeleton />
+            ) : (
+              `${insurance.insurancePolicyTypeCode} : ${insurance.insurancePolicyTypeName}`
+            )
+          }
         />
       </div>
     </div>

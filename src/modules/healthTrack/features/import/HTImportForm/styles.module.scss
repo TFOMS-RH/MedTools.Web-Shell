@@ -1,144 +1,41 @@
-// ==========================================
-// modules/healthTrack/features/import/HTImportForm/styles.module.scss
-// ==========================================
-
 .formRoot {
-  // Раскладка
   display: flex;
   flex-direction: column;
-  gap: var(--space-8);
-
-  // Размеры
+  gap: var(--mt-space-5);
   box-sizing: border-box;
+  min-width: 0;
   width: 100%;
-  max-width: 100%;
-
-  // Оформление карточки
-  padding: var(--space-8) var(--space-10);
-
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-xl);
-  background: var(--card-background);
+  padding: var(--mt-space-6);
+  border-radius: var(--mt-radius-card);
+  background: var(--mt-surface);
+  font-size: var(--mt-font-body);
+  color: var(--mt-text-primary);
 }
-
-// ==========================================
-// Заголовок.
-// ==========================================
-.header {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-
-  .title {
-    font-size: var(--fs-h3);
-    font-weight: var(--fw-semibold);
-    color: var(--text-default);
-  }
-
-  .subtitle {
-    font-size: var(--fs-body2);
-    color: var(--text-secondary);
-    line-height: 1.4;
-    max-width: 60rem;
-  }
-}
-
-// ==========================================
-// Ошибка парсинга имени файла.
-// ==========================================
+.header { display: flex; flex-direction: column; gap: var(--mt-space-2); }
+.title { margin: 0; font-size: var(--mt-font-title); font-weight: var(--fw-semibold); line-height: 1.25; }
+.subtitle { margin: 0; max-width: 60rem; color: var(--mt-text-secondary); line-height: 1.5; }
 .parseError {
   display: flex;
   align-items: flex-start;
-  gap: var(--space-3);
-
-  box-sizing: border-box;
-  width: 100%;
-
-  padding: var(--space-5) var(--space-6);
-
-  border: 1px solid #f0c0c0;
-  border-radius: var(--radius-l);
+  gap: var(--mt-space-2);
+  padding: var(--mt-space-4);
+  border-radius: var(--mt-radius-control);
   background: var(--red-opacity);
-
-  font-size: var(--fs-body2);
-  color: #b91c1c;
-  line-height: 1.4;
+  color: var(--text-error);
+  overflow-wrap: anywhere;
 }
-
-// ==========================================
-// Информация о распознанном файле.
-// ==========================================
 .parsedInfo {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
-  gap: var(--space-5);
-
-  box-sizing: border-box;
-  width: 100%;
-
-  padding: var(--space-5);
-  border-radius: var(--radius-l);
-  background: var(--gray-50);
-}
-
-.parsedItem {
   display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
+  flex-wrap: wrap;
+  gap: var(--mt-space-4) var(--mt-space-8);
   min-width: 0;
 }
-
-.parsedLabel {
-  font-size: var(--fs-caption);
-  font-weight: var(--fw-semibold);
-  color: var(--text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-}
-
-.parsedValue {
-  font-size: var(--fs-body1);
-  color: var(--text-default);
-  font-weight: var(--fw-semibold);
-}
-
-// ==========================================
-// Строка полей ввода.
-// ==========================================
-.fieldsRow {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
-  gap: var(--space-5);
-
-  box-sizing: border-box;
-  width: 100%;
-}
-
-// ==========================================
-// Прогресс.
-// ==========================================
-.progressBlock {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-
-  box-sizing: border-box;
-  width: 100%;
-}
-
-.progressLabel {
-  font-size: var(--fs-body2);
-  color: var(--text-secondary);
-}
-
-// ==========================================
-// Действия.
-// ==========================================
-.actions {
-  display: flex;
-  gap: var(--space-3);
-  flex-wrap: wrap;
-
-  box-sizing: border-box;
-  width: 100%;
-}
+.parsedItem { display: flex; flex-direction: column; align-items: flex-start; gap: var(--mt-space-1); min-width: 0; }
+.parsedLabel { color: var(--mt-text-secondary); font-size: var(--fs-caption); }
+.parsedValue { font-weight: var(--fw-semibold); overflow-wrap: anywhere; }
+.fieldsRow { width: min(100%, 20rem); min-width: 0; }
+.fieldsRow input:focus { border-color: var(--mt-healthtrack-accent); }
+.fieldsRow input:focus-visible { outline: 2px solid var(--mt-healthtrack-accent); outline-offset: 2px; }
+.progressBlock { display: flex; flex-direction: column; gap: var(--mt-space-2); min-width: 0; }
+.progressLabel { color: var(--mt-text-secondary); line-height: 1.5; }
+.actions { display: flex; flex-wrap: wrap; gap: var(--mt-space-3); }

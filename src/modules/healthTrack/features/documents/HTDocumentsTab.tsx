@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import {
   useCheckDocumentMutation,
-  useCheckDocumentsBatchMutation,
   useDeleteDocumentMutation,
   useDocumentsQuery,
 } from "../../hooks/useDocumentsQueries";
@@ -77,7 +76,6 @@ export const HTDocumentsTab = ({
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(50);
 
-  const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
 
   const [openDocumentId, setOpenDocumentId] = useState<number | null>(null);
 
@@ -109,11 +107,12 @@ export const HTDocumentsTab = ({
   const {
     data: pagedResult,
     isLoading,
+    isFetching,
+    isError,
     refetch: refetchList,
   } = useDocumentsQuery(queryParams);
 
   const checkOneMutation = useCheckDocumentMutation();
-  const checkBatchMutation = useCheckDocumentsBatchMutation();
   const deleteMutation = useDeleteDocumentMutation();
 
 
@@ -128,9 +127,13 @@ export const HTDocumentsTab = ({
   }, [items]);
 
 
-  const handleRefresh = useCallback(() => {
-    refetchList();
-    notify.info("Данные обновлены");
+  const handleRefresh = useCallback(async () => {
+    const result = await refetchList();
+    if (result.isError) {
+      notify.errorFrom(result.error, "Не удалось обновить документы");
+    } else {
+      notify.success("Данные обновлены");
+    }
   }, [refetchList, notify]);
 
   const handleApplyFilters = useCallback(() => {
@@ -143,34 +146,6 @@ export const HTDocumentsTab = ({
     setAppliedFilters(DEFAULT_FILTERS);
     setPage(1);
   }, []);
-
-  const handleToggleRow = useCallback((id: number) => {
-    setSelectedIds((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
-  }, []);
-
-  const handleToggleAll = useCallback(
-    (checked: boolean) => {
-      setSelectedIds((prev) => {
-        const next = new Set(prev);
-        items.forEach((item) => {
-          const isCheckable =
-            item.status === "Uploaded" &&
-            (item.fileType === "DSPN" || item.fileType === "PROF");
-          if (!isCheckable) return;
-
-          if (checked) next.add(item.id);
-          else next.delete(item.id);
-        });
-        return next;
-      });
-    },
-    [items],
-  );
 
   const handleCheckOne = useCallback(
     (id: number) => {
@@ -210,38 +185,6 @@ export const HTDocumentsTab = ({
     },
     [canCheck, checkOneMutation, notify],
   );
-
-  const handleCheckSelected = useCallback(() => {
-    if (!canCheck) {
-      notify.warning("У вас нет прав на проверку документов");
-      return;
-    }
-
-    if (selectedIds.size === 0) return;
-    const ids = Array.from(selectedIds);
-
-    checkBatchMutation.mutate(ids, {
-      onSuccess: (result) => {
-        const success = result.successCount;
-        const failed = result.failedCount;
-
-        if (failed === 0) {
-          notify.success(`Проверено документов: ${success} из ${ids.length}`);
-        } else if (success === 0) {
-          notify.error(
-            `Не удалось проверить ни одного документа (${failed} ошибок)`,
-          );
-        } else {
-          notify.warning(`Проверено: ${success}, с ошибками: ${failed}`);
-        }
-
-        setSelectedIds(new Set());
-      },
-      onError: (err) => {
-        notify.errorFrom(err, "Ошибка массовой проверки");
-      },
-    });
-  }, [canCheck, selectedIds, checkBatchMutation, notify]);
 
   const handleDownloadResponse = useCallback(
     async (doc: HTDocumentListItem) => {
@@ -342,14 +285,17 @@ export const HTDocumentsTab = ({
   const isLoadingAny =
     isLoading ||
     checkOneMutation.isPending ||
-    checkBatchMutation.isPending ||
     deleteMutation.isPending;
+
+  const hasUnappliedFilters = (Object.keys(filters) as (keyof HTDocumentsFiltersValue)[])
+    .some((key) => filters[key] !== appliedFilters[key]);
 
   // Если нет даже права на чтение — показываем заглушку.
   if (!canRead) {
     return (
       <section className={styles.tabRoot}>
         <div
+          className={styles.surface}
           style={{
             padding: "var(--space-10)",
             textAlign: "center",
@@ -364,45 +310,55 @@ export const HTDocumentsTab = ({
 
   return (
     <section className={styles.tabRoot}>
-      <HTDocumentsHeader
-        selectedCount={selectedIds.size}
-        onRefresh={handleRefresh}
-        onCheckSelected={handleCheckSelected}
-        isLoading={isLoadingAny}
-        canCheck={canCheck}
-      />
+      {canExportAggregated && (
+        <div className={styles.surface}><HTDocumentsAggregation /></div>
+      )}
 
-      {/* Агрегация — только если есть permission */}
-      {canExportAggregated && <HTDocumentsAggregation />}
+      <section className={`${styles.surface} ${styles.registry}`} aria-labelledby="ht-documents-heading">
+        <HTDocumentsHeader
+          totalCount={totalCount}
+          showCount={!isError || items.length > 0}
+          onRefresh={handleRefresh}
+          isLoading={isLoadingAny || isFetching}
+        />
 
-      <HTDocumentsFilters
-        value={filters}
-        onChange={setFilters}
-        onSubmit={handleApplyFilters}
-        onReset={handleResetFilters}
-        availablePeriods={availablePeriods}
-        disabled={isLoadingAny}
-      />
+        <HTDocumentsFilters
+          value={filters}
+          onChange={setFilters}
+          onSubmit={handleApplyFilters}
+          onReset={handleResetFilters}
+          availablePeriods={availablePeriods}
+          disabled={isLoadingAny}
+          hasUnappliedFilters={hasUnappliedFilters}
+        />
 
-      <HTDocumentsTable
-        items={items}
-        totalCount={totalCount}
-        page={page}
-        pageSize={pageSize}
-        totalPages={totalPages}
-        selectedIds={selectedIds}
-        onToggleRow={handleToggleRow}
-        onToggleAll={handleToggleAll}
-        onPageChange={handlePageChange}
-        onPageSizeChange={handlePageSizeChange}
-        onCheckOne={handleCheckOne}
-        onDownloadResponse={handleDownloadResponse}
-        onOpenDetails={handleOpenDetails}
-        onDelete={handleDeleteClick}
-        canDelete={canDelete}
-        onResetFilters={handleResetFilters}
-        isLoading={isLoadingAny}
-      />
+        <div className={styles.requestStatus} role={isError ? "alert" : "status"}>
+          {isError
+            ? "Не удалось загрузить документы. Повторите запрос кнопкой «Обновить»."
+            : isFetching
+                ? isLoading ? "Загрузка документов…" : "Обновление документов…"
+                : ""}
+          {isError && items.length > 0 && " Показаны ранее полученные данные."}
+        </div>
+
+        <HTDocumentsTable
+          items={items}
+          page={page}
+          pageSize={pageSize}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+          onPageSizeChange={handlePageSizeChange}
+          onCheckOne={handleCheckOne}
+          onDownloadResponse={handleDownloadResponse}
+          onOpenDetails={handleOpenDetails}
+          onDelete={handleDeleteClick}
+          canDelete={canDelete}
+          onResetFilters={handleResetFilters}
+          isLoading={isLoadingAny}
+          isError={isError}
+          isRefreshing={isFetching && !isLoading}
+        />
+      </section>
 
       <HTDocumentDetailsDrawer
         documentId={openDocumentId}

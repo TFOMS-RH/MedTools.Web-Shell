@@ -28,7 +28,10 @@ export const MedViewCompletedCaseDetailsCardRoot = () => {
   });
 
   return (
-    <section className={styles.caseSection} aria-labelledby="medview-completed-details-heading">
+    <section
+      className={styles.caseSection}
+      aria-labelledby="medview-completed-details-heading"
+    >
       <MedViewCompletedCaseDetailsCardHeader />
       {dataState === "error" ? (
         <DataState

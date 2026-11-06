@@ -27,8 +27,13 @@ export const MedViewPrescriptionCardsGroupRoot = () => {
   });
 
   return (
-    <section className={styles.section} aria-labelledby="medview-prescriptions-heading">
-      <h3 id="medview-prescriptions-heading" className={styles.sectionHeading}>Назначения</h3>
+    <section
+      className={styles.section}
+      aria-labelledby="medview-prescriptions-heading"
+    >
+      <h3 id="medview-prescriptions-heading" className={styles.sectionHeading}>
+        Назначения
+      </h3>
       {dataState === "error" ? (
         <DataState
           title="Ошибка данных"

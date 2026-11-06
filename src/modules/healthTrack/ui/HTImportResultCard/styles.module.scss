@@ -1,181 +1,27 @@
-// ==========================================
-// modules/healthTrack/ui/HTImportResultCard/styles.module.scss
-// ==========================================
-
 .card {
   display: flex;
   flex-direction: column;
-  gap: var(--space-6);
-
-  padding: var(--space-8) var(--space-10);
-
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-xl);
-  background: var(--card-background);
-}
-
-// ==========================================
-// Вариант "успех" — зелёный акцент.
-// ==========================================
-.success {
-  border-color: #b7e0c1;
-
-  .headerIcon {
-    color: #1a7f37;
-  }
-
-  .title {
-    color: #1a7f37;
-  }
-}
-
-// ==========================================
-// Вариант "ошибка" — красный акцент.
-// ==========================================
-.error {
-  border-color: #f0c0c0;
-
-  .headerIcon {
-    color: #b91c1c;
-  }
-
-  .title {
-    color: #b91c1c;
-  }
-}
-
-// ==========================================
-// Заголовок.
-// ==========================================
-.header {
-  display: flex;
-  align-items: center;
-  gap: var(--space-5);
-}
-
-.headerIcon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.headerText {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
+  gap: var(--mt-space-4);
   min-width: 0;
+  padding: var(--mt-space-5);
+  border-radius: var(--mt-radius-inner);
+  background: var(--mt-canvas);
+  overflow-wrap: anywhere;
 }
-
-.title {
-  font-size: var(--fs-h4);
-  font-weight: var(--fw-semibold);
-  line-height: 1.25;
-}
-
-.fileName {
-  font-size: var(--fs-body2);
-  color: var(--text-secondary);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-// ==========================================
-// Блок статистики (для success).
-// ==========================================
-.statsBlock {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
-  gap: var(--space-5);
-
-  padding: var(--space-5);
-  border-radius: var(--radius-l);
-  background: var(--gray-50);
-}
-
-.statItem {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-
-.statLabel {
-  font-size: var(--fs-caption);
-  font-weight: var(--fw-semibold);
-  color: var(--text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-}
-
-.statValue {
-  font-size: var(--fs-h4);
-  font-weight: var(--fw-semibold);
-  color: var(--text-default);
-  font-variant-numeric: tabular-nums;
-}
-
-// ==========================================
-// Блок предупреждений.
-// ==========================================
-.warningsBlock {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-
-  padding: var(--space-5);
-  border: 1px solid #f0dfa0;
-  border-radius: var(--radius-l);
-  background: #fef9e7;
-}
-
-.warningsHeader {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-
-  font-size: var(--fs-body2);
-  font-weight: var(--fw-semibold);
-  color: #996600;
-}
-
-.warningsList {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-
-  margin: 0;
-  padding-left: var(--space-6);
-
-  list-style: disc;
-}
-
-.warningItem {
-  font-size: var(--fs-body2);
-  color: var(--text-default);
-  line-height: 1.4;
-}
-
-// ==========================================
-// Блок ошибки.
-// ==========================================
-.errorBlock {
-  padding: var(--space-5);
-  border-radius: var(--radius-l);
-  background: var(--red-opacity);
-}
-
-.errorMessage {
-  font-size: var(--fs-body1);
-  color: #b91c1c;
-  line-height: 1.4;
-}
-
-// ==========================================
-// Действия.
-// ==========================================
-.actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-3);
-}
+.success .headerIcon, .success .title { color: var(--text-success, #1a7f37); }
+.error .headerIcon, .error .title { color: var(--text-error); }
+.header { display: flex; align-items: flex-start; gap: var(--mt-space-3); }
+.headerIcon { display: flex; flex-shrink: 0; }
+.headerText { display: flex; flex-direction: column; gap: var(--mt-space-1); min-width: 0; }
+.title { margin: 0; font-size: var(--fs-h4); font-weight: var(--fw-semibold); line-height: 1.4; }
+.fileName { margin: 0; color: var(--mt-text-secondary); line-height: 1.5; overflow-wrap: anywhere; }
+.statsBlock { display: flex; flex-wrap: wrap; gap: var(--mt-space-4) var(--mt-space-8); }
+.statItem { display: flex; flex-direction: column; gap: var(--mt-space-1); min-width: 0; }
+.statLabel { font-size: var(--fs-caption); color: var(--mt-text-secondary); }
+.statValue { font-size: var(--mt-font-body); font-weight: var(--fw-semibold); font-variant-numeric: tabular-nums; }
+.warningsBlock { display: flex; flex-direction: column; gap: var(--mt-space-2); }
+.warningsHeader { display: flex; align-items: center; gap: var(--mt-space-2); font-weight: var(--fw-semibold); }
+.warningsList { margin: 0; padding-left: var(--mt-space-5); list-style: disc; }
+.warningItem { line-height: 1.5; }
+.errorMessage { margin: 0; color: var(--text-error); line-height: 1.5; }
+.actions { display: flex; flex-wrap: wrap; gap: var(--mt-space-3); }

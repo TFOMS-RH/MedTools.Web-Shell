@@ -1,7 +1,6 @@
 // ==========================================
 // modules/healthTrack/features/statistics/components/HTStatisticsTopDiagnoses/HTStatisticsTopDiagnoses.tsx
 // ==========================================
-import { useMemo } from "react";
 import {
   BarChart,
   Bar,
@@ -14,12 +13,11 @@ import {
 } from "recharts";
 
 import {
-  HT_CHART_COLORS,
   formatStatNumber,
   type HTStatisticsTopDiagnosis,
 } from "../../../../types/htStatistics";
 
-import styles from "./styles.module.scss";
+import styles from "../../styles.module.scss";
 
 // ==========================================
 // Пропсы.
@@ -66,18 +64,6 @@ const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
   );
 };
 
-// ==========================================
-// Сокращение длинного названия диагноза.
-// Показываем максимум 30 символов.
-// ==========================================
-const shortDiagLabel = (item: HTStatisticsTopDiagnosis): string => {
-  const code = item.diagCode ?? "";
-  const name = item.diagName ?? "";
-
-  if (name.length <= 22) return `${code} ${name}`.trim();
-  return `${code} ${name.slice(0, 22)}…`;
-};
-
 /**
  * График топ-10 диагнозов по количеству пациентов.
  * Горизонтальные бары, метка — код + название.
@@ -87,21 +73,12 @@ export const HTStatisticsTopDiagnoses = ({
   onDiagClick,
   isLoading = false,
 }: HTStatisticsTopDiagnosesProps) => {
-  // ==========================================
-  // Для графика добавляем короткое название в каждую точку.
-  // Recharts использует dataKey для метки оси Y.
-  // ==========================================
-  const chartData = useMemo(() => {
-    return data.map((d) => ({
-      ...d,
-      shortLabel: shortDiagLabel(d),
-    }));
-  }, [data]);
+  const chartData = data;
 
   const isEmpty = chartData.length === 0;
 
   return (
-    <div className={styles.card}>
+    <div className={styles.card} role="region" aria-label="Топ-10 диагнозов">
       <header className={styles.cardHeader}>
         <h3 className={styles.cardTitle}>Топ-10 диагнозов</h3>
         <p className={styles.cardSubtitle}>По количеству пациентов</p>
@@ -114,12 +91,12 @@ export const HTStatisticsTopDiagnoses = ({
       )}
 
       {!isLoading && !isEmpty && (
-        <div className={styles.chartWrapper}>
+        <div className={styles.chartWrapper} style={{ height: Math.max(144, data.length * 36 + 52) }}>
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
               data={chartData}
               layout="vertical"
-              margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
+              margin={{ top: 5, right: 24, left: 0, bottom: 5 }}
             >
               <CartesianGrid
                 strokeDasharray="3 3"
@@ -130,16 +107,17 @@ export const HTStatisticsTopDiagnoses = ({
               <XAxis
                 type="number"
                 stroke="var(--text-secondary)"
-                fontSize={12}
+                fontSize={14}
                 tickFormatter={(v: number) => formatStatNumber(v)}
               />
 
               <YAxis
                 type="category"
-                dataKey="shortLabel"
+                dataKey="diagCode"
                 stroke="var(--text-secondary)"
-                fontSize={11}
-                width={180}
+                fontSize={14}
+                width={84}
+                interval={0}
               />
 
               <Tooltip
@@ -148,6 +126,7 @@ export const HTStatisticsTopDiagnoses = ({
               />
 
               <Bar
+                isAnimationActive={false}
                 dataKey="count"
                 radius={[0, 4, 4, 0]}
                 onClick={(entry) => {
@@ -165,13 +144,24 @@ export const HTStatisticsTopDiagnoses = ({
                 style={{ cursor: onDiagClick ? "pointer" : "default" }}
               >
                 {chartData.map((_, index) => (
-                  <Cell key={`cell-${index}`} fill={HT_CHART_COLORS.violet} />
+                  <Cell key={`cell-${index}`} fill={"var(--mt-healthtrack-accent)"} />
                 ))}
               </Bar>
             </BarChart>
           </ResponsiveContainer>
         </div>
       )}
+      {!isLoading && !isEmpty && <details className={styles.dataDetails}>
+        <summary>Данные графика — все значения</summary>
+        <div className={styles.tableViewport} tabIndex={0}>
+          <table className={"mt-table " + styles.dataTable + " " + styles.diagnosesData} aria-label="Топ-10 диагнозов: данные">
+            <thead><tr><th scope="col">МКБ-10</th><th scope="col">Диагноз</th><th scope="col">Пациентов</th></tr></thead>
+            <tbody>{data.map((item, index) => <tr key={item.diagCode + "-" + index}>
+              <td>{item.diagCode}</td><td>{item.diagName ?? "—"}</td><td>{formatStatNumber(item.count)}</td>
+            </tr>)}</tbody>
+          </table>
+        </div>
+      </details>}
     </div>
   );
 };

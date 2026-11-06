@@ -2,7 +2,7 @@ import type { ContraindicationDto } from "../../../../../../../../../../shared/m
 import { Skeleton } from "@mui/material";
 import styles from "../../styles.module.scss";
 import { codeDescription } from "../../presentation";
-import { formatOncologyDate } from "../../formatOncologyDate";
+import { formatDate } from "../../../../../../../../../../shared/helpers/formatDate";
 
 export const MedViewContraindicationsListBody = ({
   contraindications,
@@ -22,7 +22,7 @@ export const MedViewContraindicationsListBody = ({
       : contraindications.map((record) => (
           <li className={styles.record} key={record.contraindicationUid}>
             <span className={styles.recordDate}>
-              {formatOncologyDate(record.contraindicationDate)}
+              {formatDate(record.contraindicationDate)}
             </span>
             <p className={styles.recordText}>
               {codeDescription(

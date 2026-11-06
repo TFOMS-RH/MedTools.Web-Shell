@@ -2,7 +2,8 @@
 // modules/healthTrack/pages/HTForbidden/HTForbidden.tsx
 // ==========================================
 import { useNavigate } from "react-router";
-import { AppButton } from "../../../../components/ui/AppButton/AppButton";
+import Button from "@mui/material/Button";
+import { documentButtonSx } from "../../features/documents/controlsSx";
 import styles from "./styles.module.scss";
 
 /**
@@ -25,13 +26,13 @@ export const HTForbidden = () => {
         У вас нет доступа к этому разделу. Обратитесь к администратору системы.
       </p>
 
-      <AppButton
-        variant="secondary"
-        size="md"
+      <Button sx={documentButtonSx}
+        variant="outlined"
+        size="small"
         onClick={() => navigate("/health-track")}
       >
         На главную
-      </AppButton>
+      </Button>
     </section>
   );
 };

@@ -17,6 +17,7 @@
 }
 
 .card {
+  position: relative;
   display: grid;
   grid-template-columns: minmax(13rem, 1fr) minmax(0, 2.1fr) minmax(
       18rem,
@@ -27,23 +28,34 @@
   gap: var(--mt-space-6);
   box-sizing: border-box;
   padding: var(--mt-space-5);
-  border: 1px solid var(--border-default);
-  border-radius: var(--mt-radius-card);
-  background: var(--mt-surface);
+  border: 0;
+  border-radius: var(--mt-radius-inner);
+  overflow: hidden;
+  background: var(--mt-canvas);
   color: var(--mt-text-primary);
   font-size: var(--mt-font-body);
   line-height: 1.5;
   cursor: pointer;
 
   &:hover {
-    border-color: var(--border-hover);
+    background: var(--mt-surface-subtle);
   }
 
   &.selected {
-    border-color: var(--mt-rcontrol-accent);
+    background: #f0f8f4;
+
+    &::before {
+      position: absolute;
+      inset-block: 0;
+      inset-inline-start: 0;
+      width: 4px;
+      background: var(--mt-rcontrol-accent);
+      content: "";
+      pointer-events: none;
+    }
 
     &:hover {
-      border-color: var(--mt-rcontrol-accent);
+      background: #f0f8f4;
     }
   }
 
@@ -216,7 +228,7 @@
   cursor: default;
 
   &:hover {
-    border-color: var(--border-default);
+    background: var(--mt-canvas);
   }
 }
 

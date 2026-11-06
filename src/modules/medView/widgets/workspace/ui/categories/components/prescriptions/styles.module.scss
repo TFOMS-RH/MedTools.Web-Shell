@@ -42,10 +42,18 @@
   min-width: 56rem;
   table-layout: fixed;
 
-  .organizationColumn { width: 16%; }
-  .dateColumn { width: 9rem; }
-  .typeColumn { width: 22%; }
-  .methodColumn { width: 25%; }
+  .organizationColumn {
+    width: 16%;
+  }
+  .dateColumn {
+    width: 9rem;
+  }
+  .typeColumn {
+    width: 22%;
+  }
+  .methodColumn {
+    width: 25%;
+  }
 
   > thead > tr > th {
     white-space: normal;

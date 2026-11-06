@@ -7,8 +7,6 @@
   flex-direction: column;
   min-width: 0;
   color: var(--mt-text-primary);
-  background: var(--mt-surface);
-  border-radius: var(--mt-radius-card);
 }
 
 .completedCasesTableHeader {
@@ -71,7 +69,7 @@
   :global(.MuiButtonBase-root.Mui-focusVisible) {
     outline: 2px solid var(--mt-rcontrol-accent); outline-offset: 2px;
   }
-}В
+}
 
 .tableContent { min-width: 0; padding: var(--mt-space-2) var(--mt-space-6) var(--mt-space-6); }
 .table {
