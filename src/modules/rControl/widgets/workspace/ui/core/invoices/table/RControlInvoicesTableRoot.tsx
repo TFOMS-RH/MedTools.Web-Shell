@@ -17,7 +17,7 @@ export const RControlInvoicesTableRoot = () => {
     selectedInvoiceUid,
   } = useRControlWorkspaceStore();
   const {
-    targetDb,
+    registerType,
     selectedMedicalOrganization,
     selectedBillingYear,
     selectedBillingMonth,
@@ -37,7 +37,7 @@ export const RControlInvoicesTableRoot = () => {
     month: selectedBillingMonth,
     page: invoicesTablePagination.page,
     pageSize: invoicesTablePagination.pageSize,
-    targetDb: targetDb,
+    registerType: registerType,
     searchString: invoiceTableSearchString,
   });
 
@@ -60,14 +60,14 @@ export const RControlInvoicesTableRoot = () => {
     });
   };
 
-  const invoices = getInvoicesResult?.invoices ?? [];
+  const invoices = getInvoicesResult?.values ?? [];
 
   const dataState = resolveDataState({
     isEnabled:
       selectedMedicalOrganization !== null &&
       selectedBillingYear !== null &&
       selectedBillingMonth !== null &&
-      targetDb !== null,
+      registerType !== null,
     isLoading: isLoading,
     isFetching: isFetching,
     isError: isError,
@@ -78,7 +78,7 @@ export const RControlInvoicesTableRoot = () => {
   return (
     <section className={styles.invoicesTableRoot}>
       <RControlInvoicesTableHeader
-        totalCount={getInvoicesResult?.recordsCount ?? 0}
+        totalCount={getInvoicesResult?.totalRecords ?? 0}
         state={dataState}
         pagination={invoicesTablePagination}
         onRowsPerPageChange={onRowsPerPageChange}
@@ -116,7 +116,11 @@ export const RControlInvoicesTableRoot = () => {
       )}
       {selectedInvoiceUid !== null && (
         <RControlInvoiceSummaryCardRoot
-          invoiceNumber={invoices.find(invoice => invoice.invoiceUid === selectedInvoiceUid)?.number}
+          invoiceNumber={
+            invoices.find(
+              (invoice) => invoice.invoiceUid === selectedInvoiceUid,
+            )?.number
+          }
         />
       )}
     </section>

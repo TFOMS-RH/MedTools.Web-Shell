@@ -1,11 +1,13 @@
-import type { TargetDbType } from "../../../../../../shared/types/TargetDbType";
+import type { MedicalRegisterType } from "../../../../../../shared/types/TargetDbType";
 import { useQuery } from "@tanstack/react-query";
 import { getMedicalOrganizations } from "../../api/getMedicalOrganizations";
 
-export const useMedicalOrganizationsQuery = (targetDb: TargetDbType | null) => {
+export const useMedicalOrganizationsQuery = (
+  registerType: MedicalRegisterType | null,
+) => {
   return useQuery({
-    queryKey: ["r-control", "medical-organizations", targetDb],
-    enabled: targetDb !== null,
-    queryFn: () => getMedicalOrganizations(targetDb!),
+    queryKey: ["r-control", "medical-organizations", registerType],
+    enabled: registerType !== null,
+    queryFn: () => getMedicalOrganizations(registerType!),
   });
 };

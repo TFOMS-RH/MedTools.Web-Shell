@@ -22,7 +22,12 @@ export const RControlInvoicesTableBody = ({
 }: RControlInvoicesTableBodyProps) => {
   return (
     <div className={styles.tableContent}>
-      <div className="mt-table-viewport mt-table-viewport--scrollable" tabIndex={0} role="region" aria-label="Реестр счетов, прокручиваемая таблица">
+      <div
+        className="mt-table-viewport mt-table-viewport--scrollable"
+        tabIndex={0}
+        role="region"
+        aria-label="Реестр счетов, прокручиваемая таблица"
+      >
         <table className={`mt-table ${styles.table}`}>
           <thead>
             <tr>
@@ -39,9 +44,7 @@ export const RControlInvoicesTableBody = ({
             ) : (
               invoices.map((invoice) => (
                 <tr
-                  className={
-                    `mt-table__row--interactive ${invoice.invoiceUid === selectedInvoiceUid ? "mt-table__row--selected" : ""}`
-                  }
+                  className={`mt-table__row--interactive ${invoice.invoiceUid === selectedInvoiceUid ? "mt-table__row--selected" : ""}`}
                   key={invoice.invoiceUid}
                   onClick={() => selectInvoice(invoice.invoiceUid)}
                 >
@@ -59,8 +62,12 @@ export const RControlInvoicesTableBody = ({
                       {invoice.number}
                     </button>
                   </td>
-                  <td className={styles.identifier}>{dayjs(invoice.billingDate).format("DD.MM.YYYY")}</td>
-                  <td className={styles.amount}>{formatCurrency(invoice.amount)}</td>
+                  <td className={styles.identifier}>
+                    {dayjs(invoice.billingDate).format("DD.MM.YYYY")}
+                  </td>
+                  <td className={styles.amount}>
+                    {formatCurrency(invoice.amount)}
+                  </td>
                   <td className={styles.center}>{invoice.medicalCasesCount}</td>
                   <td className={styles.center}>{invoice.status}</td>
                 </tr>

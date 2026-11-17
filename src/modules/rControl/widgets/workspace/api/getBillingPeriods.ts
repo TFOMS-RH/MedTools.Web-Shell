@@ -1,30 +1,20 @@
 import apiClient from "../../../../../shared/api/client/apiClient";
-import type { ResultResponse } from "../../../../../shared/types/ResultResponse";
-import type { TargetDbType } from "../../../../../shared/types/TargetDbType";
-import type { GetBillingPeriodsResult } from "../model/types/BillingPeriodsResult";
+import type { MedicalRegisterType } from "../../../../../shared/types/TargetDbType";
+import type { BillingPeriodDto } from "../model/types/BillingPeriodDto";
 
 export const getBillingPeriods = async (
   medicalOrganizationCode: string | null,
-  targetDb: TargetDbType,
-) => {
-  
-  const response = await apiClient.get<ResultResponse<GetBillingPeriodsResult>>(
-    "med-tools/rcontrol/lookups/billing-periods",
+  registerType: MedicalRegisterType,
+): Promise<BillingPeriodDto[]> => {
+  const response = await apiClient.get<BillingPeriodDto[]>(
+    "settlements/medical-register/extraction/billing-periods",
     {
       params: {
         medicalOrganizationCode: medicalOrganizationCode,
-        targetDb: targetDb,
+        registerType: registerType,
       },
     },
   );
 
-  if (response.data.isFailure) {
-    throw new Error(response.data.error);
-  }
-
-  if (!response.data.value) {
-    throw new Error("Не удалось получить периоды");
-  }
-
-  return response.data.value.billingPeriods;
+  return response.data;
 };

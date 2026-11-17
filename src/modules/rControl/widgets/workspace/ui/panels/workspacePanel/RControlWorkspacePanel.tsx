@@ -2,72 +2,118 @@ import { useEffect } from "react";
 import { useMedicalOrganizationsQuery } from "../../../model/queries/useMedicalOrganizationsQuery";
 import { useBillingPeriodsQuery } from "../../../model/queries/useBillingPeriodsQuery";
 import { useRControlWorkspacePanelStore } from "../../../model/store/useRControlWorkspacePanelStore";
-import { TargetDbToggle } from "../../../../../../../shared/ui/TargetDbToggle/TargetDbToggle";
+import { MedicalRegisterTypeToggle } from "../../../../../../../shared/ui/medTools/toggles/MedicalRegisterTypeToggle";
 import { MenuItem, Select } from "@mui/material";
 import styles from "./styles.module.scss";
 
 export const RControlWorkspacePanel = () => {
   const {
-    targetDb,
+    registerType,
     selectedMedicalOrganization: organizationCode,
     selectedBillingYear: billingYear,
     selectedBillingMonth,
-    selectTargetDb,
+    selectRegisterType,
     selectMedicalOrganization,
     selectBillingYear,
     selectBillingMonth,
   } = useRControlWorkspacePanelStore();
 
-  const organizations = useMedicalOrganizationsQuery(targetDb);
-  const periods = useBillingPeriodsQuery(organizationCode, targetDb);
+  const organizations = useMedicalOrganizationsQuery(registerType);
+  const periods = useBillingPeriodsQuery(organizationCode, registerType);
 
   useEffect(() => {
-    if (!organizations.isSuccess || organizations.isFetching || organizationCode === null)
-      return;
-    const current = useRControlWorkspacePanelStore.getState();
-    if (current.targetDb !== targetDb || current.selectedMedicalOrganization !== organizationCode)
-      return;
-    if (!organizations.data.some(item => item.medicalOrganizationCode === organizationCode)) {
-      current.selectTargetDb(targetDb);
-    }
-  }, [organizations.data, organizations.isSuccess, organizations.isFetching,
-    organizationCode, targetDb]);
-
-  useEffect(() => {
-    if (!periods.isSuccess || periods.isFetching || organizationCode === null || billingYear === null)
-      return;
-    const current = useRControlWorkspacePanelStore.getState();
     if (
-      current.targetDb !== targetDb || current.selectedMedicalOrganization !== organizationCode ||
-      current.selectedBillingYear !== billingYear || current.selectedBillingMonth !== selectedBillingMonth
-    ) return;
-    const period = periods.data.find(item => item.billingYear === billingYear);
+      !organizations.isSuccess ||
+      organizations.isFetching ||
+      organizationCode === null
+    )
+      return;
+
+    const current = useRControlWorkspacePanelStore.getState();
+
+    if (
+      current.registerType !== registerType ||
+      current.selectedMedicalOrganization !== organizationCode
+    )
+      return;
+
+    if (
+      !organizations.data.some(
+        (medicalOrg) => medicalOrg.code === organizationCode,
+      )
+    ) {
+      current.selectRegisterType(registerType);
+    }
+  }, [
+    organizations.data,
+    organizations.isSuccess,
+    organizations.isFetching,
+    organizationCode,
+    registerType,
+  ]);
+
+  useEffect(() => {
+    if (
+      !periods.isSuccess ||
+      periods.isFetching ||
+      organizationCode === null ||
+      billingYear === null
+    )
+      return;
+
+    const current = useRControlWorkspacePanelStore.getState();
+
+    if (
+      current.registerType !== registerType ||
+      current.selectedMedicalOrganization !== organizationCode ||
+      current.selectedBillingYear !== billingYear ||
+      current.selectedBillingMonth !== selectedBillingMonth
+    )
+      return;
+
+    const period = periods.data.find(
+      (item) => item.billingYear === billingYear,
+    );
+
     if (!period) current.selectMedicalOrganization(organizationCode);
-    else if (selectedBillingMonth !== null && !period.billingMonths.includes(selectedBillingMonth)) {
+    else if (
+      selectedBillingMonth !== null &&
+      !period.billingMonths.includes(selectedBillingMonth)
+    ) {
       current.selectBillingYear(billingYear);
     }
-  }, [periods.data, periods.isSuccess, periods.isFetching, organizationCode,
-    billingYear, selectedBillingMonth, targetDb]);
+  }, [
+    periods.data,
+    periods.isSuccess,
+    periods.isFetching,
+    organizationCode,
+    billingYear,
+    selectedBillingMonth,
+    registerType,
+  ]);
+
   const medicalOrganizations = organizations.data ?? [];
   const billingPeriods = periods.data ?? [];
   const months =
     billingYear === null
       ? []
       : (billingPeriods.find((period) => period.billingYear === billingYear)
-        ?.billingMonths ?? []);
+          ?.billingMonths ?? []);
+
   const organizationHint =
-    targetDb === null
+    registerType === null
       ? "Сначала выберите источник данных."
       : organizations.isLoading
         ? "Загрузка организаций…"
         : organizations.isError
           ? "Не удалось загрузить организации: " +
-          (organizations.error?.message ?? "Неизвестная ошибка")
+            (organizations.error?.message ?? "Неизвестная ошибка")
           : organizations.isFetching
             ? "Обновление организаций…"
             : medicalOrganizations.length === 0
               ? "В выбранном источнике нет организаций."
               : undefined;
+
   const periodHint =
     organizationCode === null
       ? "Сначала выберите организацию."
@@ -75,12 +121,13 @@ export const RControlWorkspacePanel = () => {
         ? "Загрузка доступных периодов…"
         : periods.isError
           ? "Не удалось загрузить периоды: " +
-          (periods.error?.message ?? "Неизвестная ошибка")
+            (periods.error?.message ?? "Неизвестная ошибка")
           : periods.isFetching
             ? "Обновление доступных периодов…"
             : billingPeriods.length === 0
               ? "Для выбранной организации нет доступных периодов."
               : undefined;
+
   const monthHint =
     organizationCode === null
       ? "Сначала выберите организацию."
@@ -88,7 +135,7 @@ export const RControlWorkspacePanel = () => {
         ? "Загрузка доступных периодов…"
         : periods.isError
           ? "Не удалось загрузить месяцы: " +
-          (periods.error?.message ?? "Неизвестная ошибка")
+            (periods.error?.message ?? "Неизвестная ошибка")
           : periods.isFetching
             ? "Обновление доступных периодов…"
             : billingYear === null
@@ -96,29 +143,39 @@ export const RControlWorkspacePanel = () => {
               : months.length === 0
                 ? "Для выбранного года нет доступных месяцев."
                 : undefined;
+
   const organizationDisabled =
-    targetDb === null || medicalOrganizations.length === 0;
+    registerType === null || medicalOrganizations.length === 0;
   const yearDisabled = organizationCode === null || billingPeriods.length === 0;
   const monthDisabled = billingYear === null || months.length === 0;
 
   return (
-    <section className={styles.filtersPanelRoot} aria-labelledby="rcontrol-context-title">
+    <section
+      className={styles.filtersPanelRoot}
+      aria-labelledby="rcontrol-context-title"
+    >
       <header className={styles.header}>
         <h3 id="rcontrol-context-title">Рабочий контекст</h3>
-        <p>Выберите источник, организацию и расчётный период для просмотра счетов.</p>
+        <p>
+          Выберите источник, организацию и расчётный период для просмотра
+          счетов.
+        </p>
       </header>
       <div className={styles.controls}>
         <div className={styles.sourceGroup}>
           <p className={styles.label}>Источник данных</p>
           <div className={styles.sourceControl}>
-            <TargetDbToggle
-              value={targetDb ?? ""}
+            <MedicalRegisterTypeToggle
+              value={registerType ?? ""}
               onChange={(
                 _event: React.MouseEvent<HTMLElement>,
                 newValue: string,
               ) => {
-                if (newValue === "SMODB18" || newValue === "INOGOROD18") {
-                  selectTargetDb(newValue);
+                if (
+                  newValue === "Internal" ||
+                  newValue === "Interterritorial"
+                ) {
+                  selectRegisterType(newValue);
                 }
               }}
             />
@@ -136,7 +193,13 @@ export const RControlWorkspacePanel = () => {
                 organizationHint ? "rcontrol-organizations-state" : undefined
               }
             >
-              <label id="rcontrol-organization-label" htmlFor="rcontrol-organization" className={styles.label}>Организация</label>
+              <label
+                id="rcontrol-organization-label"
+                htmlFor="rcontrol-organization"
+                className={styles.label}
+              >
+                Организация
+              </label>
               <div inert={organizationDisabled}>
                 <Select
                   id="rcontrol-organization"
@@ -146,21 +209,36 @@ export const RControlWorkspacePanel = () => {
                   disabled={organizationDisabled}
                   error={organizations.isError}
                   className={styles.select}
-                  title={medicalOrganizations.find(item => item.medicalOrganizationCode === organizationCode)?.medicalOrganizationName ?? undefined}
-                  inputProps={{ "aria-describedby": organizationHint ? "rcontrol-organizations-state" : undefined }}
-                  MenuProps={{ slotProps: { paper: { className: styles.options } } }}
-                  value={medicalOrganizations.some(item => item.medicalOrganizationCode === organizationCode)
-                    ? organizationCode ?? "" : ""}
+                  title={
+                    medicalOrganizations.find(
+                      (medicalOrg) => medicalOrg.code === organizationCode,
+                    )?.name
+                  }
+                  inputProps={{
+                    "aria-describedby": organizationHint
+                      ? "rcontrol-organizations-state"
+                      : undefined,
+                  }}
+                  MenuProps={{
+                    slotProps: { paper: { className: styles.options } },
+                  }}
+                  value={
+                    medicalOrganizations.some(
+                      (medicalOrg) => medicalOrg.code === organizationCode,
+                    )
+                      ? (organizationCode ?? "")
+                      : ""
+                  }
                   onChange={(event) => {
                     selectMedicalOrganization(event.target.value);
                   }}
                 >
-                  <MenuItem value="" disabled>Выберите организацию</MenuItem>
-                  {medicalOrganizations.map(entity => (
-                    <MenuItem value={entity.medicalOrganizationCode} key={entity.medicalOrganizationCode}>
-                      {entity.medicalOrganizationName?.trim()
-                        ? `${entity.medicalOrganizationCode} — ${entity.medicalOrganizationName}`
-                        : entity.medicalOrganizationCode}
+                  <MenuItem value="" disabled>
+                    Выберите организацию
+                  </MenuItem>
+                  {medicalOrganizations.map((entity) => (
+                    <MenuItem value={entity.code} key={entity.code}>
+                      {`${entity.code} — ${entity.name}`}
                     </MenuItem>
                   ))}
                 </Select>
@@ -170,7 +248,9 @@ export const RControlWorkspacePanel = () => {
                   id="rcontrol-organizations-state"
                   role={organizations.isError ? "alert" : "status"}
                   className={
-                    organizations.isError ? styles.lookupError : styles.lookupHint
+                    organizations.isError
+                      ? styles.lookupError
+                      : styles.lookupHint
                   }
                 >
                   {organizationHint}
@@ -184,9 +264,17 @@ export const RControlWorkspacePanel = () => {
               aria-label="Год"
               aria-disabled={yearDisabled}
               aria-busy={periods.isFetching}
-              aria-describedby={periodHint ? "rcontrol-periods-state" : undefined}
+              aria-describedby={
+                periodHint ? "rcontrol-periods-state" : undefined
+              }
             >
-              <label id="rcontrol-year-label" htmlFor="rcontrol-year" className={styles.label}>Год</label>
+              <label
+                id="rcontrol-year-label"
+                htmlFor="rcontrol-year"
+                className={styles.label}
+              >
+                Год
+              </label>
               <div inert={yearDisabled}>
                 <Select
                   id="rcontrol-year"
@@ -196,10 +284,21 @@ export const RControlWorkspacePanel = () => {
                   disabled={yearDisabled}
                   error={periods.isError}
                   className={styles.select}
-                  inputProps={{ "aria-describedby": periodHint ? "rcontrol-periods-state" : undefined }}
-                  MenuProps={{ slotProps: { paper: { className: styles.options } } }}
-                  value={billingPeriods.some(period => period.billingYear === billingYear)
-                    ? billingYear?.toString() ?? "" : ""}
+                  inputProps={{
+                    "aria-describedby": periodHint
+                      ? "rcontrol-periods-state"
+                      : undefined,
+                  }}
+                  MenuProps={{
+                    slotProps: { paper: { className: styles.options } },
+                  }}
+                  value={
+                    billingPeriods.some(
+                      (period) => period.billingYear === billingYear,
+                    )
+                      ? (billingYear?.toString() ?? "")
+                      : ""
+                  }
                   onChange={(event) => {
                     const value = event.target.value;
                     if (value !== "" && Number.isFinite(Number(value))) {
@@ -207,8 +306,17 @@ export const RControlWorkspacePanel = () => {
                     }
                   }}
                 >
-                  <MenuItem value="" disabled>Выберите год</MenuItem>
-                  {billingPeriods.map(period => <MenuItem key={period.billingYear} value={period.billingYear.toString()}>{period.billingYear}</MenuItem>)}
+                  <MenuItem value="" disabled>
+                    Выберите год
+                  </MenuItem>
+                  {billingPeriods.map((period) => (
+                    <MenuItem
+                      key={period.billingYear}
+                      value={period.billingYear.toString()}
+                    >
+                      {period.billingYear}
+                    </MenuItem>
+                  ))}
                 </Select>
               </div>
               {periodHint && (
@@ -232,7 +340,13 @@ export const RControlWorkspacePanel = () => {
               aria-busy={periods.isFetching}
               aria-describedby={monthHint ? "rcontrol-months-state" : undefined}
             >
-              <label id="rcontrol-month-label" htmlFor="rcontrol-month" className={styles.label}>Месяц</label>
+              <label
+                id="rcontrol-month-label"
+                htmlFor="rcontrol-month"
+                className={styles.label}
+              >
+                Месяц
+              </label>
               <div inert={monthDisabled}>
                 <Select
                   id="rcontrol-month"
@@ -242,11 +356,17 @@ export const RControlWorkspacePanel = () => {
                   disabled={monthDisabled}
                   error={periods.isError}
                   className={styles.select}
-                  inputProps={{ "aria-describedby": monthHint ? "rcontrol-months-state" : undefined }}
-                  MenuProps={{ slotProps: { paper: { className: styles.options } } }}
+                  inputProps={{
+                    "aria-describedby": monthHint
+                      ? "rcontrol-months-state"
+                      : undefined,
+                  }}
+                  MenuProps={{
+                    slotProps: { paper: { className: styles.options } },
+                  }}
                   value={
                     selectedBillingMonth !== null &&
-                      months.includes(selectedBillingMonth)
+                    months.includes(selectedBillingMonth)
                       ? selectedBillingMonth.toString()
                       : ""
                   }
@@ -257,8 +377,14 @@ export const RControlWorkspacePanel = () => {
                     }
                   }}
                 >
-                  <MenuItem value="" disabled>Выберите месяц</MenuItem>
-                  {months.map(month => <MenuItem key={month} value={month.toString()}>{month}</MenuItem>)}
+                  <MenuItem value="" disabled>
+                    Выберите месяц
+                  </MenuItem>
+                  {months.map((month) => (
+                    <MenuItem key={month} value={month.toString()}>
+                      {month}
+                    </MenuItem>
+                  ))}
                 </Select>
               </div>
               {monthHint && (
