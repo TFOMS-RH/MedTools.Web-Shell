@@ -16,7 +16,7 @@ export const RControlMedicationCardsGroupRoot = ({
   selectedOncologyServiceUid,
   selectedMedicationUid,
 }: RControlMedicationCardsGroupRootProps) => {
-  const { targetDb } = useRControlWorkspacePanelStore();
+  const { registerType } = useRControlWorkspacePanelStore();
   const { selectMedication } = useRControlWorkspaceStore();
   const {
     data: medications,
@@ -24,10 +24,10 @@ export const RControlMedicationCardsGroupRoot = ({
     isError,
     isSuccess,
     error,
-  } = useMedicationsQuery(selectedOncologyServiceUid, targetDb);
+  } = useMedicationsQuery(selectedOncologyServiceUid, registerType);
 
   const dataState = resolveDataState({
-    isEnabled: selectedOncologyServiceUid !== null && targetDb !== null,
+    isEnabled: selectedOncologyServiceUid !== null && registerType !== null,
     isLoading: isLoading,
     isError: isError,
     isSuccess: isSuccess,

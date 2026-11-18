@@ -1,31 +1,19 @@
-import type { ResultResponse } from "../../../types/ResultResponse";
-import type { TargetDbType } from "../../../types/TargetDbType";
-import type {
-  ConsultationDto,
-  GetConsultationsResult,
-} from "../../../model/types/invoiceStructure/results/oncology/GetConsultationsResult";
+import type { MedicalRegisterType } from "../../../types/TargetDbType";
+import type { ConsultationDto } from "../../../model/types/invoiceStructure/results/oncology/ConsultationDto";
 import apiClient from "../../client/apiClient";
 
 export const getConsultations = async (
   medicalCaseUid: number,
-  targetDb: TargetDbType,
+  registerType: MedicalRegisterType,
 ): Promise<ConsultationDto[]> => {
-  const response = await apiClient.get<ResultResponse<GetConsultationsResult>>(
-    `med-tools/rcontrol/medical-cases/${medicalCaseUid}/consultations`,
+  const response = await apiClient.get<ConsultationDto[]>(
+    `settlements/medical-register/medical-cases/${medicalCaseUid}/consultations`,
     {
       params: {
-        targetDb: targetDb,
+        registerType: registerType,
       },
     },
   );
 
-  if (response.data.isFailure) {
-    throw new Error(response.data.error);
-  }
-
-  if (!response.data.value) {
-    throw new Error("Сервер прислал невалидный ответ");
-  }
-
-  return response.data.value.consultations;
+  return response.data;
 };

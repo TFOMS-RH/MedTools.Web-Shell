@@ -14,15 +14,18 @@ const categories = [
 
 export const MedViewCategoriesPanel = () => {
   const { targetCategory, setTargetCategory } = useMedViewWorkspaceStore();
-  const value = targetCategory === "default" || targetCategory === "export"
-    ? false
-    : targetCategory;
+  const value =
+    targetCategory === "default" || targetCategory === "export"
+      ? false
+      : targetCategory;
 
   return (
     <Tabs
       className={styles.categoriesPanelRoot}
       value={value}
-      onChange={(_, category: (typeof categories)[number][0]) => setTargetCategory(category)}
+      onChange={(_, category: (typeof categories)[number][0]) =>
+        setTargetCategory(category)
+      }
       variant="scrollable"
       scrollButtons="auto"
       allowScrollButtonsMobile

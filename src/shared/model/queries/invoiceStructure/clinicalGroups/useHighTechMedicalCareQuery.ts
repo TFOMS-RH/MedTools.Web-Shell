@@ -1,22 +1,27 @@
 import { getHighTechMedicalCare } from "../../../../api/invoiceStructure/clinicalGroups/getHighTechMedicalCare";
-import type { TargetDbType } from "../../../../types/TargetDbType";
+import type { MedicalRegisterType } from "../../../../types/TargetDbType";
 import { useQuery } from "@tanstack/react-query";
 
 export const useHighTechMedicalCareQuery = (
   medicalCaseUid: number | null,
-  targetDb: TargetDbType | null,
+  registerType: MedicalRegisterType | null,
 ) => {
-  const isReady = medicalCaseUid !== null && targetDb !== null;
+  const isReady = medicalCaseUid !== null && registerType !== null;
 
   return useQuery({
-    queryKey: ["r-control", "high-tech-medical-care", medicalCaseUid, targetDb],
+    queryKey: [
+      "r-control",
+      "high-tech-medical-care",
+      medicalCaseUid,
+      registerType,
+    ],
     enabled: isReady,
     queryFn: () => {
-      if (medicalCaseUid === null || targetDb === null) {
+      if (medicalCaseUid === null || registerType === null) {
         throw new Error("Невалидные параметры запроса");
       }
 
-      return getHighTechMedicalCare(medicalCaseUid, targetDb);
+      return getHighTechMedicalCare(medicalCaseUid, registerType);
     },
   });
 };

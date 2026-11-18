@@ -8,7 +8,7 @@ import { RControlOncologyCaseCardHeader } from "./RControlOncologyCaseCardHeader
 import { RControlOncologyCaseCardBody } from "./RControlOncologyCaseCardBody";
 
 export const RControlOncologyCaseCardRoot = () => {
-  const { targetDb } = useRControlWorkspacePanelStore();
+  const { registerType } = useRControlWorkspacePanelStore();
   const { selectedMedicalCaseUid } = useRControlWorkspaceStore();
   const {
     data: oncologyCase,
@@ -17,10 +17,10 @@ export const RControlOncologyCaseCardRoot = () => {
     isError,
     isSuccess,
     error,
-  } = useOncologyCaseQuery(selectedMedicalCaseUid, targetDb);
+  } = useOncologyCaseQuery(selectedMedicalCaseUid, registerType);
 
   const dataState = resolveDataState({
-    isEnabled: selectedMedicalCaseUid !== null && targetDb !== null,
+    isEnabled: selectedMedicalCaseUid !== null && registerType !== null,
     isLoading: isLoading,
     isError: isError,
     isSuccess: isSuccess,

@@ -8,7 +8,7 @@ import { MedViewOncologyCaseCardHeader } from "./MedViewOncologyCaseCardHeader";
 import { MedViewOncologyCaseCardBody } from "./MedViewOncologyCaseCardBody";
 
 export const MedViewOncologyCaseCardRoot = () => {
-  const { targetDb } = useMedViewFiltersStore();
+  const { registerType } = useMedViewFiltersStore();
   const { selectedMedicalCaseUid } = useMedViewWorkspaceStore();
   const {
     data: oncologyCase,
@@ -17,10 +17,10 @@ export const MedViewOncologyCaseCardRoot = () => {
     isError,
     isSuccess,
     error,
-  } = useOncologyCaseQuery(selectedMedicalCaseUid, targetDb);
+  } = useOncologyCaseQuery(selectedMedicalCaseUid, registerType);
 
   const dataState = resolveDataState({
-    isEnabled: selectedMedicalCaseUid !== null && targetDb !== null,
+    isEnabled: selectedMedicalCaseUid !== null && registerType !== null,
     isLoading: isLoading,
     isError: isError,
     isSuccess: isSuccess,

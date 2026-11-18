@@ -1,4 +1,4 @@
-import type { DefectDto } from "../../../../../../../../../../shared/model/types/invoiceStructure/results/defects/GetDefectsResult";
+import type { DefectDto } from "../../../../../../../../../../shared/model/types/invoiceStructure/results/defects/DefectDto";
 import { TableSkeleton } from "../../../../../../../../../../shared/ui/TableSkeleton/TableSkeleton";
 import { displayValue } from "../../presentation";
 import styles from "./styles.module.scss";

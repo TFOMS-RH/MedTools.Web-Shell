@@ -1,22 +1,22 @@
-import type { TargetDbType } from "../../../../types/TargetDbType";
+import type { MedicalRegisterType } from "../../../../types/TargetDbType";
 import { useQuery } from "@tanstack/react-query";
 import { getContraindications } from "../../../../api/invoiceStructure/oncology/getContraindications";
 
 export const useContraindicationsQuery = (
   oncologyCaseUid: number | null,
-  targetDb: TargetDbType | null,
+  registerType: MedicalRegisterType | null,
 ) => {
-  const isReady = oncologyCaseUid !== null && targetDb !== null;
+  const isReady = oncologyCaseUid !== null && registerType !== null;
 
   return useQuery({
-    queryKey: ["r-control", "contraindications", oncologyCaseUid, targetDb],
+    queryKey: ["r-control", "contraindications", oncologyCaseUid, registerType],
     enabled: isReady,
     queryFn: () => {
-      if (oncologyCaseUid === null || targetDb === null) {
+      if (oncologyCaseUid === null || registerType === null) {
         throw new Error("Невалидные параметры запроса");
       }
 
-      return getContraindications(oncologyCaseUid, targetDb);
+      return getContraindications(oncologyCaseUid, registerType);
     },
   });
 };

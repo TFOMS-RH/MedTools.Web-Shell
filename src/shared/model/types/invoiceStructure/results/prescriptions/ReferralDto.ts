@@ -1,7 +1,3 @@
-export interface GetReferralsResult {
-  referrals: ReferralDto[];
-}
-
 export interface ReferralDto {
   referralUid: number;
   referralDate: string;

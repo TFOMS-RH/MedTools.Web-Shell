@@ -9,13 +9,13 @@ import { MedViewClassificationCriterionChipsGroupRoot } from "./сlassificationC
 import styles from "./styles.module.scss";
 
 const MedViewClinicalGroupsCategoryRoot = () => {
-  const { targetDb } = useMedViewFiltersStore();
+  const { registerType } = useMedViewFiltersStore();
   const { selectedMedicalCaseUid } = useMedViewWorkspaceStore();
   const {
     data: clinicalGroup,
     isError,
     isSuccess,
-  } = useClinicalGroupQuery(selectedMedicalCaseUid, targetDb);
+  } = useClinicalGroupQuery(selectedMedicalCaseUid, registerType);
   const clinicalGroupUid = clinicalGroup?.clinicalGroupUid ?? null;
 
   return (

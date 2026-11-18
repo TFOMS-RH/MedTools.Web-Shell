@@ -1,4 +1,4 @@
-import type { OncologyCaseDto } from "../../../../../../../../../../shared/model/types/invoiceStructure/results/oncology/GetOncologyCaseResult";
+import type { OncologyCaseDto } from "../../../../../../../../../../shared/model/types/invoiceStructure/results/oncology/OncologyCaseDto";
 import { Skeleton } from "@mui/material";
 import styles from "../../styles.module.scss";
 import { displayValue, codeDescription } from "../../presentation";

@@ -38,10 +38,16 @@ export const MedViewWorkspaceView = ({
         <p>Укажите параметры поиска, чтобы найти законченные случаи.</p>
       </section>
     ) : (
-      <section className={styles.casesWorkspace} aria-label="Законченные и медицинские случаи">
+      <section
+        className={styles.casesWorkspace}
+        aria-label="Законченные и медицинские случаи"
+      >
         {results}
         {hasCompleted && (
-          <section className={styles.medicalCasesArea} aria-labelledby="medview-medical-heading">
+          <section
+            className={styles.medicalCasesArea}
+            aria-labelledby="medview-medical-heading"
+          >
             <h3 id="medview-medical-heading">Медицинские случаи</h3>
             {cards}
           </section>
@@ -53,7 +59,7 @@ export const MedViewWorkspaceView = ({
 );
 
 const MedViewLiveWorkspace = ({ children }: { children: ReactNode }) => {
-  const { appliedFilters, targetDb } = useMedViewFiltersStore();
+  const { appliedFilters, targetDb, registerType } = useMedViewFiltersStore();
   const {
     selectedCompletedCaseUid,
     selectedMedicalCaseUid,
@@ -65,17 +71,17 @@ const MedViewLiveWorkspace = ({ children }: { children: ReactNode }) => {
     completedCasePaginationState,
     targetDb,
   );
-  
+
   const completedCaseUid =
     hasSearch &&
-    result?.completedCases.some(
+    result?.values.some(
       (item) => item.completedCaseUid === selectedCompletedCaseUid,
     )
       ? selectedCompletedCaseUid
       : null;
   const { data: medicalCases } = useMedicalCasesListItemsQuery(
     completedCaseUid,
-    targetDb,
+    registerType,
   );
   const hasMedicalCase =
     completedCaseUid !== null &&

@@ -1,22 +1,22 @@
-import type { TargetDbType } from "../../../../types/TargetDbType";
+import type { MedicalRegisterType } from "../../../../types/TargetDbType";
 import { useQuery } from "@tanstack/react-query";
 import { getOncologyServices } from "../../../../api/invoiceStructure/oncology/getOncologyServices";
 
 export const useOncologyServicesQuery = (
   oncologyCaseUid: number | null,
-  targetDb: TargetDbType | null,
+  registerType: MedicalRegisterType | null,
 ) => {
-  const isReady = oncologyCaseUid !== null && targetDb !== null;
+  const isReady = oncologyCaseUid !== null && registerType !== null;
 
   return useQuery({
-    queryKey: ["r-control", "oncology-services", oncologyCaseUid, targetDb],
+    queryKey: ["r-control", "oncology-services", oncologyCaseUid, registerType],
     enabled: isReady,
     queryFn: () => {
-      if (oncologyCaseUid === null || targetDb === null) {
+      if (oncologyCaseUid === null || registerType === null) {
         throw new Error("Невалидные параметры запроса");
       }
 
-      return getOncologyServices(oncologyCaseUid, targetDb);
+      return getOncologyServices(oncologyCaseUid, registerType);
     },
   });
 };

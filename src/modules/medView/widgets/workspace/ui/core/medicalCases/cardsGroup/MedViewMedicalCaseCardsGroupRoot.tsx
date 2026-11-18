@@ -12,7 +12,7 @@ export const MedViewMedicalCaseCardsGroupRoot = () => {
 };
 
 const MedViewMedicalCaseCardsGroup = () => {
-  const { targetDb } = useMedViewFiltersStore();
+  const { registerType } = useMedViewFiltersStore();
   const {
     selectedCompletedCaseUid,
     selectedMedicalCaseUid,
@@ -24,10 +24,10 @@ const MedViewMedicalCaseCardsGroup = () => {
     isError,
     isSuccess,
     error,
-  } = useMedicalCasesListItemsQuery(selectedCompletedCaseUid, targetDb);
+  } = useMedicalCasesListItemsQuery(selectedCompletedCaseUid, registerType);
 
   const dataState = resolveDataState({
-    isEnabled: selectedCompletedCaseUid !== null && targetDb !== null,
+    isEnabled: selectedCompletedCaseUid !== null && registerType !== null,
     isLoading: isLoading,
     isError: isError,
     isEmpty: medicalCases?.length === 0 && isSuccess,

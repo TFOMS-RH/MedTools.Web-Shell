@@ -117,9 +117,8 @@ export const RControlInvoicesTableRoot = () => {
       {selectedInvoiceUid !== null && (
         <RControlInvoiceSummaryCardRoot
           invoiceNumber={
-            invoices.find(
-              (invoice) => invoice.invoiceUid === selectedInvoiceUid,
-            )?.number
+            invoices.find((invoice) => invoice.uid === selectedInvoiceUid)
+              ?.number
           }
         />
       )}

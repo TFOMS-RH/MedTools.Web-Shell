@@ -1,22 +1,22 @@
-import type { TargetDbType } from "../../../../types/TargetDbType";
+import type { MedicalRegisterType } from "../../../../types/TargetDbType";
 import { useQuery } from "@tanstack/react-query";
 import { getMedicalSanctions } from "../../../../api/invoiceStructure/defects/getMedicalSanctions";
 
 export const useMedicalSanctionsQuery = (
   medicalCaseUid: number | null,
-  targetDb: TargetDbType | null,
+  registerType: MedicalRegisterType | null,
 ) => {
-  const isReady = medicalCaseUid !== null && targetDb !== null;
+  const isReady = medicalCaseUid !== null && registerType !== null;
 
   return useQuery({
-    queryKey: ["r-control", "medical-sanctions", medicalCaseUid, targetDb],
+    queryKey: ["r-control", "medical-sanctions", medicalCaseUid, registerType],
     enabled: isReady,
     queryFn: () => {
-      if (medicalCaseUid === null || targetDb === null) {
+      if (medicalCaseUid === null || registerType === null) {
         throw new Error("Невалидные параметры запроса");
       }
 
-      return getMedicalSanctions(medicalCaseUid, targetDb);
+      return getMedicalSanctions(medicalCaseUid, registerType);
     },
   });
 };

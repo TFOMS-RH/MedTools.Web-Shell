@@ -13,7 +13,7 @@ interface TreatmentComplexityCoefficientsRootProps {
 export const MedViewTreatmentCoefficientsListRoot = ({
   clinicalGroupUid,
 }: TreatmentComplexityCoefficientsRootProps) => {
-  const { targetDb } = useMedViewFiltersStore();
+  const { registerType } = useMedViewFiltersStore();
   const {
     data: treatmentComplexityCoefficients,
     isLoading,
@@ -21,10 +21,10 @@ export const MedViewTreatmentCoefficientsListRoot = ({
     isError,
     isSuccess,
     error,
-  } = useTreatmentComplexityCoefficientsQuery(clinicalGroupUid, targetDb);
+  } = useTreatmentComplexityCoefficientsQuery(clinicalGroupUid, registerType);
 
   const dataState = resolveDataState({
-    isEnabled: clinicalGroupUid !== null && targetDb !== null,
+    isEnabled: clinicalGroupUid !== null && registerType !== null,
     isLoading: isLoading,
     isError: isError,
     isSuccess: isSuccess,

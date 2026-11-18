@@ -13,7 +13,7 @@ interface MedViewContraindicationsListRootProps {
 export const MedViewContraindicationsListRoot = ({
   oncologyCaseUid,
 }: MedViewContraindicationsListRootProps) => {
-  const { targetDb } = useMedViewFiltersStore();
+  const { registerType } = useMedViewFiltersStore();
   const {
     data: contraindications,
     isLoading,
@@ -21,10 +21,10 @@ export const MedViewContraindicationsListRoot = ({
     isError,
     isSuccess,
     error,
-  } = useContraindicationsQuery(oncologyCaseUid, targetDb);
+  } = useContraindicationsQuery(oncologyCaseUid, registerType);
 
   const dataState = resolveDataState({
-    isEnabled: oncologyCaseUid !== null && targetDb !== null,
+    isEnabled: oncologyCaseUid !== null && registerType !== null,
     isLoading: isLoading,
     isError: isError,
     isSuccess: isSuccess,

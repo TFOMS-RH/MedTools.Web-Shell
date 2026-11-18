@@ -1,4 +1,4 @@
-import type { InvoiceSummaryDto } from "../../../../../../../../shared/model/types/invoiceStructure/results/invoices/GetInvoiceSummaryResult";
+import type { InvoiceSummaryDto } from "../../../../../../../../shared/model/types/invoiceStructure/results/invoices/InvoiceSummaryDto";
 import { formatCurrency } from "../../../../../../../../shared/helpers/formatCurrency";
 import { formatDate } from "../../../../../../../../shared/helpers/formatDate";
 import { Skeleton } from "@mui/material";

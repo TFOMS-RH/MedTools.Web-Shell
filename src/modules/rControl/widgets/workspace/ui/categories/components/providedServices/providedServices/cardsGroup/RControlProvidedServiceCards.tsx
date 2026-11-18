@@ -1,4 +1,4 @@
-import type { ProvidedServiceDto } from "../../../../../../../../../../shared/model/types/invoiceStructure/results/providedServices/GetProvidedServicesResult";
+import type { ProvidedServiceDto } from "../../../../../../../../../../shared/model/types/invoiceStructure/results/providedServices/ProvidedServiceDto";
 import { useId, type ReactNode } from "react";
 import { formatCurrency } from "../../../../../../../../../../shared/helpers/formatCurrency";
 import {

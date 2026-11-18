@@ -8,7 +8,7 @@ import { MedViewReferralsTableBody } from "./MedViewReferralsTableBody";
 import styles from "../../styles.module.scss";
 
 export const MedViewReferralsTableRoot = () => {
-  const { targetDb } = useMedViewFiltersStore();
+  const { registerType } = useMedViewFiltersStore();
   const { selectedMedicalCaseUid } = useMedViewWorkspaceStore();
   const {
     data: referrals,
@@ -17,10 +17,10 @@ export const MedViewReferralsTableRoot = () => {
     isError,
     isSuccess,
     error,
-  } = useReferralsQuery(selectedMedicalCaseUid, targetDb);
+  } = useReferralsQuery(selectedMedicalCaseUid, registerType);
 
   const dataState = resolveDataState({
-    isEnabled: selectedMedicalCaseUid !== null && targetDb !== null,
+    isEnabled: selectedMedicalCaseUid !== null && registerType !== null,
     isLoading: isLoading,
     isError: isError,
     isSuccess: isSuccess,

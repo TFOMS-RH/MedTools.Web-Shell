@@ -9,7 +9,7 @@ import { resolveDataState } from "../../../../../../../../../../shared/helpers/r
 
 export const MedViewConsultationsListRoot = () => {
   const { selectedMedicalCaseUid } = useMedViewWorkspaceStore();
-  const { targetDb } = useMedViewFiltersStore();
+  const { registerType } = useMedViewFiltersStore();
   const {
     data: consultations,
     isPending,
@@ -17,10 +17,10 @@ export const MedViewConsultationsListRoot = () => {
     isError,
     isSuccess,
     error,
-  } = useConsultationsQuery(selectedMedicalCaseUid, targetDb);
+  } = useConsultationsQuery(selectedMedicalCaseUid, registerType);
 
   const dataState = resolveDataState({
-    isEnabled: selectedMedicalCaseUid !== null && targetDb !== null,
+    isEnabled: selectedMedicalCaseUid !== null && registerType !== null,
     isLoading: isLoading,
     isEmpty: consultations?.length === 0 && isSuccess,
     isError: isError,

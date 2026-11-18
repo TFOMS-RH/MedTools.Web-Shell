@@ -1,7 +1,3 @@
-export interface GetPatientResult {
-  patient: PatientDto;
-}
-
 export interface PatientDto {
   patientLastName: string;
   patientFirstName: string;

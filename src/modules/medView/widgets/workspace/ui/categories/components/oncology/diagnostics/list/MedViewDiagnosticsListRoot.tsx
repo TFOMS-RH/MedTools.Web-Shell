@@ -13,7 +13,7 @@ interface MedViewDiagnosticsListRootProps {
 export const MedViewDiagnosticsListRoot = ({
   oncologyCaseUid,
 }: MedViewDiagnosticsListRootProps) => {
-  const { targetDb } = useMedViewFiltersStore();
+  const { registerType } = useMedViewFiltersStore();
   const {
     data: diagnosticRecords,
     isLoading,
@@ -21,10 +21,10 @@ export const MedViewDiagnosticsListRoot = ({
     isError,
     isSuccess,
     error,
-  } = useDiagnosticsQuery(oncologyCaseUid, targetDb);
+  } = useDiagnosticsQuery(oncologyCaseUid, registerType);
 
   const dataState = resolveDataState({
-    isEnabled: oncologyCaseUid !== null && targetDb !== null,
+    isEnabled: oncologyCaseUid !== null && registerType !== null,
     isLoading: isLoading,
     isError: isError,
     isSuccess: isSuccess,

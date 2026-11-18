@@ -14,17 +14,17 @@ interface ClassificationCriteriaRootProps {
 export const RControlClassificationCriterionChipsGroupRoot = ({
   clinicalGroupUid,
 }: ClassificationCriteriaRootProps) => {
-  const { targetDb } = useRControlWorkspacePanelStore();
+  const { registerType } = useRControlWorkspacePanelStore();
   const {
     data: classificationCriteria,
     isLoading,
     isError,
     isSuccess,
     error,
-  } = useClassificationCriteriaQuery(clinicalGroupUid, targetDb);
+  } = useClassificationCriteriaQuery(clinicalGroupUid, registerType);
 
   const dataState = resolveDataState({
-    isEnabled: clinicalGroupUid !== null && targetDb !== null,
+    isEnabled: clinicalGroupUid !== null && registerType !== null,
     isLoading: isLoading,
     isError: isError,
     isSuccess: isSuccess,

@@ -8,7 +8,7 @@ import { RControlMedicalSanctionCardSkeletons } from "./RControlMedicalSanctionC
 import styles from "../../styles.module.scss";
 
 export const RControlMedicalSanctionCardsGroupRoot = () => {
-  const { targetDb } = useRControlWorkspacePanelStore();
+  const { registerType } = useRControlWorkspacePanelStore();
   const { selectedMedicalCaseUid } = useRControlWorkspaceStore();
   const {
     data: medicalSanctions,
@@ -17,10 +17,10 @@ export const RControlMedicalSanctionCardsGroupRoot = () => {
     isError,
     isSuccess,
     error,
-  } = useMedicalSanctionsQuery(selectedMedicalCaseUid, targetDb);
+  } = useMedicalSanctionsQuery(selectedMedicalCaseUid, registerType);
 
   const dataState = resolveDataState({
-    isEnabled: selectedMedicalCaseUid !== null && targetDb !== null,
+    isEnabled: selectedMedicalCaseUid !== null && registerType !== null,
     isLoading: isLoading,
     isError: isError,
     isSuccess: isSuccess,

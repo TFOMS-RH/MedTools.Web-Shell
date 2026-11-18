@@ -8,7 +8,7 @@ import { MedViewDefectsTableBody } from "./MedViewDefectsTableBody";
 import styles from "../../styles.module.scss";
 
 export const MedViewDefectsTableRoot = () => {
-  const { targetDb } = useMedViewFiltersStore();
+  const { registerType } = useMedViewFiltersStore();
   const {
     selectedMedicalCaseUid,
     defectsTablePagination,
@@ -24,7 +24,7 @@ export const MedViewDefectsTableRoot = () => {
     error,
   } = useDefectsQuery(
     selectedMedicalCaseUid,
-    targetDb,
+    registerType,
     defectsTablePagination.page,
     defectsTablePagination.pageSize,
   );
@@ -48,11 +48,11 @@ export const MedViewDefectsTableRoot = () => {
     });
   };
 
-  const totalCount = getDefectsResult?.totalCount ?? 0;
-  const defects = getDefectsResult?.defects ?? [];
+  const totalCount = getDefectsResult?.totalRecords ?? 0;
+  const defects = getDefectsResult?.values ?? [];
 
   const dataState = resolveDataState({
-    isEnabled: selectedMedicalCaseUid !== null && targetDb !== null,
+    isEnabled: selectedMedicalCaseUid !== null && registerType !== null,
     isLoading: isLoading,
     isError: isError,
     isSuccess: isSuccess,

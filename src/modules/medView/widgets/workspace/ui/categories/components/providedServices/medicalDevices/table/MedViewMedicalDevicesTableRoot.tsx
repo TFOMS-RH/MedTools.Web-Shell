@@ -8,7 +8,7 @@ import { MedViewMedicalDevicesTableBody } from "./MedViewMedicalDevicesTableBody
 import styles from "../../styles.module.scss";
 
 export const MedViewMedicalDevicesTableRoot = () => {
-  const { targetDb } = useMedViewFiltersStore();
+  const { registerType } = useMedViewFiltersStore();
   const { selectedProvidedServiceUid } = useMedViewWorkspaceStore();
   const {
     data: medicalDevices,
@@ -17,9 +17,9 @@ export const MedViewMedicalDevicesTableRoot = () => {
     isError,
     isSuccess,
     error,
-  } = useMedicalDevicesQuery(selectedProvidedServiceUid, targetDb);
+  } = useMedicalDevicesQuery(selectedProvidedServiceUid, registerType);
   const dataState = resolveDataState({
-    isEnabled: selectedProvidedServiceUid !== null && targetDb !== null,
+    isEnabled: selectedProvidedServiceUid !== null && registerType !== null,
     isLoading: isLoading,
     isError: isError,
     isSuccess: isSuccess,

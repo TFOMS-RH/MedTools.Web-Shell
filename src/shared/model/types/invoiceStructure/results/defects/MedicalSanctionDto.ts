@@ -1,7 +1,3 @@
-export interface GetMedicalSanctionsResult {
-  medicalSanctions: MedicalSanctionDto[];
-}
-
 export interface MedicalSanctionDto {
   medicalSanctionUid: number;
   sanctionCode: string;

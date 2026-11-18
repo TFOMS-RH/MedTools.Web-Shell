@@ -1,31 +1,31 @@
-import type { TargetDbType } from "../../../../types/TargetDbType";
+import type { MedicalRegisterType } from "../../../../types/TargetDbType";
 import { useQuery } from "@tanstack/react-query";
 import { getDefects } from "../../../../api/invoiceStructure/defects/getDefects";
 
 export const useDefectsQuery = (
   medicalCaseUid: number | null,
-  targetDb: TargetDbType | null,
+  registerType: MedicalRegisterType | null,
   page: number,
   pageSize: number,
 ) => {
-  const isReady = medicalCaseUid !== null && targetDb !== null;
+  const isReady = medicalCaseUid !== null && registerType !== null;
 
   return useQuery({
     queryKey: [
       "r-control",
       "defects",
       medicalCaseUid,
-      targetDb,
+      registerType,
       page,
       pageSize,
     ],
     enabled: isReady,
     queryFn: () => {
-      if (medicalCaseUid === null || targetDb === null) {
+      if (medicalCaseUid === null || registerType === null) {
         throw new Error("Невалидные параметры запроса");
       }
 
-      return getDefects(medicalCaseUid, targetDb, page, pageSize);
+      return getDefects(medicalCaseUid, registerType, page, pageSize);
     },
   });
 };

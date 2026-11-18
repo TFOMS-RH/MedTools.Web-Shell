@@ -1,7 +1,3 @@
-export interface GetCompletedCaseDetailsResult {
-  completedCaseDetails: CompletedCaseDetailsDto;
-}
-
 export interface CompletedCaseDetailsDto {
   medicalOrganizationCode: string;
   medicalOrganizationName: string;

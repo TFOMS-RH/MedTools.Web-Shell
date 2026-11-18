@@ -5,13 +5,13 @@ import { useQuery } from "@tanstack/react-query";
 export const useCompletedCaseListItemsQuery = (
   params: CompletedCaseListItemsQueryParams,
 ) => {
-  const isReady = params.invoiceUid !== null && params.targetDb !== null;
+  const isReady = params.invoiceUid !== null && params.registerType !== null;
 
   return useQuery({
     queryKey: ["r-control", "completed-cases", params],
     enabled: isReady,
     queryFn: () => {
-      if (params.invoiceUid === null || params.targetDb === null) {
+      if (params.invoiceUid === null || params.registerType === null) {
         throw new Error("Неккоректные параметры запроса");
       }
 
@@ -19,7 +19,7 @@ export const useCompletedCaseListItemsQuery = (
         invoiceUid: params.invoiceUid,
         page: params.page,
         pageSize: params.pageSize,
-        targetDb: params.targetDb,
+        registerType: params.registerType,
         searchString: params.searchString,
       });
     },

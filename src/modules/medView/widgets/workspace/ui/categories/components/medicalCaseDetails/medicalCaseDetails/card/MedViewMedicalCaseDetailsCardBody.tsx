@@ -2,7 +2,7 @@ import { Skeleton } from "@mui/material";
 import { CardField } from "../../../../../../../../../../shared/ui/CardField/CardField";
 import dayjs from "dayjs";
 import { formatNullableValue } from "../../../../../../../../../../shared/helpers/formatNullableValue";
-import type { MedicalCaseDetailsDto } from "../../../../../../../../../../shared/model/types/invoiceStructure/results/medicalCases/GetMedicalCaseDetailsResult";
+import type { MedicalCaseDetailsDto } from "../../../../../../../../../../shared/model/types/invoiceStructure/results/medicalCases/MedicalCaseDetailsDto";
 import styles from "../../styles.module.scss";
 
 interface MedViewMedicalCaseDetailsCardBodyProps {

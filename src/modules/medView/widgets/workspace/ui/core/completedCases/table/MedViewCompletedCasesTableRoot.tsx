@@ -35,7 +35,7 @@ const MedViewCompletedCasesTable = () => {
     targetDb,
   );
 
-  const completedCases = getCompletedCasesResult?.completedCases ?? [];
+  const completedCases = getCompletedCasesResult?.values ?? [];
 
   const dataState = resolveDataState({
     isEnabled: appliedFilters !== null,
@@ -70,7 +70,7 @@ const MedViewCompletedCasesTable = () => {
   return (
     <section className={styles.CompletedCasesTableRoot}>
       <MedViewCompletedCasesTableHeader
-        totalCount={getCompletedCasesResult?.totalCount ?? 0}
+        totalCount={getCompletedCasesResult?.totalRecords ?? 0}
         pagination={completedCasePaginationState}
         onPageChange={onPageChange}
         onRowsPerPageChange={onRowsPerPageChange}

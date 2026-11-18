@@ -1,7 +1,3 @@
-export interface GetMedicalCaseDetailsResult {
-  medicalCaseDetails: MedicalCaseDetailsDto;
-}
-
 export interface MedicalCaseDetailsDto {
   medicalProfileCode: number;
   medicalProfileName: string | null;

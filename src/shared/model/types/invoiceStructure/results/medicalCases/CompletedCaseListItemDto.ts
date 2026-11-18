@@ -1,8 +1,3 @@
-export interface GetCompletedCaseListItemsResult {
-  completedCases: CompletedCaseListItemDto[];
-  totalCount: number;
-}
-
 export interface CompletedCaseListItemDto {
   completedCaseUid: number;
   entryNumber: number;

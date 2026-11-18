@@ -1,4 +1,4 @@
-import type { PrescriptionDto } from "../../../../../../../../../../shared/model/types/invoiceStructure/results/prescriptions/GetPrescriptionsResult";
+import type { PrescriptionDto } from "../../../../../../../../../../shared/model/types/invoiceStructure/results/prescriptions/PrescriptionDto";
 import {
   displayValue,
   formatReferralDate,

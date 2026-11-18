@@ -24,13 +24,17 @@ apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
     const token = useAuthStore.getState().accessToken;
-    // An old request must not clear a session established by a newer login.
-    if (error.response?.status === 401 && token &&
-        error.config?.headers?.Authorization === `Bearer ${token}` &&
-        error.config?.url !== "/identity/auth/login") {
+    if (
+      error.response?.status === 401 &&
+      token &&
+      error.config?.headers?.Authorization === `Bearer ${token}` &&
+      error.config?.url !== "/identity/auth/login"
+    ) {
       useAuthStore.getState().clearSession();
       if (window.location.pathname !== "/login") {
-        window.location.replace(`/login?returnTo=${encodeURIComponent(window.location.pathname)}`);
+        window.location.replace(
+          `/login?returnTo=${encodeURIComponent(window.location.pathname)}`,
+        );
       }
     }
 

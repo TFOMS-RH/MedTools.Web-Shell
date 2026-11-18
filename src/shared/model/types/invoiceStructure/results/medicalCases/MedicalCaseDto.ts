@@ -1,7 +1,3 @@
-export interface GetMedicalCaseListItemsResult {
-  medicalCases: MedicalCaseDto[];
-}
-
 export interface MedicalCaseDto {
   medicalCaseUid: number;
   medicalProfileCode: number;

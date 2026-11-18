@@ -14,17 +14,17 @@ interface ClassificationCriteriaRootProps {
 export const MedViewClassificationCriterionChipsGroupRoot = ({
   clinicalGroupUid,
 }: ClassificationCriteriaRootProps) => {
-  const { targetDb } = useMedViewFiltersStore();
+  const { registerType } = useMedViewFiltersStore();
   const {
     data: classificationCriteria,
     isLoading,
     isError,
     isSuccess,
     error,
-  } = useClassificationCriteriaQuery(clinicalGroupUid, targetDb);
+  } = useClassificationCriteriaQuery(clinicalGroupUid, registerType);
 
   const dataState = resolveDataState({
-    isEnabled: clinicalGroupUid !== null && targetDb !== null,
+    isEnabled: clinicalGroupUid !== null && registerType !== null,
     isLoading: isLoading,
     isError: isError,
     isSuccess: isSuccess,

@@ -8,7 +8,7 @@ import { MedViewMedicalCaseDetailsCardHeader } from "./MedViewMedicalCaseDetails
 import styles from "../../styles.module.scss";
 
 export const MedViewMedicalCaseDetailsCardRoot = () => {
-  const { targetDb } = useMedViewFiltersStore();
+  const { registerType } = useMedViewFiltersStore();
   const { selectedMedicalCaseUid } = useMedViewWorkspaceStore();
   const {
     data: medicalCaseDetails,
@@ -17,9 +17,9 @@ export const MedViewMedicalCaseDetailsCardRoot = () => {
     isError,
     isSuccess,
     error,
-  } = useMedicalCaseDetailsQuery(selectedMedicalCaseUid, targetDb);
+  } = useMedicalCaseDetailsQuery(selectedMedicalCaseUid, registerType);
   const dataState = resolveDataState({
-    isEnabled: selectedMedicalCaseUid !== null && targetDb !== null,
+    isEnabled: selectedMedicalCaseUid !== null && registerType !== null,
     isLoading: isLoading,
     isError: isError,
     isSuccess: isSuccess,

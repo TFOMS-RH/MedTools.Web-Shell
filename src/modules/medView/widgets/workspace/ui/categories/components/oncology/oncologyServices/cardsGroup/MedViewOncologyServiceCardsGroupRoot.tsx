@@ -16,17 +16,17 @@ export const MedViewOncologyServiceCardsGroupRoot = ({
   selectedOncologyServiceUid,
   selectOncologyService,
 }: MedViewOncologyServiceCardsGroupRootProps) => {
-  const { targetDb } = useMedViewFiltersStore();
+  const { registerType } = useMedViewFiltersStore();
   const {
     data: oncologyServices,
     isLoading,
     isError,
     isSuccess,
     error,
-  } = useOncologyServicesQuery(oncologyCaseUid, targetDb);
+  } = useOncologyServicesQuery(oncologyCaseUid, registerType);
 
   const dataState = resolveDataState({
-    isEnabled: oncologyCaseUid !== null && targetDb !== null,
+    isEnabled: oncologyCaseUid !== null && registerType !== null,
     isLoading: isLoading,
     isError: isError,
     isSuccess: isSuccess,

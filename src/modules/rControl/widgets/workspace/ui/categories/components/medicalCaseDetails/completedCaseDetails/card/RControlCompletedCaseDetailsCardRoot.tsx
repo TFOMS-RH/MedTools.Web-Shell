@@ -8,7 +8,7 @@ import { RControlCompletedCaseDetailsCardBody } from "./RControlCompletedCaseDet
 import styles from "../../styles.module.scss";
 
 export const CompletedCaseDetailsRoot = () => {
-  const { targetDb } = useRControlWorkspacePanelStore();
+  const { registerType } = useRControlWorkspacePanelStore();
   const { selectedCompletedCaseUid } = useRControlWorkspaceStore();
   const {
     data: completedCaseDetails,
@@ -17,10 +17,10 @@ export const CompletedCaseDetailsRoot = () => {
     isError,
     isSuccess,
     error,
-  } = useCompletedCaseDetailsQuery(selectedCompletedCaseUid, targetDb);
+  } = useCompletedCaseDetailsQuery(selectedCompletedCaseUid, registerType);
 
   const dataState = resolveDataState({
-    isEnabled: selectedCompletedCaseUid !== null && targetDb !== null,
+    isEnabled: selectedCompletedCaseUid !== null && registerType !== null,
     isLoading: isLoading,
     isError: isError,
     isSuccess: isSuccess,
@@ -28,7 +28,10 @@ export const CompletedCaseDetailsRoot = () => {
   });
 
   return (
-    <section className={styles.caseSection} aria-labelledby="rcontrol-completed-details-heading">
+    <section
+      className={styles.caseSection}
+      aria-labelledby="rcontrol-completed-details-heading"
+    >
       <RControlCompletedCaseDetailsCardHeader />
       {dataState === "error" ? (
         <DataState

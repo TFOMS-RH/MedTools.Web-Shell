@@ -7,7 +7,7 @@ import { MedViewPrescriptionCards } from "./MedViewPrescriptionCards";
 import styles from "../../styles.module.scss";
 
 export const MedViewPrescriptionCardsGroupRoot = () => {
-  const { targetDb } = useMedViewFiltersStore();
+  const { registerType } = useMedViewFiltersStore();
   const { selectedMedicalCaseUid } = useMedViewWorkspaceStore();
   const {
     data: prescriptions,
@@ -16,10 +16,10 @@ export const MedViewPrescriptionCardsGroupRoot = () => {
     isError,
     isSuccess,
     error,
-  } = usePrescriptionsQuery(selectedMedicalCaseUid, targetDb);
+  } = usePrescriptionsQuery(selectedMedicalCaseUid, registerType);
 
   const dataState = resolveDataState({
-    isEnabled: selectedMedicalCaseUid !== null && targetDb !== null,
+    isEnabled: selectedMedicalCaseUid !== null && registerType !== null,
     isLoading: isLoading,
     isError: isError,
     isSuccess: isSuccess,

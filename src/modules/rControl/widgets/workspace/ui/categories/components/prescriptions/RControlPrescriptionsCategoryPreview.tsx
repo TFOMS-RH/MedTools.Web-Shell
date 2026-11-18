@@ -1,6 +1,6 @@
 ﻿import { useState } from "react";
-import type { PrescriptionDto } from "../../../../../../../../shared/model/types/invoiceStructure/results/prescriptions/GetPrescriptionsResult";
-import type { ReferralDto } from "../../../../../../../../shared/model/types/invoiceStructure/results/prescriptions/GetReferralsResult";
+import type { PrescriptionDto } from "../../../../../../../../shared/model/types/invoiceStructure/results/prescriptions/PrescriptionDto";
+import type { ReferralDto } from "../../../../../../../../shared/model/types/invoiceStructure/results/prescriptions/ReferralDto";
 import { DataState } from "../../../../../../../../shared/ui/DataState/DataState";
 import { RControlPrescriptionCards } from "./prescriptions/cardsGroup/RControlPrescriptionCards";
 import { RControlReferralsTableHeader } from "./referrals/table/RControlReferralsTableHeader";

@@ -8,7 +8,7 @@ import { RControlMedicalCaseCards } from "./RControlMedicalCaseCards";
 import { DataState } from "../../../../../../../../shared/ui/DataState/DataState";
 
 export const RControlMedicalCaseCardsGroupRoot = () => {
-  const { targetDb } = useRControlWorkspacePanelStore();
+  const { registerType } = useRControlWorkspacePanelStore();
   const {
     selectedCompletedCaseUid,
     selectedMedicalCaseUid,
@@ -21,7 +21,7 @@ export const RControlMedicalCaseCardsGroupRoot = () => {
     isSuccess,
     isFetching,
     error,
-  } = useMedicalCasesListItemsQuery(selectedCompletedCaseUid, targetDb);
+  } = useMedicalCasesListItemsQuery(selectedCompletedCaseUid, registerType);
 
   useEffect(() => {
     if (
@@ -34,7 +34,7 @@ export const RControlMedicalCaseCardsGroupRoot = () => {
     const current = useRControlWorkspaceStore.getState();
     if (
       current.selectedCompletedCaseUid !== selectedCompletedCaseUid ||
-      useRControlWorkspacePanelStore.getState().targetDb !== targetDb
+      useRControlWorkspacePanelStore.getState().registerType !== registerType
     )
       return;
     if (
@@ -52,11 +52,11 @@ export const RControlMedicalCaseCardsGroupRoot = () => {
     isFetching,
     selectedCompletedCaseUid,
     selectedMedicalCaseUid,
-    targetDb,
+    registerType,
   ]);
 
   const dataState = resolveDataState({
-    isEnabled: selectedCompletedCaseUid !== null && targetDb !== null,
+    isEnabled: selectedCompletedCaseUid !== null && registerType !== null,
     isLoading: isLoading,
     isError: isError,
     isEmpty: medicalCases?.length === 0 && isSuccess,

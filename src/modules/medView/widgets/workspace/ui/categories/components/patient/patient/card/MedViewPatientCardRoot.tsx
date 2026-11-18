@@ -13,7 +13,7 @@ export const MedViewPatientCardRoot = ({
 }: {
   insurance: ReactNode;
 }) => {
-  const { targetDb } = useMedViewFiltersStore();
+  const { registerType } = useMedViewFiltersStore();
   const { selectedMedicalCaseUid } = useMedViewWorkspaceStore();
 
   const {
@@ -23,10 +23,10 @@ export const MedViewPatientCardRoot = ({
     isError,
     isSuccess,
     error,
-  } = usePatientQuery(selectedMedicalCaseUid, targetDb);
+  } = usePatientQuery(selectedMedicalCaseUid, registerType);
 
   const dataState = resolveDataState({
-    isEnabled: selectedMedicalCaseUid !== null && targetDb !== null,
+    isEnabled: selectedMedicalCaseUid !== null && registerType !== null,
     isLoading: isLoading,
     isError: isError,
     isSuccess: isSuccess,

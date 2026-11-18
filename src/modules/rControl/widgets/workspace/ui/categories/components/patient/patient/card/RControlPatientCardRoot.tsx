@@ -1,3 +1,6 @@
+import type { ReactNode } from "react";
+import type { PatientDto } from "../../../../../../../../../../shared/model/types/invoiceStructure/results/patient/PatientDto";
+import type { DataState as DataStateValue } from "../../../../../../../../../../shared/types/DataState";
 import { resolveDataState } from "../../../../../../../../../../shared/helpers/resolveDataState";
 import { DataState } from "../../../../../../../../../../shared/ui/DataState/DataState";
 import { useRControlWorkspacePanelStore } from "../../../../../../model/store/useRControlWorkspacePanelStore";
@@ -5,13 +8,14 @@ import { usePatientQuery } from "../../../../../../../../../../shared/model/quer
 import { useRControlWorkspaceStore } from "../../../../../../model/store/useRControlWorkspaceStore";
 import { RControlPatientCardBody } from "./RControlPatientCardBody";
 import { RControlPatientCardHeader } from "./RControlPatientCardHeader";
-import type { ReactNode } from "react";
-import type { PatientDto } from "../../../../../../../../../../shared/model/types/invoiceStructure/results/patient/GetPatientResult";
-import type { DataState as DataStateValue } from "../../../../../../../../../../shared/types/DataState";
 import styles from "../../styles.module.scss";
 
-export const RControlPatientCardRoot = ({ insurance }: { insurance: ReactNode; }) => {
-  const { targetDb } = useRControlWorkspacePanelStore();
+export const RControlPatientCardRoot = ({
+  insurance,
+}: {
+  insurance: ReactNode;
+}) => {
+  const { registerType } = useRControlWorkspacePanelStore();
   const { selectedMedicalCaseUid } = useRControlWorkspaceStore();
 
   const {
@@ -21,22 +25,34 @@ export const RControlPatientCardRoot = ({ insurance }: { insurance: ReactNode; }
     isError,
     isSuccess,
     error,
-  } = usePatientQuery(selectedMedicalCaseUid, targetDb);
+  } = usePatientQuery(selectedMedicalCaseUid, registerType);
 
   const dataState = resolveDataState({
-    isEnabled: selectedMedicalCaseUid !== null && targetDb !== null,
+    isEnabled: selectedMedicalCaseUid !== null && registerType !== null,
     isLoading: isLoading,
     isError: isError,
     isSuccess: isSuccess,
     isEmpty: patient === null && isSuccess,
   });
 
-  return <RControlPatientCardContent patient={patient} isPending={isPending}
-    dataState={dataState} error={error?.message} insurance={insurance} />;
+  return (
+    <RControlPatientCardContent
+      patient={patient}
+      isPending={isPending}
+      dataState={dataState}
+      error={error?.message}
+      insurance={insurance}
+    />
+  );
 };
 
-// Local presentation shared by the live category and its development scenarios.
-export const RControlPatientCardContent = ({ patient, isPending, dataState, error, insurance }: {
+export const RControlPatientCardContent = ({
+  patient,
+  isPending,
+  dataState,
+  error,
+  insurance,
+}: {
   patient?: PatientDto | null;
   isPending: boolean;
   dataState: DataStateValue;
@@ -47,20 +63,47 @@ export const RControlPatientCardContent = ({ patient, isPending, dataState, erro
   return (
     <div className={styles.patientContent}>
       {unavailable ? (
-        <section className={styles.informationGroup} aria-labelledby="rcontrol-patient-0">
+        <section
+          className={styles.informationGroup}
+          aria-labelledby="rcontrol-patient-0"
+        >
           <RControlPatientCardHeader />
-          <DataState title={dataState === "error" ? "Ошибка данных" : "Данных не найдено"}
-            description={dataState === "error" ? error ?? "Неизвестная ошибка" : "Медицинский случай не содержит информации о пациенте"}
-            variant={dataState === "error" ? "error" : "empty"} />
+          <DataState
+            title={
+              dataState === "error" ? "Ошибка данных" : "Данных не найдено"
+            }
+            description={
+              dataState === "error"
+                ? (error ?? "Неизвестная ошибка")
+                : "Медицинский случай не содержит информации о пациенте"
+            }
+            variant={dataState === "error" ? "error" : "empty"}
+          />
         </section>
-      ) : <RControlPatientCardBody patient={patient!} isPending={isPending} />}
-      <div className={`${styles.relatedGroups} ${unavailable ? styles.insuranceOnly : ""}`}>
+      ) : (
+        <RControlPatientCardBody patient={patient!} isPending={isPending} />
+      )}
+      <div
+        className={`${styles.relatedGroups} ${unavailable ? styles.insuranceOnly : ""}`}
+      >
         <div>
-          {!unavailable && <RControlPatientCardBody patient={patient!} isPending={isPending} section="document" />}
+          {!unavailable && (
+            <RControlPatientCardBody
+              patient={patient!}
+              isPending={isPending}
+              section="document"
+            />
+          )}
         </div>
         {insurance}
       </div>
-      {!unavailable && <RControlPatientCardBody patient={patient!} isPending={isPending} section="representative" />}
+      {!unavailable && (
+        <RControlPatientCardBody
+          patient={patient!}
+          isPending={isPending}
+          section="representative"
+        />
+      )}
     </div>
   );
 };

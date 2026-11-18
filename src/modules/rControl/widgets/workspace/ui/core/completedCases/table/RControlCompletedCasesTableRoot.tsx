@@ -17,7 +17,7 @@ export const RControlCompletedCasesTableRoot = () => {
     selectedCompletedCaseUid,
   } = useRControlWorkspaceStore();
 
-  const { targetDb } = useRControlWorkspacePanelStore();
+  const { registerType } = useRControlWorkspacePanelStore();
 
   const {
     data: getCompletedCasesResult,
@@ -31,7 +31,7 @@ export const RControlCompletedCasesTableRoot = () => {
     invoiceUid: selectedInvoiceUid,
     page: completedCasesTablePagination.page,
     pageSize: completedCasesTablePagination.pageSize,
-    targetDb: targetDb,
+    registerType: registerType,
     searchString: completedCasesTableSearchString,
   });
 
@@ -56,10 +56,10 @@ export const RControlCompletedCasesTableRoot = () => {
     });
   };
 
-  const completedCases = getCompletedCasesResult?.completedCases ?? [];
+  const completedCases = getCompletedCasesResult?.values ?? [];
 
   const dataState = resolveDataState({
-    isEnabled: selectedInvoiceUid !== null && targetDb !== null,
+    isEnabled: selectedInvoiceUid !== null && registerType !== null,
     isEmpty: completedCases.length === 0,
     isError: isError,
     isLoading: isLoading,
@@ -68,9 +68,12 @@ export const RControlCompletedCasesTableRoot = () => {
   });
 
   return (
-    <section className={styles.CompletedCasesTableRoot} aria-labelledby="rcontrol-completed-heading">
+    <section
+      className={styles.CompletedCasesTableRoot}
+      aria-labelledby="rcontrol-completed-heading"
+    >
       <RControlCompletedCasesTableHeader
-        totalCount={getCompletedCasesResult?.totalCount ?? 0}
+        totalCount={getCompletedCasesResult?.totalRecords ?? 0}
         state={dataState}
         pagination={completedCasesTablePagination}
         onRowsPerPageChange={onRowsPerPageChange}

@@ -13,7 +13,7 @@ interface RControlContraindicationsListRootProps {
 export const RControlContraindicationsListRoot = ({
   oncologyCaseUid,
 }: RControlContraindicationsListRootProps) => {
-  const { targetDb } = useRControlWorkspacePanelStore();
+  const { registerType } = useRControlWorkspacePanelStore();
   const {
     data: contraindications,
     isLoading,
@@ -21,10 +21,10 @@ export const RControlContraindicationsListRoot = ({
     isError,
     isSuccess,
     error,
-  } = useContraindicationsQuery(oncologyCaseUid, targetDb);
+  } = useContraindicationsQuery(oncologyCaseUid, registerType);
 
   const dataState = resolveDataState({
-    isEnabled: oncologyCaseUid !== null && targetDb !== null,
+    isEnabled: oncologyCaseUid !== null && registerType !== null,
     isLoading: isLoading,
     isError: isError,
     isSuccess: isSuccess,

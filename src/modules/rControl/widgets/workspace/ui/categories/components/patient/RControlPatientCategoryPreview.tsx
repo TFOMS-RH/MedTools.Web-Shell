@@ -1,6 +1,6 @@
 import { useState } from "react";
-import type { PatientDto } from "../../../../../../../../shared/model/types/invoiceStructure/results/patient/GetPatientResult";
-import type { InsuranceDto } from "../../../../../../../../shared/model/types/invoiceStructure/results/patient/GetInsuranceResult";
+import type { PatientDto } from "../../../../../../../../shared/model/types/invoiceStructure/results/patient/PatientDto";
+import type { InsuranceDto } from "../../../../../../../../shared/model/types/invoiceStructure/results/patient/InsuranceDto";
 import { RControlPatientCardContent } from "./patient/card/RControlPatientCardRoot";
 import { RControlInsuranceCardContent } from "./insurance/card/RControlInsuranceCardRoot";
 import previewStyles from "./preview.module.scss";

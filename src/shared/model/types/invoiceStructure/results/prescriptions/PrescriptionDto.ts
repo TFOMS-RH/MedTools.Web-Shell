@@ -1,7 +1,3 @@
-export interface GetPrescriptionsResult {
-  prescriptions: PrescriptionDto[];
-}
-
 export interface PrescriptionDto {
   perscriptionUid: number;
   sequenceNumber: number;

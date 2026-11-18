@@ -1,4 +1,4 @@
-import type { MedicationDto } from "../../../../../../../../../../shared/model/types/invoiceStructure/results/oncology/GetMedicationsResult";
+import type { MedicationDto } from "../../../../../../../../../../shared/model/types/invoiceStructure/results/oncology/MedicationDto";
 import { displayValue } from "../../presentation";
 import styles from "../../styles.module.scss";
 interface RControlMedicationCardsProps {

@@ -9,13 +9,13 @@ import { RControlClassificationCriterionChipsGroupRoot } from "./сlassification
 import styles from "./styles.module.scss";
 
 const ClinicalGroupsLive = () => {
-  const { targetDb } = useRControlWorkspacePanelStore();
+  const { registerType } = useRControlWorkspacePanelStore();
   const { selectedMedicalCaseUid } = useRControlWorkspaceStore();
   const {
     data: clinicalGroup,
     isError,
     isSuccess,
-  } = useClinicalGroupQuery(selectedMedicalCaseUid, targetDb);
+  } = useClinicalGroupQuery(selectedMedicalCaseUid, registerType);
   const clinicalGroupUid = clinicalGroup?.clinicalGroupUid ?? null;
 
   return (

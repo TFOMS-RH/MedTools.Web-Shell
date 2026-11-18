@@ -1,33 +1,19 @@
-import type {
-  GetHighTechMedicalCareResult,
-  HighTechMedicalCareDto,
-} from "../../../model/types/invoiceStructure/results/clinicalGroup/GetHighTechMedicalCareResult";
-import type { ResultResponse } from "../../../types/ResultResponse";
-import type { TargetDbType } from "../../../types/TargetDbType";
+import type { HighTechMedicalCareDto } from "../../../model/types/invoiceStructure/results/clinicalGroup/HighTechMedicalCareDto";
+import type { MedicalRegisterType } from "../../../types/TargetDbType";
 import apiClient from "../../client/apiClient";
 
 export const getHighTechMedicalCare = async (
   medicalCaseUid: number,
-  targetDb: TargetDbType,
+  registerType: MedicalRegisterType,
 ): Promise<HighTechMedicalCareDto> => {
-  const response = await apiClient.get<
-    ResultResponse<GetHighTechMedicalCareResult>
-  >(
-    `med-tools/rcontrol/medical-cases/${medicalCaseUid}/high-tech-medical-care`,
+  const response = await apiClient.get<HighTechMedicalCareDto>(
+    `settlements/medical-register/medical-cases/${medicalCaseUid}/high-tech-medical-care`,
     {
       params: {
-        targetDb: targetDb,
+        registerType: registerType,
       },
     },
   );
 
-  if (response.data.isFailure) {
-    throw new Error(response.data.error);
-  }
-
-  if (!response.data.value) {
-    throw new Error("Сервер прислал невалидный ответ");
-  }
-
-  return response.data.value.highTechMedicalCare;
+  return response.data;
 };
