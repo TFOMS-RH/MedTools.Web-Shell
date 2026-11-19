@@ -25,7 +25,7 @@ export const HighTechMedicalCareFiltersSubgroup = ({
   const [inputHighTechCareMethodValue, setInputHighTechCareMethodValue] =
     useState("");
 
-  const { data: highTechCareTypes, isPending: highTechCareTypePending } =
+  const { data: highTechCareTypes, isFetching: isHighTechCareTypeFetching } =
     useFilterOptionsQuery(
       MedicalReferenceType.HighTechCareTypes,
       inputHighTechCareTypeValue,
@@ -33,7 +33,7 @@ export const HighTechMedicalCareFiltersSubgroup = ({
 
   const {
     data: highTechCareMethodFilterOptions,
-    isPending: highTechCareMethodPending,
+    isFetching: isHighTechCareMethodFetching,
   } = useFilterOptionsQuery(
     MedicalReferenceType.HighTechCareMethods,
     inputHighTechCareMethodValue,
@@ -58,7 +58,7 @@ export const HighTechMedicalCareFiltersSubgroup = ({
                 highTechCareTypes: newValue,
               })
             }
-            loading={highTechCareTypePending}
+            loading={isHighTechCareTypeFetching}
           />
         </div>
         <div className={styles.span8}>
@@ -74,7 +74,7 @@ export const HighTechMedicalCareFiltersSubgroup = ({
                 highTechCareMethods: newValue,
               })
             }
-            loading={highTechCareMethodPending}
+            loading={isHighTechCareMethodFetching}
           />
         </div>
       </div>

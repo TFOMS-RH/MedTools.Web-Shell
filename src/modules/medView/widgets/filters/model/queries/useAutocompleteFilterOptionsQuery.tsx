@@ -5,6 +5,7 @@ export const useAutocompleteFilterOptionsQuery = (
   endpoint: string,
   search: string,
 ) => {
+  console.log(search);
   return useQuery({
     queryKey: ["med-view", "filter-options", endpoint, search],
     queryFn: () => getAutocompleteFilterOptions(endpoint, search),

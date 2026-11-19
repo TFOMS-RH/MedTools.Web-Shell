@@ -2,9 +2,9 @@ import type { MedicationFiltersSubgroupDraft } from "../../../../workspace/model
 import type { FilterOption } from "../../../../workspace/model/types/FilterOptions";
 import { MedViewAutocompleteInput } from "../../../../../../../shared/ui/medView/inputs/MedViewAutocompleteInput/MedViewAutocompleteInput";
 import { useState } from "react";
-import styles from "./styles.module.scss";
 import { useFilterOptionsQuery } from "../../../../../../../shared/model/references/queries/useFilterOptionsQuery";
 import { MedicalReferenceType } from "../../../../../../../shared/model/references/types/MedicalReferenceType";
+import styles from "./styles.module.scss";
 
 interface MedicationFiltersSubgroupProps {
   medicationFiltersSubgroupDraft: MedicationFiltersSubgroupDraft;
@@ -20,15 +20,17 @@ export const MedicationFiltersSubgroup = ({
   const [inputIdenitifierValue, setInputIdenitifierValue] = useState("");
   const [inputRegimenValue, setInputRegimenValue] = useState("");
 
-  const { data: drugIdentifiers, isPending } = useFilterOptionsQuery(
-    MedicalReferenceType.DrugIdentifiers,
-    inputIdenitifierValue,
-  );
+  const { data: drugIdentifiers, isFetching: isDrugIdentifiersFetching } =
+    useFilterOptionsQuery(
+      MedicalReferenceType.DrugIdentifiers,
+      inputIdenitifierValue,
+    );
 
-  const { data: therapyRegimens } = useFilterOptionsQuery(
-    MedicalReferenceType.TherapyRegimens,
-    inputRegimenValue,
-  );
+  const { data: therapyRegimens, isFetching: isTherapyRegimensFetching } =
+    useFilterOptionsQuery(
+      MedicalReferenceType.TherapyRegimens,
+      inputRegimenValue,
+    );
 
   return (
     <div className={styles.medicationSubgroup}>
@@ -49,7 +51,7 @@ export const MedicationFiltersSubgroup = ({
                 drugIdentifiers: newValue,
               })
             }
-            loading={isPending}
+            loading={isDrugIdentifiersFetching}
           />
         </div>
 
@@ -66,7 +68,7 @@ export const MedicationFiltersSubgroup = ({
                 therapyRegimens: newValue,
               })
             }
-            loading={isPending}
+            loading={isTherapyRegimensFetching}
           />
         </div>
       </div>

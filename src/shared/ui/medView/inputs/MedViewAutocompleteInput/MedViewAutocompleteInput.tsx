@@ -38,13 +38,25 @@ export const MedViewAutocompleteInput = ({
       value={values}
       inputValue={inputValue}
       disableCloseOnSelect
-      onInputChange={(_, newValue) => onInputChange(newValue)}
+      onInputChange={(_, newValue, reason) => {
+        if (
+          reason === "reset" ||
+          reason === "removeOption" ||
+          reason === "selectOption"
+        )
+          return;
+        onInputChange(newValue);
+      }}
       onChange={(_, newValues) => onChange(newValues)}
       getOptionLabel={(option) => option.label}
       filterOptions={(options) => options}
       loading={loading}
       loadingText="Подтягиваем данные ..."
-      noOptionsText="Нет доступных опций"
+      noOptionsText={
+        inputValue.length === 0
+          ? "Начните вводить для поиска"
+          : "Нет доступных опций"
+      }
       isOptionEqualToValue={(option, value) => option.value === value.value}
       renderInput={(params) => (
         <TextField

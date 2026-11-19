@@ -4,10 +4,14 @@ import { useQuery } from "@tanstack/react-query";
 
 export const useFilterOptionsQuery = (
   type: MedicalReferenceType,
-  searchString = "",
+  searchString?: string,
 ) => {
+  
+  const search = searchString?.trim();
+
   return useQuery({
     queryKey: ["refrences", "options", type, searchString],
     queryFn: () => getFilterOptions(type, searchString),
+    enabled: search === undefined || search.length > 0,
   });
 };

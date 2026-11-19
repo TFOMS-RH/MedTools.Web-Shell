@@ -30,7 +30,7 @@ export const ReferralFiltersSubgroup = ({
     MedicalReferenceType.DiagnosticMethods,
   );
 
-  const { data: medicalServices, isPending } = useFilterOptionsQuery(
+  const { data: medicalServices, isFetching } = useFilterOptionsQuery(
     MedicalReferenceType.MedicalServices,
     inputServiceValue,
   );
@@ -117,7 +117,7 @@ export const ReferralFiltersSubgroup = ({
                 referredServices: newValue,
               })
             }
-            loading={isPending}
+            loading={isFetching}
           />
         </div>
       </div>

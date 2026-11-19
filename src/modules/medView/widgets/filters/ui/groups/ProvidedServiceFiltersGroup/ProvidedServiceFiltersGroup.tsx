@@ -20,7 +20,7 @@ const ProvidedServiceFiltersGroup = ({
   const [inputProvidedServiceValue, setInputProvidedServiceValue] =
     useState("");
 
-  const { data: providedServices, isPending } = useFilterOptionsQuery(
+  const { data: providedServices, isFetching } = useFilterOptionsQuery(
     MedicalReferenceType.ProvidedServices,
     inputProvidedServiceValue,
   );
@@ -53,7 +53,7 @@ const ProvidedServiceFiltersGroup = ({
                   serviceCodes: newValue,
                 })
               }
-              loading={isPending}
+              loading={isFetching}
             />
           </div>
         </div>

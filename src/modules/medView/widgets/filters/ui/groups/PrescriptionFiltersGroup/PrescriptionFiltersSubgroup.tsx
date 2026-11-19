@@ -34,7 +34,7 @@ export const PrescriptionFiltersSubgroup = ({
     MedicalReferenceType.BedProfiles,
   );
 
-  const { data: medicalServices, isPending } = useFilterOptionsQuery(
+  const { data: medicalServices, isFetching } = useFilterOptionsQuery(
     MedicalReferenceType.MedicalServices,
     inputServiceValue,
   );
@@ -177,7 +177,7 @@ export const PrescriptionFiltersSubgroup = ({
                 services: newValue,
               })
             }
-            loading={isPending}
+            loading={isFetching}
           />
         </div>
       </div>

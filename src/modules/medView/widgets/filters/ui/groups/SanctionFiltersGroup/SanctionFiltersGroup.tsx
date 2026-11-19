@@ -26,7 +26,7 @@ const SanctionFiltersGroup = ({
     setInputRefusalReasonCodeFilterOptions,
   ] = useState("");
 
-  const { data: refusalReasonCodes, isPending } = useFilterOptionsQuery(
+  const { data: refusalReasonCodes, isFetching } = useFilterOptionsQuery(
     MedicalReferenceType.RefusalReasonCodes,
     inputRefusalReasonCodeFilterOptions,
   );
@@ -104,7 +104,7 @@ const SanctionFiltersGroup = ({
                   refusalReasons: newValue,
                 })
               }
-              loading={isPending}
+              loading={isFetching}
             />
           </div>
         </div>

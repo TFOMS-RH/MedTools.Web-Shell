@@ -31,7 +31,7 @@ export const ClinicalGroupFiltersSubgroup = ({
     MedicalReferenceType.InterruptedCasePaymentReasons,
   );
 
-  const { data: clinicalStatisticGroupNumbers, isPending } =
+  const { data: clinicalStatisticGroupNumbers, isFetching } =
     useFilterOptionsQuery(
       MedicalReferenceType.ClinicalGroupNumbers,
       inputCLinicalStatisticGroupValue,
@@ -58,7 +58,7 @@ export const ClinicalGroupFiltersSubgroup = ({
                 clinicalStatisticGroupNumbers: newValue,
               })
             }
-            loading={isPending}
+            loading={isFetching}
           />
         </div>
       </div>

@@ -24,7 +24,7 @@ export const OncologyCaseFiltersSubgroup = ({
     MedicalReferenceType.ReferralReasons,
   );
 
-  const { data: diseaseStages, isPending } = useFilterOptionsQuery(
+  const { data: diseaseStages, isFetching } = useFilterOptionsQuery(
     MedicalReferenceType.DiseaseStages,
     inputStageValue,
   );
@@ -62,7 +62,7 @@ export const OncologyCaseFiltersSubgroup = ({
                 stages: newValue,
               })
             }
-            loading={isPending}
+            loading={isFetching}
           />
         </div>
       </div>
