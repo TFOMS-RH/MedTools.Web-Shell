@@ -59,17 +59,17 @@ export const MedViewWorkspaceView = ({
 );
 
 const MedViewLiveWorkspace = ({ children }: { children: ReactNode }) => {
-  const { appliedFilters, targetDb, registerType } = useMedViewFiltersStore();
+  const { appliedFilters, registerType } = useMedViewFiltersStore();
   const {
     selectedCompletedCaseUid,
     selectedMedicalCaseUid,
     completedCasePaginationState,
   } = useMedViewWorkspaceStore();
-  const hasSearch = appliedFilters !== null && targetDb !== null;
+  const hasSearch = appliedFilters !== null && registerType !== null;
   const { data: result } = useCompletedCasesQuery(
     appliedFilters,
     completedCasePaginationState,
-    targetDb,
+    registerType,
   );
 
   const completedCaseUid =

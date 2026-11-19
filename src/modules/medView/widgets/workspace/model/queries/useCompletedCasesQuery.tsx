@@ -1,4 +1,4 @@
-import type { TargetDbType } from "../../../../../../shared/types/TargetDbType";
+import type { MedicalRegisterType } from "../../../../../../shared/types/TargetDbType";
 import type { AppliedFilters } from "../types/AppliedFilters";
 import type { PaginationState } from "../../../../../../shared/types/PaginationState";
 import { useQuery } from "@tanstack/react-query";
@@ -7,7 +7,7 @@ import { getCompletedCases } from "../../api/getCompletedCases";
 export const useCompletedCasesQuery = (
   appliedFilters: AppliedFilters | null,
   pagination: PaginationState,
-  targetDb: TargetDbType | null,
+  registerType: MedicalRegisterType | null,
 ) => {
   return useQuery({
     queryKey: [
@@ -15,10 +15,10 @@ export const useCompletedCasesQuery = (
       "completed-cases",
       appliedFilters,
       pagination,
-      targetDb,
+      registerType,
     ],
     queryFn: () => {
-      if (appliedFilters === null || targetDb === null) {
+      if (appliedFilters === null || registerType === null) {
         throw new Error("Получена некорректная модель примененных фильтров");
       }
 
@@ -28,9 +28,9 @@ export const useCompletedCasesQuery = (
           page: pagination.page + 1,
           pageSize: pagination.pageSize,
         },
-        targetDb: targetDb,
+        registerType: registerType,
       });
     },
-    enabled: appliedFilters !== null && targetDb !== null,
+    enabled: appliedFilters !== null && registerType !== null,
   });
 };

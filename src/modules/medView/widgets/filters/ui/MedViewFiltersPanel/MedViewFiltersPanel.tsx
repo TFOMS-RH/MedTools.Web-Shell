@@ -4,7 +4,7 @@ import { Divider } from "../../../../../../components/ui/Divider/Divider";
 import { MedViewButton } from "../../../../../../shared/ui/medView/buttons/MedViewButton";
 import { useMedViewFiltersStore } from "../../model/stores/useMedViewFiltersStore";
 import { useMedViewWorkspaceStore } from "../../../workspace/model/stores/useMedViewWorkspaceStore";
-import { TargetDbToggle } from "../../../../../../shared/ui/TargetDbToggle/TargetDbToggle";
+import { MedicalRegisterTypeToggle } from "../../../../../../shared/ui/medTools/toggles/MedicalRegisterTypeToggle";
 import styles from "./styles.module.scss";
 
 interface FiltersPanelProps {
@@ -16,9 +16,9 @@ export const MedViewFiltersPanel = ({ filtersDraft }: FiltersPanelProps) => {
   const {
     applyFilters,
     selectFilterGroup,
-    selectTargetDb,
+    selectRegisterType,
     selectedfilterGroupId,
-    targetDb,
+    registerType,
   } = useMedViewFiltersStore();
 
   const personalGroupActiveFiltersCount = countActiveFilters(
@@ -61,9 +61,9 @@ export const MedViewFiltersPanel = ({ filtersDraft }: FiltersPanelProps) => {
     _event: React.MouseEvent<HTMLElement>,
     newValue: string,
   ) => {
-    if (newValue === "SMODB18" || newValue === "INOGOROD18") {
+    if (newValue === "Internal" || newValue === "Interterritorial") {
       resetWorkspace();
-      selectTargetDb(newValue);
+      selectRegisterType(newValue);
     }
   };
 
@@ -74,8 +74,8 @@ export const MedViewFiltersPanel = ({ filtersDraft }: FiltersPanelProps) => {
           <header className={styles.sourceToggleHeader}>
             <h2>Источник данных</h2>
           </header>
-          <TargetDbToggle
-            value={targetDb ?? ""}
+          <MedicalRegisterTypeToggle
+            value={registerType ?? ""}
             onChange={handleToggleChange}
           />
         </div>
@@ -120,7 +120,9 @@ export const MedViewFiltersPanel = ({ filtersDraft }: FiltersPanelProps) => {
                   selectedfilterGroupId === "case-details" ? "true" : undefined
                 }
               >
-                <span className={styles.namingGroup}>Детали медицинского случая</span>
+                <span className={styles.namingGroup}>
+                  Детали медицинского случая
+                </span>
                 {medicalCaseDetailsGroupActiveFiltersCount > 0 && (
                   <span className={styles.counter}>
                     {medicalCaseDetailsGroupActiveFiltersCount}
@@ -163,7 +165,9 @@ export const MedViewFiltersPanel = ({ filtersDraft }: FiltersPanelProps) => {
                   selectedfilterGroupId === "prescriptions" ? "true" : undefined
                 }
               >
-                <span className={styles.namingGroup}>Назначения и направления</span>
+                <span className={styles.namingGroup}>
+                  Назначения и направления
+                </span>
                 {prescriptionGroupActiveFilters > 0 && (
                   <span className={styles.counter}>
                     {prescriptionGroupActiveFilters}
@@ -181,10 +185,14 @@ export const MedViewFiltersPanel = ({ filtersDraft }: FiltersPanelProps) => {
                 }
                 onClick={() => selectFilterGroup("clinical-groups")}
                 aria-current={
-                  selectedfilterGroupId === "clinical-groups" ? "true" : undefined
+                  selectedfilterGroupId === "clinical-groups"
+                    ? "true"
+                    : undefined
                 }
               >
-                <span className={styles.namingGroup}>Клинические группы и ВМП</span>
+                <span className={styles.namingGroup}>
+                  Клинические группы и ВМП
+                </span>
                 {clinicalGroupActiveFiltersCount > 0 && (
                   <span className={styles.counter}>
                     {clinicalGroupActiveFiltersCount}
@@ -202,7 +210,9 @@ export const MedViewFiltersPanel = ({ filtersDraft }: FiltersPanelProps) => {
                 }
                 onClick={() => selectFilterGroup("provided-services")}
                 aria-current={
-                  selectedfilterGroupId === "provided-services" ? "true" : undefined
+                  selectedfilterGroupId === "provided-services"
+                    ? "true"
+                    : undefined
                 }
               >
                 <span className={styles.namingGroup}>Оказанные услуги</span>
@@ -265,7 +275,9 @@ export const MedViewFiltersPanel = ({ filtersDraft }: FiltersPanelProps) => {
                 }
                 onClick={() => selectFilterGroup("internal-service")}
                 aria-current={
-                  selectedfilterGroupId === "internal-service" ? "true" : undefined
+                  selectedfilterGroupId === "internal-service"
+                    ? "true"
+                    : undefined
                 }
               >
                 <span className={styles.namingGroup}>Служебная информация</span>
@@ -289,7 +301,7 @@ export const MedViewFiltersPanel = ({ filtersDraft }: FiltersPanelProps) => {
               resetWorkspace();
               applyFilters(filtersDraft);
             }}
-            disabled={targetDb === null}
+            disabled={registerType === null}
           />
         </div>
       </div>

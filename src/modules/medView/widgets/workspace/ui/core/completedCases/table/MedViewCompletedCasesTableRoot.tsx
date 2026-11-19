@@ -20,7 +20,7 @@ const MedViewCompletedCasesTable = () => {
     selectCompletedCase,
   } = useMedViewWorkspaceStore();
 
-  const { appliedFilters, targetDb } = useMedViewFiltersStore();
+  const { appliedFilters, registerType } = useMedViewFiltersStore();
   const {
     data: getCompletedCasesResult,
     isPending,
@@ -32,7 +32,7 @@ const MedViewCompletedCasesTable = () => {
   } = useCompletedCasesQuery(
     appliedFilters,
     completedCasePaginationState,
-    targetDb,
+    registerType,
   );
 
   const completedCases = getCompletedCasesResult?.values ?? [];
