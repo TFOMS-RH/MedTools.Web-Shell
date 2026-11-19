@@ -110,11 +110,19 @@ export const runFilterResetScenario = async ({
   const control = (label, index = 0) =>
     `filtersTest.control(${JSON.stringify(label)}, ${index})`;
   const click = (selector) => evaluate(`${selector}.click()`);
-  const select = async (selector, label) => {
+  const menuShadow = () => evaluate(`getComputedStyle(
+    document.querySelector("[role=listbox]").closest(".MuiPaper-root")
+  ).boxShadow`);
+  const expectedMenuShadow = "rgba(0, 0, 0, 0.1) 0px 6px 18px 0px";
+  const select = async (selector, label, verifyShadow = false) => {
     await evaluate(`${selector}.dispatchEvent(new MouseEvent("mousedown", { bubbles: true, button: 0 }))`);
     const option = `[...document.querySelectorAll('[role=option]')].find((element) =>
       element.textContent.trim() === ${JSON.stringify(label)})`;
     await until(option);
+    if (verifyShadow) {
+      check("select popup has the MedView shadow for " + label,
+        await menuShadow() === expectedMenuShadow);
+    }
     await click(option);
     await send("Input.dispatchKeyEvent", { type: "keyDown", key: "Escape", code: "Escape", windowsVirtualKeyCode: 27 });
     await until('!document.querySelector("[role=listbox]")');
@@ -217,8 +225,8 @@ export const runFilterResetScenario = async ({
   await click('document.querySelector("button[value=Internal]")');
   await type(surname, "Тестов");
   await checkResetActions();
-  await select(sex, "Мужской");
-  await select(policy, "Тестовый полис");
+  await select(sex, "Мужской", true);
+  await select(policy, "Тестовый полис", true);
   await click(openCalendar);
   const day = 'document.querySelector("button[role=gridcell]:not([disabled])")';
   await until(day);
@@ -238,6 +246,8 @@ export const runFilterResetScenario = async ({
       !${serviceSearch}.matches(":placeholder-shown")`));
   const serviceOption = '[role="option"]';
   await until(`document.querySelector('${serviceOption}')?.textContent.includes("Тестовая услуга")`);
+  check("autocomplete popup has the same MedView shadow",
+    await menuShadow() === expectedMenuShadow);
   await click(`document.querySelector('${serviceOption}')`);
   await until(`!${serviceSearch}.hasAttribute("placeholder")`);
   check("selected autocomplete displays its chip without the empty placeholder",

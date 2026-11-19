@@ -2,6 +2,7 @@ import { medViewPopupSx } from "./medViewPopupSx";
 
 export const medViewDatePickerSx = {
   ...medViewPopupSx,
+  boxShadow: "var(--app-element-shadow)",
   "& .MuiDateCalendar-root": { fontFamily: "var(--inter)" },
   "& .MuiButtonBase-root:focus-visible, & .MuiButtonBase-root.Mui-focusVisible, & .MuiYearCalendar-button:focus-visible, & .MuiMonthCalendar-button:focus-visible": {
     outline: "2px solid var(--mt-medview-accent)",
