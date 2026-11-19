@@ -1,17 +1,5 @@
 @use "../filterGroupStyles" as filter;
 
-.diseaseFiltersGroup {
-  @include filter.group;
-}
-
-.diseaseFiltersGroupHeader .titleGroup {
-  @include filter.heading;
-}
-
-.description {
-  @include filter.description;
-}
-
 .baseDiseaseFiltersSubgroup,
 .additionalDiseaseFiltersSubgroup {
   @include filter.subgroup;

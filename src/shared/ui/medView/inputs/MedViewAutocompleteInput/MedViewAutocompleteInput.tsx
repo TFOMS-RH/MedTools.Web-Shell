@@ -1,3 +1,5 @@
+import { useContext } from "react";
+import { MedViewFilterInputReset } from "../filterInputReset";
 import type { FilterOption } from "../../../../../modules/medView/widgets/workspace/model/types/FilterOptions";
 import { Autocomplete, Box, CircularProgress, TextField } from "@mui/material";
 import { medViewSelectInputSx } from "../../../../sxConfigs/medViewSelectInput";
@@ -29,8 +31,11 @@ export const MedViewAutocompleteInput = ({
   loading,
   limitTags = 3,
 }: MedViewAutocompleteInputProps) => {
+  const resetVersion = useContext(MedViewFilterInputReset);
+
   return (
     <Autocomplete
+      key={resetVersion}
       size="small"
       multiple
       limitTags={limitTags}

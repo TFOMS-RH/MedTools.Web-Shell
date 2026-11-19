@@ -2,7 +2,7 @@ import type { BaseDiseaseFiltersGroupDraft } from "../../../../workspace/model/t
 import type { FilterOption } from "../../../../workspace/model/types/FilterOptions";
 import { MedViewAutocompleteInput } from "../../../../../../../shared/ui/medView/inputs/MedViewAutocompleteInput/MedViewAutocompleteInput";
 import { MedViewMultipleSelectInput } from "../../../../../../../shared/ui/medView/inputs/MedViewMultipleSelectInput/MedViewMultipleSelectInput";
-import { useState } from "react";
+import { useMedViewFilterSearch } from "../../../../../../../shared/ui/medView/inputs/filterInputReset";
 import { useFilterOptionsQuery } from "../../../../../../../shared/model/references/queries/useFilterOptionsQuery";
 import { MedicalReferenceType } from "../../../../../../../shared/model/references/types/MedicalReferenceType";
 import styles from "./styles.module.scss";
@@ -19,7 +19,7 @@ export const BaseDiseaseFiltersSubgroup = ({
   setBaseDiseaseFitlersSubgroupDraft,
 }: BaseDiseaseFiltersSubgroupProps) => {
   const [primaryDiagnosisInputValue, setPrimaryDiagnosisInputValue] =
-    useState("");
+    useMedViewFilterSearch();
 
   const { data: icdClasses } = useFilterOptionsQuery(
     MedicalReferenceType.DiseaseClasses,

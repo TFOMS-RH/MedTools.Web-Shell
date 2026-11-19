@@ -1,4 +1,6 @@
-import type { SetStateAction } from "react";
+import { IconButton, Tooltip } from "@mui/material";
+import ReplayRoundedIcon from "@mui/icons-material/ReplayRounded";
+import type { Dispatch, FormEventHandler, SetStateAction } from "react";
 import type { FilterGroupId } from "../../../workspace/model/types/FilterId";
 import type { FiltersDraft } from "../../../workspace/model/types/FiltersDraft";
 import PersonFiltersGroupRoot from "../groups/PersonFiltersGroup/PersonFiltersGroup";
@@ -10,14 +12,17 @@ import ProvidedServiceFiltersGroup from "../groups/ProvidedServiceFiltersGroup/P
 import SanctionFiltersGroup from "../groups/SanctionFiltersGroup/SanctionFiltersGroup";
 import InternalServiceFiltersGroup from "../groups/InternalServiceFiltersGroup/InternalServiceFiltersGroup";
 import { DiseaseFitlersGroup } from "../groups/DiseaseFitlersGroup/DiseaseFitlersGroup";
+import { resetFilterActionSx } from "../resetFilterActionSx";
+import { filterGroups } from "../../model/filterGroups";
+import styles from "./styles.module.scss";
 
 interface FiltersGroupRenderProps {
   filterGroupId: FilterGroupId;
   filtersDraft: FiltersDraft;
-  setFiltersDraft: React.Dispatch<SetStateAction<FiltersDraft>>;
+  setFiltersDraft: Dispatch<SetStateAction<FiltersDraft>>;
 }
 
-export const MedViewFiltersGroupRender = ({
+const MedViewFilterFields = ({
   filterGroupId,
   filtersDraft,
   setFiltersDraft,
@@ -144,4 +149,54 @@ export const MedViewFiltersGroupRender = ({
       );
     }
   }
+};
+
+export const MedViewFiltersGroupRender = ({
+  filterGroupId,
+  filtersDraft,
+  setFiltersDraft,
+  onReset,
+  canReset,
+  onInput,
+}: FiltersGroupRenderProps & {
+  onReset: () => void;
+  canReset: boolean;
+  onInput: FormEventHandler<HTMLElement>;
+}) => {
+  const { title, description } = filterGroups[filterGroupId];
+  const resetLabel = "Сбросить фильтры группы";
+
+  return (
+    <section className={styles.group} onInputCapture={onInput}>
+      <header className={styles.header}>
+        <div className={styles.heading}>
+          <h2>{title}</h2>
+          <p className={styles.description}>{description}</p>
+        </div>
+        <Tooltip title={resetLabel}>
+          <span className={styles.resetAction}>
+            <IconButton
+              type="button"
+              size="small"
+              aria-label={resetLabel}
+              disableRipple
+              disabled={!canReset}
+              onClick={onReset}
+              sx={[
+                resetFilterActionSx,
+                { inlineSize: "var(--mt-space-10)", blockSize: "var(--mt-space-10)" },
+              ]}
+            >
+              <ReplayRoundedIcon fontSize="small" />
+            </IconButton>
+          </span>
+        </Tooltip>
+      </header>
+      <MedViewFilterFields
+        filterGroupId={filterGroupId}
+        filtersDraft={filtersDraft}
+        setFiltersDraft={setFiltersDraft}
+      />
+    </section>
+  );
 };

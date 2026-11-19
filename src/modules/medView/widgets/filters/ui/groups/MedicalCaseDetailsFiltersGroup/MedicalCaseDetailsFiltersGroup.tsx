@@ -1,7 +1,6 @@
 import type { MedicalCaseDetailsFiltersGroupDraft } from "../../../../workspace/model/types/FiltersDraft";
 import { CompletedCaseDetailsFiltersSubgroup } from "./CompletedCaseDetailsFiltersSubgroup";
 import { MedicalCaseDetailsFiltersSubgroup } from "./MedicalCaseDetailsFiltersSubgroup";
-import styles from "./styles.module.scss";
 
 interface MedicalCaseDetailsFiltersGroupProps {
   medicalCaseDetailsFiltersGroupDraft: MedicalCaseDetailsFiltersGroupDraft;
@@ -15,17 +14,7 @@ const MedicalCaseDetailsFiltersGroup = ({
   setMedicalCaseDetailsFiltersGroupDraft,
 }: MedicalCaseDetailsFiltersGroupProps) => {
   return (
-    <section className={styles.medicalCaseDetailsFiltersGroup}>
-      <header className={styles.medicalCaseDetailsFiltersGroupHeader}>
-        <div className={styles.titleGroup}>
-          <h2>Фильтрация по медицинскому случаю</h2>
-          <p className={styles.description}>
-            Все поля, которые относятся к данным по медицинскому и законченному
-            случаям
-          </p>
-        </div>
-      </header>
-
+    <>
       <MedicalCaseDetailsFiltersSubgroup
         medicalCaseDetailsFiltersSubgroupDraft={
           medicalCaseDetailsFiltersGroupDraft.medicalCaseDetails
@@ -49,7 +38,7 @@ const MedicalCaseDetailsFiltersGroup = ({
           })
         }
       />
-    </section>
+    </>
   );
 };
 

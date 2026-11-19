@@ -2,7 +2,6 @@ import type { OncologyFiltersGroupDraft } from "../../../../workspace/model/type
 import { OncologyCaseFiltersSubgroup } from "./OncologyCaseFiltersSubgroup";
 import { OncologyServiceFiltersSubgroup } from "./OncologyServiceFiltersSubgroup";
 import { MedicationFiltersSubgroup } from "./MedicationFiltersSubgroup";
-import styles from "./styles.module.scss";
 
 interface OncologyFiltersGroupProps {
   oncologyFiltersGroupDraft: OncologyFiltersGroupDraft;
@@ -16,16 +15,7 @@ const OncologyFiltersGroup = ({
   setOncologyFiltersGroupDraft,
 }: OncologyFiltersGroupProps) => {
   return (
-    <section className={styles.oncologyFiltersGroup}>
-      <header className={styles.oncologyFiltersGroupHeader}>
-        <div className={styles.titleGroup}>
-          <h2>Фильтрация по онкологии</h2>
-          <p className={styles.description}>
-            Все поля, которые относятся к онкологии
-          </p>
-        </div>
-      </header>
-
+    <>
       <OncologyCaseFiltersSubgroup
         oncologyCaseFiltersSubgroupDraft={
           oncologyFiltersGroupDraft.oncologyCase
@@ -59,7 +49,7 @@ const OncologyFiltersGroup = ({
           })
         }
       />
-    </section>
+    </>
   );
 };
 

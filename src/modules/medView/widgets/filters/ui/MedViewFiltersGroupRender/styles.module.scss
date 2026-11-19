@@ -1,0 +1,26 @@
+@use "../groups/filterGroupStyles" as filter;
+
+.group {
+  @include filter.group;
+  container-name: medview-group person-filters;
+}
+
+.header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  column-gap: var(--mt-space-4);
+}
+
+.heading {
+  @include filter.heading;
+  min-width: 0;
+}
+
+.resetAction {
+  display: inline-flex;
+}
+
+.description {
+  @include filter.description;
+}

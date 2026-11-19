@@ -1,5 +1,6 @@
 // Run from the repository root: node tests/medview-progressive-workspace.browser.mjs
 // Requires Chrome (override CHROME_PATH if needed). All API responses are intercepted test fixtures.
+// --filters-only verifies reset behavior on /med-view using the current API contract.
 // --live-only verifies the current production UI without the legacy standalone demo routes.
 import { spawn } from "node:child_process";
 import { mkdtemp } from "node:fs/promises";
@@ -158,6 +159,18 @@ try {
       ],
       body: Buffer.from(JSON.stringify(result)).toString("base64"),
     });
+  const filtersOnly = process.argv.includes("--filters-only");
+  if (filtersOnly) {
+    await (await import("./medview-filter-reset.scenario.mjs")).runFilterResetScenario({
+      send,
+      evaluate,
+      until,
+      pause,
+      check,
+      reply,
+      intercept: (handler) => { onRequest = handler; },
+    });
+  } else {
   onRequest = async ({ requestId, request }) => {
     const url = new URL(request.url);
     if (!url.pathname.startsWith("/api/")) {
@@ -647,6 +660,7 @@ try {
   check("standalone medical cards fixture", true);
 
   console.log("PROGRESSIVE WORKSPACE CHECKS COMPLETE");
+  }
   }
 } finally {
   ws?.close();

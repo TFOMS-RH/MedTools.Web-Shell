@@ -2,7 +2,7 @@ import type { FilterOption } from "../../../../workspace/model/types/FilterOptio
 import type { ClinicalGroupsFiltersSubgroupDraft } from "../../../../workspace/model/types/FiltersDraft";
 import { MedViewAutocompleteInput } from "../../../../../../../shared/ui/medView/inputs/MedViewAutocompleteInput/MedViewAutocompleteInput";
 import { MedViewMultipleSelectInput } from "../../../../../../../shared/ui/medView/inputs/MedViewMultipleSelectInput/MedViewMultipleSelectInput";
-import { useState } from "react";
+import { useMedViewFilterSearch } from "../../../../../../../shared/ui/medView/inputs/filterInputReset";
 import styles from "./styles.module.scss";
 import { useFilterOptionsQuery } from "../../../../../../../shared/model/references/queries/useFilterOptionsQuery";
 import { MedicalReferenceType } from "../../../../../../../shared/model/references/types/MedicalReferenceType";
@@ -21,7 +21,7 @@ export const ClinicalGroupFiltersSubgroup = ({
   const [
     inputCLinicalStatisticGroupValue,
     setInputCLinicalStatisticGroupValue,
-  ] = useState("");
+  ] = useMedViewFilterSearch();
 
   const { data: complexityCoefficientNumbers } = useFilterOptionsQuery(
     MedicalReferenceType.ComplexityCoefficientNumbers,

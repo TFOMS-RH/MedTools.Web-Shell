@@ -1,7 +1,6 @@
 import type { ClinicalGroupsFiltersGroupDraft } from "../../../../workspace/model/types/FiltersDraft";
 import { ClinicalGroupFiltersSubgroup } from "./ClinicalGroupFiltersSubgroup";
 import { HighTechMedicalCareFiltersSubgroup } from "./HighTechMedicalCareFiltersSubgroup";
-import styles from "./styles.module.scss";
 
 interface ClinicalGroupFiltersGroupProps {
   clinicalGroupFiltersGroup: ClinicalGroupsFiltersGroupDraft;
@@ -15,15 +14,7 @@ const ClinicalGroupFiltersGroup = ({
   setClinicalGroupFiltersGroup,
 }: ClinicalGroupFiltersGroupProps) => {
   return (
-    <section className={styles.clinicalGroupFiltersGroup}>
-      <header className={styles.clinicalGroupFiltersGroupHeader}>
-        <div className={styles.titleGroup}>
-          <h2>Фильтрация по клиническим группам</h2>
-          <p className={styles.description}>
-            Все поля, которые относятся к КСГ и ВМП случаям
-          </p>
-        </div>
-      </header>
+    <>
       <ClinicalGroupFiltersSubgroup
         clinicalGroupFiltersSubgroupDraft={
           clinicalGroupFiltersGroup.clinicalGroups
@@ -46,7 +37,7 @@ const ClinicalGroupFiltersGroup = ({
           })
         }
       />
-    </section>
+    </>
   );
 };
 

@@ -1,3 +1,5 @@
+import { useContext } from "react";
+import { MedViewFilterInputReset } from "../filterInputReset";
 import type { Dayjs } from "dayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { medViewDateInputSx } from "../../../../sxConfigs/medViewDateInputSx";
@@ -17,9 +19,12 @@ export const MedViewDateInput = ({
   value,
   handleDateInputChange,
 }: MedViewDateInputProps) => {
+  const resetVersion = useContext(MedViewFilterInputReset);
+
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ru">
       <DatePicker
+        key={resetVersion}
         onChange={handleDateInputChange}
         value={value}
         label={label}

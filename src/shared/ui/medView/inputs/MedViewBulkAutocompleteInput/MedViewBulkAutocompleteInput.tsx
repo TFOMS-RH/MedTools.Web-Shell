@@ -1,5 +1,6 @@
 import { Autocomplete, TextField, Chip } from "@mui/material";
-import { useState, useCallback } from "react";
+import { useCallback } from "react";
+import { useMedViewFilterSearch } from "../filterInputReset";
 import { medViewSelectInputSx } from "../../../../sxConfigs/medViewSelectInput";
 import { medViewPopupSx } from "../../../../sxConfigs/medViewPopupSx";
 import { medViewAutocompleteListboxSx } from "../../../../sxConfigs/medViewAutocompleteListboxSx";
@@ -28,7 +29,7 @@ export const MedViewBulkAutocompleteInput = ({
   label,
   placeholder,
 }: MedViewBulkAutocompleteInputProps) => {
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useMedViewFilterSearch();
 
   const mergeValues = useCallback(
     (incoming: string[]) => {

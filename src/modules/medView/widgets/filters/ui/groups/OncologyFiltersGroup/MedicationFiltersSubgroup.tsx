@@ -1,7 +1,7 @@
 import type { MedicationFiltersSubgroupDraft } from "../../../../workspace/model/types/FiltersDraft";
 import type { FilterOption } from "../../../../workspace/model/types/FilterOptions";
 import { MedViewAutocompleteInput } from "../../../../../../../shared/ui/medView/inputs/MedViewAutocompleteInput/MedViewAutocompleteInput";
-import { useState } from "react";
+import { useMedViewFilterSearch } from "../../../../../../../shared/ui/medView/inputs/filterInputReset";
 import { useFilterOptionsQuery } from "../../../../../../../shared/model/references/queries/useFilterOptionsQuery";
 import { MedicalReferenceType } from "../../../../../../../shared/model/references/types/MedicalReferenceType";
 import styles from "./styles.module.scss";
@@ -17,8 +17,8 @@ export const MedicationFiltersSubgroup = ({
   medicationFiltersSubgroupDraft,
   setMedicationFiltersSubgroupDraft,
 }: MedicationFiltersSubgroupProps) => {
-  const [inputIdenitifierValue, setInputIdenitifierValue] = useState("");
-  const [inputRegimenValue, setInputRegimenValue] = useState("");
+  const [inputIdenitifierValue, setInputIdenitifierValue] = useMedViewFilterSearch();
+  const [inputRegimenValue, setInputRegimenValue] = useMedViewFilterSearch();
 
   const { data: drugIdentifiers, isFetching: isDrugIdentifiersFetching } =
     useFilterOptionsQuery(

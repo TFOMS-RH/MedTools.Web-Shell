@@ -61,6 +61,10 @@
     padding-block: var(--mt-space-5);
 
     .filtersListHeader {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      column-gap: var(--mt-space-2);
       margin-bottom: var(--mt-space-3);
       padding-inline: var(--mt-space-3);
 
@@ -84,7 +88,7 @@
       min-width: 0;
     }
 
-    button {
+    li > button {
       position: relative;
       display: flex;
       align-items: center;
