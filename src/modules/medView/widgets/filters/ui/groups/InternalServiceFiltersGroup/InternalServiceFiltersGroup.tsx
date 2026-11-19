@@ -1,6 +1,9 @@
 import { MedViewDefaultInput } from "../../../../../../../shared/ui/medView/inputs/MedViewDefaultInput/MedViewDefaultInput";
 import { MedViewSelectInput } from "../../../../../../../shared/ui/medView/inputs/MedViewSelectInput/MedViewSelectInput";
-import type { InternalServiceFiltersGroupDraft } from "../../../../workspace/model/types/FiltersDraft";
+import {
+  initialFiltersDraft,
+  type InternalServiceFiltersGroupDraft,
+} from "../../../../workspace/model/types/FiltersDraft";
 import styles from "./styles.module.scss";
 
 interface InternalServiceFiltersGroupProps {
@@ -14,6 +17,12 @@ const InternalServiceFiltersGroup = ({
   internalServiceFiltersGroupDraft,
   setInternalServiceFiltersGroupDraft,
 }: InternalServiceFiltersGroupProps) => {
+  const updateBillingMonth = (invoiceBillingMonth: string) =>
+    setInternalServiceFiltersGroupDraft({
+      ...internalServiceFiltersGroupDraft,
+      invoiceBillingMonth,
+    });
+
   return (
     <div className={styles.internalServiceFiltersSubgroup}>
       <div className={styles.groupLineGrid}>
@@ -106,11 +115,11 @@ const InternalServiceFiltersGroup = ({
               { label: "Ноябрь", value: "11" },
               { label: "Декабрь", value: "12" },
             ]}
-            onChange={(newValue: string) =>
-              setInternalServiceFiltersGroupDraft({
-                ...internalServiceFiltersGroupDraft,
-                invoiceBillingMonth: newValue,
-              })
+            onChange={updateBillingMonth}
+            onClear={() =>
+              updateBillingMonth(
+                initialFiltersDraft.inrernalService.invoiceBillingMonth,
+              )
             }
           />
         </div>

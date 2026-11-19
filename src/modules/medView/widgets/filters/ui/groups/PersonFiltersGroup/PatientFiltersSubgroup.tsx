@@ -1,4 +1,7 @@
-import type { PatientFiltersSubgroupDraft } from "../../../../workspace/model/types/FiltersDraft";
+import {
+  initialFiltersDraft,
+  type PatientFiltersSubgroupDraft,
+} from "../../../../workspace/model/types/FiltersDraft";
 import type { Sex } from "../../../../workspace/model/types/Sex";
 import type { Dayjs } from "dayjs";
 import { MedViewDefaultInput } from "../../../../../../../shared/ui/medView/inputs/MedViewDefaultInput/MedViewDefaultInput";
@@ -17,6 +20,9 @@ export const PatientFiltersSubgroup = ({
   patientFiltersSubgroupDraft,
   setPatientFiltersSubgroupDraft,
 }: PatientFiltersSubgroupProps) => {
+  const updateSex = (sex: Sex | null) =>
+    setPatientFiltersSubgroupDraft({ ...patientFiltersSubgroupDraft, sex });
+
   return (
     <div className={styles.patientSubgroup}>
       <header className={styles.subgroupHeader}>
@@ -89,12 +95,8 @@ export const PatientFiltersSubgroup = ({
           <MedViewSelectInput
             label="Пол"
             value={patientFiltersSubgroupDraft.sex ?? ""}
-            onChange={(newValue: Sex | null) =>
-              setPatientFiltersSubgroupDraft({
-                ...patientFiltersSubgroupDraft,
-                sex: newValue,
-              })
-            }
+            onChange={updateSex}
+            onClear={() => updateSex(initialFiltersDraft.person.patient.sex)}
             options={[
               { label: "Мужской", value: "male" },
               { label: "Женский", value: "female" },

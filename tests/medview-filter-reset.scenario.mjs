@@ -78,8 +78,8 @@ export const runFilterResetScenario = async ({
         .find((element) => element.textContent.trim() === label),
       group: (label) => [...document.querySelectorAll("li > button")]
         .find((element) => element.firstElementChild?.textContent.trim() === label),
-      control: (label) => [...document.querySelectorAll("label")]
-        .find((element) => element.textContent.trim() === label)
+      control: (label, index = 0) => [...document.querySelectorAll("label")]
+        .filter((element) => element.textContent.trim() === label)[index]
         ?.parentElement.querySelector('[role=combobox]'),
       modelCheck: () => {
         const fill = (value) => Array.isArray(value) ? ["example"]
@@ -102,7 +102,8 @@ export const runFilterResetScenario = async ({
 
   const button = (label) => `filtersTest.button(${JSON.stringify(label)})`;
   const group = (label) => `filtersTest.group(${JSON.stringify(label)})`;
-  const control = (label) => `filtersTest.control(${JSON.stringify(label)})`;
+  const control = (label, index = 0) =>
+    `filtersTest.control(${JSON.stringify(label)}, ${index})`;
   const click = (selector) => evaluate(`${selector}.click()`);
   const select = async (selector, label) => {
     await evaluate(`${selector}.dispatchEvent(new MouseEvent("mousedown", { bubbles: true, button: 0 }))`);
@@ -303,4 +304,77 @@ export const runFilterResetScenario = async ({
     resultBodies()[3].page === 1 &&
     resultBodies()[3].registerType === "Internal" &&
     JSON.stringify(resultBodies()[3].filters) === JSON.stringify(await evaluate("filtersTest.defaults")));
+
+  const representativeSex = control("Пол", 1);
+  const month = control("Расчетный месяц");
+  const year = `document.querySelector('input[placeholder="2026"]')`;
+  const technical = group("Служебная информация");
+  const emptySelection = "Не выбрано";
+  const hasLabel = (selector, label) =>
+    `${selector}.textContent.trim() === ${JSON.stringify(label)}`;
+
+  await type(surname, "Тестов");
+  await select(sex, "Мужской");
+  await select(representativeSex, "Женский");
+  await click(technical);
+  await select(month, "Январь");
+  await type(year, "2025");
+  await click(apply);
+  await waitForResults(5);
+  const selectedFilters = resultBodies()[4].filters;
+  check("apply includes all three selected single-select values",
+    selectedFilters.person.patient.sex === "male" &&
+    selectedFilters.person.representative.sex === "female" &&
+    selectedFilters.internalService.invoiceBillingMonth === "1");
+
+  const beforeMonthClear = requests.length;
+  await select(month, emptySelection);
+  await until(hasLabel(month, emptySelection));
+  check("clearing the month preserves the year and active filters without a request",
+    requests.length === beforeMonthClear &&
+    await evaluate(`${year}.value === "2025" &&
+      filtersTest.applied().internalService.invoiceBillingMonth === "1"`));
+
+  await click(people);
+  await until(`${hasLabel(sex, "Мужской")} && ${hasLabel(representativeSex, "Женский")}`);
+  // Wait for the reference data that reloads when the personal group is opened.
+  await pause();
+  const beforeSexClear = requests.length;
+  const beforeClearTable = await evaluate(row);
+  const press = async (key, windowsVirtualKeyCode) => {
+    await send("Input.dispatchKeyEvent", { type: "keyDown", key, code: key, windowsVirtualKeyCode });
+    await send("Input.dispatchKeyEvent", { type: "keyUp", key, code: key, windowsVirtualKeyCode });
+  };
+  await evaluate(`${sex}.focus()`);
+  await press("ArrowDown", 40);
+  await until('document.activeElement.getAttribute("role") === "option"');
+  const firstOption = 'document.querySelector("[role=listbox] [role=option]")';
+  check("the empty choice is the first menu option",
+    await evaluate(hasLabel(firstOption, emptySelection)));
+  await press("Home", 36);
+  await until(hasLabel("document.activeElement", emptySelection));
+  await press("Enter", 13);
+  await until(hasLabel(sex, emptySelection));
+  await until('!document.querySelector("[role=listbox]")');
+  check("clearing the patient sex by keyboard preserves the representative and surname",
+    await evaluate(`${hasLabel(representativeSex, "Женский")} && ${surname}.value === "Тестов"`));
+
+  await select(representativeSex, emptySelection);
+  await until(hasLabel(representativeSex, emptySelection));
+  await pause(300);
+  check("clearing either sex produces no API call and leaves the table and applied values intact",
+    requests.length === beforeSexClear &&
+    await evaluate(`${row} === ${JSON.stringify(beforeClearTable)} &&
+      filtersTest.applied().person.patient.sex === "male" &&
+      filtersTest.applied().person.representative.sex === "female"`));
+
+  await click(apply);
+  await waitForResults(6);
+  const clearedFilters = resultBodies()[5].filters;
+  check("apply sends the initial values for cleared fields and retains neighboring filters",
+    clearedFilters.person.patient.sex === null &&
+    clearedFilters.person.representative.sex === null &&
+    clearedFilters.person.patient.lastName === "Тестов" &&
+    clearedFilters.internalService.invoiceBillingMonth === "" &&
+    clearedFilters.internalService.invoiceBillingYear === "2025");
 };
