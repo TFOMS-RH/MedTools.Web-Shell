@@ -228,10 +228,21 @@ export const runFilterResetScenario = async ({
   await until(`/[0-9]/.test(${birthDate}.querySelector("input").value)`);
   await type("document.querySelector('input[placeholder=\"Укажите номера\"]')", "7788,");
   await click(services);
+  check("empty autocomplete displays the unselected placeholder",
+    await evaluate(`${serviceSearch}.placeholder === "Не выбрано" &&
+      ${serviceSearch}.matches(":placeholder-shown") &&
+      getComputedStyle(${serviceSearch}, "::placeholder").opacity === "1"`));
   await type(serviceSearch, "поиск");
+  check("typing hides the autocomplete placeholder",
+    await evaluate(`${serviceSearch}.value === "поиск" &&
+      !${serviceSearch}.matches(":placeholder-shown")`));
   const serviceOption = '[role="option"]';
   await until(`document.querySelector('${serviceOption}')?.textContent.includes("Тестовая услуга")`);
   await click(`document.querySelector('${serviceOption}')`);
+  await until(`!${serviceSearch}.hasAttribute("placeholder")`);
+  check("selected autocomplete displays its chip without the empty placeholder",
+    await evaluate(`${serviceSearch}.closest(".MuiAutocomplete-root")
+      .querySelector(".MuiChip-root")?.textContent === "Тестовая услуга"`));
   await click(apply);
   await waitForResults(1);
   const applied = resultBodies()[0].filters;
@@ -252,6 +263,9 @@ export const runFilterResetScenario = async ({
   const beforeTable = await evaluate(row);
   await click(resetGroup);
   await until(`${resetGroup}.disabled && ${serviceSearch}.value === ""`);
+  check("category reset restores the autocomplete placeholder",
+    await evaluate(`${serviceSearch}.placeholder === "Не выбрано" &&
+      ${serviceSearch}.matches(":placeholder-shown")`));
   await click(resetGroup);
   await pause(400);
   check("category reset does not fetch, change results, pagination or applied filters",

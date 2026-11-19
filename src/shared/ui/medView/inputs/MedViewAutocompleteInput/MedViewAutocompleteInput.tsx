@@ -68,6 +68,7 @@ export const MedViewAutocompleteInput = ({
           {...params}
           variant="filled"
           label={label}
+          placeholder={values.length === 0 ? "Не выбрано" : undefined}
           slotProps={{
             ...params.slotProps,
             inputLabel: { ...params.slotProps.inputLabel, shrink: true },
