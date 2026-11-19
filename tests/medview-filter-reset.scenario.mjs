@@ -9,6 +9,11 @@ export const runFilterResetScenario = async ({
   intercept,
 }) => {
   const requests = [];
+  const longPolicyLabel = "Тестовый полис с длинным названием для проверки переноса на узком экране";
+  const policyOptions = [
+    { value: "1", label: "Тестовый полис" },
+    { value: "2", label: longPolicyLabel },
+  ];
   const resultBodies = () => requests.filter(({ path }) =>
     path.endsWith("/medical-register/completed-cases")
   ).map(({ body }) => body);
@@ -46,7 +51,7 @@ export const runFilterResetScenario = async ({
     }
 
     await reply(requestId, path.endsWith("/F008/options")
-      ? [{ value: "1", label: "Тестовый полис" }]
+      ? policyOptions
       : search ? [{ value: "A01", label: "Тестовая услуга" }] : []);
   });
 
@@ -342,7 +347,10 @@ export const runFilterResetScenario = async ({
   const beforeSexClear = requests.length;
   const beforeClearTable = await evaluate(row);
   const press = async (key, windowsVirtualKeyCode) => {
-    await send("Input.dispatchKeyEvent", { type: "keyDown", key, code: key, windowsVirtualKeyCode });
+    await send("Input.dispatchKeyEvent", {
+      type: "keyDown", key, code: key, windowsVirtualKeyCode,
+      text: key === "Enter" ? "\r" : undefined,
+    });
     await send("Input.dispatchKeyEvent", { type: "keyUp", key, code: key, windowsVirtualKeyCode });
   };
   await evaluate(`${sex}.focus()`);
@@ -377,4 +385,81 @@ export const runFilterResetScenario = async ({
     clearedFilters.person.patient.lastName === "Тестов" &&
     clearedFilters.internalService.invoiceBillingMonth === "" &&
     clearedFilters.internalService.invoiceBillingYear === "2025");
+
+  const chips = `[...${policy}.querySelectorAll(".MuiChip-root")]`;
+  const chipLabels = (...labels) =>
+    `JSON.stringify(${chips}.map((chip) => chip.textContent)) === ${JSON.stringify(JSON.stringify(labels))}`;
+  const beforePolicySelect = requests.length;
+  await select(policy, "Тестовый полис");
+  await select(policy, longPolicyLabel);
+  await until(chipLabels("Тестовый полис", longPolicyLabel));
+  check("multiple select renders one chip per selected value without fetching",
+    requests.length === beforePolicySelect);
+
+  await send("Emulation.setDeviceMetricsOverride", {
+    width: 360, height: 800, deviceScaleFactor: 1, mobile: false,
+  });
+  check("long chip label wraps inside the multiple select at 360 px",
+    await evaluate(`(() => {
+      const select = ${policy};
+      const label = ${chips}[1].querySelector(".MuiChip-label");
+      const style = getComputedStyle(label);
+      const bounds = label.getBoundingClientRect();
+      return bounds.right <= select.getBoundingClientRect().right &&
+        bounds.height > parseFloat(style.lineHeight) &&
+        label.scrollWidth <= label.clientWidth &&
+        label.scrollHeight <= label.clientHeight;
+    })()`));
+  await send("Emulation.setDeviceMetricsOverride", {
+    width: 1440, height: 1200, deviceScaleFactor: 1, mobile: false,
+  });
+
+  await click(apply);
+  await waitForResults(7);
+  check("apply still sends multiple-select codes",
+    JSON.stringify(resultBodies()[6].filters.person.insurance.insurancePolicyTypes) === '["1","2"]');
+
+  const beforePolicyClear = requests.length;
+  const removeChip = (label) =>
+    `[...${policy}.querySelectorAll("button")].find((button) =>
+      button.getAttribute("aria-label") === ${JSON.stringify(`Убрать «${label}»`)})`;
+  const firstRemove = removeChip("Тестовый полис");
+  const point = await evaluate(`(() => {
+    const button = ${firstRemove};
+    button.scrollIntoView({ block: "center" });
+    const rect = button.getBoundingClientRect();
+    return { x: rect.x + rect.width / 2, y: rect.y + rect.height / 2 };
+  })()`);
+  await send("Input.dispatchMouseEvent", {
+    type: "mousePressed", button: "left", clickCount: 1, ...point,
+  });
+  await send("Input.dispatchMouseEvent", {
+    type: "mouseReleased", button: "left", clickCount: 1, ...point,
+  });
+  await until(chipLabels(longPolicyLabel));
+  check("clicking a chip cross removes only its value and keeps the menu closed",
+    await evaluate(`${policy}.getAttribute("aria-expanded") === "false"`));
+  await evaluate(`(async () => {
+    const { queryClient } = await import('/src/shared/api/client/queryClient.ts');
+    queryClient.setQueryData(["refrences", "options", "F008", undefined], [{ value: "1", label: "Тестовый полис" }]);
+  })()`);
+  await until(chipLabels("2"));
+  const fallbackRemove = removeChip("2");
+  await evaluate(`${policy}.focus()`);
+  await press("Tab", 9);
+  await until(`document.activeElement === ${fallbackRemove} &&
+    getComputedStyle(${fallbackRemove}).outlineStyle === "solid"`);
+  await press("Enter", 13);
+  await until(`${chips}.length === 0 && ${policy}.textContent.trim() === "Не выбрано"`);
+  check("the chip cross can be activated by keyboard and returns focus to the select",
+    await evaluate(`document.activeElement === ${policy} &&
+      ${policy}.getAttribute("aria-expanded") === "false"`));
+
+  await select(policy, "Тестовый полис");
+  await until(chipLabels("Тестовый полис"));
+  await click(resetGroup);
+  await until(`${chips}.length === 0 && ${policy}.textContent.trim() === "Не выбрано"`);
+  check("removal and reset update chips while missing options preserve selected codes",
+    requests.length === beforePolicyClear &&
+    await evaluate('filtersTest.applied().person.insurance.insurancePolicyTypes.join(",") === "1,2"'));
 };

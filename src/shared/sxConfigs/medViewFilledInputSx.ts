@@ -64,7 +64,7 @@ export const medViewFilledInputSx = {
       "color-mix(in srgb, var(--mt-text-secondary) 75%, var(--mt-text-tertiary))",
     fontWeight: "var(--fw-default)",
   },
-  "& .MuiFilledInput-root .MuiAutocomplete-tag": {
+  "& .MuiFilledInput-root .MuiAutocomplete-tag, & .MuiFilledInput-root .MuiSelect-select .MuiChip-root": {
     color: "var(--mt-text-primary)",
     fontWeight: "var(--fw-semibold)",
     maxWidth: "100%",
