@@ -3,6 +3,8 @@ import { formatCurrency } from "../../../../../../../../shared/helpers/formatCur
 import { formatNullableValue } from "../../../../../../../../shared/helpers/formatNullableValue";
 import { TableSkeleton } from "../../../../../../../../shared/ui/TableSkeleton/TableSkeleton";
 import styles from "./styles.module.scss";
+import { displayDateOnly } from "../../../../../../../rControl/widgets/workspace/ui/categories/components/prescriptions/presentation";
+import { displayValue } from "../../../categories/components/oncology/presentation";
 
 interface MedViewCompletedCasesTableBodyProps {
   completedCases: CompletedCaseListItemDto[];
@@ -23,11 +25,13 @@ export const MedViewCompletedCasesTableBody = ({
     <div className="mt-table-viewport mt-table-viewport--scrollable">
       <table className={`mt-table ${styles.table}`}>
         <colgroup>
-          <col className={styles.numberColumn} />
-          <col className={styles.numberColumn} />
           <col className={styles.nameColumn} />
           <col className={styles.nameColumn} />
           <col className={styles.nameColumn} />
+          <col className={styles.dateColumn} />
+          <col className={styles.dateColumn} />
+          <col className={styles.orgColumn} />
+          <col className={styles.orgColumn} />
           <col className={styles.conditionColumn} />
           <col className={styles.seriesColumn} />
           <col className={styles.policyColumn} />
@@ -37,12 +41,6 @@ export const MedViewCompletedCasesTableBody = ({
         </colgroup>
         <thead>
           <tr>
-            <th scope="col" title="Номер позиции">
-              № поз.
-            </th>
-            <th scope="col" title="Номер записи">
-              № зап.
-            </th>
             <th scope="col" title="Фамилия пациента">
               Фамилия
             </th>
@@ -51,6 +49,18 @@ export const MedViewCompletedCasesTableBody = ({
             </th>
             <th scope="col" title="Отчество пациента">
               Отчество
+            </th>
+            <th scope="col" title="Лечение с">
+              Лечение с
+            </th>
+            <th scope="col" title="Лечение по">
+              Лечение по
+            </th>
+            <th scope="col" title="МО">
+              Код МО
+            </th>
+            <th scope="col" title="СМО">
+              Код СМО
             </th>
             <th scope="col" title="Условия оказания медицинской помощи">
               Усл. ок.
@@ -82,7 +92,7 @@ export const MedViewCompletedCasesTableBody = ({
         </thead>
         <tbody>
           {isPending ? (
-            <TableSkeleton columns={11} rows={totalCount} />
+            <TableSkeleton columns={13} rows={totalCount} />
           ) : (
             completedCases.map((completedCase) => (
               <tr
@@ -96,12 +106,6 @@ export const MedViewCompletedCasesTableBody = ({
                 }
                 key={completedCase.completedCaseUid}
               >
-                <td className={styles.identifier}>
-                  {completedCase.entryPositionNumber}
-                </td>
-                <td className={styles.identifier}>
-                  {completedCase.entryNumber}
-                </td>
                 <td className={styles.personName}>
                   {completedCase.patientLastName}
                 </td>
@@ -111,9 +115,21 @@ export const MedViewCompletedCasesTableBody = ({
                 <td className={styles.personName}>
                   {completedCase.patientMiddleName}
                 </td>
+                <td className={styles.date}>
+                  {displayDateOnly(completedCase.treatmentStartDate)}
+                </td>
+                <td className={styles.date}>
+                  {displayDateOnly(completedCase.treatmentStartDate)}
+                </td>
+                <td className={styles.org}>
+                  {displayValue(completedCase.medicalOrganizationCode)}
+                </td>
+                <td className={styles.date}>
+                  {displayValue(completedCase.insuranceOrganizationCode)}
+                </td>
                 <td
                   className={styles.identifier}
-                >{`${completedCase.medicalCareConditionsCode} : ${completedCase.medicalCareConditionsName}`}</td>
+                >{`${completedCase.medicalCareConditionsCode}`}</td>
                 <td className={styles.identifier}>
                   {formatNullableValue(completedCase.insurancePolicySeries)}
                 </td>

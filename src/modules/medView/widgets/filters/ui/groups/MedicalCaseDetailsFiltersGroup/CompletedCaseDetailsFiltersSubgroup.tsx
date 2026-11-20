@@ -5,6 +5,9 @@ import { useFilterOptionsQuery } from "../../../../../../../shared/model/referen
 import { MedicalReferenceType } from "../../../../../../../shared/model/references/types/MedicalReferenceType";
 import { MedViewDateInput } from "../../../../../../../shared/ui/medView/inputs/MedViewDateInput/MedViewDateInput";
 import styles from "./styles.module.scss";
+import { useState } from "react";
+import { MedViewAutocompleteInput } from "../../../../../../../shared/ui/medView/inputs/MedViewAutocompleteInput/MedViewAutocompleteInput";
+import type { FilterOption } from "../../../../workspace/model/types/FilterOptions";
 
 interface CompletedCaseDetailsFiltersSubgroupProps {
   completedCaseDetailsFiltersSubgroupDraft: CompletedCaseDetailsFiltersSubgroupDraft;
@@ -17,6 +20,9 @@ export const CompletedCaseDetailsFiltersSubgroup = ({
   completedCaseDetailsFiltersSubgroupDraft,
   setCompletedCaseDetailsFiltersSubgroupDraft,
 }: CompletedCaseDetailsFiltersSubgroupProps) => {
+  const [medicalOrgsInputValue, setMedicalOrgsInputValue] = useState("");
+  const [refMedicalOrgsInputValue, setRefMedicalOrgsInputValue] = useState("");
+
   const { data: careConditionFilterOptions } = useFilterOptionsQuery(
     MedicalReferenceType.MedicalCareConditions,
   );
@@ -43,6 +49,20 @@ export const CompletedCaseDetailsFiltersSubgroup = ({
 
   const { data: paymentMethodFilterOptions } = useFilterOptionsQuery(
     MedicalReferenceType.PaymentMethods,
+  );
+
+  const { data: medicalOrgOptions, isFetching: isMedicalOrgOptionsFetching } =
+    useFilterOptionsQuery(
+      MedicalReferenceType.MedicalOrgs,
+      medicalOrgsInputValue,
+    );
+
+  const {
+    data: refMedicalOrgOptions,
+    isFetching: isRefMedicalOrgOptionsFetching,
+  } = useFilterOptionsQuery(
+    MedicalReferenceType.MedicalOrgs,
+    refMedicalOrgsInputValue,
   );
 
   return (
@@ -137,36 +157,42 @@ export const CompletedCaseDetailsFiltersSubgroup = ({
 
       <div className={styles.groupLineGrid}>
         <div className={styles.span12}>
-          <MedViewMultipleSelectInput
-            label="Медицинская организация"
-            values={
-              completedCaseDetailsFiltersSubgroupDraft.medicalOrganizations
-            }
-            onChange={(newValue: string[]) =>
+          <MedViewAutocompleteInput
+            inputValue={medicalOrgsInputValue}
+            label="МО"
+            onChange={(newValue: FilterOption[]) =>
               setCompletedCaseDetailsFiltersSubgroupDraft({
                 ...completedCaseDetailsFiltersSubgroupDraft,
                 medicalOrganizations: newValue,
               })
             }
-            options={[]}
+            onInputChange={setMedicalOrgsInputValue}
+            options={medicalOrgOptions ?? []}
+            values={
+              completedCaseDetailsFiltersSubgroupDraft.medicalOrganizations
+            }
+            loading={isMedicalOrgOptionsFetching}
           />
         </div>
       </div>
 
       <div className={styles.groupLineGrid}>
         <div className={styles.span12}>
-          <MedViewMultipleSelectInput
-            label="Направившая медицинская организация"
-            values={
-              completedCaseDetailsFiltersSubgroupDraft.referringMedicalOrganizations
-            }
-            onChange={(newValue: string[]) =>
+          <MedViewAutocompleteInput
+            inputValue={refMedicalOrgsInputValue}
+            label="Направившая МО"
+            onChange={(newValue: FilterOption[]) =>
               setCompletedCaseDetailsFiltersSubgroupDraft({
                 ...completedCaseDetailsFiltersSubgroupDraft,
                 referringMedicalOrganizations: newValue,
               })
             }
-            options={[]}
+            onInputChange={setRefMedicalOrgsInputValue}
+            options={refMedicalOrgOptions ?? []}
+            values={
+              completedCaseDetailsFiltersSubgroupDraft.referringMedicalOrganizations
+            }
+            loading={isRefMedicalOrgOptionsFetching}
           />
         </div>
       </div>
