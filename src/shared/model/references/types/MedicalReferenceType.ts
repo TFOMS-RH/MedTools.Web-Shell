@@ -1,4 +1,6 @@
 export const MedicalReferenceType = {
+  MedicalOrgs: "F032",
+  InsuranceOrgs: "F002",
   PolicyTypes: "F008",
   MedicalCareProfiles: "V002",
   BedProfiles: "V020",

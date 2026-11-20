@@ -22,7 +22,9 @@ export const mapFiltersDraftToApplied = (
         birthDate: mapDate(draft.person.representative.birthDate),
       },
       insurance: {
-        insurances: draft.person.insurance.insurances,
+        insurances: draft.person.insurance.insurances.map(
+          (insuranceOrg) => insuranceOrg.value,
+        ),
         insurancePolicyNumbers: draft.person.insurance.insurancePolicyNumbers,
         insurancePolicySeries: draft.person.insurance.insurancePolicySeries,
         insurancePolicyTypes: draft.person.insurance.insurancePolicyTypes,
@@ -87,14 +89,17 @@ export const mapFiltersDraftToApplied = (
             (medicalCareType) => parseInt(medicalCareType),
           ),
         medicalOrganizations:
-          draft.medicalCaseDetails.completedCaseDetails.medicalOrganizations,
+          draft.medicalCaseDetails.completedCaseDetails.medicalOrganizations.map(
+            (medicalOrg) => medicalOrg.value,
+          ),
         paymentMethods:
           draft.medicalCaseDetails.completedCaseDetails.paymentMethods.map(
             (paymentMethod) => parseInt(paymentMethod),
           ),
         referringMedicalOrganizations:
-          draft.medicalCaseDetails.completedCaseDetails
-            .referringMedicalOrganizations,
+          draft.medicalCaseDetails.completedCaseDetails.referringMedicalOrganizations.map(
+            (refMedicalOrg) => refMedicalOrg.value,
+          ),
         screeningResults:
           draft.medicalCaseDetails.completedCaseDetails.screeningResults,
         treatmentEndDate: mapDate(
@@ -138,7 +143,9 @@ export const mapFiltersDraftToApplied = (
         prescriptionTypes: draft.prescription.prescription.prescriptionTypes,
         referralDate: mapDate(draft.prescription.prescription.referralDate),
         referredToMedicalOrganizations:
-          draft.prescription.prescription.referredToMedicalOrganizations,
+          draft.prescription.prescription.referredToMedicalOrganizations.map(
+            (refMedicalOrg) => refMedicalOrg.value,
+          ),
         services: draft.prescription.prescription.services.map((x) => x.value),
       },
       referral: {
@@ -153,7 +160,9 @@ export const mapFiltersDraftToApplied = (
           (x) => x.value,
         ),
         referredToMedicalOrganizations:
-          draft.prescription.referral.referredToMedicalOrganizations,
+          draft.prescription.referral.referredToMedicalOrganizations.map(
+            (refMedicalOrg) => refMedicalOrg.value,
+          ),
       },
     },
     clinicalGroup: {

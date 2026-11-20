@@ -81,14 +81,14 @@ export interface PrescriptionFiltersSubgroupDraft {
   diagnosticMethods: string[];
   services: FilterOption[];
   referralDate: Dayjs | null;
-  referredToMedicalOrganizations: string[];
+  referredToMedicalOrganizations: FilterOption[];
   medicalCareProfiles: string[];
   bedProfiles: string[];
 }
 
 export interface ReferralFiltersSubgroupDraft {
   referralDate: Dayjs | null;
-  referredToMedicalOrganizations: string[];
+  referredToMedicalOrganizations: FilterOption[];
   refferalTypes: string[];
   diagnosticMethods: string[];
   referredServices: FilterOption[];
@@ -141,8 +141,8 @@ export interface CompletedCaseDetailsFiltersSubgroupDraft {
   careConditions: string[];
   medicalCareTypes: string[];
   careForms: string[];
-  medicalOrganizations: string[];
-  referringMedicalOrganizations: string[];
+  medicalOrganizations: FilterOption[];
+  referringMedicalOrganizations: FilterOption[];
   treatmentStartDate: Dayjs | null;
   treatmentEndDate: Dayjs | null;
   screeningResults: string[];
@@ -174,7 +174,7 @@ export interface RepresentativeFiltersSubgroupDraft {
 }
 
 export interface InsuranceFiltersSubgroupDraft {
-  insurances: string[];
+  insurances: FilterOption[];
   insurancePolicyTypes: string[];
   insurancePolicySeries: string;
   insurancePolicyNumbers: string[];
