@@ -92,7 +92,7 @@ export const MedViewCompletedCasesTableBody = ({
         </thead>
         <tbody>
           {isPending ? (
-            <TableSkeleton columns={11} rows={totalCount} />
+            <TableSkeleton columns={13} rows={totalCount} />
           ) : (
             completedCases.map((completedCase) => (
               <tr
