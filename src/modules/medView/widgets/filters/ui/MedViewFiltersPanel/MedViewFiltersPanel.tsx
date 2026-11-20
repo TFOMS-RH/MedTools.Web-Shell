@@ -1,3 +1,4 @@
+import { useId } from "react";
 import { Button } from "@mui/material";
 import ReplayRoundedIcon from "@mui/icons-material/ReplayRounded";
 import type { FiltersDraft } from "../../../workspace/model/types/FiltersDraft";
@@ -25,6 +26,7 @@ export const MedViewFiltersPanel = ({
   onReset,
   canReset,
 }: FiltersPanelProps) => {
+  const registerTypeLabelId = useId();
   const { resetWorkspace } = useMedViewWorkspaceStore();
   const {
     applyFilters,
@@ -46,13 +48,13 @@ export const MedViewFiltersPanel = ({
   return (
     <section className={styles.filtersPanelRoot}>
       <div className={styles.filtersGroup}>
-        <div className={styles.sourceToggle}>
-          <header className={styles.sourceToggleHeader}>
-            <h2>Источник данных</h2>
-          </header>
+        <div className={styles.registerTypeControl}>
+          <h2 id={registerTypeLabelId}>Тип реестра</h2>
           <MedicalRegisterTypeToggle
             value={registerType ?? ""}
             onChange={handleToggleChange}
+            labels={{ internal: "Внутренний", interterritorial: "Иногородний" }}
+            aria-labelledby={registerTypeLabelId}
           />
         </div>
         <Divider />

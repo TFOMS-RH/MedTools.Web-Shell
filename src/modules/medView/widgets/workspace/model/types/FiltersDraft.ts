@@ -88,7 +88,7 @@ export interface PrescriptionFiltersSubgroupDraft {
 
 export interface ReferralFiltersSubgroupDraft {
   referralDate: Dayjs | null;
-  referredToMedicalOrganizations: FilterOption[];
+  referredToMedicalOrganizations: string[];
   refferalTypes: string[];
   diagnosticMethods: string[];
   referredServices: FilterOption[];

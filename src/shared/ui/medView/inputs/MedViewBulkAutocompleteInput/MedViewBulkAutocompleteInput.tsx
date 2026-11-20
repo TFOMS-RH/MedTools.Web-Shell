@@ -1,7 +1,7 @@
 import { Autocomplete, TextField, Chip } from "@mui/material";
 import { useMedViewFilterSearch } from "../filterInputReset";
 import { medViewSelectInputSx } from "../../../../sxConfigs/medViewSelectInput";
-import { medViewPopupSx } from "../../../../sxConfigs/medViewPopupSx";
+import { medToolsPopupSx } from "../../../../sxConfigs/medToolsPopupSx";
 import { medViewAutocompleteListboxSx } from "../../../../sxConfigs/medViewAutocompleteListboxSx";
 
 const SEPARATORS = /[;,\n\s]+/;
@@ -154,7 +154,7 @@ export const MedViewBulkAutocompleteInput = (
         },
       ]}
       slotProps={{
-        paper: { sx: medViewPopupSx },
+        paper: { sx: medToolsPopupSx },
         listbox: { sx: medViewAutocompleteListboxSx },
       }}
     />

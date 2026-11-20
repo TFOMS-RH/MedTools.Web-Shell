@@ -1,4 +1,4 @@
-export const medViewPopupSx = {
+export const medToolsPopupSx = {
   borderRadius: "var(--mt-radius-inner)",
   backgroundColor: "var(--mt-surface)",
   color: "var(--mt-text-primary)",

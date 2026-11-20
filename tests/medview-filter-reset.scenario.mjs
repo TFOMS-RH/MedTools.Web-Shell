@@ -145,6 +145,9 @@ export const runFilterResetScenario = async ({
   const resetGroup = `document.querySelector('button[aria-label="${resetLabel}"]')`;
   const resetAll = button("Сбросить всё");
   const apply = button("Применить фильтры");
+  const internalRegister = 'document.querySelector("button[value=Internal]")';
+  const interterritorialRegister = 'document.querySelector("button[value=Interterritorial]")';
+  const registerToggle = `${internalRegister}.closest('[role="group"]')`;
   const people = group("Персональные данные");
   const services = group("Оказанные услуги");
   const surname = 'document.querySelector("input[placeholder=Иванов]")';
@@ -172,6 +175,12 @@ export const runFilterResetScenario = async ({
     await send("Emulation.setDeviceMetricsOverride", {
       width: 360, height: 800, deviceScaleFactor: 1, mobile: false,
     });
+    check("register toggle stays within its section at 360 px", await evaluate(`(() => {
+      const toggle = ${registerToggle};
+      const bounds = toggle.getBoundingClientRect();
+      const wrapper = toggle.parentElement.getBoundingClientRect();
+      return bounds.left >= wrapper.left && bounds.right <= wrapper.right;
+    })()`));
     check("reset controls stay to the right at 360 px", await evaluate(`
       [${resetGroup}, ${resetAll}].every((element) => {
         const header = element.closest("header");
@@ -222,7 +231,21 @@ export const runFilterResetScenario = async ({
   check("every nested category restores its own defaults", await evaluate("filtersTest.modelCheck()"));
   check("initial reset actions disabled", await evaluate(`${resetGroup}.disabled && ${resetAll}.disabled`));
 
-  await click('document.querySelector("button[value=Internal]")');
+  check("register toggle has a Russian label and gray only on the switch", await evaluate(`(() => {
+    const toggle = ${registerToggle};
+    const title = document.getElementById(toggle.getAttribute("aria-labelledby"));
+    return title?.textContent === "Тип реестра" &&
+      getComputedStyle(toggle.parentElement).backgroundColor === "rgba(0, 0, 0, 0)" &&
+      getComputedStyle(toggle).backgroundColor === "rgb(245, 245, 247)" &&
+      ${internalRegister}.textContent === "Внутренний" &&
+      ${interterritorialRegister}.textContent === "Иногородний";
+  })()`));
+  await click(interterritorialRegister);
+  await until(`${interterritorialRegister}.getAttribute("aria-pressed") === "true"`);
+  await click(internalRegister);
+  await until(`${internalRegister}.getAttribute("aria-pressed") === "true" &&
+    ${interterritorialRegister}.getAttribute("aria-pressed") === "false"`);
+  check("register toggle switches between both registry types", true);
   await type(surname, "Тестов");
   await checkResetActions();
   await select(sex, "Мужской", true);

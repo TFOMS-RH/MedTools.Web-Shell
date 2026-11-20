@@ -160,9 +160,7 @@ export const mapFiltersDraftToApplied = (
           (x) => x.value,
         ),
         referredToMedicalOrganizations:
-          draft.prescription.referral.referredToMedicalOrganizations.map(
-            (refMedicalOrg) => refMedicalOrg.value,
-          ),
+          draft.prescription.referral.referredToMedicalOrganizations,
       },
     },
     clinicalGroup: {
