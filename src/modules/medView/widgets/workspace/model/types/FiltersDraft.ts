@@ -32,11 +32,11 @@ export interface BaseDiseaseFiltersGroupDraft {
 }
 
 export interface InternalServiceFiltersGroupDraft {
-  patientUid: string;
-  medicalCaseUid: string;
-  completedCaseUid: string;
+  patientUid: number[];
+  medicalCaseUid: number[];
+  completedCaseUid: number[];
   invoiceNumber: string;
-  invoiceUid: string;
+  invoiceUid: number[];
   invoiceBillingMonth: string;
   invoiceBillingYear: string;
 }
@@ -88,7 +88,7 @@ export interface PrescriptionFiltersSubgroupDraft {
 
 export interface ReferralFiltersSubgroupDraft {
   referralDate: Dayjs | null;
-  referredToMedicalOrganizations: FilterOption[];
+  referredToMedicalOrganizations: string[];
   refferalTypes: string[];
   diagnosticMethods: string[];
   referredServices: FilterOption[];
@@ -304,10 +304,10 @@ export const initialFiltersDraft: FiltersDraft = {
     },
   },
   inrernalService: {
-    completedCaseUid: "",
-    medicalCaseUid: "",
-    patientUid: "",
-    invoiceUid: "",
+    completedCaseUid: [],
+    medicalCaseUid: [],
+    patientUid: [],
+    invoiceUid: [],
     invoiceNumber: "",
     invoiceBillingMonth: "",
     invoiceBillingYear: "",

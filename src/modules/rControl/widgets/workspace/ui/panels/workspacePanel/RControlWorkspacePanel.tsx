@@ -4,7 +4,19 @@ import { useBillingPeriodsQuery } from "../../../model/queries/useBillingPeriods
 import { useRControlWorkspacePanelStore } from "../../../model/store/useRControlWorkspacePanelStore";
 import { MedicalRegisterTypeToggle } from "../../../../../../../shared/ui/medTools/toggles/MedicalRegisterTypeToggle";
 import { MenuItem, Select } from "@mui/material";
+import { medToolsPopupSx } from "../../../../../../../shared/sxConfigs/medToolsPopupSx";
 import styles from "./styles.module.scss";
+
+const lookupMenuPaper = { className: styles.options, sx: medToolsPopupSx };
+
+const organizationMenuPaper = {
+  ...lookupMenuPaper,
+  sx: {
+    ...medToolsPopupSx,
+    maxHeight: "min(24rem, calc(100dvh - 2 * var(--mt-space-4)))",
+    overflowY: "auto",
+  },
+};
 
 export const RControlWorkspacePanel = () => {
   const {
@@ -219,9 +231,7 @@ export const RControlWorkspacePanel = () => {
                       ? "rcontrol-organizations-state"
                       : undefined,
                   }}
-                  MenuProps={{
-                    slotProps: { paper: { className: styles.options } },
-                  }}
+                  MenuProps={{ slotProps: { paper: organizationMenuPaper } }}
                   value={
                     medicalOrganizations.some(
                       (medicalOrg) => medicalOrg.code === organizationCode,
@@ -289,9 +299,7 @@ export const RControlWorkspacePanel = () => {
                       ? "rcontrol-periods-state"
                       : undefined,
                   }}
-                  MenuProps={{
-                    slotProps: { paper: { className: styles.options } },
-                  }}
+                  MenuProps={{ slotProps: { paper: lookupMenuPaper } }}
                   value={
                     billingPeriods.some(
                       (period) => period.billingYear === billingYear,
@@ -361,9 +369,7 @@ export const RControlWorkspacePanel = () => {
                       ? "rcontrol-months-state"
                       : undefined,
                   }}
-                  MenuProps={{
-                    slotProps: { paper: { className: styles.options } },
-                  }}
+                  MenuProps={{ slotProps: { paper: lookupMenuPaper } }}
                   value={
                     selectedBillingMonth !== null &&
                     months.includes(selectedBillingMonth)

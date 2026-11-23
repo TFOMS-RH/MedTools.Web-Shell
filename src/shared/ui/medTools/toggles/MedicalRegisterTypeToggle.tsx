@@ -4,11 +4,15 @@ import { medToolsToggleSx } from "../../../sxConfigs/medToolsToggleSx";
 
 interface MedicalRegisterTypeToggleProps {
   value: string;
+  labels?: { internal: string; interterritorial: string };
+  "aria-labelledby"?: string;
   onChange: (event: React.MouseEvent<HTMLElement>, newAligment: string) => void;
 }
 
 export const MedicalRegisterTypeToggle = ({
   value,
+  labels,
+  "aria-labelledby": labelledBy,
   onChange,
 }: MedicalRegisterTypeToggleProps) => {
   return (
@@ -17,11 +21,12 @@ export const MedicalRegisterTypeToggle = ({
       value={value}
       exclusive
       onChange={onChange}
-      aria-label="Database type"
+      aria-label={labelledBy ? undefined : "Database type"}
+      aria-labelledby={labelledBy}
       sx={medToolsToggleSx}
     >
-      <ToggleButton value="Internal">СМО РХ</ToggleButton>
-      <ToggleButton value="Interterritorial">Иногород</ToggleButton>
+      <ToggleButton value="Internal">{labels?.internal ?? "СМО РХ"}</ToggleButton>
+      <ToggleButton value="Interterritorial">{labels?.interterritorial ?? "Иногород"}</ToggleButton>
     </ToggleButtonGroup>
   );
 };

@@ -1,3 +1,4 @@
+import { MedViewBulkAutocompleteInput } from "../../../../../../../shared/ui/medView/inputs/MedViewBulkAutocompleteInput/MedViewBulkAutocompleteInput";
 import { MedViewDefaultInput } from "../../../../../../../shared/ui/medView/inputs/MedViewDefaultInput/MedViewDefaultInput";
 import { MedViewSelectInput } from "../../../../../../../shared/ui/medView/inputs/MedViewSelectInput/MedViewSelectInput";
 import {
@@ -27,11 +28,12 @@ const InternalServiceFiltersGroup = ({
     <div className={styles.internalServiceFiltersSubgroup}>
       <div className={styles.groupLineGrid}>
         <div className={styles.span12}>
-          <MedViewDefaultInput
+          <MedViewBulkAutocompleteInput
+            mode="uid"
             label="UID пациента"
-            placeholder="1000"
+            placeholder="Например, 1000, 1001"
             value={internalServiceFiltersGroupDraft.patientUid}
-            handleInputChange={(newValue: string) =>
+            onChange={(newValue) =>
               setInternalServiceFiltersGroupDraft({
                 ...internalServiceFiltersGroupDraft,
                 patientUid: newValue,
@@ -42,11 +44,12 @@ const InternalServiceFiltersGroup = ({
       </div>
       <div className={styles.groupLineGrid}>
         <div className={styles.span12}>
-          <MedViewDefaultInput
+          <MedViewBulkAutocompleteInput
+            mode="uid"
             label="UID случая"
-            placeholder="1000"
+            placeholder="Например, 1000, 1001"
             value={internalServiceFiltersGroupDraft.medicalCaseUid}
-            handleInputChange={(newValue: string) =>
+            onChange={(newValue) =>
               setInternalServiceFiltersGroupDraft({
                 ...internalServiceFiltersGroupDraft,
                 medicalCaseUid: newValue,
@@ -57,11 +60,12 @@ const InternalServiceFiltersGroup = ({
       </div>
       <div className={styles.groupLineGrid}>
         <div className={styles.span12}>
-          <MedViewDefaultInput
+          <MedViewBulkAutocompleteInput
+            mode="uid"
             label="UID законченного случая"
-            placeholder="1000"
+            placeholder="Например, 1000, 1001"
             value={internalServiceFiltersGroupDraft.completedCaseUid}
-            handleInputChange={(newValue: string) =>
+            onChange={(newValue) =>
               setInternalServiceFiltersGroupDraft({
                 ...internalServiceFiltersGroupDraft,
                 completedCaseUid: newValue,
@@ -72,11 +76,12 @@ const InternalServiceFiltersGroup = ({
       </div>
       <div className={styles.groupLineGrid}>
         <div className={styles.span3}>
-          <MedViewDefaultInput
+          <MedViewBulkAutocompleteInput
+            mode="uid"
             label="UID счета"
-            placeholder="1000"
+            placeholder="Например, 1000, 1001"
             value={internalServiceFiltersGroupDraft.invoiceUid}
-            handleInputChange={(newValue: string) =>
+            onChange={(newValue) =>
               setInternalServiceFiltersGroupDraft({
                 ...internalServiceFiltersGroupDraft,
                 invoiceUid: newValue,

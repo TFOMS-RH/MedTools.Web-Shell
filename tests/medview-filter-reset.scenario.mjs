@@ -110,11 +110,19 @@ export const runFilterResetScenario = async ({
   const control = (label, index = 0) =>
     `filtersTest.control(${JSON.stringify(label)}, ${index})`;
   const click = (selector) => evaluate(`${selector}.click()`);
-  const select = async (selector, label) => {
+  const menuShadow = () => evaluate(`getComputedStyle(
+    document.querySelector("[role=listbox]").closest(".MuiPaper-root")
+  ).boxShadow`);
+  const expectedMenuShadow = "rgba(0, 0, 0, 0.1) 0px 6px 18px 0px";
+  const select = async (selector, label, verifyShadow = false) => {
     await evaluate(`${selector}.dispatchEvent(new MouseEvent("mousedown", { bubbles: true, button: 0 }))`);
     const option = `[...document.querySelectorAll('[role=option]')].find((element) =>
       element.textContent.trim() === ${JSON.stringify(label)})`;
     await until(option);
+    if (verifyShadow) {
+      check("select popup has the MedView shadow for " + label,
+        await menuShadow() === expectedMenuShadow);
+    }
     await click(option);
     await send("Input.dispatchKeyEvent", { type: "keyDown", key: "Escape", code: "Escape", windowsVirtualKeyCode: 27 });
     await until('!document.querySelector("[role=listbox]")');
@@ -137,6 +145,9 @@ export const runFilterResetScenario = async ({
   const resetGroup = `document.querySelector('button[aria-label="${resetLabel}"]')`;
   const resetAll = button("Сбросить всё");
   const apply = button("Применить фильтры");
+  const internalRegister = 'document.querySelector("button[value=Internal]")';
+  const interterritorialRegister = 'document.querySelector("button[value=Interterritorial]")';
+  const registerToggle = `${internalRegister}.closest('[role="group"]')`;
   const people = group("Персональные данные");
   const services = group("Оказанные услуги");
   const surname = 'document.querySelector("input[placeholder=Иванов]")';
@@ -164,6 +175,12 @@ export const runFilterResetScenario = async ({
     await send("Emulation.setDeviceMetricsOverride", {
       width: 360, height: 800, deviceScaleFactor: 1, mobile: false,
     });
+    check("register toggle stays within its section at 360 px", await evaluate(`(() => {
+      const toggle = ${registerToggle};
+      const bounds = toggle.getBoundingClientRect();
+      const wrapper = toggle.parentElement.getBoundingClientRect();
+      return bounds.left >= wrapper.left && bounds.right <= wrapper.right;
+    })()`));
     check("reset controls stay to the right at 360 px", await evaluate(`
       [${resetGroup}, ${resetAll}].every((element) => {
         const header = element.closest("header");
@@ -214,11 +231,25 @@ export const runFilterResetScenario = async ({
   check("every nested category restores its own defaults", await evaluate("filtersTest.modelCheck()"));
   check("initial reset actions disabled", await evaluate(`${resetGroup}.disabled && ${resetAll}.disabled`));
 
-  await click('document.querySelector("button[value=Internal]")');
+  check("register toggle has a Russian label and gray only on the switch", await evaluate(`(() => {
+    const toggle = ${registerToggle};
+    const title = document.getElementById(toggle.getAttribute("aria-labelledby"));
+    return title?.textContent === "Тип реестра" &&
+      getComputedStyle(toggle.parentElement).backgroundColor === "rgba(0, 0, 0, 0)" &&
+      getComputedStyle(toggle).backgroundColor === "rgb(245, 245, 247)" &&
+      ${internalRegister}.textContent === "Внутренний" &&
+      ${interterritorialRegister}.textContent === "Иногородний";
+  })()`));
+  await click(interterritorialRegister);
+  await until(`${interterritorialRegister}.getAttribute("aria-pressed") === "true"`);
+  await click(internalRegister);
+  await until(`${internalRegister}.getAttribute("aria-pressed") === "true" &&
+    ${interterritorialRegister}.getAttribute("aria-pressed") === "false"`);
+  check("register toggle switches between both registry types", true);
   await type(surname, "Тестов");
   await checkResetActions();
-  await select(sex, "Мужской");
-  await select(policy, "Тестовый полис");
+  await select(sex, "Мужской", true);
+  await select(policy, "Тестовый полис", true);
   await click(openCalendar);
   const day = 'document.querySelector("button[role=gridcell]:not([disabled])")';
   await until(day);
@@ -238,6 +269,8 @@ export const runFilterResetScenario = async ({
       !${serviceSearch}.matches(":placeholder-shown")`));
   const serviceOption = '[role="option"]';
   await until(`document.querySelector('${serviceOption}')?.textContent.includes("Тестовая услуга")`);
+  check("autocomplete popup has the same MedView shadow",
+    await menuShadow() === expectedMenuShadow);
   await click(`document.querySelector('${serviceOption}')`);
   await until(`!${serviceSearch}.hasAttribute("placeholder")`);
   check("selected autocomplete displays its chip without the empty placeholder",
@@ -476,4 +509,58 @@ export const runFilterResetScenario = async ({
   check("removal and reset update chips while missing options preserve selected codes",
     requests.length === beforePolicyClear &&
     await evaluate('filtersTest.applied().person.insurance.insurancePolicyTypes.join(",") === "1,2"'));
+
+  await click(technical);
+  const patientUid = control("UID пациента");
+  const medicalCaseUid = control("UID случая");
+  const completedCaseUid = control("UID законченного случая");
+  const invoiceUid = control("UID счета");
+  const uidChips = (selector) =>
+    `[...${selector}.closest(".MuiAutocomplete-root").querySelectorAll(".MuiChip-label")]`;
+  const beforeUids = requests.length;
+  await type(patientUid, "12abc34");
+  check("an invalid UID is flagged during typing",
+    await evaluate(`${patientUid}.getAttribute("aria-invalid") === "true" &&
+      ${uidChips(patientUid)}.length === 0`));
+  await press("Enter", 13);
+  await until(`${patientUid}.value === ""`);
+
+  const pasted = "4711\n001002; 4711, 12abc34 -7 18.1 0 2147483648";
+  await evaluate(`(() => {
+    const clipboardData = new DataTransfer();
+    clipboardData.setData("text/plain", ${JSON.stringify(pasted)});
+    ${patientUid}.dispatchEvent(new ClipboardEvent("paste", { bubbles: true, clipboardData }));
+  })()`);
+  await until(`${uidChips(patientUid)}.map((chip) => chip.textContent).join(",") === "4711,1002"`);
+  check("pasting a UID list drops invalid tokens and numeric duplicates",
+    await evaluate('document.body.textContent.includes("Некорректные UID пропущены")'));
+
+  await type(medicalCaseUid, "2001");
+  await press("Tab", 9);
+  await until(`${uidChips(medicalCaseUid)}[0]?.textContent === "2001"`);
+  await type(completedCaseUid, "3001,3002;");
+  await until(`${uidChips(completedCaseUid)}.length === 2`);
+  await type(invoiceUid, "4001");
+  check("editing UID lists does not send a request", requests.length === beforeUids);
+
+  const applyPoint = await evaluate(`(() => {
+    const button = ${apply};
+    button.scrollIntoView({ block: "center" });
+    const rect = button.getBoundingClientRect();
+    return { x: rect.x + rect.width / 2, y: rect.y + rect.height / 2 };
+  })()`);
+  await send("Input.dispatchMouseEvent", {
+    type: "mousePressed", button: "left", clickCount: 1, ...applyPoint,
+  });
+  await send("Input.dispatchMouseEvent", {
+    type: "mouseReleased", button: "left", clickCount: 1, ...applyPoint,
+  });
+  await waitForResults(8);
+  const uidFilters = resultBodies()[7].filters.internalService;
+  check("apply sends numeric UID arrays including the last uncommitted value " + JSON.stringify(uidFilters),
+    JSON.stringify(uidFilters.patientUid) === "[4711,1002]" &&
+    JSON.stringify(uidFilters.medicalCaseUid) === "[2001]" &&
+    JSON.stringify(uidFilters.completedCaseUid) === "[3001,3002]" &&
+    JSON.stringify(uidFilters.invoiceUid) === "[4001]" &&
+    uidFilters.invoiceBillingYear === "2025");
 };

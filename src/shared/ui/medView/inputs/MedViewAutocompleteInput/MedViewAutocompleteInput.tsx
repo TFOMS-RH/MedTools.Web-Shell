@@ -6,7 +6,7 @@ import { medViewSelectInputSx } from "../../../../sxConfigs/medViewSelectInput";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import { medViewAutocompleteListboxSx } from "../../../../sxConfigs/medViewAutocompleteListboxSx";
-import { medViewPopupSx } from "../../../../sxConfigs/medViewPopupSx";
+import { medToolsPopupSx } from "../../../../sxConfigs/medToolsPopupSx";
 
 interface MedViewAutocompleteInputProps {
   label: string;
@@ -144,7 +144,7 @@ export const MedViewAutocompleteInput = ({
         },
       ]}
       slotProps={{
-        paper: { sx: medViewPopupSx },
+        paper: { sx: medToolsPopupSx },
         listbox: {
           sx: medViewAutocompleteListboxSx,
         },
