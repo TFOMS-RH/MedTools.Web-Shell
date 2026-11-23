@@ -32,7 +32,7 @@ export const MedicalReferenceType = {
   ComplexityCoefficientNumbers: "V041",
   HighTechCareTypes: "V018",
   HighTechCareMethods: "V019",
-  ProvidedServices: "Т003",
+  ProvidedServices: "T003",
   ControlTypeCodes: "F006",
   RefusalReasonCodes: "F014",
   Diseases: "ICD",
