@@ -16,7 +16,8 @@ export const filterGroups = {
     draftKey: "medicalCaseDetails",
     label: "Детали медицинского случая",
     title: "Фильтрация по медицинскому случаю",
-    description: "Все поля, которые относятся к данным по медицинскому и законченному случаям",
+    description:
+      "Все поля, которые относятся к данным по медицинскому и законченному случаям",
   },
   oncology: {
     draftKey: "oncology",

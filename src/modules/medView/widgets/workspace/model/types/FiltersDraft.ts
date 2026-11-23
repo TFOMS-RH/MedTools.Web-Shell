@@ -32,11 +32,11 @@ export interface BaseDiseaseFiltersGroupDraft {
 }
 
 export interface InternalServiceFiltersGroupDraft {
-  patientUid: number[];
-  medicalCaseUid: number[];
-  completedCaseUid: number[];
+  patientUids: number[];
+  medicalCaseUids: number[];
+  completedCaseUids: number[];
+  invoiceUids: number[];
   invoiceNumber: string;
-  invoiceUid: number[];
   invoiceBillingMonth: string;
   invoiceBillingYear: string;
 }
@@ -304,10 +304,10 @@ export const initialFiltersDraft: FiltersDraft = {
     },
   },
   inrernalService: {
-    completedCaseUid: [],
-    medicalCaseUid: [],
-    patientUid: [],
-    invoiceUid: [],
+    completedCaseUids: [],
+    medicalCaseUids: [],
+    patientUids: [],
+    invoiceUids: [],
     invoiceNumber: "",
     invoiceBillingMonth: "",
     invoiceBillingYear: "",

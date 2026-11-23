@@ -32,11 +32,11 @@ const InternalServiceFiltersGroup = ({
             mode="uid"
             label="UID пациента"
             placeholder="Например, 1000, 1001"
-            value={internalServiceFiltersGroupDraft.patientUid}
+            value={internalServiceFiltersGroupDraft.patientUids}
             onChange={(newValue) =>
               setInternalServiceFiltersGroupDraft({
                 ...internalServiceFiltersGroupDraft,
-                patientUid: newValue,
+                patientUids: newValue,
               })
             }
           />
@@ -48,11 +48,11 @@ const InternalServiceFiltersGroup = ({
             mode="uid"
             label="UID случая"
             placeholder="Например, 1000, 1001"
-            value={internalServiceFiltersGroupDraft.medicalCaseUid}
+            value={internalServiceFiltersGroupDraft.medicalCaseUids}
             onChange={(newValue) =>
               setInternalServiceFiltersGroupDraft({
                 ...internalServiceFiltersGroupDraft,
-                medicalCaseUid: newValue,
+                medicalCaseUids: newValue,
               })
             }
           />
@@ -64,11 +64,11 @@ const InternalServiceFiltersGroup = ({
             mode="uid"
             label="UID законченного случая"
             placeholder="Например, 1000, 1001"
-            value={internalServiceFiltersGroupDraft.completedCaseUid}
+            value={internalServiceFiltersGroupDraft.completedCaseUids}
             onChange={(newValue) =>
               setInternalServiceFiltersGroupDraft({
                 ...internalServiceFiltersGroupDraft,
-                completedCaseUid: newValue,
+                completedCaseUids: newValue,
               })
             }
           />
@@ -80,11 +80,11 @@ const InternalServiceFiltersGroup = ({
             mode="uid"
             label="UID счета"
             placeholder="Например, 1000, 1001"
-            value={internalServiceFiltersGroupDraft.invoiceUid}
+            value={internalServiceFiltersGroupDraft.invoiceUids}
             onChange={(newValue) =>
               setInternalServiceFiltersGroupDraft({
                 ...internalServiceFiltersGroupDraft,
-                invoiceUid: newValue,
+                invoiceUids: newValue,
               })
             }
           />

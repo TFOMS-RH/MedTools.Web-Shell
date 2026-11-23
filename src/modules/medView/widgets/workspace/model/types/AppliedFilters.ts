@@ -28,10 +28,10 @@ interface AppliedBaseDiseaseFilters {
 }
 
 interface AppliedInternalServiceFilters {
-  patientUid: number[];
-  medicalCaseUid: number[];
-  completedCaseUid: number[];
-  invoiceUid: number[];
+  patientUids: number[];
+  medicalCaseUids: number[];
+  completedCaseUids: number[];
+  invoiceUids: number[];
   invoiceNumber: string;
   invoiceBillingMonth: string;
   invoiceBillingYear: string;
