@@ -8,7 +8,7 @@ import { MedViewClinicalGroupCardHeader } from "./MedViewClinicalGroupCardHeader
 import { MedViewClinicalGroupCardBody } from "./MedViewClinicalGroupCardBody";
 
 export const MedViewClinicalGroupCardRoot = () => {
-  const { targetDb } = useMedViewFiltersStore();
+  const { registerType } = useMedViewFiltersStore();
   const { selectedMedicalCaseUid } = useMedViewWorkspaceStore();
   const {
     data: clinicalGroup,
@@ -17,10 +17,10 @@ export const MedViewClinicalGroupCardRoot = () => {
     isError,
     isSuccess,
     error,
-  } = useClinicalGroupQuery(selectedMedicalCaseUid, targetDb);
+  } = useClinicalGroupQuery(selectedMedicalCaseUid, registerType);
 
   const dataState = resolveDataState({
-    isEnabled: selectedMedicalCaseUid !== null && targetDb !== null,
+    isEnabled: selectedMedicalCaseUid !== null && registerType !== null,
     isLoading: isLoading,
     isError: isError,
     isSuccess: isSuccess,

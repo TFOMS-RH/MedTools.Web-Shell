@@ -6,7 +6,7 @@ import { MedViewMultipleSelectInput } from "../../../../../../../shared/ui/medVi
 import { MedViewAutocompleteInput } from "../../../../../../../shared/ui/medView/inputs/MedViewAutocompleteInput/MedViewAutocompleteInput";
 import { useFilterOptionsQuery } from "../../../../../../../shared/model/references/queries/useFilterOptionsQuery";
 import { MedicalReferenceType } from "../../../../../../../shared/model/references/types/MedicalReferenceType";
-import { useState } from "react";
+import { useMedViewFilterSearch } from "../../../../../../../shared/ui/medView/inputs/filterInputReset";
 import styles from "./styles.module.scss";
 
 interface ReferralFiltersSubgroupProps {
@@ -20,7 +20,7 @@ export const ReferralFiltersSubgroup = ({
   referralsFiltersSubgroupDraft,
   setReferralsFiltersSubgroupDraft,
 }: ReferralFiltersSubgroupProps) => {
-  const [inputServiceValue, setInputServiceValue] = useState("");
+  const [inputServiceValue, setInputServiceValue] = useMedViewFilterSearch();
 
   const { data: referralTypes } = useFilterOptionsQuery(
     MedicalReferenceType.ReferralTypes,
@@ -30,7 +30,7 @@ export const ReferralFiltersSubgroup = ({
     MedicalReferenceType.DiagnosticMethods,
   );
 
-  const { data: medicalServices, isPending } = useFilterOptionsQuery(
+  const { data: medicalServices, isFetching } = useFilterOptionsQuery(
     MedicalReferenceType.MedicalServices,
     inputServiceValue,
   );
@@ -117,7 +117,7 @@ export const ReferralFiltersSubgroup = ({
                 referredServices: newValue,
               })
             }
-            loading={isPending}
+            loading={isFetching}
           />
         </div>
       </div>

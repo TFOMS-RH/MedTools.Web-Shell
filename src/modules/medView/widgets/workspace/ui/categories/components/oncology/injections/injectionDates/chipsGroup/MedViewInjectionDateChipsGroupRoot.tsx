@@ -12,17 +12,17 @@ export const MedViewInjectionDateChipsGroupRoot = ({
 }: {
   selectedMedicationUid: number;
 }) => {
-  const { targetDb } = useMedViewFiltersStore();
+  const { registerType } = useMedViewFiltersStore();
   const {
     data: injectionDates,
     isLoading,
     isSuccess,
     isError,
     error,
-  } = useInjectionDatesQuery(selectedMedicationUid, targetDb);
+  } = useInjectionDatesQuery(selectedMedicationUid, registerType);
 
   const dataState = resolveDataState({
-    isEnabled: selectedMedicationUid !== null && targetDb !== null,
+    isEnabled: selectedMedicationUid !== null && registerType !== null,
     isLoading: isLoading,
     isError: isError,
     isSuccess: isSuccess,

@@ -1,7 +1,15 @@
 ﻿.CompletedCasesTableRoot {
   --mt-table-accent: var(--mt-medview-accent);
-  --mt-table-selection-bg: color-mix(in srgb, var(--mt-medview-cover) 45%, var(--mt-surface));
-  --mt-table-selection-hover-bg: color-mix(in srgb, var(--mt-medview-cover) 65%, var(--mt-surface));
+  --mt-table-selection-bg: color-mix(
+    in srgb,
+    var(--mt-medview-cover) 45%,
+    var(--mt-surface)
+  );
+  --mt-table-selection-hover-bg: color-mix(
+    in srgb,
+    var(--mt-medview-cover) 65%,
+    var(--mt-surface)
+  );
 
   container: medview-results / inline-size;
   display: flex;
@@ -53,7 +61,9 @@
     gap: var(--mt-space-2);
   }
 
-  :global(.MuiTablePagination-spacer) { display: none; }
+  :global(.MuiTablePagination-spacer) {
+    display: none;
+  }
 
   :global(.MuiTablePagination-selectLabel),
   :global(.MuiTablePagination-displayedRows) {
@@ -67,16 +77,22 @@
     background: var(--mt-canvas);
   }
 
-  :global(.MuiTablePagination-actions) { margin-left: 0; }
+  :global(.MuiTablePagination-actions) {
+    margin-left: 0;
+  }
 
   :global(.MuiTablePagination-actions .MuiIconButton-root) {
     min-width: 44px;
     min-height: 44px;
     color: var(--mt-text-primary);
 
-    &:global(.Mui-disabled) { color: var(--mt-text-tertiary); }
+    &:global(.Mui-disabled) {
+      color: var(--mt-text-tertiary);
+    }
 
-    &:hover { background: var(--mt-canvas); }
+    &:hover {
+      background: var(--mt-canvas);
+    }
   }
 
   :global(.MuiTablePagination-select) {
@@ -102,16 +118,49 @@
 .table {
   min-width: 84rem;
 
-  .numberColumn { width: 5rem; }
-  .nameColumn { width: 12rem; }
-  .conditionColumn { width: 5rem; }
-  .seriesColumn { width: 7rem; }
-  .policyColumn { width: 13rem; }
-  .amountColumn { width: 11rem; }
+  .dateColumn {
+    width: 10rem;
+  }
+
+  .orgColumn{
+    width: 10rem;
+  }
+
+  .numberColumn {
+    width: 5rem;
+  }
+  .nameColumn {
+    width: 12rem;
+  }
+  .conditionColumn {
+    width: 5rem;
+  }
+  .seriesColumn {
+    width: 7rem;
+  }
+  .policyColumn {
+    width: 13rem;
+  }
+  .amountColumn {
+    width: 11rem;
+  }
 
   .identifier {
     white-space: nowrap;
     font-variant-numeric: tabular-nums;
+  }
+
+  .date {
+    min-width: 10rem;
+    max-width: 12rem;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .org{
+    min-width: 10rem;
+    max-width: 12rem;
+    white-space: nowrap;
   }
 
   .personName {
@@ -135,7 +184,9 @@
   }
 
   .titleGroup,
-  .pagination { width: 100%; }
+  .pagination {
+    width: 100%;
+  }
 
   .content {
     padding: var(--mt-space-2) var(--mt-space-4) var(--mt-space-4);

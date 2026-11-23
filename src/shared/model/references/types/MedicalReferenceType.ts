@@ -1,4 +1,6 @@
 export const MedicalReferenceType = {
+  MedicalOrgs: "F032",
+  InsuranceOrgs: "F002",
   PolicyTypes: "F008",
   MedicalCareProfiles: "V002",
   BedProfiles: "V020",
@@ -30,7 +32,7 @@ export const MedicalReferenceType = {
   ComplexityCoefficientNumbers: "V041",
   HighTechCareTypes: "V018",
   HighTechCareMethods: "V019",
-  ProvidedServices: "Т003",
+  ProvidedServices: "T003",
   ControlTypeCodes: "F006",
   RefusalReasonCodes: "F014",
   Diseases: "ICD",

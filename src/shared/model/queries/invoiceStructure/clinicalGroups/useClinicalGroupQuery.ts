@@ -1,22 +1,22 @@
-import type { TargetDbType } from "../../../../types/TargetDbType";
+import type { MedicalRegisterType } from "../../../../types/TargetDbType";
 import { getClinicalGroup } from "../../../../api/invoiceStructure/clinicalGroups/getClinicalGroup";
 import { useQuery } from "@tanstack/react-query";
 
 export const useClinicalGroupQuery = (
   medicalCaseUid: number | null,
-  targetDb: TargetDbType | null,
+  registerType: MedicalRegisterType | null,
 ) => {
-  const isReady = medicalCaseUid !== null && targetDb !== null;
+  const isReady = medicalCaseUid !== null && registerType !== null;
 
   return useQuery({
-    queryKey: ["r-control", "clinical-group", medicalCaseUid, targetDb],
+    queryKey: ["r-control", "clinical-group", medicalCaseUid, registerType],
     enabled: isReady,
     queryFn: () => {
-      if (medicalCaseUid === null || targetDb === null) {
+      if (medicalCaseUid === null || registerType === null) {
         throw new Error("Невалидные параметры запроса");
       }
 
-      return getClinicalGroup(medicalCaseUid, targetDb);
+      return getClinicalGroup(medicalCaseUid, registerType);
     },
   });
 };

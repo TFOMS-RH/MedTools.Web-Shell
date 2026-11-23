@@ -1,7 +1,3 @@
-export interface GetClinicalGroupResult {
-  clinicalGroup: ClinicalGroupDto | null;
-}
-
 export interface ClinicalGroupDto {
   clinicalGroupUid: number;
   clinicalStatisticalGroupNumber: string;

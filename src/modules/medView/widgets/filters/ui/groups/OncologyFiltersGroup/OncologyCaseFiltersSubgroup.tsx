@@ -2,7 +2,7 @@ import type { OncologyCaseFiltersSubgroupDraft } from "../../../../workspace/mod
 import type { FilterOption } from "../../../../workspace/model/types/FilterOptions";
 import { MedViewMultipleSelectInput } from "../../../../../../../shared/ui/medView/inputs/MedViewMultipleSelectInput/MedViewMultipleSelectInput";
 import { MedViewAutocompleteInput } from "../../../../../../../shared/ui/medView/inputs/MedViewAutocompleteInput/MedViewAutocompleteInput";
-import { useState } from "react";
+import { useMedViewFilterSearch } from "../../../../../../../shared/ui/medView/inputs/filterInputReset";
 import { useFilterOptionsQuery } from "../../../../../../../shared/model/references/queries/useFilterOptionsQuery";
 import { MedicalReferenceType } from "../../../../../../../shared/model/references/types/MedicalReferenceType";
 import styles from "./styles.module.scss";
@@ -18,13 +18,13 @@ export const OncologyCaseFiltersSubgroup = ({
   oncologyCaseFiltersSubgroupDraft,
   setOncologyCaseFiltersSubgroupDraft,
 }: OncologyCaseFiltersSubgroupProps) => {
-  const [inputStageValue, setInputStageValue] = useState("");
+  const [inputStageValue, setInputStageValue] = useMedViewFilterSearch();
 
   const { data: referralReasons } = useFilterOptionsQuery(
     MedicalReferenceType.ReferralReasons,
   );
 
-  const { data: diseaseStages, isPending } = useFilterOptionsQuery(
+  const { data: diseaseStages, isFetching } = useFilterOptionsQuery(
     MedicalReferenceType.DiseaseStages,
     inputStageValue,
   );
@@ -62,7 +62,7 @@ export const OncologyCaseFiltersSubgroup = ({
                 stages: newValue,
               })
             }
-            loading={isPending}
+            loading={isFetching}
           />
         </div>
       </div>

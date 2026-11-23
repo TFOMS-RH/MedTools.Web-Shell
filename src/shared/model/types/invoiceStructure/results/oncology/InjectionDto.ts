@@ -1,7 +1,3 @@
-export interface GetInjectionsResult {
-  injections: InjectionDto[];
-}
-
 export interface InjectionDto {
   injectionUid: number;
   administrationDate: string;

@@ -1,4 +1,4 @@
-import type { InjectionDateDto } from "../../../../../../../../../../../shared/model/types/invoiceStructure/results/oncology/GetInjectionDatesResult";
+import type { InjectionDateDto } from "../../../../../../../../../../../shared/model/types/invoiceStructure/results/oncology/InjectionDateDto";
 import { formatDate } from "../../../../../../../../../../../shared/helpers/formatDate";
 import styles from "../../../styles.module.scss";
 

@@ -1,4 +1,4 @@
-import type { TargetDbType } from "../../../../types/TargetDbType";
+import type { MedicalRegisterType } from "../../../../types/TargetDbType";
 
 export interface InvoiceListItemsRequest {
   medicalOrganizationCode: string;
@@ -6,6 +6,6 @@ export interface InvoiceListItemsRequest {
   month: number;
   page: number;
   pageSize: number;
-  targetDb: TargetDbType;
+  registerType: MedicalRegisterType;
   searchString: string;
 }

@@ -1,6 +1,6 @@
 import styles from "../../styles.module.scss";
 import tableStyles from "./styles.module.scss";
-import type { CompletedCaseListItemDto } from "../../../../../../../../shared/model/types/invoiceStructure/results/medicalCases/GetCompletedCaseListItemsResult";
+import type { CompletedCaseListItemDto } from "../../../../../../../../shared/model/types/invoiceStructure/results/medicalCases/CompletedCaseListItemDto";
 import { formatCurrency } from "../../../../../../../../shared/helpers/formatCurrency";
 import { formatNullableValue } from "../../../../../../../../shared/helpers/formatNullableValue";
 import { TableSkeleton } from "../../../../../../../../shared/ui/TableSkeleton/TableSkeleton";

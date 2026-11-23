@@ -4,16 +4,19 @@ import { medViewSelectInputSx } from "../../../../sxConfigs/medViewSelectInput";
 import MenuItem from "@mui/material/MenuItem";
 import { medViewSelectMenuSx } from "../../../../sxConfigs/medViewSelectMenuSx";
 
+const emptySelectionLabel = "Не выбрано";
+
 type Option<T extends string> = {
   label: string;
   value: T;
 };
 
 type MedViewSelectInputProps<T extends string> = {
-  options: Option<T | "">[];
+  options: Option<T>[];
   label: string;
-  value: string;
+  value: T | "";
   onChange: (value: T) => void;
+  onClear?: () => void;
 };
 
 export function MedViewSelectInput<T extends string>({
@@ -21,6 +24,7 @@ export function MedViewSelectInput<T extends string>({
   label,
   value,
   onChange,
+  onClear,
 }: MedViewSelectInputProps<T>) {
   const labelId = useId();
 
@@ -41,7 +45,7 @@ export function MedViewSelectInput<T extends string>({
         >
           {label}
         </InputLabel>
-        <Select
+        <Select<T | "">
           variant="filled"
           disableUnderline
           labelId={labelId}
@@ -56,7 +60,7 @@ export function MedViewSelectInput<T extends string>({
                     fontWeight: "var(--fw-default)",
                   }}
                 >
-                  Не выбрано
+                  {emptySelectionLabel}
                 </span>
               );
             }
@@ -65,10 +69,24 @@ export function MedViewSelectInput<T extends string>({
             return <span title={displayValue}>{displayValue}</span>;
           }}
           value={value}
-          onChange={(event) => onChange(event.target.value as T)}
+          onChange={(event) => {
+            const selected = event.target.value;
+            if (selected === "") {
+              onClear?.();
+              return;
+            }
+
+            const option = options.find((item) => item.value === selected);
+            if (option) onChange(option.value);
+          }}
           label={label}
           MenuProps={{ slotProps: { paper: { sx: medViewSelectMenuSx } } }}
         >
+          {onClear && (
+            <MenuItem value="" sx={{ color: "var(--mt-text-secondary)" }}>
+              {emptySelectionLabel}
+            </MenuItem>
+          )}
           {options.length > 0 ? (
             options.map((option) => (
               <MenuItem key={option.value} value={option.value}>

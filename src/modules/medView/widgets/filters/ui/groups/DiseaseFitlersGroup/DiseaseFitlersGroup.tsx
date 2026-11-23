@@ -1,7 +1,6 @@
 import type { DiseaseFitlersGroupDraft } from "../../../../workspace/model/types/FiltersDraft";
 import { AdditionalDiseaseFiltersSubgroup } from "./AdditionalDiseaseFiltersSubgroup";
 import { BaseDiseaseFiltersSubgroup } from "./BaseDiseaseFiltersSubgroup";
-import styles from "./styles.module.scss";
 
 interface DiseaseFitlersGroupProps {
   diseaseFiltersGroupDraft: DiseaseFitlersGroupDraft;
@@ -15,15 +14,7 @@ export const DiseaseFitlersGroup = ({
   setDiseaseFiltersGroupDraft,
 }: DiseaseFitlersGroupProps) => {
   return (
-    <section className={styles.diseaseFiltersGroup}>
-      <header className={styles.diseaseFiltersGroupHeader}>
-        <div className={styles.titleGroup}>
-          <h2>Фильтрация по заболеваниям</h2>
-          <p className={styles.description}>
-            Все поля, которые относятся к заболеваниям
-          </p>
-        </div>
-      </header>
+    <>
       <BaseDiseaseFiltersSubgroup
         baseDiseaseFitlersSubgroupDraft={diseaseFiltersGroupDraft.baseDisease}
         setBaseDiseaseFitlersSubgroupDraft={(baseDisease) =>
@@ -44,6 +35,6 @@ export const DiseaseFitlersGroup = ({
           })
         }
       />
-    </section>
+    </>
   );
 };

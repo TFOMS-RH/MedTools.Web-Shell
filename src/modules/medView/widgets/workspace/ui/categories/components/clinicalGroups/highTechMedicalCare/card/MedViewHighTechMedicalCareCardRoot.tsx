@@ -8,7 +8,7 @@ import { MedViewHighTechMedicalCareCardHeader } from "./MedViewHighTechMedicalCa
 import { MedViewHighTechMedicalCareCardBody } from "./MedViewHighTechMedicalCareCardBody";
 
 export const MedViewHighTechMedicalCareCardRoot = () => {
-  const { targetDb } = useMedViewFiltersStore();
+  const { registerType } = useMedViewFiltersStore();
   const { selectedMedicalCaseUid } = useMedViewWorkspaceStore();
   const {
     data: highTechMedicalCare,
@@ -17,10 +17,10 @@ export const MedViewHighTechMedicalCareCardRoot = () => {
     isError,
     isSuccess,
     error,
-  } = useHighTechMedicalCareQuery(selectedMedicalCaseUid, targetDb);
+  } = useHighTechMedicalCareQuery(selectedMedicalCaseUid, registerType);
 
   const dataState = resolveDataState({
-    isEnabled: selectedMedicalCaseUid !== null && targetDb !== null,
+    isEnabled: selectedMedicalCaseUid !== null && registerType !== null,
     isLoading: isLoading,
     isError: isError,
     isSuccess: isSuccess,

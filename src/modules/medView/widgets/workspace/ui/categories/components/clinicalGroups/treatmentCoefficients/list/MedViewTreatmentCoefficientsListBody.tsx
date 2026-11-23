@@ -1,4 +1,4 @@
-import type { TreatmentComplexityCoefficientDto } from "../../../../../../../../../../shared/model/types/invoiceStructure/results/clinicalGroup/GetTreatmentComplexityCoefficientsResult";
+import type { TreatmentComplexityCoefficientDto } from "../../../../../../../../../../shared/model/types/invoiceStructure/results/clinicalGroup/TreatmentComplexityCoefficientDto";
 import { TableSkeleton } from "../../../../../../../../../../shared/ui/TableSkeleton/TableSkeleton";
 import { displayValue } from "../../presentation";
 import styles from "./styles.module.scss";

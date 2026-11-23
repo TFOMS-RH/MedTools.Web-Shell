@@ -28,6 +28,11 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api\/health-track/, "/api"),
       },
+      "/api/settlements":{
+        target: "http://localhost:8010",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/settlements/, "/api")
+      }
     },
   },
 });

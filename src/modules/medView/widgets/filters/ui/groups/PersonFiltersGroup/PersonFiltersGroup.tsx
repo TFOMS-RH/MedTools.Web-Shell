@@ -14,16 +14,7 @@ const PersonFiltersGroup = ({
   setPersonFiltersGroupDraft,
 }: PersonFiltersGroupRootProps) => {
   return (
-    <section className={styles.generalFiltersGroup}>
-      <header className={styles.generalFiltersGroupHeader}>
-        <div className={styles.titleGroup}>
-          <h2>Персональные данные</h2>
-          <p className={styles.description}>
-            Пациент, представитель и сведения о страховании
-          </p>
-        </div>
-      </header>
-
+    <>
       <div className={styles.patientGroupLine}>
         <PatientFiltersSubgroup
           patientFiltersSubgroupDraft={personFiltersGroupDraft.patient}
@@ -52,7 +43,7 @@ const PersonFiltersGroup = ({
           })
         }
       />
-    </section>
+    </>
   );
 };
 

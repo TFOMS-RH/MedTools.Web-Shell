@@ -7,7 +7,7 @@ import { RControlProvidedServiceCards } from "./RControlProvidedServiceCards";
 import { RControlProvidedServiceCardSkeletons } from "./RControlProvidedServiceCardSkeletons";
 
 export const RControlProvidedServiceCardsGroupRoot = () => {
-  const { targetDb } = useRControlWorkspacePanelStore();
+  const { registerType } = useRControlWorkspacePanelStore();
   const {
     selectedMedicalCaseUid,
     selectedProvidedServiceUid,
@@ -19,9 +19,9 @@ export const RControlProvidedServiceCardsGroupRoot = () => {
     isError,
     isSuccess,
     error,
-  } = useProvidedServicesQuery(selectedMedicalCaseUid, targetDb);
+  } = useProvidedServicesQuery(selectedMedicalCaseUid, registerType);
   const dataState = resolveDataState({
-    isEnabled: selectedMedicalCaseUid !== null && targetDb !== null,
+    isEnabled: selectedMedicalCaseUid !== null && registerType !== null,
     isLoading: isLoading,
     isError: isError,
     isSuccess: isSuccess,

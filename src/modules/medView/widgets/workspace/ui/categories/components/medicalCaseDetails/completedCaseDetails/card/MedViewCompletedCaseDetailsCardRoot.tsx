@@ -8,7 +8,7 @@ import { MedViewCompletedCaseDetailsCardBody } from "./MedViewCompletedCaseDetai
 import styles from "../../styles.module.scss";
 
 export const MedViewCompletedCaseDetailsCardRoot = () => {
-  const { targetDb } = useMedViewFiltersStore();
+  const { registerType } = useMedViewFiltersStore();
   const { selectedCompletedCaseUid } = useMedViewWorkspaceStore();
   const {
     data: completedCaseDetails,
@@ -17,10 +17,10 @@ export const MedViewCompletedCaseDetailsCardRoot = () => {
     isError,
     isSuccess,
     error,
-  } = useCompletedCaseDetailsQuery(selectedCompletedCaseUid, targetDb);
+  } = useCompletedCaseDetailsQuery(selectedCompletedCaseUid, registerType);
 
   const dataState = resolveDataState({
-    isEnabled: selectedCompletedCaseUid !== null && targetDb !== null,
+    isEnabled: selectedCompletedCaseUid !== null && registerType !== null,
     isLoading: isLoading,
     isError: isError,
     isSuccess: isSuccess,

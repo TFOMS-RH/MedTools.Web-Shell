@@ -6,8 +6,9 @@ import { MedViewMultipleSelectInput } from "../../../../../../../shared/ui/medVi
 import { MedViewAutocompleteInput } from "../../../../../../../shared/ui/medView/inputs/MedViewAutocompleteInput/MedViewAutocompleteInput";
 import { useFilterOptionsQuery } from "../../../../../../../shared/model/references/queries/useFilterOptionsQuery";
 import { MedicalReferenceType } from "../../../../../../../shared/model/references/types/MedicalReferenceType";
-import { useState } from "react";
+import { useMedViewFilterSearch } from "../../../../../../../shared/ui/medView/inputs/filterInputReset";
 import styles from "./styles.module.scss";
+import { useState } from "react";
 
 interface PrescriptionFiltersSubgroupProps {
   prescriptionFiltersSubgroup: PrescriptionFiltersSubgroupDraft;
@@ -20,7 +21,8 @@ export const PrescriptionFiltersSubgroup = ({
   prescriptionFiltersSubgroup,
   setPrescriptionFiltersSubgroup,
 }: PrescriptionFiltersSubgroupProps) => {
-  const [inputServiceValue, setInputServiceValue] = useState("");
+  const [inputServiceValue, setInputServiceValue] = useMedViewFilterSearch();
+  const [refMedicalOrgsInputValue, setRefMedicalOrgsInputValue] = useState("");
 
   const { data: diagnosticMethods } = useFilterOptionsQuery(
     MedicalReferenceType.DiagnosticMethods,
@@ -34,10 +36,17 @@ export const PrescriptionFiltersSubgroup = ({
     MedicalReferenceType.BedProfiles,
   );
 
-  const { data: medicalServices, isPending } = useFilterOptionsQuery(
-    MedicalReferenceType.MedicalServices,
-    inputServiceValue,
-  );
+  const { data: medicalServices, isFetching: isServiceFetching } =
+    useFilterOptionsQuery(
+      MedicalReferenceType.MedicalServices,
+      inputServiceValue,
+    );
+
+  const { data: refMedicalOrgOptions, isFetching: isRefMedicalOrgsFetching } =
+    useFilterOptionsQuery(
+      MedicalReferenceType.MedicalOrgs,
+      refMedicalOrgsInputValue,
+    );
 
   return (
     <div className={styles.prescriptionSubgroup}>
@@ -58,16 +67,19 @@ export const PrescriptionFiltersSubgroup = ({
           />
         </div>
         <div className={styles.span8}>
-          <MedViewMultipleSelectInput
+          <MedViewAutocompleteInput
             label="МО направления"
-            values={prescriptionFiltersSubgroup.referredToMedicalOrganizations}
-            onChange={(newValue: string[]) =>
+            inputValue={refMedicalOrgsInputValue}
+            onChange={(newValue: FilterOption[]) =>
               setPrescriptionFiltersSubgroup({
                 ...prescriptionFiltersSubgroup,
                 referredToMedicalOrganizations: newValue,
               })
             }
-            options={[]}
+            onInputChange={setRefMedicalOrgsInputValue}
+            values={prescriptionFiltersSubgroup.referredToMedicalOrganizations}
+            options={refMedicalOrgOptions ?? []}
+            loading={isRefMedicalOrgsFetching}
           />
         </div>
       </div>
@@ -177,7 +189,7 @@ export const PrescriptionFiltersSubgroup = ({
                 services: newValue,
               })
             }
-            loading={isPending}
+            loading={isServiceFetching}
           />
         </div>
       </div>

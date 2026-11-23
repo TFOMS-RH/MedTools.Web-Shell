@@ -1,30 +1,19 @@
-import type {
-  GetMedicalCaseDetailsResult,
-  MedicalCaseDetailsDto,
-} from "../../../model/types/invoiceStructure/results/medicalCases/GetMedicalCaseDetailsResult";
-import type { ResultResponse } from "../../../types/ResultResponse";
-import type { TargetDbType } from "../../../types/TargetDbType";
+import type { MedicalCaseDetailsDto } from "../../../model/types/invoiceStructure/results/medicalCases/MedicalCaseDetailsDto";
+import type { MedicalRegisterType } from "../../../types/TargetDbType";
 import apiClient from "../../client/apiClient";
 
 export const getMedicalCaseDetails = async (
   medicalCaseUid: number,
-  targetDb: TargetDbType,
+  registerType: MedicalRegisterType,
 ): Promise<MedicalCaseDetailsDto> => {
-  const response = await apiClient.get<
-    ResultResponse<GetMedicalCaseDetailsResult>
-  >(`med-tools/rcontrol/medical-cases/${medicalCaseUid}`, {
-    params: {
-      targetDb: targetDb,
+  const response = await apiClient.get<MedicalCaseDetailsDto>(
+    `settlements/medical-register/medical-cases/${medicalCaseUid}`,
+    {
+      params: {
+        registerType: registerType,
+      },
     },
-  });
+  );
 
-  if (response.data.isFailure) {
-    throw new Error(response.data.error);
-  }
-
-  if (!response.data.value) {
-    throw new Error("Сервер прислал невалидный ответ");
-  }
-
-  return response.data.value.medicalCaseDetails;
+  return response.data;
 };

@@ -9,7 +9,7 @@ import { resolveDataState } from "../../../../../../../../../../shared/helpers/r
 
 export const RControlConsultationsListRoot = () => {
   const { selectedMedicalCaseUid } = useRControlWorkspaceStore();
-  const { targetDb } = useRControlWorkspacePanelStore();
+  const { registerType } = useRControlWorkspacePanelStore();
   const {
     data: consultations,
     isPending,
@@ -17,10 +17,10 @@ export const RControlConsultationsListRoot = () => {
     isError,
     isSuccess,
     error,
-  } = useConsultationsQuery(selectedMedicalCaseUid, targetDb);
+  } = useConsultationsQuery(selectedMedicalCaseUid, registerType);
 
   const dataState = resolveDataState({
-    isEnabled: selectedMedicalCaseUid !== null && targetDb !== null,
+    isEnabled: selectedMedicalCaseUid !== null && registerType !== null,
     isLoading: isLoading,
     isEmpty: consultations?.length === 0 && isSuccess,
     isError: isError,

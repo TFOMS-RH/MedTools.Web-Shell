@@ -11,7 +11,7 @@ export const MedViewInjectionsTableRoot = ({
 }: {
   selectedMedicationUid: number;
 }) => {
-  const { targetDb } = useMedViewFiltersStore();
+  const { registerType } = useMedViewFiltersStore();
   const {
     data: injections,
     isLoading,
@@ -19,10 +19,10 @@ export const MedViewInjectionsTableRoot = ({
     isError,
     isSuccess,
     error,
-  } = useInjectionsQuery(selectedMedicationUid, targetDb);
+  } = useInjectionsQuery(selectedMedicationUid, registerType);
 
   const dataState = resolveDataState({
-    isEnabled: selectedMedicationUid !== null && targetDb !== null,
+    isEnabled: selectedMedicationUid !== null && registerType !== null,
     isLoading: isLoading,
     isError: isError,
     isSuccess: isSuccess,

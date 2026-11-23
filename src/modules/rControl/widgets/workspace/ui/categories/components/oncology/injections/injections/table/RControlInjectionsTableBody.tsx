@@ -1,6 +1,6 @@
 import styles from "../../../styles.module.scss";
 import { formatDate } from "../../../../../../../../../../../shared/helpers/formatDate";
-import type { InjectionDto } from "../../../../../../../../../../../shared/model/types/invoiceStructure/results/oncology/GetInjectionsResult";
+import type { InjectionDto } from "../../../../../../../../../../../shared/model/types/invoiceStructure/results/oncology/InjectionDto";
 import { TableSkeleton } from "../../../../../../../../../../../shared/ui/TableSkeleton/TableSkeleton";
 import { formatNullableValue } from "../../../../../../../../../../../shared/helpers/formatNullableValue";
 import { formatCurrency } from "../../../../../../../../../../../shared/helpers/formatCurrency";

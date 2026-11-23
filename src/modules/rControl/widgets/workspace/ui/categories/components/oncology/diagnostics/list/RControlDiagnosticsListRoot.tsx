@@ -13,7 +13,7 @@ interface RControlDiagnosticsListRootProps {
 export const RControlDiagnosticsListRoot = ({
   oncologyCaseUid,
 }: RControlDiagnosticsListRootProps) => {
-  const { targetDb } = useRControlWorkspacePanelStore();
+  const { registerType } = useRControlWorkspacePanelStore();
   const {
     data: diagnosticRecords,
     isLoading,
@@ -21,10 +21,10 @@ export const RControlDiagnosticsListRoot = ({
     isError,
     isSuccess,
     error,
-  } = useDiagnosticsQuery(oncologyCaseUid, targetDb);
+  } = useDiagnosticsQuery(oncologyCaseUid, registerType);
 
   const dataState = resolveDataState({
-    isEnabled: oncologyCaseUid !== null && targetDb !== null,
+    isEnabled: oncologyCaseUid !== null && registerType !== null,
     isLoading: isLoading,
     isError: isError,
     isSuccess: isSuccess,

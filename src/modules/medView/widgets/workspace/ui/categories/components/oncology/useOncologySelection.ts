@@ -8,20 +8,23 @@ import { useMedViewWorkspaceStore } from "../../../../model/stores/useMedViewWor
 
 /** Validate the whole current-parent chain before rendering any descendants. */
 export const useOncologySelection = () => {
-  const { targetDb } = useMedViewFiltersStore();
+  const { registerType } = useMedViewFiltersStore();
   const {
     selectedMedicalCaseUid,
     selectedOncologyServiceUid,
     selectedMedicationUid,
   } = useMedViewWorkspaceStore();
   const queryClient = useQueryClient();
-  const oncologyCase = useOncologyCaseQuery(selectedMedicalCaseUid, targetDb);
+  const oncologyCase = useOncologyCaseQuery(
+    selectedMedicalCaseUid,
+    registerType,
+  );
   const oncologyCaseUid =
-    selectedMedicalCaseUid !== null && targetDb !== null
+    selectedMedicalCaseUid !== null && registerType !== null
       ? (oncologyCase.data?.oncologyCaseUid ?? null)
       : null;
   // Existing hooks/keyed cache: these observers share requests with the list roots.
-  const services = useOncologyServicesQuery(oncologyCaseUid, targetDb);
+  const services = useOncologyServicesQuery(oncologyCaseUid, registerType);
   const serviceUid =
     oncologyCaseUid !== null &&
     services.data?.some(
@@ -29,7 +32,7 @@ export const useOncologySelection = () => {
     )
       ? selectedOncologyServiceUid
       : null;
-  const medications = useMedicationsQuery(serviceUid, targetDb);
+  const medications = useMedicationsQuery(serviceUid, registerType);
   const medicationUid =
     serviceUid !== null &&
     medications.data?.some(
@@ -42,12 +45,12 @@ export const useOncologySelection = () => {
     const current = useMedViewWorkspaceStore.getState();
     // An effect from a previous render must never clear a newer user selection.
     if (
-      useMedViewFiltersStore.getState().targetDb !== targetDb ||
+      useMedViewFiltersStore.getState().targetDb !== registerType ||
       current.selectedMedicalCaseUid !== selectedMedicalCaseUid ||
       current.selectedOncologyServiceUid !== selectedOncologyServiceUid ||
       current.selectedMedicationUid !== selectedMedicationUid ||
       selectedMedicalCaseUid === null ||
-      targetDb === null
+      registerType === null
     )
       return;
 
@@ -60,7 +63,7 @@ export const useOncologySelection = () => {
         "r-control",
         kind,
         parentUid,
-        targetDb,
+        registerType,
       ]);
       return data !== undefined && state?.data === data;
     };
@@ -73,7 +76,7 @@ export const useOncologySelection = () => {
         "r-control",
         kind,
         parentUid,
-        targetDb,
+        registerType,
       ]);
       return (
         isCurrentData(kind, parentUid, data) &&
@@ -116,7 +119,7 @@ export const useOncologySelection = () => {
     }
   }, [
     queryClient,
-    targetDb,
+    registerType,
     selectedMedicalCaseUid,
     selectedOncologyServiceUid,
     selectedMedicationUid,

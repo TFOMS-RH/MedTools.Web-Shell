@@ -5,12 +5,12 @@ import { useInsuranceQuery } from "../../../../../../../../../../shared/model/qu
 import { useRControlWorkspaceStore } from "../../../../../../model/store/useRControlWorkspaceStore";
 import { RControlInsuranceCardBody } from "./RControlInsuranceCardBody";
 import { RControlInsuranceCardHeader } from "./RControlInsuranceCardHeader";
-import type { InsuranceDto } from "../../../../../../../../../../shared/model/types/invoiceStructure/results/patient/GetInsuranceResult";
+import type { InsuranceDto } from "../../../../../../../../../../shared/model/types/invoiceStructure/results/patient/InsuranceDto";
 import type { DataState as DataStateValue } from "../../../../../../../../../../shared/types/DataState";
 import styles from "../../styles.module.scss";
 
 export const RControlInsuranceCardRoot = () => {
-  const { targetDb } = useRControlWorkspacePanelStore();
+  const { registerType } = useRControlWorkspacePanelStore();
   const { selectedMedicalCaseUid } = useRControlWorkspaceStore();
   const {
     data: insurance,
@@ -19,27 +19,41 @@ export const RControlInsuranceCardRoot = () => {
     isError,
     isSuccess,
     error,
-  } = useInsuranceQuery(selectedMedicalCaseUid, targetDb);
+  } = useInsuranceQuery(selectedMedicalCaseUid, registerType);
 
   const dataState = resolveDataState({
-    isEnabled: selectedMedicalCaseUid !== null && targetDb !== null,
+    isEnabled: selectedMedicalCaseUid !== null && registerType !== null,
     isLoading: isLoading,
     isError: isError,
     isSuccess: isSuccess,
     isEmpty: insurance === null && isSuccess,
   });
 
-  return <RControlInsuranceCardContent insurance={insurance} isPending={isPending}
-    dataState={dataState} error={error?.message} />;
+  return (
+    <RControlInsuranceCardContent
+      insurance={insurance}
+      isPending={isPending}
+      dataState={dataState}
+      error={error?.message}
+    />
+  );
 };
 
-export const RControlInsuranceCardContent = ({ insurance, isPending, dataState, error }: {
+export const RControlInsuranceCardContent = ({
+  insurance,
+  isPending,
+  dataState,
+  error,
+}: {
   insurance?: InsuranceDto | null;
   isPending: boolean;
   dataState: DataStateValue;
   error?: string;
 }) => (
-  <section className={styles.insuranceGroup} aria-labelledby="rcontrol-patient-insurance">
+  <section
+    className={styles.insuranceGroup}
+    aria-labelledby="rcontrol-patient-insurance"
+  >
     <RControlInsuranceCardHeader />
     {dataState === "error" ? (
       <DataState
@@ -54,10 +68,7 @@ export const RControlInsuranceCardContent = ({ insurance, isPending, dataState, 
         variant="empty"
       />
     ) : (
-      <RControlInsuranceCardBody
-        insurance={insurance!}
-        isPending={isPending}
-      />
+      <RControlInsuranceCardBody insurance={insurance!} isPending={isPending} />
     )}
   </section>
 );

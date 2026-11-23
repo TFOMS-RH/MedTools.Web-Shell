@@ -1,7 +1,7 @@
-import { medViewPopupSx } from "./medViewPopupSx";
+import { medToolsPopupSx } from "./medToolsPopupSx";
 
 export const medViewSelectMenuSx = {
-  ...medViewPopupSx,
+  ...medToolsPopupSx,
   width: "min(32rem, calc(100vw - 2 * var(--mt-space-4)))",
   maxHeight: "min(31rem, calc(100dvh - 2 * var(--mt-space-4)))",
   "& .MuiMenu-list": { padding: "var(--mt-space-2)" },

@@ -17,7 +17,6 @@ interface RControlOncologyLayoutProps {
   } | null;
 }
 
-/** The same oncology composition for live data and the offline development preview. */
 export const RControlOncologyLayout = (props: RControlOncologyLayoutProps) => (
   <section className={styles.oncologyRoot}>
     <div className={styles.topSection}>
@@ -51,7 +50,10 @@ export const RControlOncologyLayout = (props: RControlOncologyLayoutProps) => (
           className={styles.panel}
           aria-labelledby="rcontrol-oncology-medications"
         >
-          <h3 className={styles.groupHeading} id="rcontrol-oncology-medications">
+          <h3
+            className={styles.groupHeading}
+            id="rcontrol-oncology-medications"
+          >
             Препараты выбранной услуги
           </h3>
           {props.medications}

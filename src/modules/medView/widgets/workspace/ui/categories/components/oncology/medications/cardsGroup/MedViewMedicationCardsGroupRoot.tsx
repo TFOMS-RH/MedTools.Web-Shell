@@ -16,7 +16,7 @@ export const MedViewMedicationCardsGroupRoot = ({
   selectedOncologyServiceUid,
   selectedMedicationUid,
 }: MedViewMedicationCardsGroupRootProps) => {
-  const { targetDb } = useMedViewFiltersStore();
+  const { registerType } = useMedViewFiltersStore();
   const { selectMedication } = useMedViewWorkspaceStore();
   const {
     data: medications,
@@ -24,10 +24,10 @@ export const MedViewMedicationCardsGroupRoot = ({
     isError,
     isSuccess,
     error,
-  } = useMedicationsQuery(selectedOncologyServiceUid, targetDb);
+  } = useMedicationsQuery(selectedOncologyServiceUid, registerType);
 
   const dataState = resolveDataState({
-    isEnabled: selectedOncologyServiceUid !== null && targetDb !== null,
+    isEnabled: selectedOncologyServiceUid !== null && registerType !== null,
     isLoading: isLoading,
     isError: isError,
     isSuccess: isSuccess,

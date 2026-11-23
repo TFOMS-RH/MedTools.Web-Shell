@@ -7,8 +7,12 @@ import { RControlInvoiceSummaryCardHeader } from "./RControlInvoiceSummaryCardHe
 import { RControlInvoiceSummaryCardBody } from "./RControlInvoiceSummaryCardBody";
 import styles from "./styles.module.scss";
 
-export const RControlInvoiceSummaryCardRoot = ({ invoiceNumber }: { invoiceNumber?: string; }) => {
-  const { targetDb } = useRControlWorkspacePanelStore();
+export const RControlInvoiceSummaryCardRoot = ({
+  invoiceNumber,
+}: {
+  invoiceNumber?: string;
+}) => {
+  const { registerType } = useRControlWorkspacePanelStore();
   const { selectedInvoiceUid } = useRControlWorkspaceStore();
   const {
     data: invoiceSummary,
@@ -17,10 +21,10 @@ export const RControlInvoiceSummaryCardRoot = ({ invoiceNumber }: { invoiceNumbe
     isError,
     isSuccess,
     error,
-  } = useInvoiceSummaryQuery(selectedInvoiceUid, targetDb);
+  } = useInvoiceSummaryQuery(selectedInvoiceUid, registerType);
 
   const dataState = resolveDataState({
-    isEnabled: selectedInvoiceUid !== null && targetDb !== null,
+    isEnabled: selectedInvoiceUid !== null && registerType !== null,
     isError,
     isLoading,
     isSuccess,
@@ -30,8 +34,15 @@ export const RControlInvoiceSummaryCardRoot = ({ invoiceNumber }: { invoiceNumbe
   if (selectedInvoiceUid === null) return null;
 
   return (
-    <section className={styles.summary} aria-labelledby="rcontrol-invoice-summary-title" aria-busy={isLoading}>
-      <RControlInvoiceSummaryCardHeader invoiceNumber={invoiceNumber} invoiceUid={selectedInvoiceUid} />
+    <section
+      className={styles.summary}
+      aria-labelledby="rcontrol-invoice-summary-title"
+      aria-busy={isLoading}
+    >
+      <RControlInvoiceSummaryCardHeader
+        invoiceNumber={invoiceNumber}
+        invoiceUid={selectedInvoiceUid}
+      />
       {dataState === "error" ? (
         <DataState
           title="Ошибка данных"

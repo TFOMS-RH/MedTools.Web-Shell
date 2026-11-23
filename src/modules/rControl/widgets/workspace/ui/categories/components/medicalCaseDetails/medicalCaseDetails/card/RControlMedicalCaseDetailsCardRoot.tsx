@@ -8,7 +8,7 @@ import { RControlMedicalCaseDetailsCardHeader } from "./RControlMedicalCaseDetai
 import styles from "../../styles.module.scss";
 
 export const RControlMedicalCaseDetailsCardRoot = () => {
-  const { targetDb } = useRControlWorkspacePanelStore();
+  const { registerType } = useRControlWorkspacePanelStore();
   const { selectedMedicalCaseUid } = useRControlWorkspaceStore();
   const {
     data: medicalCaseDetails,
@@ -17,9 +17,9 @@ export const RControlMedicalCaseDetailsCardRoot = () => {
     isError,
     isSuccess,
     error,
-  } = useMedicalCaseDetailsQuery(selectedMedicalCaseUid, targetDb);
+  } = useMedicalCaseDetailsQuery(selectedMedicalCaseUid, registerType);
   const dataState = resolveDataState({
-    isEnabled: selectedMedicalCaseUid !== null && targetDb !== null,
+    isEnabled: selectedMedicalCaseUid !== null && registerType !== null,
     isLoading: isLoading,
     isError: isError,
     isSuccess: isSuccess,

@@ -1,4 +1,4 @@
-import type { ClassificationCriterionDto } from "../../../../../../../../../../shared/model/types/invoiceStructure/results/clinicalGroup/GetClassificationCriteriaResult";
+import type { ClassificationCriterionDto } from "../../../../../../../../../../shared/model/types/invoiceStructure/results/clinicalGroup/ClassificationCriterionDto";
 import { displayValue } from "../../presentation";
 import styles from "./styles.module.scss";
 

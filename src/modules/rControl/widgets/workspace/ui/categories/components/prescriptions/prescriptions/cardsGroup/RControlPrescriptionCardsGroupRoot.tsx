@@ -7,7 +7,7 @@ import { RControlPrescriptionCards } from "./RControlPrescriptionCards";
 import styles from "../../styles.module.scss";
 
 export const RControlPrescriptionCardsGroupRoot = () => {
-  const { targetDb } = useRControlWorkspacePanelStore();
+  const { registerType } = useRControlWorkspacePanelStore();
   const { selectedMedicalCaseUid } = useRControlWorkspaceStore();
   const {
     data: prescriptions,
@@ -16,10 +16,10 @@ export const RControlPrescriptionCardsGroupRoot = () => {
     isError,
     isSuccess,
     error,
-  } = usePrescriptionsQuery(selectedMedicalCaseUid, targetDb);
+  } = usePrescriptionsQuery(selectedMedicalCaseUid, registerType);
 
   const dataState = resolveDataState({
-    isEnabled: selectedMedicalCaseUid !== null && targetDb !== null,
+    isEnabled: selectedMedicalCaseUid !== null && registerType !== null,
     isLoading: isLoading,
     isError: isError,
     isSuccess: isSuccess,
@@ -27,8 +27,13 @@ export const RControlPrescriptionCardsGroupRoot = () => {
   });
 
   return (
-    <section className={styles.section} aria-labelledby="rcontrol-prescriptions-heading">
-      <h3 id="rcontrol-prescriptions-heading" className={styles.sectionHeading}>Назначения</h3>
+    <section
+      className={styles.section}
+      aria-labelledby="rcontrol-prescriptions-heading"
+    >
+      <h3 id="rcontrol-prescriptions-heading" className={styles.sectionHeading}>
+        Назначения
+      </h3>
       {dataState === "error" ? (
         <DataState
           title="Ошибка данных"

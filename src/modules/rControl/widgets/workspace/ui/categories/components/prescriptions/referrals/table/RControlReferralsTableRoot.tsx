@@ -8,7 +8,7 @@ import { RControlReferralsTableBody } from "./RControlReferralsTableBody";
 import styles from "../../styles.module.scss";
 
 export const RControlReferralsTableRoot = () => {
-  const { targetDb } = useRControlWorkspacePanelStore();
+  const { registerType } = useRControlWorkspacePanelStore();
   const { selectedMedicalCaseUid } = useRControlWorkspaceStore();
   const {
     data: referrals,
@@ -17,10 +17,10 @@ export const RControlReferralsTableRoot = () => {
     isError,
     isSuccess,
     error,
-  } = useReferralsQuery(selectedMedicalCaseUid, targetDb);
+  } = useReferralsQuery(selectedMedicalCaseUid, registerType);
 
   const dataState = resolveDataState({
-    isEnabled: selectedMedicalCaseUid !== null && targetDb !== null,
+    isEnabled: selectedMedicalCaseUid !== null && registerType !== null,
     isLoading: isLoading,
     isError: isError,
     isSuccess: isSuccess,
@@ -28,7 +28,10 @@ export const RControlReferralsTableRoot = () => {
   });
 
   return (
-    <section className={styles.section} aria-labelledby="rcontrol-referrals-heading">
+    <section
+      className={styles.section}
+      aria-labelledby="rcontrol-referrals-heading"
+    >
       <RControlReferralsTableHeader />
       {dataState === "error" ? (
         <DataState

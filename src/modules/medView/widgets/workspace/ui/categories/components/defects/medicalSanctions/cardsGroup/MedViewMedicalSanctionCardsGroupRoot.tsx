@@ -8,7 +8,7 @@ import { MedViewMedicalSanctionCardSkeletons } from "./MedViewMedicalSanctionCar
 import styles from "../../styles.module.scss";
 
 export const MedViewMedicalSanctionCardsGroupRoot = () => {
-  const { targetDb } = useMedViewFiltersStore();
+  const { registerType } = useMedViewFiltersStore();
   const { selectedMedicalCaseUid } = useMedViewWorkspaceStore();
   const {
     data: medicalSanctions,
@@ -17,10 +17,10 @@ export const MedViewMedicalSanctionCardsGroupRoot = () => {
     isError,
     isSuccess,
     error,
-  } = useMedicalSanctionsQuery(selectedMedicalCaseUid, targetDb);
+  } = useMedicalSanctionsQuery(selectedMedicalCaseUid, registerType);
 
   const dataState = resolveDataState({
-    isEnabled: selectedMedicalCaseUid !== null && targetDb !== null,
+    isEnabled: selectedMedicalCaseUid !== null && registerType !== null,
     isLoading: isLoading,
     isError: isError,
     isSuccess: isSuccess,

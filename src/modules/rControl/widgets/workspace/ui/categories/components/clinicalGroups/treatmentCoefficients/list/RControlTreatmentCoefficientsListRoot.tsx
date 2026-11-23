@@ -13,7 +13,7 @@ interface TreatmentComplexityCoefficientsRootProps {
 export const RControlTreatmentCoefficientsListRoot = ({
   clinicalGroupUid,
 }: TreatmentComplexityCoefficientsRootProps) => {
-  const { targetDb } = useRControlWorkspacePanelStore();
+  const { registerType } = useRControlWorkspacePanelStore();
   const {
     data: treatmentComplexityCoefficients,
     isLoading,
@@ -21,10 +21,10 @@ export const RControlTreatmentCoefficientsListRoot = ({
     isError,
     isSuccess,
     error,
-  } = useTreatmentComplexityCoefficientsQuery(clinicalGroupUid, targetDb);
+  } = useTreatmentComplexityCoefficientsQuery(clinicalGroupUid, registerType);
 
   const dataState = resolveDataState({
-    isEnabled: clinicalGroupUid !== null && targetDb !== null,
+    isEnabled: clinicalGroupUid !== null && registerType !== null,
     isLoading: isLoading,
     isError: isError,
     isSuccess: isSuccess,
@@ -32,7 +32,10 @@ export const RControlTreatmentCoefficientsListRoot = ({
   });
 
   return (
-    <section className={styles.panel} aria-labelledby="rcontrol-csg-coefficients-heading">
+    <section
+      className={styles.panel}
+      aria-labelledby="rcontrol-csg-coefficients-heading"
+    >
       <RControlTreatmentCoefficientsListHeader />
       {dataState === "error" ? (
         <DataState

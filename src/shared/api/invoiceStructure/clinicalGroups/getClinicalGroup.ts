@@ -1,31 +1,30 @@
-import type {
-  ClinicalGroupDto,
-  GetClinicalGroupResult,
-} from "../../../model/types/invoiceStructure/results/clinicalGroup/GetClinicalGroupResult";
-import type { ResultResponse } from "../../../types/ResultResponse";
-import type { TargetDbType } from "../../../types/TargetDbType";
+import type { ClinicalGroupDto } from "../../../model/types/invoiceStructure/results/clinicalGroup/ClinicalGroupDto";
+import type { MedicalRegisterType } from "../../../types/TargetDbType";
 import apiClient from "../../client/apiClient";
+import axios from "axios";
 
 export const getClinicalGroup = async (
   medicalCaseUid: number,
-  targetDb: TargetDbType,
+  registerType: MedicalRegisterType,
 ): Promise<ClinicalGroupDto | null> => {
-  const response = await apiClient.get<ResultResponse<GetClinicalGroupResult>>(
-    `med-tools/rcontrol/medical-cases/${medicalCaseUid}/clinical-group`,
-    {
-      params: {
-        targetDb: targetDb,
+  try {
+    const response = await apiClient.get<ClinicalGroupDto | null>(
+      `settlements/medical-register/medical-cases/${medicalCaseUid}/clinical-group`,
+      {
+        params: {
+          registerType: registerType,
+        },
       },
-    },
-  );
+    );
 
-  if (response.data.isFailure) {
-    throw new Error(response.data.error);
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      if (error.response?.status === 404) {
+        return null;
+      }
+    }
+
+    throw error;
   }
-
-  if (!response.data.value) {
-    throw new Error("Сервер прислал невалидный ответ");
-  }
-
-  return response.data.value.clinicalGroup;
 };

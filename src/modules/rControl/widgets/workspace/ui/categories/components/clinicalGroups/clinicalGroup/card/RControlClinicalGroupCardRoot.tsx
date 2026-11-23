@@ -8,7 +8,7 @@ import { RControlClinicalGroupCardHeader } from "./RControlClinicalGroupCardHead
 import { RControlClinicalGroupCardBody } from "./RControlClinicalGroupCardBody";
 
 export const RControlClinicalGroupCardRoot = () => {
-  const { targetDb } = useRControlWorkspacePanelStore();
+  const { registerType } = useRControlWorkspacePanelStore();
   const { selectedMedicalCaseUid } = useRControlWorkspaceStore();
   const {
     data: clinicalGroup,
@@ -17,10 +17,10 @@ export const RControlClinicalGroupCardRoot = () => {
     isError,
     isSuccess,
     error,
-  } = useClinicalGroupQuery(selectedMedicalCaseUid, targetDb);
+  } = useClinicalGroupQuery(selectedMedicalCaseUid, registerType);
 
   const dataState = resolveDataState({
-    isEnabled: selectedMedicalCaseUid !== null && targetDb !== null,
+    isEnabled: selectedMedicalCaseUid !== null && registerType !== null,
     isLoading: isLoading,
     isError: isError,
     isSuccess: isSuccess,

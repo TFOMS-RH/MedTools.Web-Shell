@@ -1,4 +1,7 @@
-import type { RepresentativeFiltersSubgroupDraft } from "../../../../workspace/model/types/FiltersDraft";
+import {
+  initialFiltersDraft,
+  type RepresentativeFiltersSubgroupDraft,
+} from "../../../../workspace/model/types/FiltersDraft";
 import type { Dayjs } from "dayjs";
 import type { Sex } from "../../../../workspace/model/types/Sex";
 import { MedViewDefaultInput } from "../../../../../../../shared/ui/medView/inputs/MedViewDefaultInput/MedViewDefaultInput";
@@ -17,6 +20,9 @@ export const RepresentativeFiltersSubgroup = ({
   representativeFiltersSubgroupDraft,
   setRepresentativeFiltersSubgroupDraft,
 }: RepresentativeFiltersSubgroupProps) => {
+  const updateSex = (sex: Sex | null) =>
+    setRepresentativeFiltersSubgroupDraft({ ...representativeFiltersSubgroupDraft, sex });
+
   return (
     <div className={styles.representativeSubgroup}>
       <header className={styles.subgroupHeader}>
@@ -89,12 +95,8 @@ export const RepresentativeFiltersSubgroup = ({
           <MedViewSelectInput
             label="Пол"
             value={representativeFiltersSubgroupDraft.sex ?? ""}
-            onChange={(newValue: Sex | null) =>
-              setRepresentativeFiltersSubgroupDraft({
-                ...representativeFiltersSubgroupDraft,
-                sex: newValue,
-              })
-            }
+            onChange={updateSex}
+            onClear={() => updateSex(initialFiltersDraft.person.representative.sex)}
             options={[
               { label: "Мужской", value: "male" },
               { label: "Женский", value: "female" },

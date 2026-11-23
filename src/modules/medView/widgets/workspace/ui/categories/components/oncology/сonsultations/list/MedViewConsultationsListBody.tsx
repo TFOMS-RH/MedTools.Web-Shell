@@ -1,4 +1,4 @@
-import type { ConsultationDto } from "../../../../../../../../../../shared/model/types/invoiceStructure/results/oncology/GetConsultationsResult";
+import type { ConsultationDto } from "../../../../../../../../../../shared/model/types/invoiceStructure/results/oncology/ConsultationDto";
 import { Skeleton } from "@mui/material";
 import styles from "../../styles.module.scss";
 import { codeDescription } from "../../presentation";

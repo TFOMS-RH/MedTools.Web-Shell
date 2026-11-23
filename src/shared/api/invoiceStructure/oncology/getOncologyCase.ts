@@ -1,31 +1,30 @@
-import type {
-  GetOncologyCaseResult,
-  OncologyCaseDto,
-} from "../../../model/types/invoiceStructure/results/oncology/GetOncologyCaseResult";
-import type { ResultResponse } from "../../../types/ResultResponse";
-import type { TargetDbType } from "../../../types/TargetDbType";
+import axios from "axios";
+import type { OncologyCaseDto } from "../../../model/types/invoiceStructure/results/oncology/OncologyCaseDto";
+import type { MedicalRegisterType } from "../../../types/TargetDbType";
 import apiClient from "../../client/apiClient";
 
 export const getOncologyCase = async (
   medicalCaseUid: number,
-  targetDb: TargetDbType,
+  registerType: MedicalRegisterType,
 ): Promise<OncologyCaseDto | null> => {
-  const response = await apiClient.get<ResultResponse<GetOncologyCaseResult>>(
-    `med-tools/rcontrol/medical-cases/${medicalCaseUid}/oncology-case`,
-    {
-      params: {
-        targetDb: targetDb,
+  try {
+    const response = await apiClient.get<OncologyCaseDto>(
+      `settlements/medical-register/medical-cases/${medicalCaseUid}/oncology-case`,
+      {
+        params: {
+          registerType: registerType,
+        },
       },
-    },
-  );
+    );
 
-  if (response.data.isFailure) {
-    throw new Error(response.data.clientMessage);
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      if (error.response?.status === 404) {
+        return null;
+      }
+    }
+
+    throw error;
   }
-
-  if (!response.data.value) {
-    throw new Error("Сервер прислал невалидный ответ");
-  }
-
-  return response.data.value.oncologyCase;
 };

@@ -1,33 +1,19 @@
-import type {
-  GetTreatmentComplexityCoefficientsResult,
-  TreatmentComplexityCoefficientDto,
-} from "../../../model/types/invoiceStructure/results/clinicalGroup/GetTreatmentComplexityCoefficientsResult";
-import type { ResultResponse } from "../../../types/ResultResponse";
-import type { TargetDbType } from "../../../types/TargetDbType";
+import type { TreatmentComplexityCoefficientDto } from "../../../model/types/invoiceStructure/results/clinicalGroup/TreatmentComplexityCoefficientDto";
+import type { MedicalRegisterType } from "../../../types/TargetDbType";
 import apiClient from "../../client/apiClient";
 
 export const getTreatmentComplexityCoefficients = async (
   clinicalGroupUid: number,
-  targetDb: TargetDbType,
+  registerType: MedicalRegisterType,
 ): Promise<TreatmentComplexityCoefficientDto[]> => {
-  const response = await apiClient.get<
-    ResultResponse<GetTreatmentComplexityCoefficientsResult>
-  >(
-    `med-tools/rcontrol/clinical-groups/${clinicalGroupUid}/treatment-complexity-coefficients`,
+  const response = await apiClient.get<TreatmentComplexityCoefficientDto[]>(
+    `settlements/medical-register/clinical-groups/${clinicalGroupUid}/treatment-complexity-coefficients`,
     {
       params: {
-        targetDb: targetDb,
+        registerType: registerType,
       },
     },
   );
 
-  if (response.data.isFailure) {
-    throw new Error(response.data.error);
-  }
-
-  if (!response.data.value) {
-    throw new Error("Сервер прислал невалидный ответ");
-  }
-
-  return response.data.value.treatmentComplexityCoefficients;
+  return response.data;
 };

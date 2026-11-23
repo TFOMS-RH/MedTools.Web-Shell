@@ -1,17 +1,5 @@
 @use "../filterGroupStyles" as filter;
 
-.internalServiceFiltersGroup {
-  @include filter.group;
-}
-
-.internalServiceFiltersGroupHeader .titleGroup {
-  @include filter.heading;
-}
-
-.description {
-  @include filter.description;
-}
-
 .internalServiceFiltersSubgroup {
   @include filter.subgroup;
 }

@@ -1,10 +1,12 @@
+import { useContext } from "react";
+import { MedViewFilterInputReset } from "../filterInputReset";
 import type { FilterOption } from "../../../../../modules/medView/widgets/workspace/model/types/FilterOptions";
 import { Autocomplete, Box, CircularProgress, TextField } from "@mui/material";
 import { medViewSelectInputSx } from "../../../../sxConfigs/medViewSelectInput";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import { medViewAutocompleteListboxSx } from "../../../../sxConfigs/medViewAutocompleteListboxSx";
-import { medViewPopupSx } from "../../../../sxConfigs/medViewPopupSx";
+import { medToolsPopupSx } from "../../../../sxConfigs/medToolsPopupSx";
 
 interface MedViewAutocompleteInputProps {
   label: string;
@@ -29,8 +31,11 @@ export const MedViewAutocompleteInput = ({
   loading,
   limitTags = 3,
 }: MedViewAutocompleteInputProps) => {
+  const resetVersion = useContext(MedViewFilterInputReset);
+
   return (
     <Autocomplete
+      key={resetVersion}
       size="small"
       multiple
       limitTags={limitTags}
@@ -38,19 +43,32 @@ export const MedViewAutocompleteInput = ({
       value={values}
       inputValue={inputValue}
       disableCloseOnSelect
-      onInputChange={(_, newValue) => onInputChange(newValue)}
+      onInputChange={(_, newValue, reason) => {
+        if (
+          reason === "reset" ||
+          reason === "removeOption" ||
+          reason === "selectOption"
+        )
+          return;
+        onInputChange(newValue);
+      }}
       onChange={(_, newValues) => onChange(newValues)}
       getOptionLabel={(option) => option.label}
       filterOptions={(options) => options}
       loading={loading}
       loadingText="Подтягиваем данные ..."
-      noOptionsText="Нет доступных опций"
+      noOptionsText={
+        inputValue.length === 0
+          ? "Начните вводить для поиска"
+          : "Нет доступных опций"
+      }
       isOptionEqualToValue={(option, value) => option.value === value.value}
       renderInput={(params) => (
         <TextField
           {...params}
           variant="filled"
           label={label}
+          placeholder={values.length === 0 ? "Не выбрано" : undefined}
           slotProps={{
             ...params.slotProps,
             inputLabel: { ...params.slotProps.inputLabel, shrink: true },
@@ -126,7 +144,7 @@ export const MedViewAutocompleteInput = ({
         },
       ]}
       slotProps={{
-        paper: { sx: medViewPopupSx },
+        paper: { sx: medToolsPopupSx },
         listbox: {
           sx: medViewAutocompleteListboxSx,
         },

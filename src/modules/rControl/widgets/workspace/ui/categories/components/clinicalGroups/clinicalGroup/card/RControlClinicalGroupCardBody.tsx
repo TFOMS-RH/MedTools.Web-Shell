@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { ClinicalGroupDto } from "../../../../../../../../../../shared/model/types/invoiceStructure/results/clinicalGroup/GetClinicalGroupResult";
+import type { ClinicalGroupDto } from "../../../../../../../../../../shared/model/types/invoiceStructure/results/clinicalGroup/ClinicalGroupDto";
 import { Skeleton } from "@mui/material";
 import { displayValue } from "../../presentation";
 import styles from "../../styles.module.scss";

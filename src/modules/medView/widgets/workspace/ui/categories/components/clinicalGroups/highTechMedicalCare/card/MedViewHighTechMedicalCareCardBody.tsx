@@ -1,4 +1,4 @@
-import type { HighTechMedicalCareDto } from "../../../../../../../../../../shared/model/types/invoiceStructure/results/clinicalGroup/GetHighTechMedicalCareResult";
+import type { HighTechMedicalCareDto } from "../../../../../../../../../../shared/model/types/invoiceStructure/results/clinicalGroup/HighTechMedicalCareDto";
 import { Skeleton } from "@mui/material";
 import { displayValue, formatVmpDate } from "../../presentation";
 import styles from "../../styles.module.scss";

@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { MedicalSanctionDto } from "../../../../../../../../../../shared/model/types/invoiceStructure/results/defects/GetMedicalSanctionsResult";
+import type { MedicalSanctionDto } from "../../../../../../../../../../shared/model/types/invoiceStructure/results/defects/MedicalSanctionDto";
 import { formatCurrency } from "../../../../../../../../../../shared/helpers/formatCurrency";
 import { displayValue, formatSanctionDate } from "../../presentation";
 import styles from "./styles.module.scss";

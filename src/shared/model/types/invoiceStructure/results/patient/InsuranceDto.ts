@@ -1,7 +1,3 @@
-export interface GetInsuranceResult {
-  insurance: InsuranceDto;
-}
-
 export interface InsuranceDto {
   insuranceCompanyCode: string | null;
   insuranceCompanyName: string | null;

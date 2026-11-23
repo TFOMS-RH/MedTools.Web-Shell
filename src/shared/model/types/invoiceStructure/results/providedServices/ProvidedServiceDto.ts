@@ -1,7 +1,3 @@
-export interface GetProvidedServicesResult {
-  providedServices: ProvidedServiceDto[];
-}
-
 export interface ProvidedServiceDto {
   providedServiceUid: number;
   serviceCode: string;

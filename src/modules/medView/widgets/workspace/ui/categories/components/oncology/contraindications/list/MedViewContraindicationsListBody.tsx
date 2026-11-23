@@ -1,4 +1,4 @@
-import type { ContraindicationDto } from "../../../../../../../../../../shared/model/types/invoiceStructure/results/oncology/GetContraindicationsResult";
+import type { ContraindicationDto } from "../../../../../../../../../../shared/model/types/invoiceStructure/results/oncology/ContraindicationDto";
 import { Skeleton } from "@mui/material";
 import styles from "../../styles.module.scss";
 import { codeDescription } from "../../presentation";

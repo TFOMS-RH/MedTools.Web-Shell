@@ -1,7 +1,3 @@
-export interface GetHighTechMedicalCareResult {
-  highTechMedicalCare: HighTechMedicalCareDto;
-}
-
 export interface HighTechMedicalCareDto {
   highTechCareTypeCode: string | null;
   highTechCareTypeName: string | null;

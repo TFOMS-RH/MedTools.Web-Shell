@@ -8,7 +8,7 @@ import { RControlHighTechMedicalCareCardHeader } from "./RControlHighTechMedical
 import { RControlHighTechMedicalCareCardBody } from "./RControlHighTechMedicalCareCardBody";
 
 export const RControlHighTechMedicalCareCardRoot = () => {
-  const { targetDb } = useRControlWorkspacePanelStore();
+  const { registerType } = useRControlWorkspacePanelStore();
   const { selectedMedicalCaseUid } = useRControlWorkspaceStore();
   const {
     data: highTechMedicalCare,
@@ -17,10 +17,10 @@ export const RControlHighTechMedicalCareCardRoot = () => {
     isError,
     isSuccess,
     error,
-  } = useHighTechMedicalCareQuery(selectedMedicalCaseUid, targetDb);
+  } = useHighTechMedicalCareQuery(selectedMedicalCaseUid, registerType);
 
   const dataState = resolveDataState({
-    isEnabled: selectedMedicalCaseUid !== null && targetDb !== null,
+    isEnabled: selectedMedicalCaseUid !== null && registerType !== null,
     isLoading: isLoading,
     isError: isError,
     isSuccess: isSuccess,

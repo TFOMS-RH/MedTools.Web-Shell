@@ -1,4 +1,4 @@
-import type { MedicalDeviceDto } from "../../../../../../../../../../shared/model/types/invoiceStructure/results/providedServices/GetMedicalDevicesResult";
+import type { MedicalDeviceDto } from "../../../../../../../../../../shared/model/types/invoiceStructure/results/providedServices/MedicalDeviceDto";
 import { TableSkeleton } from "../../../../../../../../../../shared/ui/TableSkeleton/TableSkeleton";
 import { displayValue, formatServiceDate } from "../../presentation";
 import styles from "./styles.module.scss";

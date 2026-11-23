@@ -1,4 +1,4 @@
-import type { ReferralDto } from "../../../../../../../../../../shared/model/types/invoiceStructure/results/prescriptions/GetReferralsResult";
+import type { ReferralDto } from "../../../../../../../../../../shared/model/types/invoiceStructure/results/prescriptions/ReferralDto";
 import { TableSkeleton } from "../../../../../../../../../../shared/ui/TableSkeleton/TableSkeleton";
 import {
   displayValue,

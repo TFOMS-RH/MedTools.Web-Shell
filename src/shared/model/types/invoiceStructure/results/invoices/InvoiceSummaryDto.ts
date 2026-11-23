@@ -1,7 +1,3 @@
-export interface GetInvoiceSummaryResult {
-  invoiceSummary: InvoiceSummaryDto;
-}
-
 export interface InvoiceSummaryDto {
   invoiceUid: number;
   filename: string;

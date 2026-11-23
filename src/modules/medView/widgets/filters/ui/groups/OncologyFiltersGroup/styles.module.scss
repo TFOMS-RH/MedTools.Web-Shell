@@ -1,17 +1,5 @@
 @use "../filterGroupStyles" as filter;
 
-.oncologyFiltersGroup {
-  @include filter.group;
-}
-
-.oncologyFiltersGroupHeader .titleGroup {
-  @include filter.heading;
-}
-
-.description {
-  @include filter.description;
-}
-
 .oncologyCaseSubgroup,
 .oncologyServiceSubgroup,
 .medicationSubgroup {

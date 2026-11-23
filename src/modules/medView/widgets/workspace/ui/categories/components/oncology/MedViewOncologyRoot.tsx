@@ -48,12 +48,12 @@ const MedViewOncologyRoot = () => {
       />
     );
 
-  const { targetDb } = useMedViewFiltersStore();
+  const { registerType } = useMedViewFiltersStore();
   const { data: services } = useOncologyServicesQuery(
     oncologyCaseUid,
-    targetDb,
+    registerType,
   );
-  const { data: medications } = useMedicationsQuery(serviceUid, targetDb);
+  const { data: medications } = useMedicationsQuery(serviceUid, registerType);
   const service = services?.find(
     (item) => item.oncologyServiceUid === serviceUid,
   );

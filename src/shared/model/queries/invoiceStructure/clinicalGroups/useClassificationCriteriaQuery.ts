@@ -1,27 +1,27 @@
-import type { TargetDbType } from "../../../../types/TargetDbType";
+import type { MedicalRegisterType } from "../../../../types/TargetDbType";
 import { getClassificationCriteria } from "../../../../api/invoiceStructure/clinicalGroups/getClassificationCriteria";
 import { useQuery } from "@tanstack/react-query";
 
 export const useClassificationCriteriaQuery = (
   clinicalGroupUid: number | null,
-  targetDb: TargetDbType | null,
+  registerType: MedicalRegisterType | null,
 ) => {
-  const isReady = clinicalGroupUid !== null && targetDb !== null;
+  const isReady = clinicalGroupUid !== null && registerType !== null;
 
   return useQuery({
     queryKey: [
       "r-control",
       "classification-criteria",
       clinicalGroupUid,
-      targetDb,
+      registerType,
     ],
     enabled: isReady,
     queryFn: () => {
-      if (clinicalGroupUid === null || targetDb === null) {
+      if (clinicalGroupUid === null || registerType === null) {
         throw new Error("Невалидные параметры запроса");
       }
 
-      return getClassificationCriteria(clinicalGroupUid, targetDb);
+      return getClassificationCriteria(clinicalGroupUid, registerType);
     },
   });
 };

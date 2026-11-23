@@ -1,6 +1,6 @@
 import type { InvoiceListItemsQueryParams } from "../../../types/invoiceStructure/params/InvoiceListItemsQueryParams";
-import { useQuery } from "@tanstack/react-query";
 import { getInvoiceListItems } from "../../../../api/invoiceStructure/invoices/getInvoiceListItems";
+import { useQuery } from "@tanstack/react-query";
 
 export const useInvoiceListItemsQuery = (
   params: InvoiceListItemsQueryParams,
@@ -9,7 +9,7 @@ export const useInvoiceListItemsQuery = (
     params.medicalOrganizationCode !== null &&
     params.year !== null &&
     params.month !== null &&
-    params.targetDb !== null;
+    params.registerType !== null;
 
   return useQuery({
     queryKey: ["r-control", "invoice-list-items", params],
@@ -19,7 +19,7 @@ export const useInvoiceListItemsQuery = (
         params.medicalOrganizationCode === null ||
         params.year === null ||
         params.month === null ||
-        params.targetDb === null
+        params.registerType === null
       ) {
         throw new Error("Неккоректные параметры запроса");
       }
@@ -30,7 +30,7 @@ export const useInvoiceListItemsQuery = (
         month: params.month,
         page: params.page,
         pageSize: params.pageSize,
-        targetDb: params.targetDb,
+        registerType: params.registerType,
         searchString: params.searchString,
       });
     },

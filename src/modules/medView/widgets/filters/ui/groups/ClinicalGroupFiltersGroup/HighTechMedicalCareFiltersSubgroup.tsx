@@ -1,7 +1,7 @@
 import type { HighTechMedicalCareSubgroupDraft } from "../../../../workspace/model/types/FiltersDraft";
 import type { FilterOption } from "../../../../workspace/model/types/FilterOptions";
 import type { Dayjs } from "dayjs";
-import { useState } from "react";
+import { useMedViewFilterSearch } from "../../../../../../../shared/ui/medView/inputs/filterInputReset";
 import { MedViewAutocompleteInput } from "../../../../../../../shared/ui/medView/inputs/MedViewAutocompleteInput/MedViewAutocompleteInput";
 import { MedViewDateInput } from "../../../../../../../shared/ui/medView/inputs/MedViewDateInput/MedViewDateInput";
 import { MedViewDefaultInput } from "../../../../../../../shared/ui/medView/inputs/MedViewDefaultInput/MedViewDefaultInput";
@@ -21,11 +21,11 @@ export const HighTechMedicalCareFiltersSubgroup = ({
   setHighTechMedicalCareFiltersSubgroupDraft,
 }: HighTechMedicalCareFiltersSubgroupProps) => {
   const [inputHighTechCareTypeValue, setInputHighTechCareTypeValue] =
-    useState("");
+    useMedViewFilterSearch();
   const [inputHighTechCareMethodValue, setInputHighTechCareMethodValue] =
-    useState("");
+    useMedViewFilterSearch();
 
-  const { data: highTechCareTypes, isPending: highTechCareTypePending } =
+  const { data: highTechCareTypes, isFetching: isHighTechCareTypeFetching } =
     useFilterOptionsQuery(
       MedicalReferenceType.HighTechCareTypes,
       inputHighTechCareTypeValue,
@@ -33,7 +33,7 @@ export const HighTechMedicalCareFiltersSubgroup = ({
 
   const {
     data: highTechCareMethodFilterOptions,
-    isPending: highTechCareMethodPending,
+    isFetching: isHighTechCareMethodFetching,
   } = useFilterOptionsQuery(
     MedicalReferenceType.HighTechCareMethods,
     inputHighTechCareMethodValue,
@@ -58,7 +58,7 @@ export const HighTechMedicalCareFiltersSubgroup = ({
                 highTechCareTypes: newValue,
               })
             }
-            loading={highTechCareTypePending}
+            loading={isHighTechCareTypeFetching}
           />
         </div>
         <div className={styles.span8}>
@@ -74,7 +74,7 @@ export const HighTechMedicalCareFiltersSubgroup = ({
                 highTechCareMethods: newValue,
               })
             }
-            loading={highTechCareMethodPending}
+            loading={isHighTechCareMethodFetching}
           />
         </div>
       </div>

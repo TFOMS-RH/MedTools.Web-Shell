@@ -1,10 +1,5 @@
-export interface GetInvoiceListItemsResult {
-  invoices: InvoiceListItemDto[];
-  recordsCount: number;
-}
-
 export interface InvoiceListItemDto {
-  invoiceUid: number;
+  uid: number;
   number: string;
   billingDate: string;
   amount: number;

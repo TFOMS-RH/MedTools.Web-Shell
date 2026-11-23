@@ -32,11 +32,11 @@ export interface BaseDiseaseFiltersGroupDraft {
 }
 
 export interface InternalServiceFiltersGroupDraft {
-  patientUid: string;
-  medicalCaseUid: string;
-  completedCaseUid: string;
+  patientUids: number[];
+  medicalCaseUids: number[];
+  completedCaseUids: number[];
+  invoiceUids: number[];
   invoiceNumber: string;
-  invoiceUid: string;
   invoiceBillingMonth: string;
   invoiceBillingYear: string;
 }
@@ -81,7 +81,7 @@ export interface PrescriptionFiltersSubgroupDraft {
   diagnosticMethods: string[];
   services: FilterOption[];
   referralDate: Dayjs | null;
-  referredToMedicalOrganizations: string[];
+  referredToMedicalOrganizations: FilterOption[];
   medicalCareProfiles: string[];
   bedProfiles: string[];
 }
@@ -141,8 +141,8 @@ export interface CompletedCaseDetailsFiltersSubgroupDraft {
   careConditions: string[];
   medicalCareTypes: string[];
   careForms: string[];
-  medicalOrganizations: string[];
-  referringMedicalOrganizations: string[];
+  medicalOrganizations: FilterOption[];
+  referringMedicalOrganizations: FilterOption[];
   treatmentStartDate: Dayjs | null;
   treatmentEndDate: Dayjs | null;
   screeningResults: string[];
@@ -174,7 +174,7 @@ export interface RepresentativeFiltersSubgroupDraft {
 }
 
 export interface InsuranceFiltersSubgroupDraft {
-  insurances: string[];
+  insurances: FilterOption[];
   insurancePolicyTypes: string[];
   insurancePolicySeries: string;
   insurancePolicyNumbers: string[];
@@ -304,10 +304,10 @@ export const initialFiltersDraft: FiltersDraft = {
     },
   },
   inrernalService: {
-    completedCaseUid: "",
-    medicalCaseUid: "",
-    patientUid: "",
-    invoiceUid: "",
+    completedCaseUids: [],
+    medicalCaseUids: [],
+    patientUids: [],
+    invoiceUids: [],
     invoiceNumber: "",
     invoiceBillingMonth: "",
     invoiceBillingYear: "",

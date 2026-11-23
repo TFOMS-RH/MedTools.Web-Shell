@@ -1,11 +1,14 @@
 import type { FilterOption } from "../../../../../modules/medView/widgets/workspace/model/types/FilterOptions";
-import { useId } from "react";
+import { useId, useRef } from "react";
 import MenuItem from "@mui/material/MenuItem";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
+import CancelIcon from "@mui/icons-material/Cancel";
 import {
   Box,
+  Chip,
   FormControl,
+  IconButton,
   InputLabel,
   Select,
   type SelectChangeEvent,
@@ -28,6 +31,7 @@ export const MedViewMultipleSelectInput = ({
   onChange,
 }: MedViewMultipleSelectInputProps) => {
   const labelId = useId();
+  const selectRef = useRef<{ focus: () => void }>(null);
 
   const handleChange = (event: SelectChangeEvent<typeof values>) => {
     const {
@@ -37,13 +41,29 @@ export const MedViewMultipleSelectInput = ({
     onChange(typeof value === "string" ? value.split(",") : value);
   };
 
+  const removeValue = (value: string) => {
+    selectRef.current?.focus();
+    onChange(values.filter((selected) => selected !== value));
+  };
+
   return (
     <Box>
       <FormControl
         variant="filled"
         size="small"
         fullWidth
-        sx={medViewSelectInputSx}
+        sx={[
+          medViewSelectInputSx,
+          {
+            "& .MuiFilledInput-root .MuiSelect-select .MuiChip-root .MuiChip-label": {
+              display: "flex",
+              alignItems: "center",
+              gap: "var(--mt-space-1)",
+              paddingBlock: 0,
+              paddingInlineEnd: "var(--mt-space-1)",
+            },
+          },
+        ]}
       >
         <InputLabel
           id={labelId}
@@ -61,6 +81,7 @@ export const MedViewMultipleSelectInput = ({
           displayEmpty
           multiple
           value={values}
+          inputRef={selectRef}
           onChange={handleChange}
           label={label}
           renderValue={(selected) => {
@@ -78,14 +99,60 @@ export const MedViewMultipleSelectInput = ({
               );
             }
 
-            const knownLabels = options
-              .filter((x) => selected.includes(x.value))
-              .map((x) => x.label || x.value);
-            const missingValues = selected.filter(
-              (value) => !options.some((option) => option.value === value),
+            const labelsByValue = new Map(
+              options.map(({ value, label }) => [value, label]),
             );
-            const displayValue = [...knownLabels, ...missingValues].join(", ");
-            return <span title={displayValue}>{displayValue}</span>;
+
+            return (
+              <Box
+                sx={{
+                  display: "flex",
+                  flexWrap: "wrap",
+                  gap: "var(--mt-space-1)",
+                }}
+              >
+                {selected.map((value) => {
+                  const optionLabel = labelsByValue.get(value) || value;
+
+                  return (
+                    <Chip
+                      key={value}
+                      size="small"
+                      label={
+                        <>
+                          <span>{optionLabel}</span>
+                          <IconButton
+                            type="button"
+                            size="small"
+                            aria-label={`Убрать «${optionLabel}»`}
+                            disableRipple
+                            onMouseDown={(event) => event.stopPropagation()}
+                            onKeyDown={(event) => event.stopPropagation()}
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              removeValue(value);
+                            }}
+                            sx={{
+                              width: "var(--mt-space-6)",
+                              height: "var(--mt-space-6)",
+                              flexShrink: 0,
+                              color: "var(--mt-text-secondary)",
+                              "&:hover": { color: "var(--mt-text-primary)" },
+                              "&.Mui-focusVisible": {
+                                outline: "2px solid var(--mt-medview-accent)",
+                                outlineOffset: "-2px",
+                              },
+                            }}
+                          >
+                            <CancelIcon fontSize="inherit" />
+                          </IconButton>
+                        </>
+                      }
+                    />
+                  );
+                })}
+              </Box>
+            );
           }}
           MenuProps={{
             slotProps: {

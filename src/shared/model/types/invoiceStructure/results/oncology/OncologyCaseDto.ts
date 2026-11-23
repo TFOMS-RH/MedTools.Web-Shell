@@ -1,7 +1,3 @@
-export interface GetOncologyCaseResult {
-  oncologyCase: OncologyCaseDto | null;
-}
-
 export interface OncologyCaseDto {
   oncologyCaseUid: number;
   referralReasonCode: number | null;

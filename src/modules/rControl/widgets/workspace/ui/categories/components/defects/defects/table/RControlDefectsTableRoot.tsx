@@ -8,7 +8,7 @@ import { RControlDefectsTableBody } from "./RControlDefectsTableBody";
 import styles from "../../styles.module.scss";
 
 export const RControlDefectsTableRoot = () => {
-  const { targetDb } = useRControlWorkspacePanelStore();
+  const { registerType } = useRControlWorkspacePanelStore();
   const {
     selectedMedicalCaseUid,
     defectsTablePagination,
@@ -24,7 +24,7 @@ export const RControlDefectsTableRoot = () => {
     error,
   } = useDefectsQuery(
     selectedMedicalCaseUid,
-    targetDb,
+    registerType,
     defectsTablePagination.page,
     defectsTablePagination.pageSize,
   );
@@ -48,11 +48,11 @@ export const RControlDefectsTableRoot = () => {
     });
   };
 
-  const totalCount = getDefectsResult?.totalCount ?? 0;
-  const defects = getDefectsResult?.defects ?? [];
+  const totalCount = getDefectsResult?.totalRecords ?? 0;
+  const defects = getDefectsResult?.values ?? [];
 
   const dataState = resolveDataState({
-    isEnabled: selectedMedicalCaseUid !== null && targetDb !== null,
+    isEnabled: selectedMedicalCaseUid !== null && registerType !== null,
     isLoading: isLoading,
     isError: isError,
     isSuccess: isSuccess,
@@ -60,7 +60,10 @@ export const RControlDefectsTableRoot = () => {
   });
 
   return (
-    <section className={styles.section} aria-labelledby="rcontrol-defects-heading">
+    <section
+      className={styles.section}
+      aria-labelledby="rcontrol-defects-heading"
+    >
       <RControlDefectsTableHeader
         page={defectsTablePagination.page}
         pageSize={defectsTablePagination.pageSize}

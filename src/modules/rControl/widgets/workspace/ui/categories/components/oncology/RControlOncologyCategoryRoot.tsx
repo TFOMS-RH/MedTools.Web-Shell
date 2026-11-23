@@ -2,7 +2,6 @@ import { RControlOncologyLayout } from "./RControlOncologyLayout";
 import { useRControlWorkspacePanelStore } from "../../../../model/store/useRControlWorkspacePanelStore";
 import { useOncologyServicesQuery } from "../../../../../../../../shared/model/queries/invoiceStructure/oncology/useOncologyServicesQuery";
 import { useMedicationsQuery } from "../../../../../../../../shared/model/queries/invoiceStructure/oncology/useMedicationsQuery";
-import { displayValue } from "./presentation";
 import { DataState } from "../../../../../../../../shared/ui/DataState/DataState";
 import { useOncologyCaseQuery } from "../../../../../../../../shared/model/queries/invoiceStructure/oncology/useOncologyCaseQuery";
 import { useRControlWorkspaceStore } from "../../../../model/store/useRControlWorkspaceStore";
@@ -14,6 +13,7 @@ import { RControlInjectionsTableRoot } from "./injections/injections/table/RCont
 import { RControlMedicationCardsGroupRoot } from "./medications/cardsGroup/RControlMedicationCardsGroupRoot";
 import { RControlOncologyCaseCardRoot } from "./oncologyCase/card/RControlOncologyCaseCardRoot";
 import { RControlOncologyServiceCardsGroupRoot } from "./oncologyServices/cardsGroup/RControlOncologyServiceCardsGroupRoot";
+import { displayValue } from "./presentation";
 import styles from "./styles.module.scss";
 
 const RControlOncologyLive = () => {
@@ -23,27 +23,38 @@ const RControlOncologyLive = () => {
     selectedMedicationUid,
     selectOncologyService,
   } = useRControlWorkspaceStore();
-  const { targetDb } = useRControlWorkspacePanelStore();
-  const oncologyCase = useOncologyCaseQuery(selectedMedicalCaseUid, targetDb);
+  const { registerType } = useRControlWorkspacePanelStore();
+  const oncologyCase = useOncologyCaseQuery(
+    selectedMedicalCaseUid,
+    registerType,
+  );
+
   const oncologyCaseUid =
-    selectedMedicalCaseUid !== null && targetDb !== null
+    selectedMedicalCaseUid !== null && registerType !== null
       ? (oncologyCase.data?.oncologyCaseUid ?? null)
       : null;
+
   const { data: services } = useOncologyServicesQuery(
     oncologyCaseUid,
-    targetDb,
+    registerType,
   );
+
   const service = services?.find(
     (item) => item.oncologyServiceUid === selectedOncologyServiceUid,
   );
+
   const serviceUid =
     oncologyCaseUid !== null ? (service?.oncologyServiceUid ?? null) : null;
-  const { data: medications } = useMedicationsQuery(serviceUid, targetDb);
+
+  const { data: medications } = useMedicationsQuery(serviceUid, registerType);
+
   const medication = medications?.find(
     (item) => item.medicamentUid === selectedMedicationUid,
   );
+
   const medicationUid =
     serviceUid !== null ? (medication?.medicamentUid ?? null) : null;
+
   const dependencyState =
     selectedMedicalCaseUid === null ? (
       <DataState
@@ -77,6 +88,7 @@ const RControlOncologyLive = () => {
       {dependencyState}
     </section>
   );
+
   const chooseService = (
     <DataState
       title="Выберите онкологическую услугу"
@@ -84,6 +96,7 @@ const RControlOncologyLive = () => {
       variant="waiting"
     />
   );
+
   const chooseMedication = (
     <DataState
       title="Выберите лекарственный препарат"

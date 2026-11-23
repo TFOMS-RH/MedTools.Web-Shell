@@ -1,7 +1,3 @@
-export interface GetMedicationsResult {
-  medications: MedicationDto[];
-}
-
 export interface MedicationDto {
   medicamentUid: number;
   drugIdentifier: string;

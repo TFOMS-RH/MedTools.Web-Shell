@@ -8,7 +8,7 @@ import { RControlMedicalDevicesTableBody } from "./RControlMedicalDevicesTableBo
 import styles from "../../styles.module.scss";
 
 export const RControlMedicalDevicesTableRoot = () => {
-  const { targetDb } = useRControlWorkspacePanelStore();
+  const { registerType } = useRControlWorkspacePanelStore();
   const { selectedProvidedServiceUid } = useRControlWorkspaceStore();
   const {
     data: medicalDevices,
@@ -17,9 +17,9 @@ export const RControlMedicalDevicesTableRoot = () => {
     isError,
     isSuccess,
     error,
-  } = useMedicalDevicesQuery(selectedProvidedServiceUid, targetDb);
+  } = useMedicalDevicesQuery(selectedProvidedServiceUid, registerType);
   const dataState = resolveDataState({
-    isEnabled: selectedProvidedServiceUid !== null && targetDb !== null,
+    isEnabled: selectedProvidedServiceUid !== null && registerType !== null,
     isLoading: isLoading,
     isError: isError,
     isSuccess: isSuccess,

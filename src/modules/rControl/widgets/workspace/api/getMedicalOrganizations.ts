@@ -1,27 +1,18 @@
-import type { MedicalOrganizationDto, MedicalOrganizationResult } from "../model/types/MedicalOrganizationResult";
-import type { ResultResponse } from "../../../../../shared/types/ResultResponse";
-import type { TargetDbType } from "../../../../../shared/types/TargetDbType";
+import type { MedicalRegisterType } from "../../../../../shared/types/TargetDbType";
+import type { MedicalOrganizationDto } from "../model/types/MedicalOrganizationDto";
 import apiClient from "../../../../../shared/api/client/apiClient";
 
-
 export const getMedicalOrganizations = async (
-  targetDb: TargetDbType,
+  registerType: MedicalRegisterType,
 ): Promise<MedicalOrganizationDto[]> => {
-  const response = await apiClient.get<
-    ResultResponse<MedicalOrganizationResult>
-  >("med-tools/rcontrol/lookups/medical-organizations", {
-    params: {
-      targetDb: targetDb,
+  const response = await apiClient.get<MedicalOrganizationDto[]>(
+    "settlements/medical-register/extraction/medical-organizations",
+    {
+      params: {
+        registerType: registerType,
+      },
     },
-  });
+  );
 
-  if (response.data.isFailure) {
-    throw new Error(response.data.error);
-  }
-
-  if (!response.data.value) {
-    throw new Error("Данные не были получены");
-  }
-
-  return response.data.value.medicalOrganizations;
+  return response.data;
 };

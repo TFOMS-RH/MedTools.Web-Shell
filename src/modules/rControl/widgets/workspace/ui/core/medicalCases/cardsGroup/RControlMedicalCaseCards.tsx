@@ -1,4 +1,4 @@
-import type { MedicalCaseDto } from "../../../../../../../../shared/model/types/invoiceStructure/results/medicalCases/GetMedicalCaseListItemsResult";
+import type { MedicalCaseDto } from "../../../../../../../../shared/model/types/invoiceStructure/results/medicalCases/MedicalCaseDto";
 import { formatNullableValue } from "../../../../../../../../shared/helpers/formatNullableValue";
 import { formatCurrency } from "../../../../../../../../shared/helpers/formatCurrency";
 import styles from "./styles.module.scss";
